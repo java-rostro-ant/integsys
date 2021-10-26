@@ -91,10 +91,10 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         //set the main anchor pane fit the size of its parent anchor pane
-//        AnchorMain.setTopAnchor(AnchorMain, 0.0);
-//        AnchorMain.setBottomAnchor(AnchorMain, 0.0);
-//        AnchorMain.setLeftAnchor(AnchorMain, 0.0);
-//        AnchorMain.setRightAnchor(AnchorMain, 0.0);   
+        AnchorMain.setTopAnchor(AnchorMain, 0.0);
+        AnchorMain.setBottomAnchor(AnchorMain, 0.0);
+        AnchorMain.setLeftAnchor(AnchorMain, 0.0);
+        AnchorMain.setRightAnchor(AnchorMain, 0.0);   
         
         btnNew.setOnAction(this::cmdButton_Click);
         btnAddIncentives.setOnAction(this::cmdButton_Click);
