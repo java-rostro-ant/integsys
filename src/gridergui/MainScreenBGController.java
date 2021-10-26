@@ -3,11 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.rmj.integsys.ui;
+package gridergui;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.fxml.Initializable;
+import org.rmj.appdriver.GRider;
 
 /**
  * FXML Controller class
@@ -25,8 +26,8 @@ public class MainScreenBGController implements Initializable, ScreenInterface {
     }    
 
     @Override
-    public void setGRider(String foValue) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void setGRider(GRider foValue) {
+        
     }
     
 }

@@ -28,28 +28,36 @@
                                  <children>
                                     <MenuBar style="-fx-background-color: #F1F1F1;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                       <menus>
-                                        <Menu mnemonicParsing="false" text="File">
+                                        <Menu mnemonicParsing="false" text="Files">
                                           <items>
                                             <MenuItem mnemonicParsing="false" text="Close" />
                                           </items>
                                         </Menu>
-                                        <Menu mnemonicParsing="false" text="Edit">
+                                        <Menu fx:id="mnuTransaction" mnemonicParsing="false" text="Transactions">
                                           <items>
-                                            <MenuItem mnemonicParsing="false" text="Delete" />
+                                            <MenuItem fx:id="mnuEmployeeIncentives" mnemonicParsing="false" onAction="#mnuEmployeeIncentivesClick" text="Employee Incentives" />
                                           </items>
                                         </Menu>
-                                        <Menu mnemonicParsing="false" text="Help">
+                                        <Menu mnemonicParsing="false" text="Reports">
                                           <items>
                                             <MenuItem mnemonicParsing="false" text="About" />
                                           </items>
                                         </Menu>
+                                          <Menu mnemonicParsing="false" text="Registers">
+                                            <items>
+                                              <MenuItem mnemonicParsing="false" text="Action 1" />
+                                            </items>
+                                          </Menu>
                                       </menus>
                                     </MenuBar>
                                  </children>
                               </AnchorPane>
                            </top>
                            <center>
-                              <StackPane fx:id="workingSpace" prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+                              <StackPane fx:id="workingSpace" prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                                 <children>
+                                    <Pane fx:id="view" prefHeight="200.0" prefWidth="200.0" />
+                                 </children></StackPane>
                            </center>
                         </BorderPane>
                      </children>
