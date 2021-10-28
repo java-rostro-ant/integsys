@@ -1,0 +1,31 @@
+.button {
+  -fx-background-color: transparent;
+  -fx-text-fill: white;
+}
+.button:hover
+{
+  -fx-background-color: #878787;
+  -fx-text-fill: white;
+}
+
+.glyph-icon {
+   -fx-fill: white;
+}
+
+.text-field:focused {
+    -fx-background-color:
+        orange,
+        #FFFFFF;
+}
+#btnClose:hover{
+  -fx-background-color: #ed1800;
+  -fx-text-fill: white;
+    
+}
+#btnClose:hover .glyph-icon, #btnClose:hover .glyph-icon
+{
+  -fx-fill: white;
+}
+
+
+
