@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="AnchorMain" style="-fx-border-color: orange; -fx-border-radius: 5;" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
+<AnchorPane fx:id="AnchorMain" style="-fx-border-color: orange; -fx-border-radius: 5;" stylesheets="@/css/EmployeeIncentives.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <StackPane layoutX="9.0" layoutY="388.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -38,7 +38,7 @@
                <bottom>
                   <AnchorPane prefHeight="58.0" style="-fx-background-color: #4C4C4C; -fx-background-radius: 5;" BorderPane.alignment="CENTER">
                      <children>
-                        <Button fx:id="btnNew" contentDisplay="TOP" ellipsisString="" layoutX="4.0" layoutY="1.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" style="-fx-border-radius: 5; -fx-background-color: #4C4C4C;" text="New" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
+                        <Button fx:id="btnNew" contentDisplay="TOP" ellipsisString="" layoutX="4.0" layoutY="1.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="New" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
                             <graphic>
                                <FontAwesomeIconView glyphName="FILE" size="20" />
                             </graphic>
@@ -46,7 +46,7 @@
                                <Blend />
                             </effect>
                          </Button>
-                        <Button fx:id="btnBrowse" contentDisplay="TOP" ellipsisString="" layoutX="71.0" layoutY="6.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" style="-fx-border-radius: 5; -fx-background-color: #4C4C4C;" text="Browse" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="5.0">
+                        <Button fx:id="btnBrowse" contentDisplay="TOP" ellipsisString="" layoutX="71.0" layoutY="6.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Browse" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="5.0">
                            <graphic>
                               <FontAwesomeIconView glyphName="FOLDER_OPEN" size="20" />
                            </graphic>
@@ -54,7 +54,7 @@
                               <Blend />
                            </effect>
                         </Button>
-                        <Button fx:id="btnClose" contentDisplay="TOP" ellipsisString="" layoutX="138.0" layoutY="7.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="70.0" style="-fx-border-radius: 5; -fx-background-color: #4C4C4C;" text="Close" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                        <Button fx:id="btnClose" contentDisplay="TOP" ellipsisString="" layoutX="138.0" layoutY="7.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="70.0" text="Close" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
                            <graphic>
                               <FontAwesomeIconView glyphName="POWER_OFF" size="20" />
                            </graphic>
@@ -62,7 +62,7 @@
                               <Blend />
                            </effect>
                         </Button>
-                        <Button fx:id="btnAddIncentives" contentDisplay="TOP" ellipsisString="" layoutX="733.0" layoutY="6.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" style="-fx-border-radius: 5; -fx-background-color: #4C4C4C;" text="Incentives" AnchorPane.rightAnchor="160.0" AnchorPane.topAnchor="5.0">
+                        <Button fx:id="btnAddIncentives" contentDisplay="TOP" ellipsisString="" layoutX="733.0" layoutY="6.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Incentives" AnchorPane.rightAnchor="160.0" AnchorPane.topAnchor="5.0">
                            <graphic>
                               <FontAwesomeIconView glyphName="PLUS" size="20" />
                            </graphic>
@@ -73,7 +73,7 @@
                               <Font name="Arial" size="11.0" />
                            </font>
                         </Button>
-                        <Button fx:id="btnAddDeductions" contentDisplay="TOP" ellipsisString="" layoutX="814.0" layoutY="1.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" style="-fx-border-radius: 5; -fx-background-color: dar #4C4C4Ckgray;" text="Deductions" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="5.0">
+                        <Button fx:id="btnAddDeductions" contentDisplay="TOP" ellipsisString="" layoutX="814.0" layoutY="1.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Deductions" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="5.0">
                            <graphic>
                               <FontAwesomeIconView glyphName="MINUS" size="20" />
                            </graphic>
@@ -177,10 +177,10 @@
                                  <bottom>
                                     <AnchorPane style="-fx-border-color: orange; -fx-border-radius: 5;" BorderPane.alignment="CENTER">
                                        <children>
-                                          <TableView fx:id="tblemployee" layoutX="6.0" layoutY="6.0" prefHeight="281.0" prefWidth="881.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0">
+                                          <TableView fx:id="tblemployee" layoutX="6.0" layoutY="6.0" prefHeight="281.0" prefWidth="881.0" stylesheets="@css/Tables.css" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0">
                                              <columns>
-                                                <TableColumn editable="false" prefWidth="30.0" text="No." />
-                                                <TableColumn prefWidth="105.0" text="Employee" />
+                                                <TableColumn fx:id="index01" editable="false" prefWidth="30.0" text="No." />
+                                                <TableColumn fx:id="index02" prefWidth="300.0" text="Employee" />
                                              </columns>
                                              <effect>
                                                 <Blend />

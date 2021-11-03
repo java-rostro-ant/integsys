@@ -5,6 +5,7 @@
  */
 package gridergui;
 
+import java.io.FileNotFoundException;
 import java.net.URL;
 import javafx.scene.layout.Pane;
 
@@ -24,7 +25,7 @@ private Pane view;
             }
             return new FxmlLoader().load(fileUrl);
         }
-        catch(Exception e){
+        catch(FileNotFoundException e){
             System.out.println("No Page " + filename + " Please Check FxmlLoader.");
         }
     return  null;

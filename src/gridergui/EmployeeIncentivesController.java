@@ -5,14 +5,26 @@
  */
 package gridergui;
 
+import com.sun.javafx.scene.control.skin.TableHeaderRow;
+import com.sun.javafx.scene.control.skin.TableViewSkin;
 import gridergui.MainScreenBGController;
 import gridergui.ScreenInterface;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Date;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.animation.FadeTransition;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -22,19 +34,25 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TableView.ResizeFeatures;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.util.Callback;
 import javafx.util.Duration;
 import org.json.simple.JSONObject;
 import org.rmj.appdriver.GRider;
+import org.rmj.appdriver.SQLUtil;
 import org.rmj.appdriver.agent.MsgBox;
 import org.rmj.appdriver.agentfx.CommonUtils;
 import org.rmj.appdriver.agentfx.ShowMessageFX;
@@ -81,10 +99,16 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
     @FXML
     private TextArea txtField6;
     @FXML
-    private TableView<?> tblemployee;
+    private TableView tblemployee;
     @FXML
-    private TableView<?> tblincetives;
+    private TableView tblincetives;
     
+    @FXML
+    private TableColumn index01;
+    @FXML
+    private TableColumn index02;
+    
+    private ObservableList<TableModel> data = FXCollections.observableArrayList();
     /**
      * Initializes the controller class.
      */
@@ -183,26 +207,29 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                         loadRecord();
                         pnEditMode = oTrans.getEditMode();
                         //todo:
-                        //loadMaster(); ->>load the field from master table
-                        //loadDetail(); ->>load the employees with the corresponding incentive amount
-                        //loadDetailEmployeeAllocation(); ->>load incentive allocation                
-//                        oTrans.displayMasFields();
-//                        oTrans.displayDetFields();
-//                        oTrans.displayDetAllocFields();
-//                        oTrans.displayDetAllocEmpFields();
-//                        oTrans.displayDetDeductionAllocFields();
-//                        oTrans.displayDetDeductionAllocEmpFields();
+//                        loadMaster(); ->>load the field from master table
+//                        loadDetail(); ->>load the employees with the corresponding incentive amount
+//                        loadDetailEmployeeAllocation(); ->>load incentive allocation                
+                        oTrans.displayMasFields();
+                        oTrans.displayDetFields();
+                        oTrans.displayDetAllocFields();
+                        oTrans.displayDetAllocEmpFields();
+                        oTrans.displayDetDeductionAllocFields();
+                        oTrans.displayDetDeductionAllocEmpFields();
                         
-                        
-                        
-//                        for (int lnCtr = 1; lnCtr <= oTrans.getItemCount(); lnCtr++){
-//                            System.out.print(oTrans.getDetail(lnCtr, "sEmployID"));
-//                            System.out.print("\t");
-//                            System.out.print(oTrans.getDetail(lnCtr, "nTotalAmt"));
-//                            System.out.print("\t");
-//                            System.out.print(oTrans.getDetail(lnCtr, "xEmployNm"));
-//                            System.out.println("");
-//                        }
+                     
+                      
+                        for (int lnCtr = 1; lnCtr <= oTrans.getItemCount(); lnCtr++){
+                            data.add(new TableModel(String.valueOf(lnCtr),
+                            oTrans.getDetail(lnCtr, "xEmployNm").toString()));
+                            System.out.print(oTrans.getDetail(lnCtr, "sEmployID"));
+                            System.out.print("\t");
+                            System.out.print(oTrans.getDetail(lnCtr, "nTotalAmt"));
+                            System.out.print("\t");
+                            System.out.print(oTrans.getDetail(lnCtr, "xEmployNm"));
+                            System.out.println("");
+                        }
+                        initGrid();
                     } else 
                         MsgBox.showOk(oTrans.getMessage());
                     
@@ -237,4 +264,22 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         
         }
     }
+      public void initGrid() {
+        index01.setStyle("-fx-alignment: CENTER;");
+        index02.setStyle("-fx-alignment: CENTER-LEFT;");
+        index01.setCellValueFactory(new PropertyValueFactory<TableModel,String>("index01"));
+        index02.setCellValueFactory(new PropertyValueFactory<TableModel,String>("index02"));
+         /*making column's position uninterchangebale*/
+        tblemployee.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblemployee.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+               
+            });
+        });
+        /*Assigning data to table*/
+        tblemployee.setItems(data);
+        
+    }
+   
 }
