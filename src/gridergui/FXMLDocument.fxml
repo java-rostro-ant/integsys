@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="300.0" prefWidth="750.0" style="-fx-background-color: #FFFFFF;" stylesheets="@../css/MainPanelStyle.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
+<AnchorPane id="AnchorPane" prefHeight="300.0" prefWidth="750.0" style="-fx-background-color: #FFFFFF;" stylesheets="@../css/MainPanelStyle.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -37,6 +37,7 @@
                                           <items>
                                             <MenuItem fx:id="mnuEmployeeIncentives" mnemonicParsing="false" onAction="#mnuEmployeeIncentivesClick" text="Employee Incentives" />
                                             <MenuItem fx:id="mnuEmployeeIncentivesBank" mnemonicParsing="false" onAction="#mnuEmployeeBankInfoClick" text="Employee Incentive Bank Info" />
+                                                <MenuItem fx:id="mnuIncentiveParameter" mnemonicParsing="false" onAction="#mnuIncentiveParameterClick" text="Incentive Parameter" />
                                           </items>
                                         </Menu>
                                         <Menu mnemonicParsing="false" text="Reports">

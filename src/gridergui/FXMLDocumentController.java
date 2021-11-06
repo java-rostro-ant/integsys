@@ -43,6 +43,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private MenuItem mnuEmployeeIncentives;
     @FXML
+    private MenuItem mnuIncentiveParameter;
+    @FXML
     private Pane view;
     @FXML
     private MenuItem mnuEmployeeIncentivesBank;
@@ -106,6 +108,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return new EmployeeIncentivesController();
             case "EmployeeBankInfo.fxml":
                 return new EmployeeBankInfoController();
+            case "IncentiveParameter.fxml":
+                return new IncentiveParameterController();
             case "AddIncentives.fxml":
                 return new AddIncentivesController();
             default:
@@ -125,5 +129,10 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuEmployeeBankInfoClick(ActionEvent event) {
         setScene(loadAnimate("EmployeeBankInfo.fxml"));
+    }
+    
+    @FXML
+    private void mnuIncentiveParameterClick(ActionEvent event) {
+        setScene(loadAnimate("IncentiveParameter.fxml"));
     }
 }

@@ -11,12 +11,18 @@
 .glyph-icon {
    -fx-fill: white;
 }
-
+.text-field {
+    -fx-opacity: 1.0;
+    -fx-background-color:
+        lightgrey,
+        white;
+}
 .text-field:focused {
     -fx-background-color:
         orange,
-        #FFFFFF;
+        white;
 }
+
 #btnClose:hover{
   -fx-background-color: #ed1800;
   -fx-text-fill: white;
@@ -27,5 +33,16 @@
   -fx-fill: white;
 }
 
+/*Checkbox style*/
+.check-box .box {
 
+-fx-background-color: white;
+-fx-border-color:grey;
+-fx-border-radius:3px; 
+
+}
+
+.check-box:selected .box {
+-fx-border-color:orange;
+}
 
