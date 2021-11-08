@@ -92,8 +92,6 @@ public class IncentiveParameterController implements Initializable , ScreenInter
     @FXML
     private Button btnUpdate;
     @FXML
-    private Button btnSearch;
-    @FXML
     private Button btnCancel;
     @FXML
     private Button btnClose;
@@ -123,10 +121,22 @@ public class IncentiveParameterController implements Initializable , ScreenInter
                     case 2: 
                         txtField02.setText((String) o);
                         break;
-                    case 3: //xBankName
-                      
-                        System.out.println((String) o);
-                        break;
+                    case 6:
+                         try {
+                            lblStatus.setVisible(true);
+                            if(oTrans.getMaster(6).toString().equalsIgnoreCase("1")){
+                                lblStatus.setText("Active");
+                                lblStatus.setStyle("-fx-background-color: green;");
+                            }else if(oTrans.getMaster(6).toString().equalsIgnoreCase("0")){
+                                lblStatus.setText("Inactive");
+                                lblStatus.setStyle("-fx-background-color: red;");
+                            }else{
+                               lblStatus.setVisible(false); 
+                            }
+                        } catch (SQLException ex) {
+                             MsgBox.showOk(oTrans.getMessage());
+                        }
+                         break;
                 }
             }
 
@@ -143,7 +153,6 @@ public class IncentiveParameterController implements Initializable , ScreenInter
         btnNew.setOnAction(this::cmdButton_Click);
         btnSave.setOnAction(this::cmdButton_Click);
         btnUpdate.setOnAction(this::cmdButton_Click);
-        btnSearch.setOnAction(this::cmdButton_Click);
         btnCancel.setOnAction(this::cmdButton_Click);
         btnClose.setOnAction(this::cmdButton_Click);
         btnActivate.setOnAction(this::cmdButton_Click);
@@ -158,24 +167,8 @@ public class IncentiveParameterController implements Initializable , ScreenInter
         cmbType.setItems(cType);
         cmbPercent.setItems(cPercent);
         cmbType.getSelectionModel().select(0);
-        cmbType.valueProperty().addListener(new ChangeListener<String>() {
-            @Override public void changed(ObservableValue ov, String t, String t1) {
-                pnEditMode = EditMode.UNKNOWN;
-        
-                clearFields();
-                initButton(pnEditMode);
-            }    
-        });
         cmbPercent.getSelectionModel().select(0);
-        cmbPercent.valueProperty().addListener(new ChangeListener<String>() {
-            @Override public void changed(ObservableValue ov, String t, String t1) {
-                pnEditMode = EditMode.UNKNOWN;
         
-                clearFields();
-                initButton(pnEditMode);
-            }    
-        });
-     
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
     }    
@@ -198,8 +191,8 @@ public class IncentiveParameterController implements Initializable , ScreenInter
                 case "btnNew": //create new transaction
                         pbLoaded = true;
                         if (oTrans.NewRecord()){
+                            clearFields();
                             loadRecord();
-                            
                             pnEditMode = oTrans.getEditMode();
                         } else 
                             MsgBox.showOk(oTrans.getMessage());
@@ -221,10 +214,8 @@ public class IncentiveParameterController implements Initializable , ScreenInter
                         } else 
                             MsgBox.showOk(oTrans.getMessage());
                     break;
-                case "btnSearch":
-                       
-                    break;
                 case "btnCancel":
+                    
                     clearFields();
                     oTrans = new Incentive(oApp, oApp.getBranchCode(), false);
                     oTrans.setListener(oListener);
@@ -233,18 +224,18 @@ public class IncentiveParameterController implements Initializable , ScreenInter
                     //reload detail
                     break;
                 case "btnActivate":
-//                    if (oTrans.ActivateRecord()){
-//                        MsgBox.showOk("Account successfully activated!");
-//                        clearFields();
-//                    }else
-//                        MsgBox.showOk(oTrans.getMessage());
+                    if (oTrans.ActivateRecord()){
+                        MsgBox.showOk("Account successfully activated!");
+                        clearFields();
+                    }else
+                        MsgBox.showOk(oTrans.getMessage());
                     break;
                 case "btnDeactivate":
-//                    if (oTrans.DeactivateRecord()){
-//                        MsgBox.showOk("Account successfully deactivated!");
-//                        clearFields();
-//                    }else
-//                        MsgBox.showOk(oTrans.getMessage());
+                    if (oTrans.DeactivateRecord()){
+                        MsgBox.showOk("Account successfully deactivated!");
+                        clearFields();
+                    }else
+                        MsgBox.showOk(oTrans.getMessage());
                     break;
 
                 case "btnClose":
@@ -265,14 +256,12 @@ public class IncentiveParameterController implements Initializable , ScreenInter
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         
         btnCancel.setVisible(lbShow);
-        btnSearch.setVisible(lbShow);
         btnSave.setVisible(lbShow);
         btnActivate.setVisible(!lbShow);
         btnDeactivate.setVisible(!lbShow);
         
         btnSave.setManaged(lbShow);
         btnCancel.setManaged(lbShow);
-        btnSearch.setManaged(lbShow);
         btnUpdate.setVisible(!lbShow);
         btnBrowse.setVisible(!lbShow);
         btnNew.setVisible(!lbShow);
@@ -287,11 +276,13 @@ public class IncentiveParameterController implements Initializable , ScreenInter
         Check04.setDisable(!lbShow);
         Check05.setDisable(!lbShow);
         Check06.setDisable(!lbShow);
+        cmbType.setDisable(!lbShow);
+        cmbPercent.setDisable(!lbShow);
         if (lbShow){
             txtSeeks05.setDisable(lbShow);
             txtSeeks05.clear();
+            txtField02.requestFocus();
             btnCancel.setVisible(lbShow);
-            btnSearch.setVisible(lbShow);
             btnSave.setVisible(lbShow);
             btnUpdate.setVisible(!lbShow);
             btnBrowse.setVisible(!lbShow);
@@ -310,6 +301,7 @@ public class IncentiveParameterController implements Initializable , ScreenInter
     public void clearFields(){
         txtField01.clear();
         txtField02.clear();
+        txtSeeks05.clear();
         lblStatus.setVisible(false);
         
         Check01.selectedProperty().setValue(false);
@@ -318,13 +310,15 @@ public class IncentiveParameterController implements Initializable , ScreenInter
         Check04.selectedProperty().setValue(false);
         Check05.selectedProperty().setValue(false);
         Check06.selectedProperty().setValue(false);
+        cmbType.getSelectionModel().select(0);
+        cmbPercent.getSelectionModel().select(0);
+                
     }
     
     private void unloadForm(){
         StackPane myBox = (StackPane) AnchorMainBankInfo.getParent();
         myBox.getChildren().clear();
         myBox.getChildren().add(getScene("MainScreenBG.fxml"));
-      
     }
     private AnchorPane getScene(String fsFormName){
          ScreenInterface fxObj = new MainScreenBGController();
@@ -353,14 +347,49 @@ public class IncentiveParameterController implements Initializable , ScreenInter
     }
     
     private void loadRecord(){
-        
         try {
-            MsgBox.showOk((String) oTrans.getMaster(1));
-            txtSeeks05.setText((String) oTrans.getMaster(1));
+            if(oTrans.getMaster(6).toString().equalsIgnoreCase("1")){
+            lblStatus.setVisible(true);
+                lblStatus.setText("Active");
+                lblStatus.setStyle("-fx-background-color: green;");
+            }else if(oTrans.getMaster(6).toString().equalsIgnoreCase("0")){
+                lblStatus.setVisible(true);
+                lblStatus.setText("Inactive");
+                lblStatus.setStyle("-fx-background-color: red;");
+            }else{
+                lblStatus.setVisible(false);
+            }
             txtField01.setText((String) oTrans.getMaster(1));
             txtField02.setText((String) oTrans.getMaster(2));
-            System.out.println((String) oTrans.getMaster(3));
-            System.out.println((String) oTrans.getMaster(2));
+            txtSeeks05.setText((String) oTrans.getMaster(2));
+            int check_size = (int) oTrans.getMaster(3).toString().length();
+            String division = (String) oTrans.getMaster(3);
+            char temp;
+            for(int x = 0; x < check_size; x++){
+                temp = division.charAt(x);
+                if(temp == '1'){
+                    Check01.selectedProperty().setValue(true);
+                }
+                if(temp == '2'){
+                    Check02.selectedProperty().setValue(true);
+                }
+                if(temp == '3'){
+                    Check03.selectedProperty().setValue(true);
+                }
+                if(temp == '4'){
+                    Check04.selectedProperty().setValue(true);
+                }
+                if(temp == '5'){
+                    Check05.selectedProperty().setValue(true);
+                }
+                if(temp == '6'){
+                    Check06.selectedProperty().setValue(true);
+                }
+            }
+
+            cmbType.getSelectionModel().select(Integer.parseInt((String)oTrans.getMaster(4)));
+            cmbPercent.getSelectionModel().select(Integer.parseInt((String)oTrans.getMaster(5)));
+            
         } catch (SQLException e) {
             MsgBox.showOk(e.getMessage());
         }
@@ -403,6 +432,7 @@ public class IncentiveParameterController implements Initializable , ScreenInter
             
             oTrans.setMaster("sDivision", div);
             oTrans.setMaster("sInctveDs", txtField02.getText());
+            
             } catch (SQLException ex) {
               MsgBox.showOk(ex.getMessage());
         }
@@ -443,12 +473,7 @@ public class IncentiveParameterController implements Initializable , ScreenInter
            switch (event.getCode()){
             case F3:
                 switch (lnIndex){
-                case 1: /*sBranchCd*/
-//                     oTrans.se(txtField.getText(), false);
-                     break;
-                case 2: /*sBankNme*/
-//                     oTrans.searchBank(txtField.getText(), false); 
-                     break;
+              
                 case 5: /*Search*/
                     if (oTrans.SearchRecord(txtSeeks05.getText(), false)){
                         loadRecord();
