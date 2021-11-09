@@ -1,29 +1,15 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package gridergui;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
-import com.sun.javafx.scene.control.skin.TableViewSkin;
-import gridergui.MainScreenBGController;
-import gridergui.ScreenInterface;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.Date;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.animation.FadeTransition;
+import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -36,41 +22,42 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TableView.ResizeFeatures;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.util.Callback;
-import javafx.util.Duration;
-import org.json.simple.JSONObject;
 import org.rmj.appdriver.GRider;
-import org.rmj.appdriver.SQLUtil;
 import org.rmj.appdriver.agent.MsgBox;
 import org.rmj.appdriver.agentfx.CommonUtils;
-import org.rmj.appdriver.agentfx.ShowMessageFX;
 import org.rmj.appdriver.constants.EditMode;
-import org.rmj.fund.manager.base.Incentive;
+import org.rmj.fund.manager.base.Incentive; 
+import static javafx.scene.input.KeyCode.ENTER;
+import static javafx.scene.input.KeyCode.F3;
+import javafx.scene.input.KeyEvent;
+import org.rmj.appdriver.StringUtil;
+import org.rmj.appdriver.agentfx.ShowMessageFX;
+import org.rmj.fund.manager.base.LMasDetTrans;
 
-
-/**
- * FXML Controller class
- *
- * @author user
- */
 public class EmployeeIncentivesController implements Initializable, ScreenInterface {
+    private final String pxeModuleName = "EmployeeIncentivesController";
+    private double xOffset = 0;
+    private double yOffset = 0;
+    
     private GRider oApp;
     private Incentive oTrans;
+    private LMasDetTrans oListener;
     
-    double xOffset = 0;
-    double yOffset = 0;
+    private int pnIndex = -1;    
+    private int pnRow = -1;
+    private int pnEditMode;
+
+    private boolean pbLoaded = false;
+    
+    private ObservableList<TableModel> data = FXCollections.observableArrayList();
     
     @FXML
     private Button btnNew;
@@ -85,73 +72,265 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
     @FXML
     private AnchorPane AnchorMain;
     @FXML
-    private Label lblHeader;
-    @FXML
-    private TextField txtField1;
-    @FXML
-    private TextField txtField2;
-    @FXML
-    private TextField txtField3;
-    @FXML
-    private TextField txtField4;
-    @FXML
-    private TextField txtField5;
-    @FXML
-    private TextArea txtField6;
+    private Label lblHeader;    
     @FXML
     private TableView tblemployee;
     @FXML
     private TableView tblincetives;
-    
     @FXML
     private TableColumn index01;
     @FXML
     private TableColumn index02;
+    @FXML
+    private AnchorPane searchBar;
+    @FXML
+    private Button btnBrowse1;    
+    @FXML
+    private TextField txtField01;
+    @FXML
+    private TextField txtField02;
+    @FXML
+    private TextField txtField03;
+    @FXML
+    private TextField txtField04;
+    @FXML
+    private TextArea txtField05;
+    @FXML
+    private TextField txtField16;
+    @FXML
+    private TextField txtSeeks01;
+    @FXML
+    private TextField txtSeeks02;
     
-    private ObservableList<TableModel> data = FXCollections.observableArrayList();
-    /**
-     * Initializes the controller class.
-     */
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        //set the main anchor pane fit the size of its parent anchor pane
-//        AnchorMain.setTopAnchor(AnchorMain, 0.0);
-//        AnchorMain.setBottomAnchor(AnchorMain, 0.0);
-//        AnchorMain.setLeftAnchor(AnchorMain, 0.0);
-//        AnchorMain.setRightAnchor(AnchorMain, 0.0);   
+    public void initialize(URL url, ResourceBundle rb) {     
+        oListener = new LMasDetTrans() {
+            @Override
+            public void MasterRetreive(int fnIndex, Object foValue) {
+                switch(fnIndex){
+                    case 1:
+                        txtField01.setText((String) foValue); break;
+                    case 2:
+                        txtField02.setText((String) foValue); break;
+                    case 4:
+                        txtField04.setText((String) foValue); break;
+                    case 5:
+                        txtField05.setText((String) foValue); break;
+                    case 17:
+                        txtField03.setText((String) foValue); 
+                        loadDetail();
+                        break;
+                    case 16:
+                        txtField16.setText((String) foValue); break;
+                }
+            }
+
+            @Override
+            public void DetailRetreive(int fnRow, int fnIndex, Object foValue) {
+            }
+        };
         
         btnNew.setOnAction(this::cmdButton_Click);
         btnAddIncentives.setOnAction(this::cmdButton_Click);
+        btnAddDeductions.setOnAction(this::cmdButton_Click);
         btnClose.setOnAction(this::cmdButton_Click);
         
         //initialize class
         oTrans  = new Incentive(oApp, oApp.getBranchCode(), false);
+        oTrans.setListener(oListener);
         oTrans.setWithUI(true);
         
-        pnEditMode = EditMode.UNKNOWN;
         /*Add listener to text fields*/
-
+        txtSeeks01.focusedProperty().addListener(txtField_Focus);
+        txtSeeks02.focusedProperty().addListener(txtField_Focus);
+        txtField01.focusedProperty().addListener(txtField_Focus);
+        txtField02.focusedProperty().addListener(txtField_Focus);
+        txtField03.focusedProperty().addListener(txtField_Focus);
+        txtField04.focusedProperty().addListener(txtField_Focus);
+        txtField16.focusedProperty().addListener(txtField_Focus);
+        
+        txtSeeks01.setOnKeyPressed(this::txtField_KeyPressed);
+        txtSeeks02.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField01.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField02.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField03.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField04.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField16.setOnKeyPressed(this::txtField_KeyPressed);
+        
+        txtField05.setOnKeyPressed(this::txtArea_KeyPressed);
+        txtField05.focusedProperty().addListener(txtArea_Focus);
+        
+        CommonUtils.addTextLimiter(txtField04, 6);
+        CommonUtils.addTextLimiter(txtField05, 128);
+        
+        pnEditMode = EditMode.UNKNOWN;
+        pbLoaded = true;
+    } 
+    
+    private void txtArea_KeyPressed(KeyEvent event){
+        TextArea txtField = (TextArea)event.getSource();
+        int lnIndex = Integer.parseInt(((TextArea)event.getSource()).getId().substring(8,10));
+        String lsValue = txtField.getText();
+            
+        switch (event.getCode()){
+        case ENTER:
+        case DOWN:
+            CommonUtils.SetNextFocus(txtField);
+            break;
+        case UP:
+            CommonUtils.SetPreviousFocus(txtField);
+        }
+    }
+    
+    private void txtField_KeyPressed(KeyEvent event){
+        TextField txtField = (TextField)event.getSource();
+        int lnIndex = Integer.parseInt(((TextField)event.getSource()).getId().substring(8,10));
+        String lsValue = txtField.getText();
+        
+        try {
+            switch (event.getCode()) {
+                case F3:
+                case ENTER:
+                    switch (lnIndex){
+                        case 3:
+                            if(!oTrans.searchDepartment(lsValue, false)) MsgBox.showOk("No department was selected.");
+                            break;
+                    }
+            }      
+        } catch (SQLException e) {
+            e.printStackTrace();
+            MsgBox.showOk(e.getMessage());
+        }
+            
+        switch (event.getCode()){
+        case ENTER:
+        case DOWN:
+            CommonUtils.SetNextFocus(txtField);
+            break;
+        case UP:
+            CommonUtils.SetPreviousFocus(txtField);
+        }
     } 
     
     @Override
     public void setGRider(GRider foValue) {
         oApp = foValue;
     }
-    private int pnIndex = -1;
-    private int pnEditMode;
-    private int pnRow = 0;
-    private int pnSubItems = 0;
-    private boolean pbLoaded = false;
-    private String psOldRec;
-    private String psBarcode = "";
-    private String psDescript = "";
+    
+    private void loadIncentives() throws SQLException{
+        //load to grid the incentives.
+        int lnCtr;
+                
+        System.out.println("INCENTIVES");
+        for (lnCtr = 1; lnCtr <= oTrans.getIncentiveCount(); lnCtr++){
+            //to display these fields on grid.
+            System.out.println(oTrans.getIncentiveInfo(lnCtr, "xInctvNme"));
+            System.out.println(oTrans.getIncentiveInfo(lnCtr, "nQtyGoalx"));
+            System.out.println(oTrans.getIncentiveInfo(lnCtr, "nQtyActlx"));
+            System.out.println(oTrans.getIncentiveInfo(lnCtr, "nAmtGoalx"));
+            System.out.println(oTrans.getIncentiveInfo(lnCtr, "nAmtActlx"));
+            System.out.println(oTrans.getIncentiveInfo(lnCtr, "nInctvAmt"));
+        }
+        
+        System.out.println("DEDUCTIONS");
+        for (lnCtr = 1; lnCtr <= oTrans.getDeductionCount(); lnCtr++){
+            //to display these fields on grid.
+            System.out.println(oTrans.getDeductionInfo(lnCtr, "sRemarksx"));
+            System.out.println("");
+            System.out.println("");
+            System.out.println("");
+            System.out.println("");
+            System.out.println(oTrans.getDeductionInfo(lnCtr, "nDedctAmt"));
+        }
+    }
+    
+    private void loadDetail(){
+        try {
+            data.clear();
+            for (int lnCtr = 1; lnCtr <= oTrans.getItemCount(); lnCtr++){
+                data.add(new TableModel(String.valueOf(lnCtr),
+                   oTrans.getDetail(lnCtr, "xEmployNm").toString()));
+                
+                //to display these fields.
+                System.out.println(oTrans.getDetail(lnCtr, "xEmployNm"));
+                System.out.println(oTrans.getDetail(lnCtr, "xEmpLevNm"));
+                System.out.println(oTrans.getDetail(lnCtr, "xPositnNm"));
+                System.out.println(oTrans.getDetail(lnCtr, "xSrvcYear"));
+                System.out.println(oTrans.getDetail(lnCtr, "nTotalAmt"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            MsgBox.showOk(e.getMessage());
+        }
+    }
     
     
     
+    
+    final ChangeListener<? super Boolean> txtArea_Focus = (o,ov,nv)->{ 
+        if (!pbLoaded) return;
+        
+        TextArea txtField = (TextArea)((ReadOnlyBooleanPropertyBase)o).getBean();
+        int lnIndex = Integer.parseInt(txtField.getId().substring(8, 9));
+        String lsValue = txtField.getText();
+        
+        if (lsValue == null) return;
+            
+        try {
+            if(!nv){ /*Lost Focus*/
+                switch (lnIndex){
+                    case 5:
+                       oTrans.setMaster(lnIndex, lsValue); break;
+                }
+            } else
+                txtField.selectAll();
+
+            pnIndex = lnIndex;
+        } catch (SQLException e) {
+            MsgBox.showOk(e.getMessage());
+            System.exit(1);
+        }
+    };
+ 
+    final ChangeListener<? super Boolean> txtField_Focus = (o,ov,nv)->{ 
+        if (!pbLoaded) return;
+        
+        TextField txtField = (TextField)((ReadOnlyBooleanPropertyBase)o).getBean();
+        int lnIndex = Integer.parseInt(txtField.getId().substring(8, 9));
+        String lsValue = txtField.getText();
+        
+        if (lsValue == null) return;
+            
+        try {
+            if(!nv){ /*Lost Focus*/
+                switch (lnIndex){
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 16:
+                        break;
+                    case 4:
+                        if (!StringUtil.isNumeric(lsValue))
+                            oTrans.setMaster(lnIndex, "");
+                        else
+                            oTrans.setMaster(lnIndex, lsValue);
+                }
+            } else
+                txtField.selectAll();
+
+            pnIndex = lnIndex;
+        } catch (SQLException e) {
+            MsgBox.showOk(e.getMessage());
+            System.exit(1);
+        }
+    };
+        
+        
     private void unloadForm(){
         AnchorPane myBox = (AnchorPane) AnchorMain.getParent();
         myBox.getChildren().clear();
     }
+    
     private void loadIncentiveDetail(){
         try {
             Stage stage = new Stage();
@@ -162,12 +341,13 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
             AddIncentivesController loControl = new AddIncentivesController();
             loControl.setGRider(oApp);
             loControl.setIncentiveObject(oTrans);
-
+            
             fxmlLoader.setController(loControl);
-    
+            
+            //loControl.maintransaction(txtField1.getText());
             //load the main interface
             Parent parent = fxmlLoader.load();
-            
+                
             parent.setOnMousePressed(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
@@ -199,77 +379,93 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
     
     private void cmdButton_Click(ActionEvent event) {
         String lsButton = ((Button)event.getSource()).getId();
-        
         switch (lsButton){
-            case "btnNew": //create new transaction
+            case "btnNew": 
                 try {
-                    if (oTrans.NewTransaction()){
-                        loadRecord();
-                        pnEditMode = oTrans.getEditMode();
-                        //todo:
-//                        loadMaster(); ->>load the field from master table
-//                        loadDetail(); ->>load the employees with the corresponding incentive amount
-//                        loadDetailEmployeeAllocation(); ->>load incentive allocation                
-                        oTrans.displayMasFields();
-                        oTrans.displayDetFields();
-                        oTrans.displayDetAllocFields();
-                        oTrans.displayDetAllocEmpFields();
-                        oTrans.displayDetDeductionAllocFields();
-                        oTrans.displayDetDeductionAllocEmpFields();
-                        
-                     
-                      
-                        for (int lnCtr = 1; lnCtr <= oTrans.getItemCount(); lnCtr++){
-                            data.add(new TableModel(String.valueOf(lnCtr),
-                            oTrans.getDetail(lnCtr, "xEmployNm").toString()));
-                            System.out.print(oTrans.getDetail(lnCtr, "sEmployID"));
-                            System.out.print("\t");
-                            System.out.print(oTrans.getDetail(lnCtr, "nTotalAmt"));
-                            System.out.print("\t");
-                            System.out.print(oTrans.getDetail(lnCtr, "xEmployNm"));
-                            System.out.println("");
-                        }
-                        initGrid();
-                    } else 
+                    if (oTrans.NewTransaction() ){
+                        clearFields();
+                        loadMaster();
+                    } else
                         MsgBox.showOk(oTrans.getMessage());
-                    
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    MsgBox.showOk(e.getMessage());
+                }            
+                break;
+            case "btnAddIncentives":
+                try {
+                    if (oTrans.searchIncentive("", false))
+                        loadIncentives();
+                    else
+                        MsgBox.showOk(oTrans.getMessage());
                 } catch (SQLException e) {
                     e.printStackTrace();
                     MsgBox.showOk(e.getMessage());
                 }
-                break;
-            case "btnAddIncentives":
-                loadIncentiveDetail();
-                //reload detail
-                break;
                 
+                //tawagin ito pag update lang.
+                //loadIncentiveDetail();
+                break;
+            case "btnAddDeductions":
+                String lsValue = ShowMessageFX.InputText("Please input deduction description.", "Add Deduction", "Add Deduction");
+                
+                if (!lsValue.isEmpty()){
+                    try {
+                        if (oTrans.addDeduction(lsValue))
+                            loadIncentives();
+                        else
+                            MsgBox.showOk(oTrans.getMessage());
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                        MsgBox.showOk(e.getMessage());
+                    }
+                }
+                break;
             case "btnClose":
-                MsgBox.showOk("hello");
-                unloadForm();
+                Stage stage = new Stage();
+                stage.close();
+                break;
+            case "btnSave":
                 break;
         }
     } 
-    private void loadRecord() throws SQLException{
-        txtField1.setText((String) oTrans.getMaster(1));
+
+    private void loadMaster() throws SQLException {
+        txtField01.setText((String) oTrans.getMaster(1));
+        txtField02.setText(CommonUtils.xsDateMedium((Date) oTrans.getMaster(2)));
+        txtField03.setText((String) oTrans.getMaster(17));
+        txtField04.setText((String) oTrans.getMaster(4));
+        txtField05.setText((String) oTrans.getMaster(5));
+        txtField16.setText((String) oTrans.getMaster(16));
+            
+        txtField04.setDisable(false);
+            
+        for (int lnCtr = 1; lnCtr <= oTrans.getItemCount(); lnCtr++){
+            data.add(new TableModel(String.valueOf(lnCtr),
+                        oTrans.getDetail(lnCtr, "xEmployNm").toString()));
+        }       
+        initGrid();
         
-        psOldRec = txtField1.getText();
-        pnEditMode = EditMode.READY;
+        pnRow = 0;
     }
     
-    private void getMaster(int fnIndex) throws SQLException{
-        switch(fnIndex){
-        case 2:
-           txtField1.setText((String)oTrans.getMaster(fnIndex));
-            break;
-        
-        }
+    private void clearFields(){
+        txtField01.setText("");
+        txtField02.setText("");
+        txtField03.setText("");
+        txtField04.setText("");
+        txtField05.setText("");
+        txtField16.setText("");
+        txtSeeks01.setText("");
+        txtSeeks02.setText("");
     }
-      public void initGrid() {
+        
+    private void initGrid() {
         index01.setStyle("-fx-alignment: CENTER;");
         index02.setStyle("-fx-alignment: CENTER-LEFT;");
-        index01.setCellValueFactory(new PropertyValueFactory<TableModel,String>("index01"));
-        index02.setCellValueFactory(new PropertyValueFactory<TableModel,String>("index02"));
-         /*making column's position uninterchangebale*/
+        
+        index01.setCellValueFactory(new PropertyValueFactory<>("index01"));
+        index02.setCellValueFactory(new PropertyValueFactory<>("index02"));
         tblemployee.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblemployee.lookup("TableHeaderRow");
             header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
@@ -277,9 +473,6 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                
             });
         });
-        /*Assigning data to table*/
         tblemployee.setItems(data);
-        
-    }
-   
+    }   
 }
