@@ -128,8 +128,15 @@
 .table-view > .virtual-flow > .scroll-bar:horizontal > .track-background {
     -fx-background-color: transparent;
 }
+
 .table-view{
     -fx-background-color: transparent;
     -fx-border-color: #000000;
     -fx-border-width: 1px 1px 1px 1px;
+}
+
+.combo-box-base:disabled,
+.list-cell:disabled,
+.check-box:disabled{
+  -fx-opacity: 1;
 }
