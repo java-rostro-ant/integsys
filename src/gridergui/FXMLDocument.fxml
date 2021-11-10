@@ -39,6 +39,7 @@
                                             <MenuItem fx:id="mnuEmployeeIncentivesBank" mnemonicParsing="false" onAction="#mnuEmployeeBankInfoClick" text="Employee Incentive Bank Info" />
                                                 <MenuItem fx:id="mnuIncentiveParameter" mnemonicParsing="false" onAction="#mnuIncentiveParameterClick" text="Incentive Parameter" />
                                                 <MenuItem fx:id="mnuIncentiveReleasing" mnemonicParsing="false" onAction="#mnuIncentiveReleasingClick" text="Incentive Releasing" />
+                                                <MenuItem fx:id="mnuIncentiveConfirmation" mnemonicParsing="false" onAction="#mnuIncentiveConfirmationClick" text="Incentive Confirmation" />
                                           </items>
                                         </Menu>
                                         <Menu mnemonicParsing="false" text="Reports">

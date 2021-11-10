@@ -58,10 +58,8 @@ public class IncentiveReleasingController implements Initializable, ScreenInterf
     double xOffset = 0;
     double yOffset = 0;
     
-    private int pnIndex = -1;
     private int pnEditMode;
     private int pnRow = 0;
-    private int pnSubItems = 0;
     private boolean pbLoaded = false;
     @FXML
     private TextField txtField01;
@@ -335,12 +333,12 @@ public class IncentiveReleasingController implements Initializable, ScreenInterf
                     break;
                 case "btnNew": //create new transaction
                         pbLoaded = true;
-                        pnEditMode = EditMode.UPDATE;
-//                        if (oTrans.NewTransaction()){
-//                            loadRecord();
-//                            pnEditMode = oTrans.getEditMode();
-//                        } else 
-//                            MsgBox.showOk(oTrans.getMessage());
+//                        pnEditMode = EditMode.UPDATE;
+                        if (oTrans.NewTransaction()){
+                            loadRecord();
+                            pnEditMode = oTrans.getEditMode();
+                        } else 
+                            MsgBox.showOk(oTrans.getMessage());
                     break;
                  case "btnSave":
                         if (oTrans.SaveTransaction()){
@@ -439,7 +437,7 @@ public class IncentiveReleasingController implements Initializable, ScreenInterf
         
     }
     public static String priceWithDecimal (Double price) {
-        DecimalFormat formatter = new DecimalFormat("###,###,###.00");
+        DecimalFormat formatter = new DecimalFormat("###,###,##0.00");
         return formatter.format(price);
     }
 
