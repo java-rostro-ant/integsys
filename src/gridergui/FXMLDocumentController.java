@@ -48,6 +48,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private Pane view;
     @FXML
     private MenuItem mnuEmployeeIncentivesBank;
+    @FXML
+    private MenuItem mnuIncentiveReleasing;
     
     /**
      * Initializes the controller class.
@@ -112,6 +114,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return new IncentiveParameterController();
             case "AddIncentives.fxml":
                 return new AddIncentivesController();
+            case "IncentiveReleasing.fxml":
+                return new IncentiveReleasingController();
             default:
                 return null;
         }
@@ -134,5 +138,9 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuIncentiveParameterClick(ActionEvent event) {
         setScene(loadAnimate("IncentiveParameter.fxml"));
+    } 
+    @FXML
+    private void mnuIncentiveReleasingClick(ActionEvent event) {
+        setScene(loadAnimate("IncentiveReleasing.fxml"));
     }
 }
