@@ -58,7 +58,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
     private boolean pbLoaded = false;
     
     private ObservableList<TableModel> data = FXCollections.observableArrayList();
-    
+    private ObservableList<TableIncentives> inc_data = FXCollections.observableArrayList();
     @FXML
     private Button btnNew;
     @FXML
@@ -75,8 +75,6 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
     private Label lblHeader;    
     @FXML
     private TableView tblemployee;
-    @FXML
-    private TableView tblincetives;
     @FXML
     private TableColumn index01;
     @FXML
@@ -101,6 +99,24 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
     private TextField txtSeeks01;
     @FXML
     private TextField txtSeeks02;
+    @FXML
+    private TableView tblIncentives;
+    private TableColumn<?, ?> Index01;
+    private TableColumn<?, ?> Index02;
+    @FXML
+    private TableColumn<?, ?> incindex01;
+    @FXML
+    private TableColumn<?, ?> incindex02;
+    @FXML
+    private TableColumn<?, ?> incindex03;
+    @FXML
+    private TableColumn<?, ?> incindex04;
+    @FXML
+    private TableColumn<?, ?> incindex05;
+    @FXML
+    private TableColumn<?, ?> incindex06;
+    @FXML
+    private TableColumn<?, ?> incindex07;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {     
@@ -219,11 +235,21 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
     
     private void loadIncentives() throws SQLException{
         //load to grid the incentives.
-        int lnCtr;
-                
+        inc_data.clear();
+        int lnCtr; 
         System.out.println("INCENTIVES");
+//        for (int counter = ; counter > 0; counter--){
+//            System.out.println(counter);
+       
         for (lnCtr = 1; lnCtr <= oTrans.getIncentiveCount(); lnCtr++){
-            //to display these fields on grid.
+            inc_data.add(new TableIncentives(String.valueOf(lnCtr),
+                oTrans.getIncentiveInfo(lnCtr, "xInctvNme").toString(),
+                oTrans.getIncentiveInfo(lnCtr, "nQtyGoalx").toString(),
+                oTrans.getIncentiveInfo(lnCtr, "nQtyActlx").toString(),
+                oTrans.getIncentiveInfo(lnCtr, "nAmtGoalx").toString(),
+                oTrans.getIncentiveInfo(lnCtr, "nAmtActlx").toString(),
+                oTrans.getIncentiveInfo(lnCtr, "nInctvAmt").toString()));
+            
             System.out.println(oTrans.getIncentiveInfo(lnCtr, "xInctvNme"));
             System.out.println(oTrans.getIncentiveInfo(lnCtr, "nQtyGoalx"));
             System.out.println(oTrans.getIncentiveInfo(lnCtr, "nQtyActlx"));
@@ -231,17 +257,27 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
             System.out.println(oTrans.getIncentiveInfo(lnCtr, "nAmtActlx"));
             System.out.println(oTrans.getIncentiveInfo(lnCtr, "nInctvAmt"));
         }
+       
+            System.out.println("DEDUCTIONS");
+            for (lnCtr = 1; lnCtr <= oTrans.getDeductionCount(); lnCtr++){
+                inc_data.add(new TableIncentives(String.valueOf(tblIncentives.getItems().size() + 1), 
+                    oTrans.getDeductionInfo(lnCtr, "sRemarksx").toString(),
+                    "",
+                    "",
+                    "",
+                    "",
+                    oTrans.getDeductionInfo(lnCtr, "nDedctAmt").toString()));
+                
+                //to display these fields on grid.
+                System.out.println(oTrans.getDeductionInfo(lnCtr, "sRemarksx"));
+                System.out.println("");
+                System.out.println("");
+                System.out.println("");
+                System.out.println("");
+                System.out.println(oTrans.getDeductionInfo(lnCtr, "nDedctAmt"));
+            }
+        initGrid1();
         
-        System.out.println("DEDUCTIONS");
-        for (lnCtr = 1; lnCtr <= oTrans.getDeductionCount(); lnCtr++){
-            //to display these fields on grid.
-            System.out.println(oTrans.getDeductionInfo(lnCtr, "sRemarksx"));
-            System.out.println("");
-            System.out.println("");
-            System.out.println("");
-            System.out.println("");
-            System.out.println(oTrans.getDeductionInfo(lnCtr, "nDedctAmt"));
-        }
     }
     
     private void loadDetail(){
@@ -249,7 +285,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
             data.clear();
             for (int lnCtr = 1; lnCtr <= oTrans.getItemCount(); lnCtr++){
                 data.add(new TableModel(String.valueOf(lnCtr),
-                   oTrans.getDetail(lnCtr, "xEmployNm").toString()));
+                    oTrans.getDetail(lnCtr, "xEmployNm").toString()));
                 
                 //to display these fields.
                 System.out.println(oTrans.getDetail(lnCtr, "xEmployNm"));
@@ -263,10 +299,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
             MsgBox.showOk(e.getMessage());
         }
     }
-    
-    
-    
-    
+
     final ChangeListener<? super Boolean> txtArea_Focus = (o,ov,nv)->{ 
         if (!pbLoaded) return;
         
@@ -442,12 +475,14 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
             
         for (int lnCtr = 1; lnCtr <= oTrans.getItemCount(); lnCtr++){
             data.add(new TableModel(String.valueOf(lnCtr),
-                        oTrans.getDetail(lnCtr, "xEmployNm").toString()));
+                oTrans.getDetail(lnCtr, "xEmployNm").toString()));
         }       
         initGrid();
         
         pnRow = 0;
     }
+    
+    
     
     private void clearFields(){
         txtField01.setText("");
@@ -474,5 +509,38 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
             });
         });
         tblemployee.setItems(data);
-    }   
-}
+    }
+    private void initGrid1() {
+        incindex01.setStyle("-fx-alignment: CENTER;");
+        incindex02.setStyle("-fx-alignment: CENTER-LEFT;");
+        incindex03.setStyle("-fx-alignment: CENTER-LEFT;");
+        incindex04.setStyle("-fx-alignment: CENTER-LEFT;");
+        incindex05.setStyle("-fx-alignment: CENTER-LEFT;");
+        incindex06.setStyle("-fx-alignment: CENTER-LEFT;");
+        incindex07.setStyle("-fx-alignment: CENTER-LEFT;");
+        
+        incindex01.setCellValueFactory(new PropertyValueFactory<>("incindex01"));
+        incindex02.setCellValueFactory(new PropertyValueFactory<>("incindex02"));
+        incindex03.setCellValueFactory(new PropertyValueFactory<>("incindex03"));
+        incindex04.setCellValueFactory(new PropertyValueFactory<>("incindex04"));
+        incindex05.setCellValueFactory(new PropertyValueFactory<>("incindex05"));
+        incindex06.setCellValueFactory(new PropertyValueFactory<>("incindex06"));
+        incindex07.setCellValueFactory(new PropertyValueFactory<>("incindex07"));
+        tblIncentives.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblIncentives.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+               
+            });
+        });
+        tblIncentives.setItems(inc_data);
+    }
+    
+    @FXML
+    private void tblIncentives_Clicked(MouseEvent event) {
+        pnRow = tblIncentives.getSelectionModel().getSelectedIndex(); 
+        
+        loadIncentiveDetail();
+       MsgBox.showOk("ola");
+    }
+}       

@@ -13,13 +13,14 @@ import javafx.beans.property.SimpleStringProperty;
  */
 public class TableModel {
     private SimpleStringProperty index01;
-    private SimpleStringProperty index02;        
+    private SimpleStringProperty index02; 
+    
     
     TableModel(String index01, String index02){
         this.index01 = new SimpleStringProperty(index01);
         this.index02 = new SimpleStringProperty(index02);
     }
-    
+
     public String getIndex01(){return index01.get();}
     public void setIndex01(String index01){this.index01.set(index01);}
     

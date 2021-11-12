@@ -30,8 +30,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.fail;
 import org.rmj.appdriver.GRider;
 import org.rmj.appdriver.agent.MsgBox;
 import org.rmj.appdriver.agentfx.CommonUtils;
@@ -43,20 +41,13 @@ import org.rmj.fund.manager.base.Incentive;
  * @author user
  */
 public class AddIncentivesController implements Initializable, ScreenInterface {  
-
-    private static void MsgBox(int x) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
     private GRider oApp;
     private int pnIndex = -1;
     private int pdIndex = -1;
     private int pnOldRow = -1;
     private int pnRow = 0;
     private boolean pbLoaded = false;
-     
 
-    
     private String psOldRec;
     private Incentive oTrans;
     
@@ -116,7 +107,8 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
     private TableColumn<?, ?> index03;
     @FXML
     private TableColumn<?, ?> index04;
-    @Override
+    
+    private ObservableList<TableIncentives> inc_data = FXCollections.observableArrayList();
     public void setGRider(GRider foValue) {
         
     }
@@ -127,24 +119,51 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-            txtField2.focusedProperty().addListener(txtField_Focus);
             
-            txtField2.setOnKeyPressed(this::txtField_KeyPressed);
-            txtField11.setOnKeyPressed(this::txtField_KeyPressed);
-            txtField12.setOnKeyPressed(this::txtField_KeyPressed);
-            
-            txtField2.requestFocus();
+            try { 
+                txtField1.setText((String) oTrans.getMaster(1));
+                 
+                int lnCtr;
+                    for (lnCtr = 1; lnCtr <= oTrans.getIncentiveCount(); lnCtr++){
+                        inc_data.add(new TableIncentives(String.valueOf(lnCtr),
+                            oTrans.getIncentiveInfo(lnCtr, "xInctvNme").toString(),
+                            oTrans.getIncentiveInfo(lnCtr, "nQtyGoalx").toString(),
+                            oTrans.getIncentiveInfo(lnCtr, "nQtyActlx").toString(),
+                            oTrans.getIncentiveInfo(lnCtr, "nAmtGoalx").toString(),
+                            oTrans.getIncentiveInfo(lnCtr, "nAmtActlx").toString(),
+                            oTrans.getIncentiveInfo(lnCtr, "nInctvAmt").toString()));
+
+                        System.out.println(oTrans.getIncentiveInfo(lnCtr, "xInctvNme"));
+                        System.out.println(oTrans.getIncentiveInfo(lnCtr, "nQtyGoalx"));
+                        System.out.println(oTrans.getIncentiveInfo(lnCtr, "nQtyActlx"));
+                        System.out.println(oTrans.getIncentiveInfo(lnCtr, "nAmtGoalx"));
+                        System.out.println(oTrans.getIncentiveInfo(lnCtr, "nAmtActlx"));
+                        System.out.println(oTrans.getIncentiveInfo(lnCtr, "nInctvAmt"));
+                    }
+                //incetives();
+            } catch (SQLException ex) {
+                Logger.getLogger(AddIncentivesController.class.getName()).log(Level.SEVERE, null, ex);
+            }
             initGrid();
     }
-    @FXML
-    private void tblemployee_Clicked(MouseEvent event) throws SQLException { 
-        pnRow = tblemployee.getSelectionModel().getSelectedIndex()+ 1;
-              
-            txtField11.requestFocus();
-            txtField11.selectAll();
-            mainoTransaction(); 
-            
+    
+    public void incetives() throws SQLException{
+        String lsStockIDx = (String) oTrans.getIncentiveInfo(pnRow, "xInctvNme");
+    
+        if (pnRow <= 0){                   
+            txtField2.setText((String) oTrans.getIncentiveInfo(pnRow, "xInctvNme"));
+ 
+        }
+
     }
+//    private void tblemployee_Clicked(MouseEvent event) throws SQLException { 
+//        pnRow = tblemployee.getSelectionModel().getSelectedIndex()+ 1;
+//              
+////            txtField11.requestFocus();
+////            txtField11.selectAll();
+//            mainoTransaction(); 
+//            
+//    }
     
     final ChangeListener<? super Boolean> txtField_Focus = (o,ov,nv)->{ 
         if (!pbLoaded) return;
@@ -189,12 +208,12 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
             for (int lnCtr = 1; lnCtr <= oTrans.getItemCount(); lnCtr++){
                 data.add(new TableModel(String.valueOf(lnCtr),
                 (String) oTrans.getIncentiveEmployeeAllocationInfo("xEmployNm", (String) oTrans.getIncentiveInfo(oTrans.getIncentiveCount(), "sInctveCD"), (String) oTrans.getIncentiveInfo(oTrans.getIncentiveCount(), "sEmployID"))));
-//                System.out.print(oTrans.getDetail(lnCtr, "sEmployID"));
-//                System.out.print("\t");
-//                System.out.print(oTrans.getDetail(lnCtr, "nTotalAmt"));
-//                System.out.print("\t");
-//                System.out.print(oTrans.getDetail(lnCtr, "xEmployNm"));
-//                System.out.println("");                
+                System.out.print(oTrans.getDetail(lnCtr, "sEmployID"));
+                System.out.print("\t");
+                System.out.print(oTrans.getDetail(lnCtr, "nTotalAmt"));
+                System.out.print("\t");
+                System.out.print(oTrans.getDetail(lnCtr, "xEmployNm"));
+                System.out.println("");                
             }
     
             initGrid();
@@ -212,67 +231,62 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                 break;
         }
     }
-    private void loadMaster() throws SQLException {
-        txtField1.setText((String) oTrans.getMaster(1));       
-    }
 
     
-    private void txtField_KeyPressed(KeyEvent event){
-        try {
-            TextField txtField = (TextField)event.getSource();
-            int lnIndex = Integer.parseInt(((TextField)event.getSource()).getId().substring(8,9));
-            String lsValue = txtField.getText();
-            try {
-                switch (event.getCode()) {
-                    case F3:
-                        switch (lnIndex){
-                            case 2:
-                                if(oTrans.searchIncentive(txtField2.getText(), false)){
-                                    txtField2.setText((String)oTrans.getIncentiveInfo(oTrans.getIncentiveCount(),"xInctvNme"));
-                                    txtField3.setText(String.valueOf(oTrans.getIncentiveInfo(oTrans.getIncentiveCount(),"nQtyGoalx")));
-                                    txtField31.setText(String.valueOf(oTrans.getIncentiveInfo(oTrans.getIncentiveCount(),"nQtyActlx")));
-                                    txtField4.setText(String.valueOf(oTrans.getIncentiveInfo(oTrans.getIncentiveCount(),"nAmtGoalx")));
-                                    txtField41.setText(String.valueOf(oTrans.getIncentiveInfo(oTrans.getIncentiveCount(),"nAmtGoalx")));
-                                    txtField5.setText(String.valueOf(oTrans.getIncentiveInfo(oTrans.getIncentiveCount(),"nInctvAmt")));
-                                    txtField6.setText((String) oTrans.getIncentiveInfo(oTrans.getIncentiveCount(),"sRemarksx"));
-                                    
-                                    incallo();
-                                }
-                                break;
-                        }
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                MsgBox.showOk(e.getMessage());
-            }
-            
-            switch (event.getCode()){
-                case ENTER:
-                    //allocamt.setText(CommonUtils.NumberFormat(Double.valueOf(txtField12.getText().toString()), "#,##0.00"));
-                    switch (lnIndex){
-                        case 12:
-                            index04.setText(oTrans.getDetail(pnRow, "xAllocAmt").toString());
-                            break;
-                    }       
-                case DOWN:
-                    CommonUtils.SetNextFocus(txtField);
-                    break;
-                case UP:
-                    CommonUtils.SetPreviousFocus(txtField);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(AddIncentivesController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+//    private void txtField_KeyPressed(KeyEvent event){
+//        try {
+//            TextField txtField = (TextField)event.getSource();
+//            int lnIndex = Integer.parseInt(((TextField)event.getSource()).getId().substring(8,9));
+//            String lsValue = txtField.getText();
+//            try {
+//                switch (event.getCode()) {
+//                    case F3:
+//                        switch (lnIndex){
+//                            case 2:
+//                                if(oTrans.searchIncentive(txtField2.getText(), false)){
+//                                    txtField2.setText((String)oTrans.getIncentiveInfo(oTrans.getIncentiveCount(),"xInctvNme"));
+//                                    txtField3.setText(String.valueOf(oTrans.getIncentiveInfo(oTrans.getIncentiveCount(),"nQtyGoalx")));
+//                                    txtField31.setText(String.valueOf(oTrans.getIncentiveInfo(oTrans.getIncentiveCount(),"nQtyActlx")));
+//                                    txtField4.setText(String.valueOf(oTrans.getIncentiveInfo(oTrans.getIncentiveCount(),"nAmtGoalx")));
+//                                    txtField41.setText(String.valueOf(oTrans.getIncentiveInfo(oTrans.getIncentiveCount(),"nAmtGoalx")));
+//                                    txtField5.setText(String.valueOf(oTrans.getIncentiveInfo(oTrans.getIncentiveCount(),"nInctvAmt")));
+//                                    txtField6.setText((String) oTrans.getIncentiveInfo(oTrans.getIncentiveCount(),"sRemarksx"));
+//                                    
+//                                    incallo();
+//                                }
+//                                break;
+//                        }
+//                }
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//                MsgBox.showOk(e.getMessage());
+//            }
+//            
+//            switch (event.getCode()){
+//                case ENTER:
+//                    //allocamt.setText(CommonUtils.NumberFormat(Double.valueOf(txtField12.getText().toString()), "#,##0.00"));
+//                    switch (lnIndex){
+//                        case 12:
+//                            index04.setText(oTrans.getDetail(pnRow, "xAllocAmt").toString());
+//                            break;
+//                    }       
+//                case DOWN:
+//                    CommonUtils.SetNextFocus(txtField);
+//                    break;
+//                case UP:
+//                    CommonUtils.SetPreviousFocus(txtField);
+//            }
+//        } catch (SQLException ex) {
+//            Logger.getLogger(AddIncentivesController.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//    }
     public void initGrid() {   
         
         index01.setStyle("-fx-alignment: CENTER;");
         index02.setStyle("-fx-alignment: CENTER-LEFT;");
-        index03.setStyle("-fx-alignment: CENTER-LEFT;");
         
         index01.setCellValueFactory(new PropertyValueFactory<>("index01"));
-        index02.setCellValueFactory(new PropertyValueFactory<>("index02"));
-        index03.setCellValueFactory(new PropertyValueFactory<>("index03"));  
+        index02.setCellValueFactory(new PropertyValueFactory<>("index02")); 
         tblemployee.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblemployee.lookup("TableHeaderRow");
             header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {

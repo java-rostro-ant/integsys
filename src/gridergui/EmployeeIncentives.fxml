@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="AnchorMain" style="-fx-border-color: orange; -fx-border-radius: 5;" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="AnchorMain" style="-fx-border-color: orange; -fx-border-radius: 5;" stylesheets="@/css/EmployeeIncentives.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <StackPane layoutX="9.0" layoutY="388.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -151,10 +151,15 @@
                                  <center>
                                     <AnchorPane prefWidth="551.0" style="-fx-border-color: #F88222; -fx-border-radius: 5;" BorderPane.alignment="CENTER">
                                        <children>
-                                          <TableView fx:id="tblincetives" layoutX="6.0" layoutY="5.0" prefWidth="539.0" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="3.0">
+                                          <TableView fx:id="tblIncentives" layoutX="6.0" layoutY="5.0" onMouseClicked="#tblIncentives_Clicked" prefWidth="539.0" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="3.0">
                                              <columns>
-                                                <TableColumn editable="false" prefWidth="27.0" text="No." />
-                                                <TableColumn prefWidth="108.0" text="Type" />
+                                                <TableColumn fx:id="incindex01" editable="false" prefWidth="27.0" text="No." />
+                                                <TableColumn fx:id="incindex02" prefWidth="122.0" text="Type" />
+                                                <TableColumn fx:id="incindex03" prefWidth="61.0" text="Qty Goal" />
+                                                <TableColumn fx:id="incindex04" prefWidth="74.0" text="Qty Actual" />
+                                                <TableColumn fx:id="incindex05" prefWidth="70.0" text="Amt Goal" />
+                                                <TableColumn fx:id="incindex06" minWidth="0.0" prefWidth="71.0" text="Amt Actual" />
+                                                <TableColumn fx:id="incindex07" prefWidth="81.0" text="Amount" />
                                              </columns>
                                              <effect>
                                                 <Blend />
