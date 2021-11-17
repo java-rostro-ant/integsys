@@ -50,6 +50,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private MenuItem mnuEmployeeIncentivesBank;
     @FXML
     private MenuItem mnuIncentiveReleasing;
+    @FXML
+    private MenuItem mnuIncentiveConfirmation;
     
     /**
      * Initializes the controller class.
@@ -103,6 +105,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     }
     
     private ScreenInterface getController(String fsValue){
+        System.out.println(fsValue);
         switch (fsValue){
             case "MainScreenBG.fxml":
                 return new MainScreenBGController();
@@ -116,6 +119,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return new AddIncentivesController();
             case "IncentiveReleasing.fxml":
                 return new IncentiveReleasingController();
+            case "IncentiveConfirmation.fxml":
+                return new IncentiveConfirmationController();
             default:
                 return null;
         }
@@ -142,5 +147,9 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuIncentiveReleasingClick(ActionEvent event) {
         setScene(loadAnimate("IncentiveReleasing.fxml"));
+    } 
+    @FXML
+    private void mnuIncentiveConfirmationClick(ActionEvent event) {
+        setScene(loadAnimate("IncentiveConfirmation.fxml"));
     }
 }

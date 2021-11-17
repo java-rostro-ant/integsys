@@ -58,10 +58,8 @@ public class IncentiveReleasingController implements Initializable, ScreenInterf
     double xOffset = 0;
     double yOffset = 0;
     
-    private int pnIndex = -1;
     private int pnEditMode;
     private int pnRow = 0;
-    private int pnSubItems = 0;
     private boolean pbLoaded = false;
     @FXML
     private TextField txtField01;
@@ -75,6 +73,8 @@ public class IncentiveReleasingController implements Initializable, ScreenInterf
     private Button btnSave;
     @FXML
     private Button btnBrowse;
+    @FXML
+    private Button btnRelease;
     @FXML
     private Button btnCancel;
     @FXML
@@ -157,7 +157,6 @@ public class IncentiveReleasingController implements Initializable, ScreenInterf
         oTrans = new IncentiveRelease(oApp, oApp.getBranchCode(), false);
         oTrans.setListener(oListener);
         oTrans.setWithUI(true);
-         
         btnNew.setOnAction(this::cmdButton_Click);
         btnSave.setOnAction(this::cmdButton_Click);
         btnBrowse.setOnAction(this::cmdButton_Click);
@@ -165,6 +164,8 @@ public class IncentiveReleasingController implements Initializable, ScreenInterf
         btnClose.setOnAction(this::cmdButton_Click);
         btnApproved.setOnAction(this::cmdButton_Click);
         btnDisapproved.setOnAction(this::cmdButton_Click);
+        btnRelease.setOnAction(this::cmdButton_Click);
+        txtSeeks05.setOnKeyPressed(this::txtField_KeyPressed);
         
         pnEditMode = EditMode.UNKNOWN;
         
@@ -224,6 +225,7 @@ public class IncentiveReleasingController implements Initializable, ScreenInterf
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         btnBrowse.setVisible(!lbShow);
         btnApproved.setVisible(!lbShow);
+        btnRelease.setVisible(!lbShow);
         btnDisapproved.setVisible(!lbShow);
         btnNew.setVisible(!lbShow);
         
@@ -236,17 +238,20 @@ public class IncentiveReleasingController implements Initializable, ScreenInterf
         btnDisapproved.setManaged(!lbShow);
         btnNew.setManaged(!lbShow);
         if (lbShow){
-            txtField02.requestFocus();
             btnSave.setVisible(lbShow);
             btnBrowse.setVisible(!lbShow);  
             btnNew.setVisible(!lbShow);
+            btnRelease.setVisible(!lbShow);
             btnApproved.setVisible(!lbShow);
             btnDisapproved.setVisible(!lbShow);
             btnNew.setManaged(!lbShow);
             btnBrowse.setManaged(!lbShow);
+            btnRelease.setManaged(!lbShow);
             btnDisapproved.setManaged(!lbShow);
             btnSave.setManaged(lbShow);
             btnCancel.setManaged(lbShow);
+        }else{
+            txtSeeks05.requestFocus();
         }
        
     }
@@ -330,19 +335,30 @@ public class IncentiveReleasingController implements Initializable, ScreenInterf
         String lsButton = ((Button)event.getSource()).getId();
         try {
             switch (lsButton){
-                case "btnBrowse":
-                        
+                case "btnBrowse": //browse transaction
+                        if (oTrans.SearchTransaction(txtSeeks05.getText(), false)){
+                            loadRecord();
+                            pnEditMode = oTrans.getEditMode();
+                        } else 
+                            MsgBox.showOk(oTrans.getMessage());
                     break;
                 case "btnNew": //create new transaction
                         pbLoaded = true;
-                        pnEditMode = EditMode.UPDATE;
-//                        if (oTrans.NewTransaction()){
-//                            loadRecord();
+                        if (oTrans.NewTransaction()){
+                            loadRecord();
+                            pnEditMode = oTrans.getEditMode();
+                        } else 
+                            MsgBox.showOk(oTrans.getMessage());
+                    break;
+                case "btnRelease": //release transaction
+//                  if (oTrans.ReleaseTransaction()){
+//                            MsgBox.showOk("Transaction releasing success!");
+//                            clearFields();
 //                            pnEditMode = oTrans.getEditMode();
 //                        } else 
 //                            MsgBox.showOk(oTrans.getMessage());
-                    break;
-                 case "btnSave":
+//                    break;
+                 case "btnSave": //save transaction
                         if (oTrans.SaveTransaction()){
                             MsgBox.showOk("Transaction Successfully Saved.");
                             clearFields();
@@ -350,13 +366,29 @@ public class IncentiveReleasingController implements Initializable, ScreenInterf
                             MsgBox.showOk(oTrans.getMessage());
                         }
                        
+                    break;    
+                case "btnApproved": //approve transaction
+                    if (oTrans.ConfirmTransaction()){
+                            MsgBox.showOk("Transaction success approved");
+                            clearFields();
+                            pnEditMode = oTrans.getEditMode();
+                        } else 
+                            MsgBox.showOk(oTrans.getMessage());
                     break;
-                case "btnCancel":
+                case "btnDisapproved": //disapprove transaction
+                    if (oTrans.CancelTransaction()){
+                            MsgBox.showOk("Transaction success disapproved");
+                            clearFields();
+                            pnEditMode = oTrans.getEditMode();
+                        } else 
+                            MsgBox.showOk(oTrans.getMessage());
+                    break;
+                case "btnCancel": //cancel transaction
                     clearFields();
                     //reload detail
                     break;
                
-                case "btnClose":
+                case "btnClose": //close releasing form
                     if(ShowMessageFX.OkayCancel(null, "Employee Bank Info", "Do you want to disregard changes?") == true){
                         unloadForm();
                         break;
@@ -371,7 +403,7 @@ public class IncentiveReleasingController implements Initializable, ScreenInterf
         }
     } 
     
-     @FXML
+    @FXML
     private void tblIncentivesDetail_Click(MouseEvent event) {
        
         try {
@@ -420,7 +452,7 @@ public class IncentiveReleasingController implements Initializable, ScreenInterf
               
                 case 5: /*Search*/
                       pbLoaded = true;
-                        if (oTrans.NewTransaction()){
+                     if (oTrans.SearchTransaction(txtSeeks05.getText(), false)){
                             loadRecord();
                             pnEditMode = oTrans.getEditMode();
                         } else 
@@ -439,7 +471,7 @@ public class IncentiveReleasingController implements Initializable, ScreenInterf
         
     }
     public static String priceWithDecimal (Double price) {
-        DecimalFormat formatter = new DecimalFormat("###,###,###.00");
+        DecimalFormat formatter = new DecimalFormat("###,###,##0.00");
         return formatter.format(price);
     }
 

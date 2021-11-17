@@ -11,6 +11,14 @@
 .glyph-icon {
    -fx-fill: white;
 }
+.text-area {
+    -fx-opacity: 1.0;
+    -fx-background-color:
+        grey,
+        white;
+   -fx-text-fill: black;
+}
+
 .text-field {
     -fx-opacity: 1.0;
     -fx-background-color:
