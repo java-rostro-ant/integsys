@@ -6,20 +6,20 @@
 package gridergui;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.animation.FadeTransition;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -32,6 +32,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.util.Duration;
 import org.rmj.appdriver.GRider;
 import org.rmj.appdriver.agent.MsgBox;
 import org.rmj.appdriver.agentfx.CommonUtils;
@@ -61,6 +63,9 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
     private int pnRow = 0;
     private int pnSubItems = 0;
     private boolean pbLoaded = false;
+    
+    @FXML
+    private Label lblStatus;
     @FXML
     private TextField txtField01;
     @FXML
@@ -74,15 +79,11 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
     @FXML
     private TextField txtField16;
     @FXML
-    private TextField txtSeeks01;
-    @FXML
     private TextField txtSeeks02;
     @FXML
     private TextField txtSeeks05;
     @FXML
     private Button btnBrowse;
-    @FXML
-    private Button btnCancel;
     @FXML
     private Button btnApproved;
     @FXML
@@ -130,7 +131,7 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
     private TableColumn incIndex06;
     
     private final ObservableList<TableIncentives> data = FXCollections.observableArrayList();
-    private final ObservableList<TableIncentives> emp_data = FXCollections.observableArrayList();
+    private final ObservableList<Release> emp_data = FXCollections.observableArrayList();
    @FXML
     private Label lblHeader;    
     @FXML
@@ -156,7 +157,7 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
                         try {
                             loadIncentives();
                         } catch (SQLException ex) {
-                            Logger.getLogger(IncentiveConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+                            MsgBox.showOk(ex.getMessage());
                         }
                     }
                         break;
@@ -175,11 +176,11 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         oTrans.setWithUI(true);
          
         btnBrowse.setOnAction(this::cmdButton_Click);
-        btnCancel.setOnAction(this::cmdButton_Click);
         btnClose.setOnAction(this::cmdButton_Click);
         btnApproved.setOnAction(this::cmdButton_Click);
         btnDisapproved.setOnAction(this::cmdButton_Click);
         
+        txtSeeks05.setOnKeyPressed(this::txtField_KeyPressed); 
         pnEditMode = EditMode.UNKNOWN;
         
         txtField01.setDisable(true);
@@ -196,21 +197,10 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         btnBrowse.setVisible(!lbShow);
         btnApproved.setVisible(!lbShow);
         btnDisapproved.setVisible(!lbShow);
-        
-        btnCancel.setVisible(lbShow);
-        
         btnBrowse.setManaged(!lbShow);
         btnApproved.setManaged(!lbShow);
         btnDisapproved.setManaged(!lbShow);
-        if (lbShow){
-            txtField02.requestFocus();
-            btnBrowse.setVisible(!lbShow);  
-            btnApproved.setVisible(!lbShow);
-            btnDisapproved.setVisible(!lbShow);
-            btnBrowse.setManaged(!lbShow);
-            btnDisapproved.setManaged(!lbShow);
-            btnCancel.setManaged(lbShow);
-        }
+     
        
     }
     private void cmdButton_Click(ActionEvent event) {
@@ -218,20 +208,33 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         try {
             switch (lsButton){
                 case "btnBrowse":
-                        if (oTrans.SearchTransaction(txtSeeks01.getText(), false)){
+                        if (oTrans.SearchTransaction(txtSeeks05.getText(), false)){
                             loadIncentives();
                             pnEditMode = oTrans.getEditMode();
                         } else 
-                            MsgBox.showOk("error " + oTrans.getMessage());
+                            MsgBox.showOk(oTrans.getMessage());
                     break;
-                
-                case "btnCancel":
-                    //reload detail
+                    
+                case "btnApproved":
+                    if (oTrans.CloseTransaction()){
+                            MsgBox.showOk("Transaction success approved");
+                            loadIncentives();
+                            pnEditMode = oTrans.getEditMode();
+                        } else 
+                            MsgBox.showOk(oTrans.getMessage());
+                    break;
+                case "btnDisapproved":
+                    if (oTrans.CancelTransaction()){
+                            MsgBox.showOk("Transaction success disapproved");
+                            loadIncentives();
+                            pnEditMode = oTrans.getEditMode();
+                        } else 
+                            MsgBox.showOk(oTrans.getMessage());
                     break;
                
                 case "btnClose":
                     if(ShowMessageFX.OkayCancel(null, "Employee Bank Info", "Do you want to disregard changes?") == true){
-                      
+                        unloadForm();
                         break;
                     } else
                         return;
@@ -252,12 +255,12 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
             case F3:
                 switch (lnIndex){
               
-                case 1: /*Search*/
-                    if (oTrans.SearchTransaction(txtSeeks01.getText(), false)){
-                        loadIncentives();
-                        pnEditMode = EditMode.READY;
-                    } else 
-                        MsgBox.showOk(oTrans.getMessage());
+                case 5: /*Search*/
+                   if (oTrans.SearchTransaction(txtSeeks05.getText(), false)){
+                            loadIncentives();
+                            pnEditMode = oTrans.getEditMode();
+                        } else 
+                            MsgBox.showOk(oTrans.getMessage());
                      break;
                 }   
             case ENTER:
@@ -298,8 +301,33 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         tblincetives.autosize();
         
     }
+    public void initEmployeeGrid() {
+        empIndex08.setStyle("-fx-alignment: CENTER-RIGHT");
+        empIndex01.setCellValueFactory(new PropertyValueFactory<Release,String>("empIndex01"));
+        empIndex02.setCellValueFactory(new PropertyValueFactory<Release,String>("empIndex02"));
+        empIndex03.setCellValueFactory(new PropertyValueFactory<Release,String>("empIndex03"));
+        empIndex04.setCellValueFactory(new PropertyValueFactory<Release,String>("empIndex04"));
+        empIndex05.setCellValueFactory(new PropertyValueFactory<Release,String>("empIndex05"));
+        empIndex06.setCellValueFactory(new PropertyValueFactory<Release,String>("empIndex06"));
+        empIndex07.setCellValueFactory(new PropertyValueFactory<Release,CheckBox>("empIndex07"));
+        empIndex08.setCellValueFactory(new PropertyValueFactory<Release,CheckBox>("empIndex08"));
+         /*making column's position uninterchangebale*/
+        tblemployee.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblemployee.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+            header.prefWidthProperty().bind(tblemployee.widthProperty().divide(7));
+        });
+        /*Assigning data to table*/
+        
+        tblemployee.setItems(emp_data);
+        tblemployee.autosize();
+        
+    }
     private void loadIncentives() throws SQLException{
             //load to grid the incentives.
+        
          data.clear();
          int lnCtr; 
          System.out.println("INCENTIVES");
@@ -309,6 +337,25 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
          txtField04.setText((String)oTrans.getMaster(4));
          txtField05.setText((String)oTrans.getMaster(5));
          txtField16.setText((String)oTrans.getMaster(16));
+         if(oTrans.getMaster(15).toString().equalsIgnoreCase("0")){
+        lblStatus.setVisible(true);
+            lblStatus.setText("OPEN");
+        }else if(oTrans.getMaster(15).toString().equalsIgnoreCase("1")){
+            lblStatus.setVisible(true);
+            lblStatus.setText("CLOSED");
+        }
+        else if(oTrans.getMaster(15).toString().equalsIgnoreCase("2")){
+            lblStatus.setVisible(true);
+            lblStatus.setText("POSTED");
+        }
+        else if(oTrans.getMaster(15).toString().equalsIgnoreCase("3")){
+            lblStatus.setVisible(true);
+            lblStatus.setText("CANCELLED");
+        }else{
+            lblStatus.setVisible(false);
+        }
+         
+         lblStatus.setStyle("-fx-background-color: #ffd9b3;");
          for (lnCtr = 1; lnCtr <= oTrans.getIncentiveCount(); lnCtr++){
              data.add(new TableIncentives(String.valueOf(lnCtr),
                 oTrans.getIncentiveInfo(lnCtr, "xInctvNme").toString(),
@@ -344,7 +391,64 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
                  System.out.println("");
                  System.out.println(oTrans.getDeductionInfo(lnCtr, "nDedctAmt"));
              }
-         initGrid();
+             
+            initGrid();
+            String lsBankName;
+            String lsBankAcct;
+            emp_data.clear();
+                for(lnCtr  = 1; lnCtr  <= oTrans.getItemCount(); lnCtr ++){
+                trans = oTrans.getBankInfo((String) oTrans.getDetail(lnCtr, "sEmployID"));
+                
+                if(trans != null){
+                    lsBankName = trans.getMaster(8).toString();
+                    lsBankAcct = trans.getMaster(3).toString();
+                }else{
+                    lsBankName = "";
+                    lsBankAcct = "";
+                }
+                /*DecimalFormat*/ 
+                
+                emp_data.add(new Release(String.valueOf(lnCtr),
+                        oTrans.getDetail(lnCtr , "xEmployNm").toString(),
+                        oTrans.getDetail(lnCtr , "xEmpLevNm").toString(),
+                        oTrans.getDetail(lnCtr , "xPositnNm").toString(),
+                        oTrans.getDetail(lnCtr , "xSrvcYear").toString(),
+                        lsBankName,
+                        lsBankAcct,
+                        priceWithDecimal((Double)(oTrans.getDetail(lnCtr , "nTotalAmt")))));
+               
+            }
+            initEmployeeGrid();
+    }
+    private void unloadForm(){
+        StackPane myBox = (StackPane) AnchorMainIncentiveConfirmation.getParent();
+        myBox.getChildren().clear();
+        myBox.getChildren().add(getScene("MainScreenBG.fxml"));
+    }
+    private AnchorPane getScene(String fsFormName){
+         ScreenInterface fxObj = new MainScreenBGController();
+         fxObj.setGRider(oApp);
+        
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(fxObj.getClass().getResource(fsFormName));
+        fxmlLoader.setController(fxObj);      
+   
+        AnchorPane root;
+        try {
+            root = (AnchorPane) fxmlLoader.load();
+            FadeTransition ft = new FadeTransition(Duration.millis(1500));
+            ft.setNode(root);
+            ft.setFromValue(1);
+            ft.setToValue(1);
+            ft.setCycleCount(1);
+            ft.setAutoReverse(false);
+            ft.play();
+
+            return root;
+        } catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        }
+        return null;
     }
     public static String priceWithDecimal (Double price) {
         DecimalFormat formatter = new DecimalFormat("###,###,##0.00");

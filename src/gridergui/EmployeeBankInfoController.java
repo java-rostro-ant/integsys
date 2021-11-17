@@ -9,8 +9,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.animation.FadeTransition;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
@@ -182,6 +180,8 @@ public class EmployeeBankInfoController implements Initializable , ScreenInterfa
                 case "btnNew": //create new transaction
                         pbLoaded = true;
                         if (oTrans.NewRecord()){
+                            if (!oTrans.searchBank("Banco De Oro", false))
+                                    MsgBox.showOk(oTrans.getMessage());
                             loadRecord();
                             pnEditMode = oTrans.getEditMode();
                         } else 
