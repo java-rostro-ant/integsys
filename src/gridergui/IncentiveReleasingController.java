@@ -137,7 +137,7 @@ public class IncentiveReleasingController implements Initializable, ScreenInterf
         oListener = new LMasDetTrans() {
             @Override
             public void MasterRetreive(int i, Object o) {
-                System.out.print("listener = " +  i);
+                loadRecord();
                 switch (i){
                     case 3: //sBackAcct
                         txtField01.setText((String) o);
