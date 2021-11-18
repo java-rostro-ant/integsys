@@ -43,8 +43,8 @@
                                                 <Menu fx:id="mnuTransaction11" mnemonicParsing="false" text="Incentives">
                                                    <items>
                                                       <MenuItem fx:id="mnuEmployeeIncentives" mnemonicParsing="false" onAction="#mnuEmployeeIncentivesClick" text="Entry" />
-                                                      <MenuItem fx:id="mnuIncentiveConfirmation" mnemonicParsing="false" onAction="#mnuIncentiveConfirmationClick" text="Incentive Confirmation" />
-                                                      <MenuItem fx:id="mnuIncentiveReleasing" mnemonicParsing="false" onAction="#mnuIncentiveReleasingClick" text="Incentive Releasing" />
+                                                      <MenuItem fx:id="mnuIncentiveConfirmation" mnemonicParsing="false" onAction="#mnuIncentiveConfirmationClick" text="Confirmation" />
+                                                      <MenuItem fx:id="mnuIncentiveReleasing" mnemonicParsing="false" onAction="#mnuIncentiveReleasingClick" text="Releasing" />
                                                    </items>
                                                 </Menu>
                                           </items>

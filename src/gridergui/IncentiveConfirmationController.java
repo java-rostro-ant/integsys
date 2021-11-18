@@ -14,9 +14,14 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.FadeTransition;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
+import javafx.css.PseudoClass;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -24,13 +29,16 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
@@ -92,6 +100,11 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
     private Button btnClose;
     @FXML
     private HBox hbButtons;
+    
+    @FXML
+    private CheckBox Check01;
+    @FXML
+    private CheckBox Check02;
     @FXML
     private AnchorPane AnchorMainIncentiveConfirmation;
 //    EMPLOYEE TABLE
@@ -179,10 +192,12 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         btnClose.setOnAction(this::cmdButton_Click);
         btnApproved.setOnAction(this::cmdButton_Click);
         btnDisapproved.setOnAction(this::cmdButton_Click);
-        
+        tblincentives_column();
+        tblemployee_column();
         txtSeeks05.setOnKeyPressed(this::txtField_KeyPressed); 
         pnEditMode = EditMode.UNKNOWN;
-        
+        Check01.setDisable(true);
+        Check02.setDisable(true);
         txtField01.setDisable(true);
         txtField02.setDisable(true);
         initButton(pnEditMode);
@@ -276,7 +291,7 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
     }
    
     public void initGrid() {
-        incIndex02.setStyle("-fx-alignment: CENTER-RIGHT");
+        incIndex02.setStyle("-fx-alignment: CENTER-LEFT");
         incIndex03.setStyle("-fx-alignment: CENTER-RIGHT");
         incIndex04.setStyle("-fx-alignment: CENTER-RIGHT");
         incIndex05.setStyle("-fx-alignment: CENTER-RIGHT");
@@ -294,16 +309,42 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
                 header.setReordering(false);
             });
         });
-
+        
+         System.out.println("table width = " + tblincetives.getWidth());
+//         System.out.println("incIndex01 width = " + (tblincetives.widthProperty().divide(tblincetives.getWidth())));
+         
+//        incIndex06.set
         /*Assigning data to table*/
         
         tblincetives.setItems(data);
         tblincetives.autosize();
+       
+        
         
     }
     public void initEmployeeGrid() {
         empIndex08.setStyle("-fx-alignment: CENTER-RIGHT");
-        empIndex01.setCellValueFactory(new PropertyValueFactory<Release,String>("empIndex01"));
+        empIndex02.setStyle("-fx-alignment: CENTER-LEFT");
+        empIndex06.setStyle("-fx-alignment: CENTER-LEFT");
+//        empIndex01.setCellValueFactory(new PropertyValueFactory<Release,String>("empIndex01"));
+        incIndex01.setCellFactory(column -> {
+                      return new TableCell<TableIncentives, String>() {
+                          @Override
+                          protected void updateItem(String item, boolean empty) {
+                              super.updateItem(item, empty);
+                              setText(empty ? "" : getItem().toString());
+                              setGraphic(null);
+
+                              TableRow<TableIncentives> currentRow = getTableRow();
+
+                              if (!isEmpty()) {
+
+                                  if(item.contains("Deduction")) 
+                                      currentRow.setStyle(" -fx-background-color: -fx-table-cell-border-color, #ff3333;");
+                              }
+                          }
+                      };
+                  });
         empIndex02.setCellValueFactory(new PropertyValueFactory<Release,String>("empIndex02"));
         empIndex03.setCellValueFactory(new PropertyValueFactory<Release,String>("empIndex03"));
         empIndex04.setCellValueFactory(new PropertyValueFactory<Release,String>("empIndex04"));
@@ -319,6 +360,7 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
             });
             header.prefWidthProperty().bind(tblemployee.widthProperty().divide(7));
         });
+        
         /*Assigning data to table*/
         
         tblemployee.setItems(emp_data);
@@ -337,7 +379,17 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
          txtField04.setText((String)oTrans.getMaster(4));
          txtField05.setText((String)oTrans.getMaster(5));
          txtField16.setText((String)oTrans.getMaster(16));
-         if(oTrans.getMaster(15).toString().equalsIgnoreCase("0")){
+        if(oTrans.getMaster("cApprovd1").toString().equalsIgnoreCase("1")){
+            Check01.selectedProperty().setValue(true);
+        }else{
+            Check01.selectedProperty().setValue(false);
+        }
+        if(oTrans.getMaster("cApprovd2").toString().equalsIgnoreCase("1")){
+            Check02.selectedProperty().setValue(true);
+        }else{
+            Check02.selectedProperty().setValue(false);
+        }
+        if(oTrans.getMaster(15).toString().equalsIgnoreCase("0")){
         lblStatus.setVisible(true);
             lblStatus.setText("OPEN");
         }else if(oTrans.getMaster(15).toString().equalsIgnoreCase("1")){
@@ -376,7 +428,7 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
              System.out.println("DEDUCTIONS");
              for (lnCtr = 1; lnCtr <= oTrans.getDeductionCount(); lnCtr++){
                  data.add(new TableIncentives(String.valueOf(lnCtr), 
-                     oTrans.getDeductionInfo(lnCtr, "sRemarksx").toString(),
+                     (oTrans.getDeductionInfo(lnCtr, "sRemarksx").toString() + " (Deduction)"),
                      "",
                      "",
                      "",
@@ -453,5 +505,39 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
     public static String priceWithDecimal (Double price) {
         DecimalFormat formatter = new DecimalFormat("###,###,##0.00");
         return formatter.format(price);
+    }
+    public void tblincentives_column(){
+         incIndex01.prefWidthProperty().bind(tblincetives.widthProperty().multiply(0.268));
+         incIndex02.prefWidthProperty().bind(tblincetives.widthProperty().multiply(0.11));
+         incIndex03.prefWidthProperty().bind(tblincetives.widthProperty().multiply(0.11));
+         incIndex04.prefWidthProperty().bind(tblincetives.widthProperty().multiply(0.11));
+         incIndex05.prefWidthProperty().bind(tblincetives.widthProperty().multiply(0.11));
+         incIndex06.prefWidthProperty().bind(tblincetives.widthProperty().multiply(0.268));
+         incIndex01.setResizable(false);  
+         incIndex02.setResizable(false);  
+         incIndex03.setResizable(false);  
+         incIndex04.setResizable(false);  
+         incIndex05.setResizable(false);  
+         incIndex06.setResizable(false);   
+        
+    }
+    public void tblemployee_column(){
+         empIndex01.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.03));
+         empIndex02.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.167));
+         empIndex03.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.14));
+         empIndex04.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.14));
+         empIndex05.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.07));
+         empIndex06.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.14));
+         empIndex07.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.129));
+         empIndex08.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.167));
+         
+         empIndex01.setResizable(false);  
+         empIndex02.setResizable(false);  
+         empIndex03.setResizable(false);  
+         empIndex04.setResizable(false);  
+         empIndex05.setResizable(false);  
+         empIndex06.setResizable(false); 
+         empIndex07.setResizable(false); 
+         empIndex08.setResizable(false);  
     }
 }
