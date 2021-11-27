@@ -7,11 +7,14 @@ package gridergui;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.animation.FadeTransition;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -19,6 +22,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -29,12 +33,21 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+<<<<<<< Updated upstream
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.fail;
+=======
+import javafx.util.Duration;
+>>>>>>> Stashed changes
 import org.rmj.appdriver.GRider;
+import org.rmj.appdriver.StringUtil;
 import org.rmj.appdriver.agent.MsgBox;
 import org.rmj.appdriver.agentfx.CommonUtils;
+import org.rmj.appdriver.agentfx.ShowMessageFX;
+import org.rmj.appdriver.constants.EditMode;
 import org.rmj.fund.manager.base.Incentive;
 
 /**
@@ -54,11 +67,25 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
     private int pnOldRow = -1;
     private int pnRow = 0;
     private boolean pbLoaded = false;
+<<<<<<< Updated upstream
      
 
+=======
+>>>>>>> Stashed changes
     
     private String psOldRec;
+    private String psCode;
     private Incentive oTrans;
+    private final String pxeModuleName = "AddIncentivesController";
+    private int pnEditMode;
+    private int pnSubItems = 0;
+    public int tbl_row = 0;
+    
+    private ObservableList<TableIncentives> inc_data = FXCollections.observableArrayList();
+    private ObservableList<TableModel> data = FXCollections.observableArrayList();
+    private ObservableList<TableEmployeeIncentives> incEmp_data = FXCollections.observableArrayList();
+    public static TableIncentives incModel;
+    public static TableModel empModel;
     
     @FXML
     private VBox VBoxForm;
@@ -67,39 +94,21 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
     @FXML
     private Label lblHeader;
     @FXML
-    private TextField txtField1;
-    @FXML
-    private TextField txtField2;
-    @FXML
-    private TextField txtField3;
-    @FXML
-    private TextField txtField4;
-    @FXML
-    private TextField txtField5;
-    @FXML
-    private TextArea txtField6;
-    @FXML
-    private TextField txtField31;
-    @FXML
-    private TextField txtField41;
-    @FXML
-    private Button btnOk12;
+    private Button btnOk;
     @FXML
     private Label label;
-    
-    private ObservableList<TableModel> data = FXCollections.observableArrayList();
-    
     @FXML
     private FontAwesomeIconView glyphExit;
     @FXML
     private TableView tblemployee;
     @FXML
-    private TableColumn<?, ?> index01;
+    private TableColumn<?, ?> empIncindex01;
     @FXML
-    private TableColumn<?, ?> index02;
-   
-    private int pnEditMode;
-    private int pnSubItems = 0;
+    private TableColumn<?, ?> empIncindex02;
+    @FXML
+    private TableColumn<?, ?> empIncindex03;
+    @FXML
+    private TableColumn<?, ?> empIncindex04;
     @FXML
     private Label allocperc;
     @FXML
@@ -112,11 +121,29 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
     private TextField txtField11;
     @FXML
     private TextField txtField12;
+    private TextField txtField7;
     @FXML
-    private TableColumn<?, ?> index03;
+    private TextField txtField01;
     @FXML
+<<<<<<< Updated upstream
     private TableColumn<?, ?> index04;
     @Override
+=======
+    private TextField txtField02;
+    @FXML
+    private TextField txtField03;
+    @FXML
+    private TextField txtField05;
+    @FXML
+    private TextField txtField07;
+    @FXML
+    private TextArea txtField08;
+    @FXML
+    private TextField txtField04;
+    @FXML
+    private TextField txtField06;
+  
+>>>>>>> Stashed changes
     public void setGRider(GRider foValue) {
         
     }
@@ -125,8 +152,16 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
         oTrans = foValue;
     }
     
+    public void setIncentiveCode(String fsValue){
+        psCode = fsValue;
+    }
+    public void setTableRow(int row){
+        tbl_row = row;
+    }
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+<<<<<<< Updated upstream
             txtField2.focusedProperty().addListener(txtField_Focus);
             
             txtField2.setOnKeyPressed(this::txtField_KeyPressed);
@@ -134,8 +169,31 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
             txtField12.setOnKeyPressed(this::txtField_KeyPressed);
             
             txtField2.requestFocus();
+=======
+            btnOk.setOnAction(this::cmdButton_Click);
+            btnExit.setOnAction(this::cmdButton_Click);
+            
+            txtField11.focusedProperty().addListener(txtField_Focus);
+            txtField12.focusedProperty().addListener(txtField_Focus);
+            
+            txtField03.focusedProperty().addListener(txtField_Focus);
+            txtField04.focusedProperty().addListener(txtField_Focus);
+            txtField05.focusedProperty().addListener(txtField_Focus);
+            txtField06.focusedProperty().addListener(txtField_Focus);
+            txtField07.focusedProperty().addListener(txtField_Focus);     
+            
+            loadEmployee();
+            loadIncentives();
+>>>>>>> Stashed changes
             initGrid();
+            
+            pnEditMode = oTrans.getEditMode();
+            pbLoaded = true;
     }
+    public static void setData(TableIncentives incdata){
+        incModel = incdata;    
+    }
+<<<<<<< Updated upstream
     @FXML
     private void tblemployee_Clicked(MouseEvent event) throws SQLException { 
         pnRow = tblemployee.getSelectionModel().getSelectedIndex()+ 1;
@@ -146,39 +204,128 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
             
     }
     
+=======
+    
+    private void txtField_KeyPressed(KeyEvent event){
+        TextField txtField = (TextField)event.getSource();
+        int lnIndex = Integer.parseInt(((TextField)event.getSource()).getId().substring(8,10));
+        String lsValue = txtField.getText();
+        
+        switch (event.getCode()) {
+            case F3:
+            case ENTER:
+                switch (lnIndex){ 
+                }
+        }
+            
+        switch (event.getCode()){
+        case ENTER:
+        case DOWN:
+            CommonUtils.SetNextFocus(txtField);
+            break;
+        case UP:
+            CommonUtils.SetPreviousFocus(txtField);
+        }
+    }
+
+>>>>>>> Stashed changes
     final ChangeListener<? super Boolean> txtField_Focus = (o,ov,nv)->{ 
         if (!pbLoaded) return;
         
         TextField txtField = (TextField)((ReadOnlyBooleanPropertyBase)o).getBean();
-        int lnIndex = Integer.parseInt(txtField.getId().substring(8, 9));
+        System.out.println(txtField.getId());
+        int lnIndex = Integer.parseInt(txtField.getId().substring(8,10));
         String lsValue = txtField.getText();
         
         if (lsValue == null) return;
             
         if(!nv){ /*Lost Focus*/
-            switch (lnIndex){
-                case 11:
-                   if(txtField.getText().equals("") || txtField.getText().equals("%"))
-                       txtField.setText("");
-                       return;
-                case 3:
-                   if(txtField.getText().equals("") || txtField.getText().equals("%"))
-                       txtField.setText("");
-                       return;
+            try {
+                switch (lnIndex){
+                    case 03:
+                        if (StringUtil.isNumeric(lsValue)) 
+                            oTrans.setIncentiveInfo(tbl_row, "nQtyGoalx", Integer.parseInt(lsValue));
+                        else    
+                            oTrans.setIncentiveInfo(tbl_row, "nQtyGoalx", 0);
+                            txtField.setText(CommonUtils.NumberFormat((Number)oTrans.getIncentiveInfo(tbl_row, "nQtyGoalx"), "0"));
+                        break;
+                    case 04:
+                        if (StringUtil.isNumeric(lsValue)) 
+                            oTrans.setIncentiveInfo(tbl_row, "nQtyActlx", Integer.parseInt(lsValue));
+                        else    
+                            oTrans.setIncentiveInfo(tbl_row, "nQtyActlx", 0);
+                            txtField.setText(CommonUtils.NumberFormat((Number)oTrans.getIncentiveInfo(tbl_row, "nQtyActlx"), "0"));
+                        break;
+                    case 05:
+                        if (StringUtil.isNumeric(lsValue)) 
+                            oTrans.setIncentiveInfo(tbl_row, "nAmtGoalx", Double.valueOf(lsValue));
+                        else    
+                            oTrans.setIncentiveInfo(tbl_row, "nAmtGoalx", 0.00);
+                            txtField.setText(CommonUtils.NumberFormat((Number)oTrans.getIncentiveInfo(tbl_row, "nAmtGoalx"), "##0.00"));
+                        break;
+                    case 06:
+                        if (StringUtil.isNumeric(lsValue)) 
+                            oTrans.setIncentiveInfo(tbl_row, "nAmtActlx", Double.valueOf(lsValue));
+                        else    
+                            oTrans.setIncentiveInfo(tbl_row, "nAmtActlx", 0.00);
+                             txtField.setText(CommonUtils.NumberFormat((Number)oTrans.getIncentiveInfo(tbl_row, "nAmtActlx"), "##0.00"));
+                        break;
+                        
+                    case 07:
+                        if (StringUtil.isNumeric(lsValue)) 
+                            oTrans.setIncentiveInfo(tbl_row, "nInctvAmt", Double.valueOf(lsValue));
+                        else    
+                            oTrans.setIncentiveInfo(tbl_row, "nInctvAmt", 0.00);
+                            txtField.setText(CommonUtils.NumberFormat((Number)oTrans.getIncentiveInfo(tbl_row, "nInctvAmt"), "#,##0.00"));
+                         break;
+                        
+                    case 11:
+                        if (StringUtil.isNumeric(lsValue))                        
+                            oTrans.setIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"), Double.valueOf(lsValue));
+                        else
+                            oTrans.setIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"), 0.00);
+                        
+                        txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID")), "##0.00"));                        
+                        loadDetail();
+                        break;
+                    case 12:
+                        if (StringUtil.isNumeric(lsValue))                        
+                            oTrans.setIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"), Double.valueOf(lsValue)); 
+                        else
+                            oTrans.setIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"), 0.00); 
+                        
+                        txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(pnRow, "sEmployID")), "#,##0.00"));
+                        loadDetail();
+                        break;
+                }
+            } catch (SQLException e) {
+                MsgBox.showOk(e.getMessage());
             }
-        }
+            
+        } else{ //Focus
+            pnIndex = lnIndex;
+            txtField.selectAll();
+        }     
     };
-    public void mainoTransaction() throws SQLException{
-        String lsStockIDx = (String) oTrans.getDetail(pnRow, "xEmployNm");
     
-        if (pnRow >= 0){                   
-            txtField10.setText((String) oTrans.getDetail(pnRow, "xEmployNm"));
-            
-            
-        }
-        txtField11.setText("");
-        txtField12.setText("");
+    public void loadIncentives(){
+        try { 
+                txtField01.setText((String) oTrans.getMaster(1));
+                
+                txtField02.setText(incModel.getIncindex02());
+                txtField03.setText(incModel.getIncindex03());
+                txtField04.setText(incModel.getIncindex04());
+                txtField05.setText(incModel.getIncindex05());
+                txtField06.setText(incModel.getIncindex06());
+                txtField07.setText(incModel.getIncindex07());
+
+            } catch (SQLException ex) {
+                Logger.getLogger(AddIncentivesController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            pnEditMode = oTrans.getEditMode();
+            pbLoaded = true;
     }
+<<<<<<< Updated upstream
     private void unloadForm(){
         VBox myBox = (VBox) VBoxForm.getParent();
         myBox.getChildren().clear();  
@@ -195,22 +342,54 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
 //                System.out.print("\t");
 //                System.out.print(oTrans.getDetail(lnCtr, "xEmployNm"));
 //                System.out.println("");                
-            }
-    
-            initGrid();
-        } catch (SQLException ex) {
-            //Logger.getLogger(AddIncentivesController.class.getName()).log(Level.SEVERE, null, ex);
-        }
+=======
+ 
+    private void loadEmployee(){
+        try {
+            int lnRow = oTrans.getItemCount(); 
+           System.out.println("----------------------------------------");
+            
+            for (int lnCtr = 1; lnCtr <= lnRow; lnCtr++){
+                //get
+                incEmp_data.add(new TableEmployeeIncentives(String.valueOf(lnCtr),
+                (String) oTrans.getDetail(lnCtr, "xEmployNm"),
+                 oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")).toString(),
+                 oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")).toString()));
 
-    }
-    private void cmdButton_Click(ActionEvent event) {
-        String lsButton = ((Button)event.getSource()).getId();
-        
-        switch (lsButton){                         
-            case "btnExit":
-                unloadForm();
-                break;
+                pnEditMode = oTrans.getEditMode();
+                pbLoaded = true;
+>>>>>>> Stashed changes
+            }
+            
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            MsgBox.showOk(ex.getMessage()); 
+            System.exit(1);
         }
+    }
+    
+    private void cmdButton_Click(ActionEvent event) {
+        try {
+            String lsButton = ((Button)event.getSource()).getId();
+            
+            switch (lsButton){
+                case "btnOk":
+                    CommonUtils.closeStage(btnOk);
+                    System.out.println(oTrans.getIncentiveInfo(tbl_row, "nInctvAmt").toString());
+                    break;
+                    
+                case "btnExit":
+                    CommonUtils.closeStage(btnExit);
+                    break;
+                    
+                default:
+                    ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");  
+                    return;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AddIncentivesController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+<<<<<<< Updated upstream
     }
     private void loadMaster() throws SQLException {
         txtField1.setText((String) oTrans.getMaster(1));       
@@ -264,8 +443,18 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
             Logger.getLogger(AddIncentivesController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+=======
+    } 
+    
+>>>>>>> Stashed changes
     public void initGrid() {   
+    
+        empIncindex01.setStyle("-fx-alignment: CENTER;");
+        empIncindex02.setStyle("-fx-alignment: CENTER-LEFT;");
+        empIncindex03.setStyle("-fx-alignment: CENTER-LEFT;");
+        empIncindex04.setStyle("-fx-alignment: CENTER-LEFT;");
         
+<<<<<<< Updated upstream
         index01.setStyle("-fx-alignment: CENTER;");
         index02.setStyle("-fx-alignment: CENTER-LEFT;");
         index03.setStyle("-fx-alignment: CENTER-LEFT;");
@@ -273,6 +462,12 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
         index01.setCellValueFactory(new PropertyValueFactory<>("index01"));
         index02.setCellValueFactory(new PropertyValueFactory<>("index02"));
         index03.setCellValueFactory(new PropertyValueFactory<>("index03"));  
+=======
+        empIncindex01.setCellValueFactory(new PropertyValueFactory<>("empIncindex01"));
+        empIncindex02.setCellValueFactory(new PropertyValueFactory<>("empIncindex02")); 
+        empIncindex03.setCellValueFactory(new PropertyValueFactory<>("empIncindex03"));
+        empIncindex04.setCellValueFactory(new PropertyValueFactory<>("empIncindex04")); 
+>>>>>>> Stashed changes
         tblemployee.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblemployee.lookup("TableHeaderRow");
             header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
@@ -280,8 +475,37 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
             
             });
         });
-        tblemployee.setItems(data);
-        
+        tblemployee.setItems(incEmp_data);   
+    }
+
+    @FXML
+    private void tblemployee_Clicked(MouseEvent event) {
+        pnRow = tblemployee.getSelectionModel().getSelectedIndex() + 1;  
+        try {
+            txtField10.setText((String) oTrans.getDetail(pnRow, "xEmployNm"));
+            txtField11.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID")), "##0.00"));
+            txtField12.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(pnRow, "sEmployID")), "#,##0.00"));
+        } 
+        catch (SQLException ex) {
+            Logger.getLogger(AddIncentivesController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private void loadDetail(){
+        try {
+            incEmp_data.clear();
+            int lnRow = oTrans.getItemCount(); 
+            for (int lnCtr = 1; lnCtr <= lnRow; lnCtr++){
+                incEmp_data.add(new TableEmployeeIncentives(String.valueOf(lnCtr),
+                (String) oTrans.getDetail(lnCtr, "xEmployNm"),
+                 oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")).toString(),
+                 oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")).toString()));
+            }
+            initGrid();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            MsgBox.showOk(e.getMessage());
+        }
     }
 
 }

@@ -17,44 +17,40 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="VBoxForm" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="VBoxForm" stylesheets="@/css/EmployeeIncentives.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <AnchorPane prefHeight="30.0" prefWidth="740.0">
+      <AnchorPane prefHeight="30.0" prefWidth="821.0" style="-fx-background-color: #4C4C4C;">
          <children>
-            <AnchorPane prefHeight="30.0" prefWidth="821.0" style="-fx-background-color: #4C4C4C;">
-               <children>
-                  <ImageView fitHeight="37.0" fitWidth="327.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/header-accent-wo-text.png" />
-                     </image>
-                     <cursor>
-                        <Cursor fx:constant="DEFAULT" />
-                     </cursor>
-                  </ImageView>
-                  <Label layoutX="5.0" layoutY="4.0" text="Add Incentives" textFill="WHITE" wrapText="true" AnchorPane.leftAnchor="30.0">
-                     <font>
-                        <Font name="System Bold" size="13.0" />
-                     </font>
-                  </Label>
-                  <Separator layoutY="26.0" prefHeight="0.0" prefWidth="500.0" style="-fx-background-color: orange" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
-                  <ImageView fitHeight="25.0" fitWidth="25.0" layoutX="3.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="3.0">
-                     <image>
-                        <Image url="@../images/icon.png" />
-                     </image>
-                  </ImageView>
-                  <Button fx:id="btnExit" layoutX="796.0" layoutY="4.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="21.0">
-                     <font>
-                        <Font name="System Bold" size="8.0" />
-                     </font>
-                     <graphic>
-                        <FontAwesomeIconView fx:id="glyphExit" glyphName="TIMES" />
-                     </graphic>
-                  </Button>
-               </children>
-            </AnchorPane>
+            <ImageView fitHeight="37.0" fitWidth="327.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/header-accent-wo-text.png" />
+               </image>
+               <cursor>
+                  <Cursor fx:constant="DEFAULT" />
+               </cursor>
+            </ImageView>
+            <Label layoutX="5.0" layoutY="4.0" text="Add Incentives" textFill="WHITE" wrapText="true" AnchorPane.leftAnchor="30.0">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font>
+            </Label>
+            <Separator layoutY="26.0" prefHeight="0.0" prefWidth="500.0" style="-fx-background-color: orange" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+            <ImageView fitHeight="25.0" fitWidth="25.0" layoutX="3.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="3.0">
+               <image>
+                  <Image url="@../images/icon.png" />
+               </image>
+            </ImageView>
+            <Button fx:id="btnExit" layoutX="796.0" layoutY="4.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="21.0">
+               <font>
+                  <Font name="System Bold" size="8.0" />
+               </font>
+               <graphic>
+                  <FontAwesomeIconView fx:id="glyphExit" glyphName="TIMES" />
+               </graphic>
+            </Button>
          </children>
       </AnchorPane>
-      <AnchorPane prefHeight="361.0" prefWidth="746.0" style="-fx-background-color: dirtywhite;">
+      <AnchorPane prefHeight="332.0" prefWidth="821.0" style="-fx-background-color: dirtywhite;">
          <children>
             <AnchorPane layoutX="4.0" layoutY="3.0" prefHeight="231.0" prefWidth="339.0" style="-fx-border-color: orange; -fx-border-radius: 5;">
                <children>
@@ -64,7 +60,7 @@
                         <Font name="System Bold" size="12.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="txtField1" layoutX="100.0" layoutY="5.0" prefHeight="17.0" prefWidth="151.0" style="-fx-border-radius: 5;">
+                  <TextField fx:id="txtField01" layoutX="100.0" layoutY="5.0" prefHeight="17.0" prefWidth="151.0" style="-fx-border-radius: 5;">
                      <font>
                         <Font name="System Bold" size="12.0" />
                      </font>
@@ -74,36 +70,20 @@
                         <Font name="MS Reference Sans Serif" size="12.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="txtField2" layoutX="82.0" layoutY="35.0" prefHeight="23.0" prefWidth="252.0" style="-fx-border-radius: 5;">
-                     <font>
-                        <Font size="10.0" />
-                     </font>
-                  </TextField>
+                  <TextField fx:id="txtField02" editable="false" layoutX="82.0" layoutY="35.0" prefHeight="23.0" prefWidth="252.0" style="-fx-border-radius: 5;" />
                   <Label layoutX="10.0" layoutY="68.0" text="Qty Goal">
                      <font>
                         <Font name="MS Reference Sans Serif" size="12.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="txtField3" layoutX="82.0" layoutY="61.0" prefHeight="23.0" prefWidth="73.0" style="-fx-border-radius: 5;">
-                     <font>
-                        <Font size="10.0" />
-                     </font>
-                  </TextField>
-                  <TextField fx:id="txtField4" layoutX="81.0" layoutY="87.0" prefHeight="23.0" prefWidth="73.0" style="-fx-border-radius: 5;">
-                     <font>
-                        <Font size="10.0" />
-                     </font>
-                  </TextField>
-                  <Label layoutX="179.0" layoutY="68.0" text="Qty Amount">
+                  <TextField fx:id="txtField03" layoutX="82.0" layoutY="61.0" prefHeight="23.0" prefWidth="73.0" style="-fx-border-radius: 5;" />
+                  <TextField fx:id="txtField05" layoutX="82.0" layoutY="87.0" prefHeight="23.0" prefWidth="73.0" style="-fx-border-radius: 5;" />
+                  <Label layoutX="179.0" layoutY="68.0" text="Actual Goal">
                      <font>
                         <Font name="MS Reference Sans Serif" size="12.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="txtField5" layoutX="81.0" layoutY="114.0" prefHeight="23.0" prefWidth="252.0" style="-fx-border-radius: 5;">
-                     <font>
-                        <Font size="10.0" />
-                     </font>
-                  </TextField>
+                  <TextField fx:id="txtField07" layoutX="82.0" layoutY="114.0" prefHeight="23.0" prefWidth="252.0" style="-fx-border-radius: 5;" />
                   <Label layoutX="9.0" layoutY="122.0" text="Inc. Amt.">
                      <font>
                         <Font name="MS Reference Sans Serif" size="12.0" />
@@ -114,27 +94,19 @@
                         <Font name="MS Reference Sans Serif" size="12.0" />
                      </font>
                   </Label>
-                  <TextArea fx:id="txtField6" layoutX="81.0" layoutY="142.0" prefHeight="46.0" prefWidth="252.0" style="-fx-border-radius: 5;" />
-                  <TextField fx:id="txtField31" layoutX="260.0" layoutY="61.0" prefHeight="23.0" prefWidth="73.0" style="-fx-border-radius: 5;">
-                     <font>
-                        <Font size="10.0" />
-                     </font>
-                  </TextField>
+                  <TextArea fx:id="txtField08" layoutX="82.0" layoutY="142.0" prefHeight="46.0" prefWidth="252.0" style="-fx-border-radius: 5;" />
+                  <TextField fx:id="txtField04" layoutX="260.0" layoutY="61.0" prefHeight="23.0" prefWidth="73.0" style="-fx-border-radius: 5;" />
                   <Label layoutX="10.0" layoutY="94.0" text="Amt. Goal">
                      <font>
                         <Font name="MS Reference Sans Serif" size="12.0" />
                      </font>
                   </Label>
-                  <Label layoutX="179.0" layoutY="91.0" text="Actual Goal">
+                  <Label layoutX="179.0" layoutY="91.0" text="Qty Amount">
                      <font>
                         <Font name="MS Reference Sans Serif" size="12.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="txtField41" layoutX="260.0" layoutY="87.0" prefHeight="23.0" prefWidth="73.0" style="-fx-border-radius: 5;">
-                     <font>
-                        <Font size="10.0" />
-                     </font>
-                  </TextField>
+                  <TextField fx:id="txtField06" layoutX="260.0" layoutY="87.0" prefHeight="23.0" prefWidth="73.0" style="-fx-border-radius: 5;" />
                   <Separator layoutX="6.0" layoutY="194.0" prefHeight="3.0" prefWidth="327.0" style="-fx-background-color: oran;" />
                   <Label layoutX="11.0" layoutY="207.0" text="Total Alloc. % :">
                      <font>
@@ -158,64 +130,56 @@
                   </Label>
                </children>
             </AnchorPane>
-            <AnchorPane layoutX="4.0" layoutY="238.0" prefHeight="113.0" prefWidth="339.0" style="-fx-border-color: orange; -fx-border-radius: 5;">
+            <AnchorPane layoutX="4.0" layoutY="238.0" prefHeight="92.0" prefWidth="339.0" style="-fx-border-color: orange; -fx-border-radius: 5;">
                <children>
-                  <Label layoutX="13.0" layoutY="11.0" text="Employee">
+                  <Label layoutX="15.0" layoutY="15.0" text="Employee">
                      <font>
                         <Font name="Arial Bold" size="12.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="txtField10" layoutX="98.0" layoutY="5.0" prefHeight="23.0" prefWidth="236.0" style="-fx-border-radius: 5;">
-                     <font>
-                        <Font size="10.0" />
-                     </font>
+                  <TextField fx:id="txtField10" editable="false" layoutX="94.0" layoutY="10.0" prefHeight="23.0" prefWidth="236.0" style="-fx-border-radius: 5;">
                      <effect>
                         <Glow />
                      </effect>
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
                   </TextField>
-                  <Label layoutX="15.0" layoutY="38.0" text="Alloc %">
+                  <Label layoutX="15.0" layoutY="60.0" text="Alloc %">
                      <font>
                         <Font name="MS Reference Sans Serif" size="12.0" />
                      </font>
                   </Label>
-                  <Label layoutX="15.0" layoutY="62.0" text="Remarks">
+                  <Label layoutX="175.0" layoutY="60.0" text="Alloc Amt">
                      <font>
                         <Font name="MS Reference Sans Serif" size="12.0" />
                      </font>
                   </Label>
-                  <TextArea fx:id="txtField13" layoutX="74.0" layoutY="62.0" prefHeight="46.0" prefWidth="260.0" style="-fx-border-radius: 5;" />
-                  <Label layoutX="175.0" layoutY="38.0" text="Alloc Amt">
-                     <font>
-                        <Font name="MS Reference Sans Serif" size="12.0" />
-                     </font>
-                  </Label>
-                  <TextField fx:id="txtField11" layoutX="74.0" layoutY="34.0" prefHeight="23.0" prefWidth="91.0" style="-fx-border-radius: 5;">
-                     <font>
-                        <Font size="10.0" />
-                     </font>
+                  <TextField fx:id="txtField11" layoutX="72.0" layoutY="55.0" prefHeight="23.0" prefWidth="91.0" style="-fx-border-radius: 5;">
                      <effect>
                         <Glow />
                      </effect>
                   </TextField>
-                  <TextField fx:id="txtField12" layoutX="243.0" layoutY="34.0" prefHeight="23.0" prefWidth="91.0" style="-fx-border-radius: 5;">
-                     <font>
-                        <Font size="10.0" />
-                     </font>
+                  <TextField fx:id="txtField12" layoutX="241.0" layoutY="55.0" prefHeight="23.0" prefWidth="91.0" style="-fx-border-radius: 5;">
                      <effect>
                         <Glow />
                      </effect>
                   </TextField>
+                  <Separator layoutX="6.0" layoutY="44.0" prefHeight="3.0" prefWidth="327.0" style="-fx-background-color: oran;" />
                </children>
             </AnchorPane>
-            <AnchorPane layoutX="347.0" layoutY="4.0" prefHeight="347.0" prefWidth="471.0" style="-fx-border-color: orange; -fx-border-radius: 5;">
+            <AnchorPane layoutX="347.0" layoutY="4.0" prefHeight="326.0" prefWidth="471.0" style="-fx-border-color: orange; -fx-border-radius: 5;">
                <children>
+<<<<<<< Updated upstream
                   <TableView fx:id="tblemployee" editable="true" layoutX="4.0" layoutY="4.0" onMouseClicked="#tblemployee_Clicked" prefHeight="340.0" prefWidth="462.0">
+=======
+                  <TableView fx:id="tblemployee" editable="true" layoutX="4.0" layoutY="4.0" onMouseClicked="#tblemployee_Clicked" prefHeight="318.0" prefWidth="462.0">
+>>>>>>> Stashed changes
                     <columns>
-                      <TableColumn fx:id="index01" prefWidth="30.0" text="No." />
-                      <TableColumn fx:id="index02" maxWidth="221.0" minWidth="-1.0" prefWidth="207.0" text="Employee" />
-                        <TableColumn fx:id="index03" minWidth="0.0" prefWidth="58.0" text="Alloc. %" />
-                        <TableColumn fx:id="index04" prefWidth="83.0" text="Alloc. Amt" />
-                        <TableColumn prefWidth="78.0" text="Amount" />
+                      <TableColumn fx:id="empIncindex01" maxWidth="40.0" minWidth="35.0" prefWidth="35.0" text="No." />
+                      <TableColumn fx:id="empIncindex02" maxWidth="250.0" minWidth="200.0" prefWidth="200.0" resizable="false" text="Employee" />
+                        <TableColumn fx:id="empIncindex03" maxWidth="120.0" minWidth="100.0" prefWidth="100.0" resizable="false" text="Alloc. %" />
+                        <TableColumn fx:id="empIncindex04" maxWidth="120.0" minWidth="100.0" prefWidth="100.0" resizable="false" text="Alloc. Amt" />
                     </columns>
                   </TableView>
                </children>
@@ -224,7 +188,7 @@
       </AnchorPane>
       <AnchorPane prefHeight="68.0" prefWidth="746.0" style="-fx-background-color: #4C4C4C;">
          <children>
-            <Button fx:id="btnOk12" contentDisplay="TOP" ellipsisString="" layoutX="751.0" layoutY="2.0" maxWidth="104.0" minHeight="46.0" minWidth="63.0" mnemonicParsing="false" prefHeight="57.0" prefWidth="63.0" style="-fx-border-radius: 5; -fx-background-color: #4C4C4C;" text="OK">
+            <Button fx:id="btnOk" contentDisplay="TOP" ellipsisString="" layoutX="729.0" layoutY="9.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="OK">
                <graphic>
                   <FontAwesomeIconView glyphName="CHECK" size="20" />
                </graphic>
