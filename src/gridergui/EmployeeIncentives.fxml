@@ -12,10 +12,11 @@
 <?import javafx.scene.effect.Blend?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="AnchorMain" style="-fx-border-color: orange; -fx-border-radius: 5;" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="AnchorMain" style="-fx-border-color: orange; -fx-border-radius: 5;" stylesheets="@/css/EmployeeIncentives.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <StackPane layoutX="9.0" layoutY="388.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -38,23 +39,75 @@
                <bottom>
                   <AnchorPane prefHeight="58.0" style="-fx-background-color: #4C4C4C; -fx-background-radius: 5;" BorderPane.alignment="CENTER">
                      <children>
-                        <Button fx:id="btnNew" contentDisplay="TOP" ellipsisString="" layoutX="4.0" layoutY="1.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" style="-fx-border-radius: 5; -fx-background-color: #4C4C4C;" text="New" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
-                            <graphic>
-                               <FontAwesomeIconView glyphName="FILE" size="20" />
-                            </graphic>
-                            <effect>
-                               <Blend />
-                            </effect>
-                         </Button>
-                        <Button fx:id="btnBrowse" contentDisplay="TOP" ellipsisString="" layoutX="71.0" layoutY="6.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" style="-fx-border-radius: 5; -fx-background-color: #4C4C4C;" text="Browse" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="5.0">
-                           <graphic>
-                              <FontAwesomeIconView glyphName="FOLDER_OPEN" size="20" />
-                           </graphic>
-                           <effect>
-                              <Blend />
-                           </effect>
-                        </Button>
-                        <Button fx:id="btnClose" contentDisplay="TOP" ellipsisString="" layoutX="138.0" layoutY="7.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="70.0" style="-fx-border-radius: 5; -fx-background-color: #4C4C4C;" text="Close" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                        <HBox fx:id="hbButtons" AnchorPane.topAnchor="3.0">
+                           <children>
+                              <Button fx:id="btnBrowse" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Browse">
+                                 <graphic>
+                                    <FontAwesomeIconView glyphName="FOLDER_OPEN" size="20" />
+                                 </graphic>
+                                 <effect>
+                                    <Blend />
+                                 </effect>
+                              </Button>
+                              <Button fx:id="btnNew" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="New">
+                                 <graphic>
+                                    <FontAwesomeIconView glyphName="FILE" size="20" />
+                                 </graphic>
+                                 <effect>
+                                    <Blend />
+                                 </effect>
+                              </Button>
+                              <Button fx:id="btnSave" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Save">
+                                 <graphic>
+                                    <FontAwesomeIconView glyphName="SAVE" size="20" />
+                                 </graphic>
+                                 <effect>
+                                    <Blend />
+                                 </effect>
+                              </Button>
+                              <Button fx:id="btnUpdate" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Update">
+                                 <graphic>
+                                    <FontAwesomeIconView glyphName="EDIT" size="20" />
+                                 </graphic>
+                                 <effect>
+                                    <Blend />
+                                 </effect>
+                              </Button>
+                              <Button fx:id="btnSearch" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Search">
+                                 <graphic>
+                                    <FontAwesomeIconView glyphName="SEARCH" size="20" />
+                                 </graphic>
+                                 <effect>
+                                    <Blend />
+                                 </effect>
+                              </Button>
+                              <Button fx:id="btnCancel" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Cancel">
+                                 <graphic>
+                                    <FontAwesomeIconView glyphName="CLOSE" size="20" />
+                                 </graphic>
+                                 <effect>
+                                    <Blend />
+                                 </effect>
+                              </Button>
+                              <Button fx:id="btnActivate" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Activate">
+                                 <graphic>
+                                    <FontAwesomeIconView glyphName="CHECK" size="20" />
+                                 </graphic>
+                                 <effect>
+                                    <Blend />
+                                 </effect>
+                              </Button>
+                              <Button fx:id="btnDeactivate" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="50.0" prefWidth="76.0" text="Deactivate">
+                                 <graphic>
+                                    <FontAwesomeIconView glyphName="UNDO" size="20" />
+                                 </graphic>
+                                 <effect>
+                                    <Blend />
+                                 </effect>
+                              </Button>
+                           </children>
+                        </HBox>
+                        <Button fx:id="btnClose" contentDisplay="TOP" ellipsisString="" layoutX="807.0" layoutY="2.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="70.0" text="Close" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="3.0">
                            <graphic>
                               <FontAwesomeIconView glyphName="POWER_OFF" size="20" />
                            </graphic>
@@ -62,7 +115,18 @@
                               <Blend />
                            </effect>
                         </Button>
-                        <Button fx:id="btnAddIncentives" contentDisplay="TOP" ellipsisString="" layoutX="733.0" layoutY="6.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" style="-fx-border-radius: 5; -fx-background-color: #4C4C4C;" text="Incentives" AnchorPane.rightAnchor="160.0" AnchorPane.topAnchor="5.0">
+                        <Button fx:id="btnAddDeductions" contentDisplay="TOP" ellipsisString="" layoutX="748.0" layoutY="4.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="70.0" text="Deduction" wrapText="true" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="3.0">
+                           <graphic>
+                              <FontAwesomeIconView glyphName="MINUS" size="20" />
+                           </graphic>
+                           <effect>
+                              <Blend />
+                           </effect>
+                           <font>
+                              <Font size="11.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="btnAddIncentives" contentDisplay="TOP" ellipsisString="" layoutX="671.0" layoutY="3.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="70.0" text="Incentives" wrapText="true" AnchorPane.rightAnchor="155.0" AnchorPane.topAnchor="3.0">
                            <graphic>
                               <FontAwesomeIconView glyphName="PLUS" size="20" />
                            </graphic>
@@ -70,24 +134,8 @@
                               <Blend />
                            </effect>
                            <font>
-                              <Font name="Arial" size="11.0" />
+                              <Font size="11.0" />
                            </font>
-                        </Button>
-                        <Button fx:id="btnAddDeductions" contentDisplay="TOP" ellipsisString="" layoutX="814.0" layoutY="1.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" style="-fx-border-radius: 5; -fx-background-color: dar #4C4C4Ckgray;" text="Deductions" AnchorPane.rightAnchor="80.0" AnchorPane.topAnchor="5.0">
-                           <graphic>
-                              <FontAwesomeIconView glyphName="MINUS" size="20" />
-                           </graphic>
-                           <font>
-                              <Font name="Arial" size="11.0" />
-                           </font>
-                        </Button>
-                        <Button fx:id="btnBrowse1" contentDisplay="TOP" ellipsisString="" layoutX="150.0" layoutY="4.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" style="-fx-border-radius: 5; -fx-background-color: #4C4C4C;" text="Save" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="150.0" AnchorPane.topAnchor="4.0">
-                           <graphic>
-                              <FontAwesomeIconView glyphName="SAVE" size="20" />
-                           </graphic>
-                           <effect>
-                              <Blend />
-                           </effect>
                         </Button>
                      </children>
                      <BorderPane.margin>
@@ -151,10 +199,15 @@
                                  <center>
                                     <AnchorPane prefWidth="551.0" style="-fx-border-color: #F88222; -fx-border-radius: 5;" BorderPane.alignment="CENTER">
                                        <children>
-                                          <TableView fx:id="tblincetives" layoutX="6.0" layoutY="5.0" prefWidth="539.0" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="3.0">
+                                          <TableView fx:id="tblIncentives" layoutX="6.0" layoutY="5.0" onMouseClicked="#tblIncentives_Clicked" prefWidth="539.0" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="3.0">
                                              <columns>
-                                                <TableColumn editable="false" prefWidth="27.0" text="No." />
-                                                <TableColumn prefWidth="108.0" text="Type" />
+                                                <TableColumn fx:id="incindex01" editable="false" maxWidth="40.0" minWidth="35.0" prefWidth="35.0" text="No." />
+                                                <TableColumn fx:id="incindex02" maxWidth="180.0" minWidth="150.0" prefWidth="150.0" text="Type" />
+                                                <TableColumn fx:id="incindex03" maxWidth="120.0" minWidth="100.0" prefWidth="100.0" text="Qty Goal" />
+                                                <TableColumn fx:id="incindex04" maxWidth="120.0" minWidth="100.0" prefWidth="100.0" text="Qty Actual" />
+                                                <TableColumn fx:id="incindex05" maxWidth="120.0" minWidth="100.0" prefWidth="100.0" text="Amt Goal" />
+                                                <TableColumn fx:id="incindex06" maxWidth="120.0" minWidth="100.0" prefWidth="100.0" text="Amt Actual" />
+                                                <TableColumn fx:id="incindex07" maxWidth="120.0" minWidth="100.0" prefWidth="100.0" text="Amount" />
                                              </columns>
                                              <effect>
                                                 <Blend />
@@ -172,7 +225,11 @@
                                           <TableView fx:id="tblemployee" layoutX="6.0" layoutY="6.0" prefHeight="281.0" prefWidth="881.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0">
                                              <columns>
                                                 <TableColumn fx:id="index01" editable="false" maxWidth="40.0" minWidth="35.0" prefWidth="35.0" sortable="false" text="No." />
-                                                <TableColumn fx:id="index02" editable="false" maxWidth="250.0" minWidth="200.0" prefWidth="200.0" text="Employee" />
+                                                <TableColumn fx:id="index02" editable="false" maxWidth="300.0" minWidth="250.0" prefWidth="250.0" sortable="false" text="Employee" />
+                                                <TableColumn fx:id="index03" editable="false" maxWidth="220.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="Level" />
+                                                <TableColumn fx:id="index04" editable="false" maxWidth="220.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="Position" />
+                                                <TableColumn fx:id="index05" editable="false" maxWidth="220.0" minWidth="200.0" prefWidth="200.0" sortable="false" text="Service Year" />
+                                                <TableColumn fx:id="index06" editable="false" maxWidth="220.0" minWidth="200.0" prefWidth="200.0" resizable="false" sortable="false" text="Total Amount" />
                                              </columns>
                                              <effect>
                                                 <Blend />
@@ -195,9 +252,9 @@
                                                 <Font name="System Bold" size="12.0" />
                                              </font>
                                           </Label>
-                                          <TextField fx:id="txtSeeks01" layoutX="116.0" layoutY="5.0" prefHeight="23.0" prefWidth="247.0" style="-fx-border-radius: 5;" AnchorPane.bottomAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                          <TextField fx:id="txtSeeks21" layoutX="116.0" layoutY="5.0" prefHeight="23.0" prefWidth="247.0" style="-fx-border-radius: 5;" AnchorPane.bottomAnchor="5.0" AnchorPane.topAnchor="5.0">
                                              <font>
-                                                <Font size="10.0" />
+                                                <Font name="System Bold" size="13.0" />
                                              </font>
                                           </TextField>
                                           <Label layoutX="395.0" layoutY="4.0" text="Branch" AnchorPane.bottomAnchor="5.0" AnchorPane.topAnchor="5.0">
@@ -205,11 +262,7 @@
                                                 <Font name="System Bold" size="12.0" />
                                              </font>
                                           </Label>
-                                          <TextField fx:id="txtSeeks02" layoutX="448.0" layoutY="4.0" prefHeight="23.0" prefWidth="247.0" style="-fx-border-radius: 5;" AnchorPane.bottomAnchor="5.0" AnchorPane.topAnchor="5.0">
-                                             <font>
-                                                <Font size="10.0" />
-                                             </font>
-                                          </TextField>
+                                          <TextField fx:id="txtSeeks22" layoutX="448.0" layoutY="4.0" prefHeight="23.0" prefWidth="247.0" style="-fx-border-radius: 5;" AnchorPane.bottomAnchor="5.0" AnchorPane.topAnchor="5.0" />
                                        </children>
                                     </AnchorPane>
                                  </top>

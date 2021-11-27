@@ -7,12 +7,24 @@ package gridergui;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
@@ -22,6 +34,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.rmj.appdriver.GRider;
+import org.rmj.appdriver.SQLUtil;
 
 /**
  * FXML Controller class
@@ -61,12 +74,34 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private MenuItem mnuMPArea;
     
+    @FXML
+    private Label DateAndTime;
+    @FXML
+    private Label AppUser;
+    
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         setScene(loadAnimate("MainScreenBG.fxml"));
+        getTime();
+        
+        ResultSet name;
+        String lsQuery = "SELECT b.sCompnyNm " +
+                            " FROM xxxSysUser a" +
+                            " LEFT JOIN Client_Master b" +  
+                                " ON a.sEmployNo  = b.sClientID" +
+                            " WHERE a.sUserIDxx = " + SQLUtil.toSQL(oApp.getUserID());
+        name = oApp.executeQuery(lsQuery);
+        try {
+            if(name.next()){
+                AppUser.setText(name.getString("sCompnyNm") + " || " + oApp.getBranchName());
+                System.setProperty("user.name", name.getString("sCompnyNm"));   
+            }             
+        } catch (SQLException ex) {
+            Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }    
     
     @Override
@@ -184,4 +219,31 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private void mnuMPAreaClick(ActionEvent event) {
         setScene(loadAnimate("MpAreaPerformance.fxml"));
     }
+    private void getTime(){
+        Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {            
+        Calendar cal = Calendar.getInstance();
+        int second = cal.get(Calendar.SECOND);        
+        String temp = "" + second;
+        
+        Date date = new Date();
+        String strTimeFormat = "hh:mm:";
+        String strDateFormat = "MMMM dd, yyyy";
+        String secondFormat = "ss";
+        
+        DateFormat timeFormat = new SimpleDateFormat(strTimeFormat + secondFormat);
+        DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
+        
+        String formattedTime= timeFormat.format(date);
+        String formattedDate= dateFormat.format(date);
+        
+        DateAndTime.setText(formattedDate+ " || " + formattedTime);
+        
+        }),
+         new KeyFrame(Duration.seconds(1))
+        );
+        
+        clock.setCycleCount(Animation.INDEFINITE);
+        clock.play();
+    }
+ 
 }
