@@ -28,12 +28,20 @@
                                  <children>
                                     <MenuBar style="-fx-background-color: #F1F1F1;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                       <menus>
-                                        <Menu mnemonicParsing="false" text="Files">
+                                        <Menu fx:id="mnuFiles" mnemonicParsing="false" text="Files">
                                           <items>
-                                                <Menu fx:id="mnuTransaction1" mnemonicParsing="false" text="Parameters">
+                                                <Menu fx:id="mnuFiles01" mnemonicParsing="false" text="Parameters">
                                                    <items>
                                                       <MenuItem fx:id="mnuIncentiveParameter" mnemonicParsing="false" onAction="#mnuIncentiveParameterClick" text="Incentive" />
                                                       <MenuItem fx:id="mnuEmployeeIncentivesBank" mnemonicParsing="false" onAction="#mnuEmployeeBankInfoClick" text="Employee Incentive Bank Info" />
+                                                   </items>
+                                                </Menu>
+                                                <Menu fx:id="mnuFiles02" mnemonicParsing="false" text="Branch Performance">
+                                                   <items>
+                                                      <MenuItem fx:id="mnuMCBranch" mnemonicParsing="false" onAction="#mnuMCBranchClick" text="MC Branch Performance" />
+                                                      <MenuItem fx:id="mnuMCArea" mnemonicParsing="false" onAction="#mnuMCAreaClick" text="MC Area Performance" />
+                                                      <MenuItem fx:id="mnuMPBranch" mnemonicParsing="false" onAction="#mnuMPBranchClick" text="MP Branch Performance" />
+                                                      <MenuItem fx:id="mnuMPArea" mnemonicParsing="false" onAction="#mnuMPAreaClick" text="MP Area Performance" />
                                                    </items>
                                                 </Menu>
                                           </items>
