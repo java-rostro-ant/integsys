@@ -355,7 +355,6 @@ public class EmployeeBankInfoController implements Initializable , ScreenInterfa
         }
     }
     
-    
     final ChangeListener<? super Boolean> txtField_Focus = (o,ov,nv)->{
         if (!pbLoaded) return;
         
@@ -416,5 +415,3 @@ public class EmployeeBankInfoController implements Initializable , ScreenInterfa
         
     }
 }
-
-

@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="300.0" prefWidth="750.0" style="-fx-background-color: #FFFFFF;" stylesheets="@../css/MainPanelStyle.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" prefHeight="300.0" prefWidth="750.0" style="-fx-background-color: #FFFFFF;" stylesheets="@../css/MainPanelStyle.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
    <children>
       <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -134,7 +134,7 @@
                                        <image>
                                           <Image url="@../images/ic-user.png" />
                                        </image></ImageView>
-                                    <Label text="Kent Dumaguin - MIS | Rank &amp; File" textFill="#3f3f3f">
+                                    <Label fx:id="AppUser" text="Kent Dumaguin - MIS | Rank &amp; File" textFill="#3f3f3f">
                                        <font>
                                           <Font name="Roboto Medium" size="12.0" />
                                        </font></Label>
@@ -154,7 +154,7 @@
                                        <image>
                                           <Image url="@../images/ic-clock.png" />
                                        </image></ImageView>
-                                    <Label text="October 1, 2021 08:36 AM" textFill="#3f3f3f">
+                                    <Label fx:id="DateAndTime" text="October 1, 2021 08:36 AM" textFill="#3f3f3f">
                                        <font>
                                           <Font name="Roboto Medium" size="12.0" />
                                        </font></Label>
