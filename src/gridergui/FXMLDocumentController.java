@@ -22,7 +22,6 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.rmj.appdriver.GRider;
-import org.rmj.fund.manager.base.Incentive;
 
 /**
  * FXML Controller class
@@ -52,6 +51,15 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private MenuItem mnuIncentiveReleasing;
     @FXML
     private MenuItem mnuIncentiveConfirmation;
+    
+    @FXML
+    private MenuItem mnuMCBranch;
+    @FXML
+    private MenuItem mnuMCArea;
+    @FXML
+    private MenuItem mnuMPBranch;
+    @FXML
+    private MenuItem mnuMPArea;
     
     /**
      * Initializes the controller class.
@@ -121,6 +129,14 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return new IncentiveReleasingController();
             case "IncentiveConfirmation.fxml":
                 return new IncentiveConfirmationController();
+            case "McBranchPerformance.fxml":
+                return new McBranchPerformanceController();
+            case "McAreaPerformance.fxml":
+                return new McAreaPerformanceController();
+            case "MpBranchPerformance.fxml":
+                return new MpBranchPerformanceController();
+            case "MpAreaPerformance.fxml":
+                return new MpAreaPerformanceController();
             default:
                 return null;
         }
@@ -151,5 +167,21 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuIncentiveConfirmationClick(ActionEvent event) {
         setScene(loadAnimate("IncentiveConfirmation.fxml"));
+    }
+    @FXML
+    private void mnuMCBranchClick(ActionEvent event) {
+        setScene(loadAnimate("McBranchPerformance.fxml"));
+    }
+    @FXML
+    private void mnuMCAreaClick(ActionEvent event) {
+        setScene(loadAnimate("McAreaPerformance.fxml"));
+    }
+    @FXML
+    private void mnuMPBranchClick(ActionEvent event) {
+        setScene(loadAnimate("MpBranchPerformance.fxml"));
+    }
+    @FXML
+    private void mnuMPAreaClick(ActionEvent event) {
+        setScene(loadAnimate("MpAreaPerformance.fxml"));
     }
 }

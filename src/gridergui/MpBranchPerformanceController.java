@@ -12,7 +12,8 @@ import java.util.ResourceBundle;
 import javafx.animation.FadeTransition;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -30,17 +31,17 @@ import org.rmj.appdriver.agent.MsgBox;
 import org.rmj.appdriver.agentfx.CommonUtils;
 import org.rmj.appdriver.agentfx.ShowMessageFX;
 import org.rmj.appdriver.constants.EditMode;
+import org.rmj.fund.manager.base.Incentive;
 import org.rmj.fund.manager.base.LMasDetTrans;
-import org.rmj.fund.manager.parameters.IncentiveBankInfo;
 
 /**
  * FXML Controller class
  *
  * @author user
  */
-public class EmployeeBankInfoController implements Initializable , ScreenInterface{
+public class MpBranchPerformanceController implements Initializable , ScreenInterface{
     private GRider oApp;
-    private IncentiveBankInfo oTrans;
+    private Incentive oTrans;
     private LMasDetTrans oListener;
     
     private int pnIndex = -1;
@@ -51,18 +52,20 @@ public class EmployeeBankInfoController implements Initializable , ScreenInterfa
     private String psOldRec;
     private String psBarcode = "";
     private String psDescript = "";
+    ObservableList<String> cType = FXCollections.observableArrayList("Branch", "Main Office", "Both");
+    ObservableList<String> cPercent = FXCollections.observableArrayList("No", "Yes", "Both");
     
     @FXML
     private Label lblStatus;
     @FXML
-    private TextField txtSeeks5;
+    private TextField txtSeeks05;
     @FXML
-    private TextField txtField1;
+    private TextField txtSeeks06;
     @FXML
-    private TextField txtField2;
+    private TextField txtField01;
     @FXML
-    private TextField txtField3;
-    
+    private TextField txtField02;
+   
     @FXML
     private Button btnBrowse;
     @FXML
@@ -72,42 +75,38 @@ public class EmployeeBankInfoController implements Initializable , ScreenInterfa
     @FXML
     private Button btnUpdate;
     @FXML
-    private Button btnSearch;
-    @FXML
     private Button btnCancel;
     @FXML
     private Button btnClose;
     @FXML
-    private Button btnActivate;
-    @FXML
-    private Button btnDeactivate;
-    @FXML
-    private AnchorPane AnchorMainBankInfo;
+    private AnchorPane AnchorMainMcAreaInfo;
     @FXML
     private HBox hbButtons;
     @FXML
     private Label lblHeader;
+
+    /**
+     * Initializes the controller class.
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         oListener = new LMasDetTrans() {
             @Override
             public void MasterRetreive(int i, Object o) {
-                System.out.print("listener = " +  i);
                 switch (i){
-                    case 3: //sBackAcct
-                        txtField3.setText((String) o);
+                    case 1: //xEmployNm
+                        txtField01.setText((String) o);
                         break;
-                    case 7: //xEmployNm
-                        txtField1.setText((String) o);
+                    case 2: 
+                        txtField02.setText((String) o);
                         break;
-                    case 4: 
-                        try {
-                            System.out.print(oTrans.getMaster(4));
+                    case 6:
+                         try {
                             lblStatus.setVisible(true);
-                            if(oTrans.getMaster(4).toString().equalsIgnoreCase("1")){
+                            if(oTrans.getMaster(6).toString().equalsIgnoreCase("1")){
                                 lblStatus.setText("Active");
                                 lblStatus.setStyle("-fx-background-color: green;");
-                            }else if(oTrans.getMaster(4).toString().equalsIgnoreCase("0")){
+                            }else if(oTrans.getMaster(6).toString().equalsIgnoreCase("0")){
                                 lblStatus.setText("Inactive");
                                 lblStatus.setStyle("-fx-background-color: red;");
                             }else{
@@ -116,10 +115,7 @@ public class EmployeeBankInfoController implements Initializable , ScreenInterfa
                         } catch (SQLException ex) {
                              MsgBox.showOk(oTrans.getMessage());
                         }
-                        break;
-                    case 8: //xBankName
-                        txtField2.setText((String) o);
-                        break;
+                         break;
                 }
             }
 
@@ -128,7 +124,7 @@ public class EmployeeBankInfoController implements Initializable , ScreenInterfa
             }
         };
         
-        oTrans = new IncentiveBankInfo(oApp, oApp.getBranchCode(), false);
+        oTrans = new Incentive(oApp, oApp.getBranchCode(), false);
         oTrans.setListener(oListener);
         oTrans.setWithUI(true);
         
@@ -136,106 +132,52 @@ public class EmployeeBankInfoController implements Initializable , ScreenInterfa
         btnNew.setOnAction(this::cmdButton_Click);
         btnSave.setOnAction(this::cmdButton_Click);
         btnUpdate.setOnAction(this::cmdButton_Click);
-        btnSearch.setOnAction(this::cmdButton_Click);
         btnCancel.setOnAction(this::cmdButton_Click);
         btnClose.setOnAction(this::cmdButton_Click);
-        btnActivate.setOnAction(this::cmdButton_Click);
-        btnDeactivate.setOnAction(this::cmdButton_Click);
 //      text field focus
-        txtField1.focusedProperty().addListener(txtField_Focus);
-        txtField2.focusedProperty().addListener(txtField_Focus);
-        txtField3.focusedProperty().addListener(txtField_Focus);
+        txtField01.focusedProperty().addListener(txtField_Focus);
+        txtField02.focusedProperty().addListener(txtField_Focus);
 //      text field  key pressed
-        txtSeeks5.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField1.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField2.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField3.setOnKeyPressed(this::txtField_KeyPressed); 
-        txtField3.textProperty().addListener((final ObservableValue<? extends String> ov, final String oldValue, final String newValue) -> {
-            if (txtField3.getText().length() > 12) {
-                String s = txtField3.getText().substring(0, 12);
-                txtField3.setText(s);
-            }
-        });
+        txtSeeks05.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField01.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField02.setOnKeyPressed(this::txtField_KeyPressed);
         
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
-        pbLoaded = true;
     }    
+
     @Override
     public void setGRider(GRider foValue) {
-        oApp = foValue;
+         oApp = foValue;
     }
-    
     private void cmdButton_Click(ActionEvent event) {
         String lsButton = ((Button)event.getSource()).getId();
-        try {
+//        try {
             switch (lsButton){
                  case "btnBrowse":
-                        if (oTrans.SearchRecord(txtSeeks5.getText(), false)){
-                            loadRecord();
-                            pnEditMode = EditMode.READY;
-                        } else 
-                            MsgBox.showOk(oTrans.getMessage());
+                      
                     break;
                 case "btnNew": //create new transaction
-                        if (oTrans.NewRecord()){
-                            if (!oTrans.searchBank("Banco De Oro", false))
-                                    MsgBox.showOk(oTrans.getMessage());
-                            loadRecord();
-                            pnEditMode = oTrans.getEditMode();
-                        } else 
-                            MsgBox.showOk(oTrans.getMessage());
+                        pbLoaded = true;
+                       
                     break;
                  case "btnSave":
-                        if (oTrans.SaveRecord()){
-                            clearFields();
-                            pnEditMode = EditMode.UNKNOWN;
-                        } else 
-                            MsgBox.showOk(oTrans.getMessage());
+                       
+                       
                     break;
                 case "btnUpdate":
-                        if (oTrans.UpdateRecord()){
-                            pnEditMode = oTrans.getEditMode();
-                        } else 
-                            MsgBox.showOk(oTrans.getMessage());
-                    break;
-                case "btnSearch":
-                        switch (pnIndex){
-                            case 1:
-                                if (!oTrans.searchEmployee(txtField1.getText(), false)) 
-                                    MsgBox.showOk(oTrans.getMessage());
-
-                                break;
-                            case 2:
-                                if (!oTrans.searchBank(txtField2.getText(), false))
-                                    MsgBox.showOk(oTrans.getMessage());
-
-                                break;
-                        }
+                       
                     break;
                 case "btnCancel":
+                    
                     clearFields();
-                    oTrans = new IncentiveBankInfo(oApp, oApp.getBranchCode(), false);
+                    oTrans = new Incentive(oApp, oApp.getBranchCode(), false);
                     oTrans.setListener(oListener);
                     oTrans.setWithUI(true);
                     pnEditMode = EditMode.UNKNOWN;
                     //reload detail
                     break;
-                case "btnActivate":
-                    if (oTrans.ActivateRecord()){
-                        MsgBox.showOk("Account successfully activated!");
-                        clearFields();
-                    }else
-                        MsgBox.showOk(oTrans.getMessage());
-                    break;
-                case "btnDeactivate":
-                    if (oTrans.DeactivateRecord()){
-                        MsgBox.showOk("Account successfully deactivated!");
-                        clearFields();
-                    }else
-                        MsgBox.showOk(oTrans.getMessage());
-                    break;
-
+                
                 case "btnClose":
                     if(ShowMessageFX.OkayCancel(null, "Employee Bank Info", "Do you want to disregard changes?") == true){
                         unloadForm();
@@ -245,38 +187,32 @@ public class EmployeeBankInfoController implements Initializable , ScreenInterfa
             }
             
             initButton(pnEditMode);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            MsgBox.showOk(e.getMessage());
-        }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            MsgBox.showOk(e.getMessage());
+//        }
     } 
     private void initButton(int fnValue){
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         
         btnCancel.setVisible(lbShow);
-        btnSearch.setVisible(lbShow);
         btnSave.setVisible(lbShow);
-        btnActivate.setVisible(!lbShow);
-        btnDeactivate.setVisible(!lbShow);
         
         btnSave.setManaged(lbShow);
         btnCancel.setManaged(lbShow);
-        btnSearch.setManaged(lbShow);
         btnUpdate.setVisible(!lbShow);
         btnBrowse.setVisible(!lbShow);
         btnNew.setVisible(!lbShow);
         
-        txtSeeks5.setDisable(!lbShow);
-        txtField1.setDisable(!lbShow);
-        txtField2.setDisable(!lbShow);
-        txtField3.setDisable(!lbShow);
+        txtSeeks05.setDisable(!lbShow);
+        txtField01.setDisable(true);
+        txtField02.setDisable(!lbShow);
         
         if (lbShow){
-            txtSeeks5.setDisable(lbShow);
-            txtSeeks5.clear();
-            txtField1.requestFocus();
+            txtSeeks05.setDisable(lbShow);
+            txtSeeks05.clear();
+            txtField02.requestFocus();
             btnCancel.setVisible(lbShow);
-            btnSearch.setVisible(lbShow);
             btnSave.setVisible(lbShow);
             btnUpdate.setVisible(!lbShow);
             btnBrowse.setVisible(!lbShow);
@@ -284,26 +220,26 @@ public class EmployeeBankInfoController implements Initializable , ScreenInterfa
             btnBrowse.setManaged(false);
             btnNew.setManaged(false);
             btnUpdate.setManaged(false);
-            btnActivate.setManaged(false);
-            btnDeactivate.setManaged(false);
         }
         else{
-            txtSeeks5.setDisable(lbShow);
-            txtSeeks5.requestFocus();
+            txtSeeks05.setDisable(lbShow);
+            txtSeeks05.requestFocus();
         }
     }
     public void clearFields(){
-        txtField1.clear();
-        txtField2.clear();
-        txtField3.clear();
+        txtField01.clear();
+        txtField02.clear();
+        txtSeeks05.clear();
+        txtSeeks06.clear();
         lblStatus.setVisible(false);
+        
+                
     }
     
     private void unloadForm(){
-        StackPane myBox = (StackPane) AnchorMainBankInfo.getParent();
+        StackPane myBox = (StackPane) AnchorMainMcAreaInfo.getParent();
         myBox.getChildren().clear();
         myBox.getChildren().add(getScene("MainScreenBG.fxml"));
-      
     }
     private AnchorPane getScene(String fsFormName){
          ScreenInterface fxObj = new MainScreenBGController();
@@ -333,35 +269,43 @@ public class EmployeeBankInfoController implements Initializable , ScreenInterfa
     
     private void loadRecord(){
         try {
-            
-            if(oTrans.getMaster(4).toString().equalsIgnoreCase("1")){
+            if(oTrans.getMaster(6).toString().equalsIgnoreCase("1")){
             lblStatus.setVisible(true);
                 lblStatus.setText("Active");
                 lblStatus.setStyle("-fx-background-color: green;");
-            }else if(oTrans.getMaster(4).toString().equalsIgnoreCase("0")){
+            }else if(oTrans.getMaster(6).toString().equalsIgnoreCase("0")){
                 lblStatus.setVisible(true);
                 lblStatus.setText("Inactive");
                 lblStatus.setStyle("-fx-background-color: red;");
             }else{
                 lblStatus.setVisible(false);
             }
-            txtField1.setText((String) oTrans.getMaster(7));
-            txtField2.setText((String) oTrans.getMaster(8));
-            txtField3.setText((String) oTrans.getMaster(3));
-            
-            if (!txtField1.isDisabled()) txtField1.requestFocus();
+            txtField01.setText((String) oTrans.getMaster(1));
+            txtField02.setText((String) oTrans.getMaster(2));
+            txtSeeks05.setText((String) oTrans.getMaster(2));
         } catch (SQLException e) {
             MsgBox.showOk(e.getMessage());
         }
     }
     
-    
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private boolean sendIncentives(){
+        try {
+         
+            oTrans.setMaster("sInctveDs", txtField02.getText());
+            
+            } catch (SQLException ex) {
+              MsgBox.showOk(ex.getMessage());
+        }
+
+        return true;
+    }
     final ChangeListener<? super Boolean> txtField_Focus = (o,ov,nv)->{
         if (!pbLoaded) return;
         
         TextField txtField = (TextField)((ReadOnlyBooleanPropertyBase)o).getBean();
         
-        int lnIndex = Integer.parseInt(txtField.getId().substring(8, 9));
+        int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
        
         String lsValue = txtField.getText();
         if (lsValue == null) return;
@@ -384,37 +328,25 @@ public class EmployeeBankInfoController implements Initializable , ScreenInterfa
     };   
     private void txtField_KeyPressed(KeyEvent event){
         TextField txtField = (TextField)event.getSource();        
-        int lnIndex = Integer.parseInt(txtField.getId().substring(8, 9));
+        int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
              
-        try{
-           switch (event.getCode()){
+        switch (event.getCode()){
             case F3:
                 switch (lnIndex){
-                case 1: /*sBranchCd*/
-                     oTrans.searchEmployee(txtField.getText(), false);
-                     break;
-                case 2: /*sBankNme*/
-                     oTrans.searchBank(txtField.getText(), false); 
-                     break;
-                case 5: /*Search*/
-                    if (oTrans.SearchRecord(txtSeeks5.getText(), false)){
-                        loadRecord();
-                        pnEditMode = EditMode.READY;
-                    } else 
-                        MsgBox.showOk(oTrans.getMessage());
-                     break;
+                    
+                    case 5: /*Search*/
+                        break;
+                    case 6: /*Search*/
+                        break;
                 }   
             case ENTER:
             case DOWN:
                 CommonUtils.SetNextFocus(txtField); break;
             case UP:
                 CommonUtils.SetPreviousFocus(txtField);
-        } 
-        }catch(SQLException e){
-                MsgBox.showOk(e.getMessage());
         }
         
     }
+  
+    
 }
-
-
