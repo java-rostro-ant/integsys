@@ -14,14 +14,9 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.FadeTransition;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.BooleanBinding;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableSet;
-import javafx.css.PseudoClass;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -38,7 +33,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
@@ -71,6 +65,7 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
     private int pnRow = 0;
     private int pnSubItems = 0;
     private boolean pbLoaded = false;
+    private String transNox = "";
     
     @FXML
     private Label lblStatus;
@@ -195,14 +190,31 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         tblincentives_column();
         tblemployee_column();
         txtSeeks05.setOnKeyPressed(this::txtField_KeyPressed); 
-        pnEditMode = EditMode.UNKNOWN;
-        Check01.setDisable(true);
-        Check02.setDisable(true);
-        txtField01.setDisable(true);
-        txtField02.setDisable(true);
-        initButton(pnEditMode);
+        
+        if(transNox.isEmpty()){
+           pnEditMode = EditMode.UNKNOWN;
+            initButton(pnEditMode);
+            Check01.setDisable(true);
+            Check02.setDisable(true);
+            txtField01.setDisable(true);
+            txtField02.setDisable(true);
+        }else{
+            try {
+                if (oTrans.SearchTransaction(transNox, true)){
+                    loadIncentives();
+                    pnEditMode = oTrans.getEditMode();
+                    initButton(pnEditMode);
+                } else
+                    MsgBox.showOk(oTrans.getMessage());
+            } catch (SQLException ex) {
+                Logger.getLogger(IncentiveConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
     }    
-
+    public void setTransNox(String transVal){
+        transNox = transVal;
+    }
     @Override
     public void setGRider(GRider foValue) {
         oApp = foValue;
@@ -506,7 +518,7 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         DecimalFormat formatter = new DecimalFormat("###,###,##0.00");
         return formatter.format(price);
     }
-    public void tblincentives_column(){
+        public void tblincentives_column(){
          incIndex01.prefWidthProperty().bind(tblincetives.widthProperty().multiply(0.268));
          incIndex02.prefWidthProperty().bind(tblincetives.widthProperty().multiply(0.11));
          incIndex03.prefWidthProperty().bind(tblincetives.widthProperty().multiply(0.11));
