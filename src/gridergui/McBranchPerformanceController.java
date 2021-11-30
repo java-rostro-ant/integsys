@@ -5,9 +5,15 @@
  */
 package gridergui;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,7 +32,20 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import static org.apache.poi.ss.usermodel.Cell.CELL_TYPE_NUMERIC;
+import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.DateUtil;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.rmj.appdriver.GRider;
 import org.rmj.appdriver.StringUtil;
 import org.rmj.appdriver.agent.MsgBox;
@@ -87,12 +106,14 @@ public class McBranchPerformanceController implements Initializable , ScreenInte
     @FXML
     private Button btnClose;
     @FXML
+    private Button btnImport;
+    @FXML
     private AnchorPane AnchorMainMcBranchInfo;
     @FXML
     private HBox hbButtons;
     @FXML
     private Label lblHeader;
-
+    private FXMLLoader fxmlLoader;
    
 
     /**
@@ -140,6 +161,7 @@ public class McBranchPerformanceController implements Initializable , ScreenInte
         btnUpdate.setOnAction(this::cmdButton_Click);
         btnCancel.setOnAction(this::cmdButton_Click);
         btnClose.setOnAction(this::cmdButton_Click);
+        btnImport.setOnAction(this::cmdButton_Click);
 //      text field focus
         txtField01.focusedProperty().addListener(txtField_Focus);
         txtField02.focusedProperty().addListener(txtField_Focus);
@@ -242,6 +264,16 @@ public class McBranchPerformanceController implements Initializable , ScreenInte
                         }
                     }
                     break;
+                case "btnImport":
+                    {
+                        try {
+                            insertFile();
+                        } catch (IOException ex) {
+                            Logger.getLogger(McBranchPerformanceController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                   break;
+
                 case "btnCancel":
                     
                     clearFields();
@@ -333,7 +365,7 @@ public class McBranchPerformanceController implements Initializable , ScreenInte
          ScreenInterface fxObj = new MainScreenBGController();
          fxObj.setGRider(oApp);
         
-        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(fxObj.getClass().getResource(fsFormName));
         fxmlLoader.setController(fxObj);      
    
@@ -476,5 +508,87 @@ public class McBranchPerformanceController implements Initializable , ScreenInte
             txtField.selectAll();
         }
     }; 
+    public void insertFile() throws IOException {
+       
+        FileChooser fileChooser = new FileChooser();
+
+        fileChooser.setInitialDirectory(new File("d:\\"));
+        fileChooser.setTitle("Open Resource File");
+        fileChooser.getExtensionFilters().add(
+                new ExtensionFilter("Excel Files", "*.xls", "*.xlsx"));
+        File selectedFile = fileChooser.showOpenDialog((Stage) AnchorMainMcBranchInfo.getScene().getWindow());
+
+        String fileName = selectedFile.getName();           
+        String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1, selectedFile.getName().length());
+
+        if(fileExtension.equalsIgnoreCase("xlsx")){
+            try {
+                xlsxFile(selectedFile);
+            } catch (IOException ex) {
+                Logger.getLogger(McBranchPerformanceController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }else{
+             try {
+                
+                xlsFile(selectedFile);
+            } catch (IOException ex) {
+                Logger.getLogger(McBranchPerformanceController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        
+       
+    }  
+    
+    public void xlsxFile(File selectedFile) throws FileNotFoundException, IOException{
+        File file = new File(selectedFile.getAbsolutePath());   //creating a new file instance  
+        FileInputStream fis = new FileInputStream(file);  
+        XSSFWorkbook wb = new XSSFWorkbook(fis);   
+        XSSFSheet sheet = wb.getSheetAt(0);
+
+        for(int rows = 1; rows < sheet.getPhysicalNumberOfRows(); rows++){
+            Row currentRow = sheet.getRow(rows);
+            System.out.print(currentRow.getCell(0).getStringCellValue()+ "\t");
+            System.out.print(currentRow.getCell(1).getNumericCellValue()+ "\t");
+            System.out.print(currentRow.getCell(2).getNumericCellValue()+ "\t");
+            System.out.print(currentRow.getCell(3).getNumericCellValue()+ "\t");
+            System.out.print(currentRow.getCell(4).getNumericCellValue()+ "\t");
+            System.out.print(currentRow.getCell(5).getNumericCellValue()+ "\t");
+            System.out.print(currentRow.getCell(6).getNumericCellValue()+ "\t");
+            System.out.print(currentRow.getCell(7).getNumericCellValue()+ "\t");
+            System.out.print(currentRow.getCell(8).getNumericCellValue()+ "\t");
+            System.out.print(currentRow.getCell(9).getNumericCellValue()+ "\t");
+            System.out.print(currentRow.getCell(10).getNumericCellValue()+ "\t");
+            System.out.print(currentRow.getCell(11).getNumericCellValue()+ "\t");
+            System.out.print(currentRow.getCell(12).getNumericCellValue()+ "\t");
+
+          System.out.println();
+        }
+    }
+     public void xlsFile(File selectedFile) throws FileNotFoundException, IOException{
+        FileInputStream fis  = new FileInputStream(new File(selectedFile.getAbsolutePath()));
+        HSSFWorkbook wb=new HSSFWorkbook(fis);   
+    //creating a Sheet object to retrieve the object  
+        HSSFSheet sheet=wb.getSheetAt(0); 
+        for(int rows = 1; rows < sheet.getPhysicalNumberOfRows(); rows++){
+            Row currentRow = sheet.getRow(rows);
+            
+            System.out.print(currentRow.getCell(0).getStringCellValue()+ "\t");
+            System.out.print(currentRow.getCell(1).getNumericCellValue()+ "\t");
+            System.out.print(currentRow.getCell(2).getNumericCellValue()+ "\t");
+            System.out.print(currentRow.getCell(3).getNumericCellValue()+ "\t");
+            System.out.print(currentRow.getCell(4).getNumericCellValue()+ "\t");
+            System.out.print(currentRow.getCell(5).getNumericCellValue()+ "\t");
+            System.out.print(currentRow.getCell(6).getNumericCellValue()+ "\t");
+            System.out.print(currentRow.getCell(7).getNumericCellValue()+ "\t");
+            System.out.print(currentRow.getCell(8).getNumericCellValue()+ "\t");
+            System.out.print(currentRow.getCell(9).getNumericCellValue()+ "\t");
+            System.out.print(currentRow.getCell(10).getNumericCellValue()+ "\t");
+            System.out.print(currentRow.getCell(11).getNumericCellValue()+ "\t");
+            System.out.print(currentRow.getCell(12).getNumericCellValue()+ "\t");
+
+          System.out.println();
+        }
+    }
     
 }

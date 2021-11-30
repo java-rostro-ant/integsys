@@ -78,6 +78,14 @@
                                     <Blend />
                                  </effect>
                               </Button>
+                              <Button fx:id="btnImport" contentDisplay="TOP" ellipsisString="" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="50.0" text="Import Excel File">
+                                 <graphic>
+                                    <FontAwesomeIconView glyphName="UPLOAD" size="20" />
+                                 </graphic>
+                                 <effect>
+                                    <Blend />
+                                 </effect>
+                              </Button>
                            </children>
                         </HBox>
                         <Button fx:id="btnClose" contentDisplay="TOP" ellipsisString="" layoutX="138.0" layoutY="7.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="70.0" text="Close" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">

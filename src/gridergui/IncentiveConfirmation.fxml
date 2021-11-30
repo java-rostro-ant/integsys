@@ -217,6 +217,14 @@
                                     <Blend />
                                  </effect>
                               </Button>
+                              <Button fx:id="btnUpdate" contentDisplay="TOP" ellipsisString="" layoutX="150.0" layoutY="10.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Update">
+                                 <graphic>
+                                    <FontAwesomeIconView glyphName="EDIT" size="20" />
+                                 </graphic>
+                                 <effect>
+                                    <Blend />
+                                 </effect>
+                              </Button>
                            </children>
                         </HBox>
                         <Button fx:id="btnClose" contentDisplay="TOP" ellipsisString="" layoutX="138.0" layoutY="7.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="70.0" text="Close" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
