@@ -427,7 +427,8 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
                 priceWithDecimal(Double.valueOf(oTrans.getIncentiveInfo(lnCtr, "nQtyActlx").toString())),
                 priceWithDecimal(Double.valueOf(oTrans.getIncentiveInfo(lnCtr, "nAmtGoalx").toString())),
                 priceWithDecimal(Double.valueOf(oTrans.getIncentiveInfo(lnCtr, "nAmtActlx").toString())),
-                priceWithDecimal(Double.valueOf(oTrans.getIncentiveInfo(lnCtr, "nInctvAmt").toString()))));
+                priceWithDecimal(Double.valueOf(oTrans.getIncentiveInfo(lnCtr, "nInctvAmt").toString())),
+                oTrans.getIncentiveInfo(lnCtr, "sRemarksx").toString()));
 
              System.out.println(oTrans.getIncentiveInfo(lnCtr, "xInctvNme"));
              System.out.println(oTrans.getIncentiveInfo(lnCtr, "nQtyGoalx"));
@@ -441,6 +442,7 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
              for (lnCtr = 1; lnCtr <= oTrans.getDeductionCount(); lnCtr++){
                  data.add(new TableIncentives(String.valueOf(lnCtr), 
                      (oTrans.getDeductionInfo(lnCtr, "sRemarksx").toString() + " (Deduction)"),
+                     "",
                      "",
                      "",
                      "",
