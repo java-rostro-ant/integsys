@@ -28,6 +28,9 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import static javafx.scene.input.KeyCode.DOWN;
+import static javafx.scene.input.KeyCode.ENTER;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
@@ -38,7 +41,6 @@ import org.rmj.appdriver.agent.MsgBox;
 import org.rmj.appdriver.agentfx.CommonUtils;
 import org.rmj.appdriver.constants.EditMode;
 import org.rmj.fund.manager.base.Incentive; 
-import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
@@ -58,11 +60,12 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
     private Incentive oTrans;
     private LMasDetTrans oListener;
     
-    private String transnox = "";
+    private String oTransnox = "";
     
     private int pnIndex = -1;    
     private int pnRow = -1;
     private int pnEditMode;
+    private int lnCtr;
 
     private boolean pbLoaded = false;
     
@@ -83,7 +86,8 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
     @FXML
     private AnchorPane AnchorMain;
     @FXML
-    private Label lblHeader;    
+    private Label lblHeader; 
+    
     @FXML
     private TableView tblemployee;
     @FXML
@@ -146,7 +150,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
     private Button btnDeactivate;
     
     public void setTransaction(String fsValue){
-        transnox = fsValue;
+        oTransnox = fsValue;
     }
     
     @Override
@@ -175,8 +179,10 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
             @Override
             public void DetailRetreive(int fnRow, int fnIndex, Object foValue) {
             }
-        };
-       
+         };
+        tblIncentives_column();
+        tblemployee_column();
+        
         btnNew.setOnAction(this::cmdButton_Click);
         btnAddIncentives.setOnAction(this::cmdButton_Click);
         btnAddDeductions.setOnAction(this::cmdButton_Click);
@@ -214,11 +220,11 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         CommonUtils.addTextLimiter(txtField04, 6);
         CommonUtils.addTextLimiter(txtField05, 128);
         try { 
-            if(transnox.isEmpty()){
+            if(oTransnox.isEmpty()){
                 pnEditMode = EditMode.UNKNOWN;
                 initButton(pnEditMode);
             } else {
-                if (oTrans.SearchTransaction(transnox, true)){
+                if (oTrans.SearchTransaction(oTransnox, true)){
                     loadMaster();
                     loadIncentives();
                     pnEditMode = EditMode.READY;
@@ -233,21 +239,14 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
     } 
     
     private void txtArea_KeyPressed(KeyEvent event){
-        TextArea txtField = (TextArea)event.getSource();
-        int lnIndex = Integer.parseInt(((TextArea)event.getSource()).getId().substring(8,10));
-        String lsValue = txtField.getText();
-            
-        switch (event.getCode()){
-            
-        case ENTER:
-        case DOWN:
-            CommonUtils.SetNextFocus(txtField);
-            break;
-        case UP:
-            CommonUtils.SetPreviousFocus(txtField);
+        if (event.getCode() == ENTER || event.getCode() == DOWN){ 
+            event.consume();
+            CommonUtils.SetNextFocus((TextArea)event.getSource());
+        }else if (event.getCode() ==KeyCode.UP){
+        event.consume();
+            CommonUtils.SetPreviousFocus((TextArea)event.getSource());
         }
     }
-    
     private void txtField_KeyPressed(KeyEvent event){
         TextField txtField = (TextField)event.getSource();
         int lnIndex = Integer.parseInt(((TextField)event.getSource()).getId().substring(8,10));
@@ -258,7 +257,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                 case F3:
                 case ENTER:
                     switch (lnIndex){
-                        case 21: /*search transaction*/
+                        case 21: /*search oTransaction*/
                             if (oTrans.SearchTransaction(txtSeeks21.getText(), true)){
                                 loadMaster();
                                 loadIncentives();
@@ -350,12 +349,39 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
     public void setGRider(GRider foValue) {
         oApp = foValue;
     }
+//     private void loadIncentives() throws SQLException{
+//        //load to grid the incentives.
+//        inc_data.clear();
+//        int lnCtr; 
+//
+//        for (lnCtr = 1; lnCtr <= oTrans.getIncentiveCount(); lnCtr++){
+//            inc_data.add(new TableIncentives(String.valueOf(lnCtr),
+//                oTrans.getIncentiveInfo(lnCtr, "xInctvNme").toString(),
+//                oTrans.getIncentiveInfo(lnCtr, "nQtyGoalx").toString(),
+//                oTrans.getIncentiveInfo(lnCtr, "nQtyActlx").toString(),
+//                oTrans.getIncentiveInfo(lnCtr, "nAmtGoalx").toString(),
+//                oTrans.getIncentiveInfo(lnCtr, "nAmtActlx").toString(),
+//                oTrans.getIncentiveInfo(lnCtr, "nInctvAmt").toString(),
+//                oTrans.getIncentiveInfo(lnCtr, "sRemarksx").toString()));
+//        }
+//
+//            for (lnCtr = 1; lnCtr <= oTrans.getDeductionCount(); lnCtr++){
+//                inc_data.add(new TableIncentives(String.valueOf(tblIncentives.getItems().size() + 1), 
+//                    oTrans.getDeductionInfo(lnCtr, "sRemarksx").toString()+ " (Deduction)",
+//                    "",
+//                    "",
+//                    "",
+//                    oTrans.getDeductionInfo(lnCtr, "nDedctAmt").toString(),
+//                    oTrans.getDeductionInfo(lnCtr, "nDedctAmt").toString(),
+//                    ""));
+//                }
+//        initGrid1();    
+//    }
+    
     
     private void loadIncentives() throws SQLException{
         //load to grid the incentives.
         inc_data.clear();
-        int lnCtr; 
-
         for (lnCtr = 1; lnCtr <= oTrans.getIncentiveCount(); lnCtr++){
             inc_data.add(new TableIncentives(String.valueOf(lnCtr),
                 oTrans.getIncentiveInfo(lnCtr, "xInctvNme").toString(),
@@ -363,18 +389,22 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                 oTrans.getIncentiveInfo(lnCtr, "nQtyActlx").toString(),
                 oTrans.getIncentiveInfo(lnCtr, "nAmtGoalx").toString(),
                 oTrans.getIncentiveInfo(lnCtr, "nAmtActlx").toString(),
-                oTrans.getIncentiveInfo(lnCtr, "nInctvAmt").toString()));
+                oTrans.getIncentiveInfo(lnCtr, "nInctvAmt").toString(),
+                oTrans.getIncentiveInfo(lnCtr, "sRemarksx").toString()));
         }
-       
-            
+        
             for (lnCtr = 1; lnCtr <= oTrans.getDeductionCount(); lnCtr++){
-                inc_data.add(new TableIncentives(String.valueOf(tblIncentives.getItems().size() + 1), 
-                    oTrans.getDeductionInfo(lnCtr, "sRemarksx").toString(),
+                inc_data.add(new TableIncentives(String.valueOf(inc_data.size() + 1), 
+                    oTrans.getDeductionInfo(lnCtr, "sRemarksx").toString() + "(Deduction)",
                     "",
                     "",
                     "",
                     "",
-                    oTrans.getDeductionInfo(lnCtr, "nDedctAmt").toString()));
+                    oTrans.getDeductionInfo(lnCtr, "nDedctAmt").toString(),
+                    ""));
+//                System.out.println(oTrans.getDeductionInfo(lnCtr, "nDedctAmt").toString());
+
+            
                 }
         initGrid1();    
     }
@@ -550,6 +580,54 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
             System.exit(1);
         }
     }
+    private void loadDeductionDetail(int fnRow) throws SQLException{
+        try {
+            Stage stage = new Stage();
+            
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("AddDeduction.fxml"));
+
+            AddDeductionController loControl1 = new AddDeductionController();
+            loControl1.setGRider(oApp);
+            loControl1.setDeductionObject(oTrans);
+            loControl1.setTableRows(fnRow);
+            
+            fxmlLoader.setController(loControl1);
+            
+            //load the main interface
+            Parent parent = fxmlLoader.load();
+                
+            parent.setOnMousePressed(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    xOffset = event.getSceneX();
+                    yOffset = event.getSceneY();
+                }
+            });
+            parent.setOnMouseDragged(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    stage.setX(event.getScreenX() - xOffset);
+                    stage.setY(event.getScreenY() - yOffset);
+                }
+            });
+            
+            //set the main interface as the scene
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("");
+            stage.showAndWait();
+            
+            loadDetail();
+            loadIncentives();
+        } catch (IOException e) {
+            e.printStackTrace();
+            MsgBox.showOk(e.getMessage());
+            System.exit(1);
+        }
+    }
     
     private void cmdButton_Click(ActionEvent event) {
         String lsButton = ((Button)event.getSource()).getId();
@@ -592,7 +670,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                         if (oTrans.SaveTransaction()){
                             MsgBox.showOk("Transaction save successfully");
                             
-                            if (!transnox.isEmpty()){
+                            if (!oTransnox.isEmpty()){
                                 //load confirmation form
                                 //exit
                             } else {
@@ -608,7 +686,6 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                     break;
                  case "btnBrowse":
                          if (oTrans.SearchTransaction(txtSeeks21.getText(), false)){
-                            
                             loadMaster();
                             loadIncentives();
                             pnEditMode = EditMode.READY;
@@ -653,8 +730,6 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         txtField04.setDisable(false);
             
         for (int lnCtr = 1; lnCtr <= oTrans.getItemCount(); lnCtr++){
-//            data.add(new TableModel(String.valueOf(lnCtr),
-//                oTrans.getDetail(lnCtr, "xEmployNm").toString(),"","","",""));
             data.add(new TableModel(String.valueOf(lnCtr),
                     oTrans.getDetail(lnCtr, "xEmployNm").toString(),
                     oTrans.getDetail(lnCtr, "xEmpLevNm").toString(),
@@ -699,9 +774,11 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
             });
         });
         tblemployee.setItems(data);
+        tblemployee.autosize();
     }
     
     private void initGrid1() {
+        
         incindex01.setStyle("-fx-alignment: CENTER;");
         incindex02.setStyle("-fx-alignment: CENTER-LEFT;");
         incindex03.setStyle("-fx-alignment: CENTER-LEFT;");
@@ -724,19 +801,64 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
             });
         });
         tblIncentives.setItems(inc_data);
+        tblIncentives.autosize();
     }
     
     @FXML
     private void tblIncentives_Clicked(MouseEvent event) {
+        
         try {
+            
             pnRow = tblIncentives.getSelectionModel().getSelectedIndex(); 
             TableIncentives ti = (TableIncentives) tblIncentives.getItems().get(pnRow);
-            AddIncentivesController.setData(ti);
-            loadIncentiveDetail((String) oTrans.getIncentiveInfo(pnRow + 1, "sInctveCD"), pnRow + 1);
+            
+            if(ti.getIncindex02().contains("Deduction")){
+                
+                AddDeductionController.setData(ti);
+                loadDeductionDetail(pnRow + 1 - (oTrans.getIncentiveCount())); 
+                
+            } else{
+                AddIncentivesController.setData(ti);
+                loadIncentiveDetail((String) oTrans.getIncentiveInfo(pnRow + 1, "sInctveCD"), pnRow + 1); 
+            }
             
         } catch (SQLException ex) {
             ex.printStackTrace();
             MsgBox.showOk(ex.getMessage());
         }
+    }
+    
+    public void tblIncentives_column(){
+         incindex01.prefWidthProperty().bind(tblIncentives.widthProperty().multiply(0.04));
+         incindex02.prefWidthProperty().bind(tblIncentives.widthProperty().multiply(0.250));
+         incindex03.prefWidthProperty().bind(tblIncentives.widthProperty().multiply(0.14));
+         incindex04.prefWidthProperty().bind(tblIncentives.widthProperty().multiply(0.14));
+         incindex05.prefWidthProperty().bind(tblIncentives.widthProperty().multiply(0.14));
+         incindex06.prefWidthProperty().bind(tblIncentives.widthProperty().multiply(0.14));
+         incindex07.prefWidthProperty().bind(tblIncentives.widthProperty().multiply(0.14));
+         
+         incindex01.setResizable(false);  
+         incindex02.setResizable(false);  
+         incindex03.setResizable(false);  
+         incindex04.setResizable(false);  
+         incindex05.setResizable(false);  
+         incindex06.setResizable(false);
+         incindex07.setResizable(false);   
+    }
+    
+    public void tblemployee_column(){
+         index01.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.04));
+         index02.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.275));
+         index03.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.24));
+         index04.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.24));
+         index05.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.10));
+         index06.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.10));
+         
+         index01.setResizable(false);  
+         index02.setResizable(false);  
+         index03.setResizable(false);  
+         index04.setResizable(false);  
+         index05.setResizable(false);  
+         index06.setResizable(false);  
     }
 }       

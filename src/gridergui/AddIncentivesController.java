@@ -31,6 +31,9 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import static javafx.scene.input.KeyCode.DOWN;
+import static javafx.scene.input.KeyCode.ENTER;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -44,6 +47,7 @@ import org.rmj.appdriver.agentfx.CommonUtils;
 import org.rmj.appdriver.agentfx.ShowMessageFX;
 import org.rmj.appdriver.constants.EditMode;
 import org.rmj.fund.manager.base.Incentive;
+import org.rmj.fund.manager.base.LMasDetTrans;
 
 /**
  * FXML Controller class
@@ -57,6 +61,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
     private int pnOldRow = -1;
     private int pnRow = 0;
     private boolean pbLoaded = false;
+    private LMasDetTrans oListener;
     
     private String psOldRec;
     private String psCode;
@@ -94,14 +99,9 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
     private TableColumn<?, ?> empIncindex03;
     @FXML
     private TableColumn<?, ?> empIncindex04;
-    @FXML
-    private Label allocperc;
-    @FXML
-    private Label allocamt;
+    
     @FXML
     private TextField txtField10;
-    @FXML
-    private TextArea txtField13;
     @FXML
     private TextField txtField11;
     @FXML
@@ -118,11 +118,15 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
     @FXML
     private TextField txtField07;
     @FXML
-    private TextArea txtField08;
-    @FXML
     private TextField txtField04;
     @FXML
     private TextField txtField06;
+    @FXML
+    private TextArea txtField08;
+    @FXML
+    private Label txtField101;
+    @FXML
+    private Label txtField102;
   
     public void setGRider(GRider foValue) {
         
@@ -141,17 +145,29 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
             btnOk.setOnAction(this::cmdButton_Click);
             btnExit.setOnAction(this::cmdButton_Click);
             
+            txtField03.setOnKeyPressed(this::txtField_KeyPressed);
+            txtField04.setOnKeyPressed(this::txtField_KeyPressed);
+            txtField05.setOnKeyPressed(this::txtField_KeyPressed);
+            txtField06.setOnKeyPressed(this::txtField_KeyPressed);
+            txtField07.setOnKeyPressed(this::txtField_KeyPressed);
+            txtField08.setOnKeyPressed(this::txtArea_KeyPressed);
+            
+            txtField11.setOnKeyPressed(this::txtField_KeyPressed);
+            txtField12.setOnKeyPressed(this::txtField_KeyPressed);
+            
             txtField11.focusedProperty().addListener(txtField_Focus);
             txtField12.focusedProperty().addListener(txtField_Focus);
-            
             txtField03.focusedProperty().addListener(txtField_Focus);
             txtField04.focusedProperty().addListener(txtField_Focus);
             txtField05.focusedProperty().addListener(txtField_Focus);
             txtField06.focusedProperty().addListener(txtField_Focus);
-            txtField07.focusedProperty().addListener(txtField_Focus);     
+            txtField07.focusedProperty().addListener(txtField_Focus);
+            
+            txtField08.focusedProperty().addListener(txtArea_Focus); 
             
             loadEmployee();
             loadIncentives();
@@ -159,9 +175,20 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
             
             pnEditMode = oTrans.getEditMode();
             pbLoaded = true;
+
+               
     }
     public static void setData(TableIncentives incdata){
         incModel = incdata;    
+    }
+    private void txtArea_KeyPressed(KeyEvent event){
+        if (event.getCode() == ENTER || event.getCode() == DOWN){ 
+            event.consume();
+            CommonUtils.SetNextFocus((TextArea)event.getSource());
+        }else if (event.getCode() ==KeyCode.UP){
+        event.consume();
+            CommonUtils.SetPreviousFocus((TextArea)event.getSource());
+        }
     }
     
     private void txtField_KeyPressed(KeyEvent event){
@@ -185,6 +212,30 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
             CommonUtils.SetPreviousFocus(txtField);
         }
     }
+    
+    final ChangeListener<? super Boolean> txtArea_Focus = (o,ov,nv)->{ 
+        if (!pbLoaded) return;
+        
+        TextArea txtField = (TextArea)((ReadOnlyBooleanPropertyBase)o).getBean();
+        int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
+        String lsValue = txtField.getText();
+        
+        if (lsValue == null) return;
+            try {
+                if(!nv){ /*Lost Focus*/
+                    switch (lnIndex){
+                        case 8:
+                           oTrans.setIncentiveInfo(tbl_row, "sRemarksx", lsValue); break;
+                    }
+                } else
+                    txtField.selectAll();
+
+                pnIndex = lnIndex;
+            } catch (SQLException e) {
+                MsgBox.showOk(e.getMessage());
+                System.exit(1);
+            }
+    };
 
     final ChangeListener<? super Boolean> txtField_Focus = (o,ov,nv)->{ 
         if (!pbLoaded) return;
@@ -235,7 +286,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                             oTrans.setIncentiveInfo(tbl_row, "nInctvAmt", 0.00);
                             txtField.setText(CommonUtils.NumberFormat((Number)oTrans.getIncentiveInfo(tbl_row, "nInctvAmt"), "#,##0.00"));
                          break;
-                        
+
                     case 11:
                         if (StringUtil.isNumeric(lsValue))                        
                             oTrans.setIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"), Double.valueOf(lsValue));
@@ -243,7 +294,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                             oTrans.setIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"), 0.00);
                         
                         txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID")), "##0.00"));                        
-                        loadDetail();
+                        loadEmployee();
                         break;
                     case 12:
                         if (StringUtil.isNumeric(lsValue))                        
@@ -252,7 +303,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                             oTrans.setIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"), 0.00); 
                         
                         txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(pnRow, "sEmployID")), "#,##0.00"));
-                        loadDetail();
+                        loadEmployee();
                         break;
                 }
             } catch (SQLException e) {
@@ -275,6 +326,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                 txtField05.setText(incModel.getIncindex05());
                 txtField06.setText(incModel.getIncindex06());
                 txtField07.setText(incModel.getIncindex07());
+                txtField08.setText(incModel.getIncindex08());
 
             } catch (SQLException ex) {
                 Logger.getLogger(AddIncentivesController.class.getName()).log(Level.SEVERE, null, ex);
@@ -285,9 +337,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
  
     private void loadEmployee(){
         try {
-            int lnRow = oTrans.getItemCount(); 
-           System.out.println("----------------------------------------");
-            
+            int lnRow = oTrans.getItemCount();             
             for (int lnCtr = 1; lnCtr <= lnRow; lnCtr++){
                 //get
                 incEmp_data.add(new TableEmployeeIncentives(String.valueOf(lnCtr),
@@ -298,7 +348,9 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                 pnEditMode = oTrans.getEditMode();
                 pbLoaded = true;
             }
-            
+                txtField101.setText(String.valueOf(oTrans.getIncentiveInfo(tbl_row, 101)+ " %"));
+                txtField102.setText(String.valueOf(oTrans.getIncentiveInfo(tbl_row, 102)));
+                
         } catch (SQLException ex) {
             ex.printStackTrace();
             MsgBox.showOk(ex.getMessage()); 
@@ -307,25 +359,24 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
     }
     
     private void cmdButton_Click(ActionEvent event) {
-        try {
-            String lsButton = ((Button)event.getSource()).getId();
-            
-            switch (lsButton){
-                case "btnOk":
-                    CommonUtils.closeStage(btnOk);
-                    System.out.println(oTrans.getIncentiveInfo(tbl_row, "nInctvAmt").toString());
-                    break;
-                    
-                case "btnExit":
-                    CommonUtils.closeStage(btnExit);
-                    break;
-                    
-                default:
-                    ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");  
-                    return;
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(AddIncentivesController.class.getName()).log(Level.SEVERE, null, ex);
+        String lsButton = ((Button)event.getSource()).getId();
+        switch (lsButton){
+            case "btnOk":
+                CommonUtils.closeStage(btnOk);
+//                    System.out.println(oTrans.getIncentiveInfo(tbl_row, "nInctvAmt").toString());
+//                    System.out.println(oTrans.getIncentiveInfo(tbl_row, "sRemarksx").toString());
+//                    System.out.println(oTrans.getIncentiveInfo(tbl_row, "xAllocPer").toString());
+//                    System.out.println(oTrans.getIncentiveInfo(tbl_row, "xAllocAmt").toString());
+                
+                break;
+                
+            case "btnExit":
+                CommonUtils.closeStage(btnExit);
+                break;
+                
+            default:
+                ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
+                return;
         }
     } 
     
@@ -360,23 +411,6 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
         } 
         catch (SQLException ex) {
             Logger.getLogger(AddIncentivesController.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    private void loadDetail(){
-        try {
-            incEmp_data.clear();
-            int lnRow = oTrans.getItemCount(); 
-            for (int lnCtr = 1; lnCtr <= lnRow; lnCtr++){
-                incEmp_data.add(new TableEmployeeIncentives(String.valueOf(lnCtr),
-                (String) oTrans.getDetail(lnCtr, "xEmployNm"),
-                 oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")).toString(),
-                 oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")).toString()));
-            }
-            initGrid();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            MsgBox.showOk(e.getMessage());
         }
     }
 
