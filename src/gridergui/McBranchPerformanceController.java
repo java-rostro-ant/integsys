@@ -326,6 +326,8 @@ public class McBranchPerformanceController implements Initializable , ScreenInte
         if(fnValue == EditMode.ADDNEW){
             txtField02.requestFocus();
         }
+        btnImport.setVisible(oApp.getDepartment().equalsIgnoreCase("026"));
+        
         if (lbShow){
             txtSeeks07.setDisable(lbShow);
             txtSeeks08.setDisable(lbShow);
@@ -548,20 +550,20 @@ public class McBranchPerformanceController implements Initializable , ScreenInte
 
         for(int rows = 1; rows < sheet.getPhysicalNumberOfRows(); rows++){
             Row currentRow = sheet.getRow(rows);
-            System.out.print(currentRow.getCell(0).getStringCellValue()+ "\t");
-            System.out.print(currentRow.getCell(1).getNumericCellValue()+ "\t");
-            System.out.print(currentRow.getCell(2).getNumericCellValue()+ "\t");
-            System.out.print(currentRow.getCell(3).getNumericCellValue()+ "\t");
-            System.out.print(currentRow.getCell(4).getNumericCellValue()+ "\t");
-            System.out.print(currentRow.getCell(5).getNumericCellValue()+ "\t");
-            System.out.print(currentRow.getCell(6).getNumericCellValue()+ "\t");
-            System.out.print(currentRow.getCell(7).getNumericCellValue()+ "\t");
-            System.out.print(currentRow.getCell(8).getNumericCellValue()+ "\t");
-            System.out.print(currentRow.getCell(9).getNumericCellValue()+ "\t");
-            System.out.print(currentRow.getCell(10).getNumericCellValue()+ "\t");
-            System.out.print(currentRow.getCell(11).getNumericCellValue()+ "\t");
-            System.out.print(currentRow.getCell(12).getNumericCellValue()+ "\t");
-
+            
+            System.out.print((currentRow.getCell(0) == null)? "" : currentRow.getCell(0).getStringCellValue()+ "\t");
+            System.out.print((currentRow.getCell(1) == null)? 0.0 + "\t" : currentRow.getCell(1).getNumericCellValue() + "\t");
+            System.out.print((currentRow.getCell(2) == null)? 0.0 + "\t" : currentRow.getCell(2).getNumericCellValue() + "\t");
+            System.out.print((currentRow.getCell(3) == null)? 0.0 + "\t" : currentRow.getCell(3).getNumericCellValue() + "\t");
+            System.out.print((currentRow.getCell(4) == null)? 0.0 + "\t" : currentRow.getCell(4).getNumericCellValue() + "\t");
+            System.out.print((currentRow.getCell(5) == null)? 0.0 + "\t" : currentRow.getCell(5).getNumericCellValue() + "\t");
+            System.out.print((currentRow.getCell(6) == null)? 0.0 + "\t" : currentRow.getCell(6).getNumericCellValue() + "\t");
+            System.out.print((currentRow.getCell(7) == null)? 0.0 + "\t" : currentRow.getCell(7).getNumericCellValue() + "\t");
+            System.out.print((currentRow.getCell(8) == null)? 0.0 + "\t" : currentRow.getCell(8).getNumericCellValue() + "\t");
+            System.out.print((currentRow.getCell(9) == null)? 0.0 + "\t" : currentRow.getCell(9).getNumericCellValue() + "\t");
+            System.out.print((currentRow.getCell(10) == null)? 0.0 + "\t" : currentRow.getCell(10).getNumericCellValue() + "\t");
+            System.out.print((currentRow.getCell(11) == null)? 0.0 + "\t" : currentRow.getCell(11).getNumericCellValue() + "\t");
+            System.out.print((currentRow.getCell(12) == null)? 0.0 + "\t" : currentRow.getCell(12).getNumericCellValue() + "\t");
           System.out.println();
         }
     }
@@ -573,19 +575,19 @@ public class McBranchPerformanceController implements Initializable , ScreenInte
         for(int rows = 1; rows < sheet.getPhysicalNumberOfRows(); rows++){
             Row currentRow = sheet.getRow(rows);
             
-            System.out.print(currentRow.getCell(0).getStringCellValue()+ "\t");
-            System.out.print(currentRow.getCell(1).getNumericCellValue()+ "\t");
-            System.out.print(currentRow.getCell(2).getNumericCellValue()+ "\t");
-            System.out.print(currentRow.getCell(3).getNumericCellValue()+ "\t");
-            System.out.print(currentRow.getCell(4).getNumericCellValue()+ "\t");
-            System.out.print(currentRow.getCell(5).getNumericCellValue()+ "\t");
-            System.out.print(currentRow.getCell(6).getNumericCellValue()+ "\t");
-            System.out.print(currentRow.getCell(7).getNumericCellValue()+ "\t");
-            System.out.print(currentRow.getCell(8).getNumericCellValue()+ "\t");
-            System.out.print(currentRow.getCell(9).getNumericCellValue()+ "\t");
-            System.out.print(currentRow.getCell(10).getNumericCellValue()+ "\t");
-            System.out.print(currentRow.getCell(11).getNumericCellValue()+ "\t");
-            System.out.print(currentRow.getCell(12).getNumericCellValue()+ "\t");
+            System.out.print((currentRow.getCell(0) == null)? "" : currentRow.getCell(0).getStringCellValue()+ "\t"); 
+            System.out.print((currentRow.getCell(1) == null)? 0.0 + "\t" : currentRow.getCell(1).getNumericCellValue() + "\t");
+            System.out.print((currentRow.getCell(2) == null)? 0.0 + "\t" : currentRow.getCell(2).getNumericCellValue() + "\t");
+            System.out.print((currentRow.getCell(3) == null)? 0.0 + "\t" : currentRow.getCell(3).getNumericCellValue() + "\t");
+            System.out.print((currentRow.getCell(4) == null)? 0.0 + "\t" : currentRow.getCell(4).getNumericCellValue() + "\t");
+            System.out.print((currentRow.getCell(5) == null)? 0.0 + "\t" : currentRow.getCell(5).getNumericCellValue() + "\t");
+            System.out.print((currentRow.getCell(6) == null)? 0.0 + "\t" : currentRow.getCell(6).getNumericCellValue() + "\t");
+            System.out.print((currentRow.getCell(7) == null)? 0.0 + "\t" : currentRow.getCell(7).getNumericCellValue() + "\t");
+            System.out.print((currentRow.getCell(8) == null)? 0.0 + "\t" : currentRow.getCell(8).getNumericCellValue() + "\t");
+            System.out.print((currentRow.getCell(9) == null)? 0.0 + "\t" : currentRow.getCell(9).getNumericCellValue() + "\t");
+            System.out.print((currentRow.getCell(10) == null)? 0.0 + "\t" : currentRow.getCell(10).getNumericCellValue() + "\t");
+            System.out.print((currentRow.getCell(11) == null)? 0.0 + "\t" : currentRow.getCell(11).getNumericCellValue() + "\t");
+            System.out.print((currentRow.getCell(12) == null)? 0.0 + "\t" : currentRow.getCell(12).getNumericCellValue() + "\t");
 
           System.out.println();
         }

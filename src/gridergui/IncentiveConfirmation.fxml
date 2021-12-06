@@ -93,7 +93,10 @@
                                     <AnchorPane prefWidth="551.0" style="-fx-border-color: #F88222; -fx-border-radius: 5;" BorderPane.alignment="CENTER">
                                        <children>
                                           <TableView fx:id="tblincetives" layoutX="6.0" layoutY="5.0" prefWidth="539.0" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="3.0">
-                                             <columns>
+                                              <placeholder>
+                                                <Label text="No record found." />
+                                              </placeholder>
+                                              <columns>
                                                 <TableColumn fx:id="incIndex01" editable="false" minWidth="210.0" prefWidth="-1.0" text="Incentive/Deduction" />
                                                 <TableColumn fx:id="incIndex02" minWidth="110.0" prefWidth="-1.0" text="Goal" />
                                                 <TableColumn fx:id="incIndex03" minWidth="110.0" prefWidth="-1.0" text="Actual" />
@@ -118,6 +121,9 @@
                                              <effect>
                                                 <Blend />
                                              </effect>
+                                             <placeholder>
+                                                <Label text="No record found." />
+                                              </placeholder>
                                              <columns>
                                                 <TableColumn fx:id="empIndex01" editable="false" minWidth="20.0" prefWidth="30.0" text="No." />
                                                 <TableColumn fx:id="empIndex02" prefWidth="200.0" text="Employee" />
@@ -146,7 +152,7 @@
                                                 <Font name="System Bold" size="12.0" />
                                              </font>
                                           </Label>
-                                          <TextField fx:id="txtSeeks05" layoutX="116.0" layoutY="7.0" prefHeight="23.0" prefWidth="180.0" style="-fx-border-radius: 5;" AnchorPane.bottomAnchor="6.0" AnchorPane.topAnchor="5.0">
+                                          <TextField fx:id="txtSeeks05" layoutX="116.0" layoutY="7.0" prefHeight="23.0" prefWidth="180.0" promptText="Search :  F3" style="-fx-border-radius: 5;" AnchorPane.bottomAnchor="6.0" AnchorPane.topAnchor="5.0">
                                              <font>
                                                 <Font size="10.0" />
                                              </font>
@@ -156,7 +162,7 @@
                                                 <Font name="System Bold" size="12.0" />
                                              </font>
                                           </Label>
-                                          <TextField fx:id="txtSeeks06" layoutX="448.0" layoutY="4.0" prefHeight="23.0" prefWidth="180.0" style="-fx-border-radius: 5;" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="380.0" AnchorPane.topAnchor="5.0">
+                                          <TextField fx:id="txtSeeks06" layoutX="448.0" layoutY="4.0" prefHeight="23.0" prefWidth="180.0" promptText="Search :  F3" style="-fx-border-radius: 5;" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="380.0" AnchorPane.topAnchor="5.0">
                                              <font>
                                                 <Font size="10.0" />
                                              </font>

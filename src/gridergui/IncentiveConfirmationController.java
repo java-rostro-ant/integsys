@@ -322,12 +322,6 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
             });
         });
         
-         System.out.println("table width = " + tblincetives.getWidth());
-//         System.out.println("incIndex01 width = " + (tblincetives.widthProperty().divide(tblincetives.getWidth())));
-         
-//        incIndex06.set
-        /*Assigning data to table*/
-        
         tblincetives.setItems(data);
         tblincetives.autosize();
        
@@ -350,7 +344,6 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
                               TableRow<TableIncentives> currentRow = getTableRow();
 
                               if (!isEmpty()) {
-
                                   if(item.contains("Deduction")) 
                                       currentRow.setStyle(" -fx-background-color: -fx-table-cell-border-color, #ff3333;");
                               }
