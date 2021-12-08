@@ -59,6 +59,7 @@ public class AddDeductionController implements Initializable {
     private int pnEditMode;
     private int pnSubItems = 0;
     public int tbl_row = 0;
+    private boolean state = false;
     
     private ObservableList<TableIncentives> inc_data = FXCollections.observableArrayList();
     private ObservableList<TableModel> data = FXCollections.observableArrayList();
@@ -124,6 +125,10 @@ public class AddDeductionController implements Initializable {
         tbl_row = row;
     }
 
+    public void setState(boolean fsValue){
+        state = fsValue;
+    }
+    
     /**
      * Initializes the controller class.
      */
@@ -201,8 +206,16 @@ public class AddDeductionController implements Initializable {
     
     public void loadDeductionDetail(){
         try { 
+            
                 txtField01.setText((String) oTrans.getMaster(1));
                 txtField02.setText(incModel.getIncindex02());
+               
+                txtField02.setDisable(state);
+                txtField03.setDisable(state);
+                txtField04.setDisable(state);
+                txtField05.setDisable(state);
+                txtField06.setDisable(state);
+                txtField01.setDisable(state);
             } catch (SQLException ex) {
                 Logger.getLogger(AddDeductionController.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -248,6 +261,7 @@ public class AddDeductionController implements Initializable {
     }
     
     private void loadDetail(){
+        
         try {
             int lnRow = oTrans.getItemCount();             
             for (int lnCtr = 1; lnCtr <= lnRow; lnCtr++){

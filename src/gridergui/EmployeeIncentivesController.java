@@ -1,3 +1,5 @@
+
+
 package gridergui;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
@@ -61,6 +63,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
     private LMasDetTrans oListener;
     
     private String oTransnox = "";
+    private boolean state = false;
     
     private int pnIndex = -1;    
     private int pnRow = -1;
@@ -152,6 +155,10 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
     public void setTransaction(String fsValue){
         oTransnox = fsValue;
     }
+    public void setState(boolean fsValue){
+        state = fsValue;
+    }
+    
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {  
@@ -227,8 +234,19 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                 if (oTrans.SearchTransaction(oTransnox, true)){
                     loadMaster();
                     loadIncentives();
-                    pnEditMode = EditMode.READY;
-                    initButton(pnEditMode);
+                    
+                    if (oTrans.UpdateTransaction()){
+                        pnEditMode = oTrans.getEditMode(); 
+                        initButton(pnEditMode);
+                      } else 
+                        MsgBox.showOk(oTrans.getMessage());
+//                    if(state){
+//                        pnEditMode = EditMode.UPDATE;
+//                        initButton(pnEditMode);
+//                    }else{
+//                        pnEditMode = EditMode.READY;
+//                        initButton(pnEditMode);
+//                    }
                 } else
                     MsgBox.showOk(oTrans.getMessage());
             }
@@ -296,7 +314,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
     
     private void initButton(int fnValue){
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-        
+     
         btnCancel.setVisible(lbShow);
         btnSearch.setVisible(lbShow);
         btnSave.setVisible(lbShow);
@@ -486,7 +504,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                     case 04:
                         if (!StringUtil.isNumeric(lsValue))
                             oTrans.setMaster(lnIndex, "");
-                        else
+                       else
                             oTrans.setMaster(lnIndex, lsValue);
                 }
             } else
@@ -661,25 +679,38 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                     break;
                 case "btnClose":
                         if(ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true){
-                            unloadForm();
+                            if(state){
+                                onsuccessUpdate();
+                            }else{ 
+                                unloadForm();
+                            }
                             break;
                         } else
                             MsgBox.showOk(oTrans.getMessage());
                             return;
                 case "btnSave":
+                    System.out.println(oTrans.getEditMode());
                         if (oTrans.SaveTransaction()){
-                            MsgBox.showOk("Transaction save successfully");
                             
-                            if (!oTransnox.isEmpty()){
-                                //load confirmation form
-                                //exit
-                            } else {
+                            MsgBox.showOk("Transaction save successfully");
+                            if(state){
+                               onsuccessUpdate();
+                            }else{
                                 clearFields();
                                 oTrans = new Incentive(oApp, oApp.getBranchCode(), false);
                                 oTrans.setListener(oListener);
                                 oTrans.setWithUI(true);
                                 pnEditMode = EditMode.UNKNOWN;
                             }
+                            
+//                            if (!oTransnox.isEmpty()){
+//                                //load confirmation form
+//                                //exit
+//                            } else {
+//                                
+//                                
+//                                
+//                            }
                         } else {
                             MsgBox.showOk(oTrans.getMessage());
                         }
@@ -700,11 +731,15 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                     break;
                 case "btnCancel":
                         if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true){  
-                            clearFields();
-                            oTrans = new Incentive(oApp, oApp.getBranchCode(), false);
-                            oTrans.setListener(oListener);
-                            oTrans.setWithUI(true);
-                            pnEditMode = EditMode.UNKNOWN;
+                            if(state){
+                               onsuccessUpdate();
+                            }else{
+                                clearFields();
+                                oTrans = new Incentive(oApp, oApp.getBranchCode(), false);
+                                oTrans.setListener(oListener);
+                                oTrans.setWithUI(true);
+                                pnEditMode = EditMode.UNKNOWN;
+                            }
                         }else
                             MsgBox.showOk((oTrans.getMessage()));
                     break;
@@ -860,5 +895,41 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
          index04.setResizable(false);  
          index05.setResizable(false);  
          index06.setResizable(false);  
+    }
+    
+    private void onsuccessUpdate(){
+        StackPane myBox = (StackPane) AnchorMain.getParent();
+        myBox.getChildren().clear();
+        myBox.getChildren().add(setScene());
+          
+    }
+    private AnchorPane setScene(){
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("IncentiveConfirmation.fxml"));
+
+            IncentiveConfirmationController loControl = new IncentiveConfirmationController();
+            loControl.setGRider(oApp);
+            loControl.setTransaction(oTransnox);
+            fxmlLoader.setController(loControl);
+            
+            //load the main interface
+                
+          AnchorPane root;
+        try {
+            root = (AnchorPane) fxmlLoader.load();
+            FadeTransition ft = new FadeTransition(Duration.millis(1500));
+            ft.setNode(root);
+            ft.setFromValue(1);
+            ft.setToValue(1);
+            ft.setCycleCount(1);
+            ft.setAutoReverse(false);
+            ft.play();
+
+            return root;
+        } catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        }
+        
+        return null;
     }
 }       

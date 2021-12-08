@@ -92,7 +92,7 @@
                                  <center>
                                     <AnchorPane prefWidth="551.0" style="-fx-border-color: #F88222; -fx-border-radius: 5;" BorderPane.alignment="CENTER">
                                        <children>
-                                          <TableView fx:id="tblincetives" layoutX="6.0" layoutY="5.0" prefWidth="539.0" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="3.0">
+                                          <TableView fx:id="tblincetives" onMouseClicked="#tblIncentives_Clicked" layoutX="6.0" layoutY="5.0" prefWidth="539.0" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="3.0">
                                              <columns>
                                                 <TableColumn fx:id="incIndex01" editable="false" minWidth="210.0" prefWidth="-1.0" text="Incentive/Deduction" />
                                                 <TableColumn fx:id="incIndex02" minWidth="110.0" prefWidth="-1.0" text="Goal" />
