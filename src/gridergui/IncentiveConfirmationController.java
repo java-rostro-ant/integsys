@@ -18,9 +18,12 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -32,9 +35,13 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import org.rmj.appdriver.GRider;
 import org.rmj.appdriver.agent.MsgBox;
@@ -82,7 +89,7 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
     @FXML
     private TextField txtField16;
     @FXML
-    private TextField txtSeeks02;
+    private TextField txtSeeks06;
     @FXML
     private TextField txtSeeks05;
     @FXML
@@ -93,6 +100,8 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
     private Button btnDisapproved;
     @FXML
     private Button btnClose;
+    @FXML
+    private Button btnUpdate;
     @FXML
     private HBox hbButtons;
     
@@ -145,6 +154,9 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
     @FXML
     private AnchorPane searchBar;
     
+    public void setTransaction(String fsValue){
+        transNox = fsValue;
+    }
     @Override
     public void initialize(URL url, ResourceBundle rb) {     
         oListener = new LMasDetTrans() {
@@ -152,7 +164,10 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
             public void MasterRetreive(int fnIndex, Object foValue) {
                 switch(fnIndex){
                     case 1:
-                        txtField01.setText((String) foValue); break;
+                        txtSeeks05.setText((String) foValue);
+                        txtField01.setText((String) foValue); 
+                        transNox = (String) foValue;
+                        break;
                     case 2:
                         txtField02.setText((String) foValue); break;
                     case 4:
@@ -171,6 +186,7 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
                         break;
 
                     case 16:
+                        txtSeeks06.setText((String) foValue);
                         txtField16.setText((String) foValue); break;
                 }
             }
@@ -187,29 +203,42 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         btnClose.setOnAction(this::cmdButton_Click);
         btnApproved.setOnAction(this::cmdButton_Click);
         btnDisapproved.setOnAction(this::cmdButton_Click);
+        btnUpdate.setOnAction(this::cmdButton_Click);
         tblincentives_column();
         tblemployee_column();
         txtSeeks05.setOnKeyPressed(this::txtField_KeyPressed); 
         
-        if(transNox.isEmpty()){
-           pnEditMode = EditMode.UNKNOWN;
-            initButton(pnEditMode);
-            Check01.setDisable(true);
-            Check02.setDisable(true);
-            txtField01.setDisable(true);
-            txtField02.setDisable(true);
-        }else{
-            try {
+//        if(transNox.isEmpty()){
+//           pnEditMode = EditMode.UNKNOWN;
+//            initButton(pnEditMode);
+//        }else{
+//            try {
+//                if (oTrans.SearchTransaction(transNox, true)){
+//                    loadIncentives();
+//                    pnEditMode = oTrans.getEditMode();
+//                    initButton(pnEditMode);
+//                } else
+//                    MsgBox.showOk(oTrans.getMessage());
+//            } catch (SQLException ex) {
+//                Logger.getLogger(IncentiveConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
+        try { 
+            if(transNox.isEmpty()){
+                pnEditMode = EditMode.UNKNOWN;
+                initButton(pnEditMode);
+            } else {
                 if (oTrans.SearchTransaction(transNox, true)){
                     loadIncentives();
-                    pnEditMode = oTrans.getEditMode();
+                    pnEditMode = EditMode.READY;
                     initButton(pnEditMode);
                 } else
                     MsgBox.showOk(oTrans.getMessage());
-            } catch (SQLException ex) {
-                Logger.getLogger(IncentiveConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }
+        } catch (SQLException ex) {
+            Logger.getLogger(EmployeeIncentivesController.class.getName()).log(Level.SEVERE, null, ex);
+        }  
+        pbLoaded = true;
         
     }    
     public void setTransNox(String transVal){
@@ -227,6 +256,10 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         btnBrowse.setManaged(!lbShow);
         btnApproved.setManaged(!lbShow);
         btnDisapproved.setManaged(!lbShow);
+        Check01.setDisable(true);
+        Check02.setDisable(true);
+        txtField01.setDisable(true);
+        txtField02.setDisable(true);
      
        
     }
@@ -237,6 +270,7 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
                 case "btnBrowse":
                         if (oTrans.SearchTransaction(txtSeeks05.getText(), false)){
                             loadIncentives();
+                            oTrans.displayDetFields();
                             pnEditMode = oTrans.getEditMode();
                         } else 
                             MsgBox.showOk(oTrans.getMessage());
@@ -257,6 +291,15 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
                             pnEditMode = oTrans.getEditMode();
                         } else 
                             MsgBox.showOk(oTrans.getMessage());
+                    break;
+                case "btnUpdate":
+                    loadIncentives();
+                    if(transNox == null || transNox.isEmpty()){
+                        MsgBox.showOk("No record selected!");
+                    }else{
+                        pnEditMode = oTrans.getEditMode();
+                        loadUpdate();
+                    }
                     break;
                
                 case "btnClose":
@@ -384,10 +427,14 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         
          data.clear();
          int lnCtr; 
+         
+         transNox = (String)oTrans.getMaster(1);
          System.out.println("INCENTIVES");
          txtField01.setText((String)oTrans.getMaster(1));
+         txtSeeks05.setText((String)oTrans.getMaster(1));
+         txtSeeks06.setText((String)oTrans.getMaster(16));
          txtField02.setText(oTrans.getMaster(2).toString());
-         txtField03.setText((String)oTrans.getMaster(3));
+         txtField03.setText((String)oTrans.getMaster(17));
          txtField04.setText((String)oTrans.getMaster(4));
          txtField05.setText((String)oTrans.getMaster(5));
          txtField16.setText((String)oTrans.getMaster(16));
@@ -427,7 +474,8 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
                 priceWithDecimal(Double.valueOf(oTrans.getIncentiveInfo(lnCtr, "nQtyActlx").toString())),
                 priceWithDecimal(Double.valueOf(oTrans.getIncentiveInfo(lnCtr, "nAmtGoalx").toString())),
                 priceWithDecimal(Double.valueOf(oTrans.getIncentiveInfo(lnCtr, "nAmtActlx").toString())),
-                priceWithDecimal(Double.valueOf(oTrans.getIncentiveInfo(lnCtr, "nInctvAmt").toString()))));
+                priceWithDecimal(Double.valueOf(oTrans.getIncentiveInfo(lnCtr, "nInctvAmt").toString())),
+                oTrans.getIncentiveInfo(lnCtr, "sRemarksx").toString()));
 
              System.out.println(oTrans.getIncentiveInfo(lnCtr, "xInctvNme"));
              System.out.println(oTrans.getIncentiveInfo(lnCtr, "nQtyGoalx"));
@@ -445,7 +493,8 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
                      "",
                      "",
                      "",
-                     oTrans.getDeductionInfo(lnCtr, "nDedctAmt").toString()));
+                     oTrans.getDeductionInfo(lnCtr, "nDedctAmt").toString(),
+                     ""));
 
                  //to display these fields on grid.
                  System.out.println(oTrans.getDeductionInfo(lnCtr, "sRemarksx"));
@@ -488,6 +537,44 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         StackPane myBox = (StackPane) AnchorMainIncentiveConfirmation.getParent();
         myBox.getChildren().clear();
         myBox.getChildren().add(getScene("MainScreenBG.fxml"));
+        
+    }
+    
+    private void loadUpdate(){
+        StackPane myBox = (StackPane) AnchorMainIncentiveConfirmation.getParent();
+        myBox.getChildren().clear();
+        myBox.getChildren().add(setScene());
+          
+    }
+    private AnchorPane setScene(){
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("EmployeeIncentives.fxml"));
+
+            EmployeeIncentivesController loControl = new EmployeeIncentivesController();
+            loControl.setGRider(oApp);
+            loControl.setState(true);
+            loControl.setTransaction(transNox);
+            fxmlLoader.setController(loControl);
+            
+            //load the main interface
+                
+          AnchorPane root;
+        try {
+            root = (AnchorPane) fxmlLoader.load();
+            FadeTransition ft = new FadeTransition(Duration.millis(1500));
+            ft.setNode(root);
+            ft.setFromValue(1);
+            ft.setToValue(1);
+            ft.setCycleCount(1);
+            ft.setAutoReverse(false);
+            ft.play();
+
+            return root;
+        } catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        }
+        
+        return null;
     }
     private AnchorPane getScene(String fsFormName){
          ScreenInterface fxObj = new MainScreenBGController();
@@ -552,4 +639,126 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
          empIndex07.setResizable(false); 
          empIndex08.setResizable(false);  
     }
+    
+     @FXML
+    private void tblIncentives_Clicked(MouseEvent event) {
+        
+        try {
+            
+            pnRow = tblincetives.getSelectionModel().getSelectedIndex(); 
+            TableIncentives ti = (TableIncentives) tblincetives.getItems().get(pnRow);
+            
+            if(ti.getIncindex02().contains("Deduction")){
+                
+                AddDeductionController.setData(ti);
+                loadDeductionDetail(pnRow + 1 - (oTrans.getIncentiveCount())); 
+                
+            } else{
+                AddIncentivesController.setData(ti);
+                loadIncentiveDetail((String) oTrans.getIncentiveInfo(pnRow + 1, "sInctveCD"), pnRow + 1); 
+            }
+            
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            MsgBox.showOk(ex.getMessage());
+        }
+    }
+    private void loadDeductionDetail(int fnRow) throws SQLException{
+        try {
+            Stage stage = new Stage();
+            
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("AddDeduction.fxml"));
+
+            AddDeductionController loControl1 = new AddDeductionController();
+            loControl1.setGRider(oApp);
+            loControl1.setDeductionObject(oTrans);
+            loControl1.setState(true);
+            loControl1.setTableRows(fnRow);
+            
+            fxmlLoader.setController(loControl1);
+            
+            //load the main interface
+            Parent parent = fxmlLoader.load();
+                
+            parent.setOnMousePressed(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    xOffset = event.getSceneX();
+                    yOffset = event.getSceneY();
+                }
+            });
+            parent.setOnMouseDragged(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    stage.setX(event.getScreenX() - xOffset);
+                    stage.setY(event.getScreenY() - yOffset);
+                }
+            });
+            
+            //set the main interface as the scene
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("");
+            stage.showAndWait();
+            
+            loadIncentives();
+        } catch (IOException e) {
+            e.printStackTrace();
+            MsgBox.showOk(e.getMessage());
+            System.exit(1);
+        }
+    }
+    private void loadIncentiveDetail(String fsCode, int fnRow) throws SQLException{
+        try {
+            Stage stage = new Stage();
+            
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("AddIncentives.fxml"));
+
+            AddIncentivesController loControl = new AddIncentivesController();
+            loControl.setGRider(oApp);
+            loControl.setIncentiveObject(oTrans);
+            loControl.setIncentiveCode(fsCode);
+            loControl.setState(true);
+            loControl.setTableRow(fnRow);
+            
+            fxmlLoader.setController(loControl);
+            
+            //load the main interface
+            Parent parent = fxmlLoader.load();
+                
+            parent.setOnMousePressed(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    xOffset = event.getSceneX();
+                    yOffset = event.getSceneY();
+                }
+            });
+            parent.setOnMouseDragged(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    stage.setX(event.getScreenX() - xOffset);
+                    stage.setY(event.getScreenY() - yOffset);
+                }
+            });
+            
+            //set the main interface as the scene
+            Scene scene = new Scene(parent);
+            stage.setScene(scene);
+            stage.initStyle(StageStyle.TRANSPARENT);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("");
+            stage.showAndWait();
+            
+            loadIncentives();
+        } catch (IOException e) {
+            e.printStackTrace();
+            MsgBox.showOk(e.getMessage());
+            System.exit(1);
+        }
+    }
+    
 }

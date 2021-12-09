@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="VBoxForm" stylesheets="@/css/EmployeeIncentives.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="VBoxForm" stylesheets="@/css/EmployeeIncentives.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
    <children>
       <AnchorPane prefHeight="30.0" prefWidth="821.0" style="-fx-background-color: #4C4C4C;">
          <children>
@@ -108,22 +108,22 @@
                   </Label>
                   <TextField fx:id="txtField06" layoutX="260.0" layoutY="87.0" prefHeight="23.0" prefWidth="73.0" style="-fx-border-radius: 5;" />
                   <Separator layoutX="6.0" layoutY="194.0" prefHeight="3.0" prefWidth="327.0" style="-fx-background-color: oran;" />
-                  <Label layoutX="11.0" layoutY="207.0" text="Total Alloc. % :">
+                  <Label layoutX="11.0" layoutY="207.0" text="Totl Alloc %:">
                      <font>
                         <Font name="Arial Bold" size="12.0" />
                      </font>
                   </Label>
-                  <Label fx:id="allocperc" layoutX="99.0" layoutY="206.0" text="0%" textFill="#e70000">
+                  <Label fx:id="txtField101" layoutX="96.0" layoutY="206.0" text="0%" textFill="#e70000">
                      <font>
                         <Font name="Arial Bold Italic" size="15.0" />
                      </font>
                   </Label>
-                  <Label layoutX="151.0" layoutY="207.0" text="Total Amt :">
+                  <Label layoutX="161.0" layoutY="207.0" text="Total Amt :">
                      <font>
                         <Font name="Arial Bold" size="12.0" />
                      </font>
                   </Label>
-                  <Label fx:id="allocamt" layoutX="226.0" layoutY="206.0" text="0.00" textFill="#e70000">
+                  <Label fx:id="txtField102" layoutX="232.0" layoutY="206.0" text="0.00" textFill="#e70000">
                      <font>
                         <Font name="Arial Bold Italic" size="15.0" />
                      </font>
