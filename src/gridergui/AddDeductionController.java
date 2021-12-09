@@ -178,6 +178,10 @@ public class AddDeductionController implements Initializable {
             txtField05.setDisable(true);
             txtField06.setDisable(true);
         }
+         
+         loadDeductionDetail();
+         loadEmployee();
+         initGrid();
     }
     private void loadEmployee(){
         try {
@@ -313,7 +317,6 @@ public class AddDeductionController implements Initializable {
             txtField04.setText((String) oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID")).toString());
             txtField05.setText((String) oTrans.getDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID")).toString());
             lastValue = (double) oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"));
-            
         }   
         catch (SQLException ex) {
             ex.printStackTrace();
@@ -351,11 +354,12 @@ public class AddDeductionController implements Initializable {
                         }
                         else{
                             MsgBox.showOk("Amount entered exceeds the amount allocated.");
-//                            txtField.setText("0.00");
                             txtField.requestFocus();
                         
                         }
-                            
+
+                        txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx",tbl_row,(String)oTrans.getDetail(pnRow, "sEmployID")),"##0.00"));
+                        loadEmployee();
                         break;
                     case 05:
                         if (StringUtil.isNumeric(lsValue))                        
