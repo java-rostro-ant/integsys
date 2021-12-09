@@ -72,6 +72,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
     private int pnSubItems = 0;
     public int tbl_row = 0;
     private double lastValue = (double)0;
+    private double lastpercValue = (double)0;
     
     private ObservableList<TableIncentives> inc_data = FXCollections.observableArrayList();
     private ObservableList<TableModel> data = FXCollections.observableArrayList();
@@ -171,17 +172,19 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
             txtField05.focusedProperty().addListener(txtField_Focus);
             txtField06.focusedProperty().addListener(txtField_Focus);
             txtField07.focusedProperty().addListener(txtField_Focus);
-            
             txtField08.focusedProperty().addListener(txtArea_Focus); 
             
+            txtField08.focusedProperty().addListener(txtArea_Focus);            
+            pnEditMode = oTrans.getEditMode();
+            pbLoaded = true;
             loadEmployee();
             loadIncentives();
             initGrid();
+      
+            initFields(pnEditMode);
             
             pnEditMode = oTrans.getEditMode();
             pbLoaded = true;
-
-               
     }
     public static void setData(TableIncentives incdata){
         incModel = incdata;    
@@ -195,7 +198,30 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
             CommonUtils.SetPreviousFocus((TextArea)event.getSource());
         }
     }
-    
+
+    private void initFields(int fnValue){
+        boolean lbShow = (fnValue == EditMode.UPDATE || fnValue == EditMode.ADDNEW);
+        if(lbShow){
+            txtField03.setDisable(false);
+            txtField04.setDisable(false);
+            txtField05.setDisable(false);
+            txtField06.setDisable(false);
+            txtField07.setDisable(false);
+            txtField08.setDisable(false);
+            txtField11.setDisable(false);
+            txtField12.setDisable(false);
+        }else {
+            txtField03.setDisable(true);
+            txtField04.setDisable(true);
+            txtField05.setDisable(true);
+            txtField06.setDisable(true);
+            txtField07.setDisable(true);
+            txtField08.setDisable(true);
+            txtField11.setDisable(true);
+            txtField12.setDisable(true);
+        }
+    }
+
     private void txtField_KeyPressed(KeyEvent event){
         TextField txtField = (TextField)event.getSource();
         int lnIndex = Integer.parseInt(((TextField)event.getSource()).getId().substring(8,10));
@@ -300,9 +326,14 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                             oTrans.setIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"), Double.valueOf(lsValue));
                         else
                             oTrans.setIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"), 0.00);
+
+                        txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID")), "##0.00"));                        
+                        loadEmployee();
+
                         
                         txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID")), "##0.00"));                        
                         loadEmployee();
+                    
                         break;
                     case 12:
                         if (StringUtil.isNumeric(lsValue))                        
@@ -318,24 +349,10 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                            loadEmployee();
                         }
                         else{
-                            MsgBox.showOk("Amount must equal to Incentives amount");
-//                            txtField.setText("0.00");
+                            MsgBox.showOk("Amount entered exceeds the amount allocated.");
                             txtField.requestFocus();
                         
                         }
-//                         if (x >= (y + z)){
-//                            loadEmployee();
-//                         }
-//                         else{ 
-//                             if (!txtField.getText().isEmpty()){
-//                                 if(x >= (y-z)){
-//                                     loadEmployee();
-//                                 }else{
-//                                MsgBox.showOk("Amount must equal to Incentives amount"); 
-//                               txtField.requestFocus();
-//                                 }
-//                             }
-//                         }
                         break;
                 }
             } catch (SQLException e) {
@@ -393,7 +410,6 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                 pbLoaded = true;
             }
                 txtField101.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveInfo(tbl_row, 101), "##0.00") + " %");
-//                txtField101.setText(String.valueOf(oTrans.getIncentiveInfo(tbl_row, 101)+ " %"));
                 txtField102.setText(String.valueOf(oTrans.getIncentiveInfo(tbl_row, 102)));
                 
         } catch (SQLException ex) {
@@ -407,12 +423,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
         String lsButton = ((Button)event.getSource()).getId();
         switch (lsButton){
             case "btnOk":
-                CommonUtils.closeStage(btnOk);
-//                    System.out.println(oTrans.getIncentiveInfo(tbl_row, "nInctvAmt").toString());
-//                    System.out.println(oTrans.getIncentiveInfo(tbl_row, "sRemarksx").toString());
-//                    System.out.println(oTrans.getIncentiveInfo(tbl_row, "xAllocPer").toString());
-//                    System.out.println(oTrans.getIncentiveInfo(tbl_row, "xAllocAmt").toString());
-                
+                CommonUtils.closeStage(btnOk);                
                 break;
                 
             case "btnExit":
@@ -454,7 +465,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
             txtField11.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID")), "##0.00"));
             txtField12.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(pnRow, "sEmployID")), "#,##0.00"));
             lastValue = (double) oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"));
-           
+
         } 
         catch (SQLException ex) {
             Logger.getLogger(AddIncentivesController.class.getName()).log(Level.SEVERE, null, ex);

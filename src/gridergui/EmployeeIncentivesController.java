@@ -240,13 +240,6 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                         initButton(pnEditMode);
                       } else 
                         MsgBox.showOk(oTrans.getMessage());
-//                    if(state){
-//                        pnEditMode = EditMode.UPDATE;
-//                        initButton(pnEditMode);
-//                    }else{
-//                        pnEditMode = EditMode.READY;
-//                        initButton(pnEditMode);
-//                    }
                 } else
                     MsgBox.showOk(oTrans.getMessage());
             }
@@ -366,36 +359,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
     @Override
     public void setGRider(GRider foValue) {
         oApp = foValue;
-    }
-//     private void loadIncentives() throws SQLException{
-//        //load to grid the incentives.
-//        inc_data.clear();
-//        int lnCtr; 
-//
-//        for (lnCtr = 1; lnCtr <= oTrans.getIncentiveCount(); lnCtr++){
-//            inc_data.add(new TableIncentives(String.valueOf(lnCtr),
-//                oTrans.getIncentiveInfo(lnCtr, "xInctvNme").toString(),
-//                oTrans.getIncentiveInfo(lnCtr, "nQtyGoalx").toString(),
-//                oTrans.getIncentiveInfo(lnCtr, "nQtyActlx").toString(),
-//                oTrans.getIncentiveInfo(lnCtr, "nAmtGoalx").toString(),
-//                oTrans.getIncentiveInfo(lnCtr, "nAmtActlx").toString(),
-//                oTrans.getIncentiveInfo(lnCtr, "nInctvAmt").toString(),
-//                oTrans.getIncentiveInfo(lnCtr, "sRemarksx").toString()));
-//        }
-//
-//            for (lnCtr = 1; lnCtr <= oTrans.getDeductionCount(); lnCtr++){
-//                inc_data.add(new TableIncentives(String.valueOf(tblIncentives.getItems().size() + 1), 
-//                    oTrans.getDeductionInfo(lnCtr, "sRemarksx").toString()+ " (Deduction)",
-//                    "",
-//                    "",
-//                    "",
-//                    oTrans.getDeductionInfo(lnCtr, "nDedctAmt").toString(),
-//                    oTrans.getDeductionInfo(lnCtr, "nDedctAmt").toString(),
-//                    ""));
-//                }
-//        initGrid1();    
-//    }
-    
+    }    
     
     private void loadIncentives() throws SQLException{
         //load to grid the incentives.
@@ -411,19 +375,17 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                 oTrans.getIncentiveInfo(lnCtr, "sRemarksx").toString()));
         }
         
-            for (lnCtr = 1; lnCtr <= oTrans.getDeductionCount(); lnCtr++){
-                inc_data.add(new TableIncentives(String.valueOf(inc_data.size() + 1), 
-                    oTrans.getDeductionInfo(lnCtr, "sRemarksx").toString() + "(Deduction)",
-                    "",
-                    "",
-                    "",
-                    "",
-                    oTrans.getDeductionInfo(lnCtr, "nDedctAmt").toString(),
-                    ""));
-//                System.out.println(oTrans.getDeductionInfo(lnCtr, "nDedctAmt").toString());
-
-            
-                }
+        for (lnCtr = 1; lnCtr <= oTrans.getDeductionCount(); lnCtr++){
+            inc_data.add(new TableIncentives(String.valueOf(inc_data.size() + 1), 
+                oTrans.getDeductionInfo(lnCtr, "sRemarksx").toString() + "(Deduction)",
+                "",
+                "",
+                "",
+                "",
+                oTrans.getDeductionInfo(lnCtr, "nDedctAmt").toString(),
+                ""));          
+        }
+        pnEditMode = EditMode.READY;
         initGrid1();    
     }
     private void loadDetail(){
@@ -702,15 +664,6 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                                 oTrans.setWithUI(true);
                                 pnEditMode = EditMode.UNKNOWN;
                             }
-                            
-//                            if (!oTransnox.isEmpty()){
-//                                //load confirmation form
-//                                //exit
-//                            } else {
-//                                
-//                                
-//                                
-//                            }
                         } else {
                             MsgBox.showOk(oTrans.getMessage());
                         }
@@ -720,6 +673,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                             loadMaster();
                             loadIncentives();
                             pnEditMode = EditMode.READY;
+                            MsgBox.showOk(String.valueOf(pnEditMode));
                         }else
                             MsgBox.showOk(oTrans.getMessage());
                         break;

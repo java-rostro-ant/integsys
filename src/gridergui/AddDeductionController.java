@@ -35,6 +35,7 @@ import org.rmj.appdriver.StringUtil;
 import org.rmj.appdriver.agent.MsgBox;
 import org.rmj.appdriver.agentfx.CommonUtils;
 import org.rmj.appdriver.agentfx.ShowMessageFX;
+import org.rmj.appdriver.constants.EditMode;
 import org.rmj.fund.manager.base.Incentive;
 import org.rmj.fund.manager.base.LMasDetTrans;
 
@@ -59,6 +60,7 @@ public class AddDeductionController implements Initializable {
     private int pnEditMode;
     private int pnSubItems = 0;
     public int tbl_row = 0;
+    private double lastValue = (double)0;
     private boolean state = false;
     
     private ObservableList<TableIncentives> inc_data = FXCollections.observableArrayList();
@@ -154,6 +156,28 @@ public class AddDeductionController implements Initializable {
          txtField101.focusedProperty().addListener(txtField_Focus);
          txtField102.focusedProperty().addListener(txtField_Focus);
          
+         pnEditMode = oTrans.getEditMode();
+         pbLoaded = true;
+         loadDeductionDetail();
+         loadEmployee();
+         initGrid();
+         initFields(pnEditMode);
+         
+    }
+    
+    private void initFields(int fnValue){
+        boolean lbShow = (fnValue == EditMode.UPDATE || fnValue == EditMode.ADDNEW);
+        if(lbShow){
+            txtField03.setDisable(false);
+            txtField04.setDisable(false);
+            txtField05.setDisable(false);
+            txtField06.setDisable(false);
+        }else {
+            txtField03.setDisable(true);
+            txtField04.setDisable(true);
+            txtField05.setDisable(true);
+            txtField06.setDisable(true);
+        }
          
          loadDeductionDetail();
          loadEmployee();
@@ -292,7 +316,7 @@ public class AddDeductionController implements Initializable {
             txtField03.setText((String) oTrans.getDetail(pnRow, "xEmployNm"));
             txtField04.setText((String) oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID")).toString());
             txtField05.setText((String) oTrans.getDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID")).toString());
-//            txtField101.setText(String.valueOf(oTrans.getDeductionInfo(tbl_row, )));
+            lastValue = (double) oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"));
         }   
         catch (SQLException ex) {
             ex.printStackTrace();
@@ -306,6 +330,9 @@ public class AddDeductionController implements Initializable {
         System.out.println(txtField.getId());
         int lnIndex = Integer.parseInt(txtField.getId().substring(8,10));
         String lsValue = txtField.getText();
+        double x;
+        double y;
+        double z;
         
         if (lsValue == null) return;
             
@@ -317,9 +344,22 @@ public class AddDeductionController implements Initializable {
                             oTrans.setDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"), Double.valueOf(lsValue));
                         else
                             oTrans.setDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"), 0.00);
+                            x = Double.parseDouble(txtField06   .getText());
+                            y = Double.parseDouble(txtField102.getText());
+                            z = Double.parseDouble(lsValue);
 
+                        if (x >= (y + z - lastValue)){
                             txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx",tbl_row,(String)oTrans.getDetail(pnRow, "sEmployID")),"##0.00"));
                             loadEmployee();
+                        }
+                        else{
+                            MsgBox.showOk("Amount entered exceeds the amount allocated.");
+                            txtField.requestFocus();
+                        
+                        }
+
+                        txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx",tbl_row,(String)oTrans.getDetail(pnRow, "sEmployID")),"##0.00"));
+                        loadEmployee();
                         break;
                     case 05:
                         if (StringUtil.isNumeric(lsValue))                        
