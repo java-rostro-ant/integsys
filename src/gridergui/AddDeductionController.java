@@ -146,6 +146,7 @@ public class AddDeductionController implements Initializable {
          txtField04.setOnKeyPressed(this::txtField_KeyPressed);
          txtField05.setOnKeyPressed(this::txtField_KeyPressed);
          txtField06.setOnKeyPressed(this::txtField_KeyPressed);
+         
          txtField101.setOnKeyPressed(this::txtField_KeyPressed);
          txtField102.setOnKeyPressed(this::txtField_KeyPressed);
          
@@ -195,11 +196,10 @@ public class AddDeductionController implements Initializable {
                 
                
             }   
-                System.out.println(oTrans.getDeductionCount());
-                txtField101.setText((CommonUtils.NumberFormat((Number)oTrans.getDeductionInfo(tbl_row, 101),"#,##0.00")+ "%"));
-//                txtField101.setText(String.valueOf(oTrans.getDeductionInfo(tbl_row, 101) + "%"));
-                txtField102.setText(String.valueOf(oTrans.getDeductionInfo(tbl_row, 102)));
                 txtField06.setText((CommonUtils.NumberFormat((Number)oTrans.getDeductionInfo(tbl_row, "nDedctAmt"), "#,##0.00")));
+                txtField101.setText((CommonUtils.NumberFormat((Number)oTrans.getDeductionInfo(tbl_row, 101),"##0.00")+ "%"));
+                txtField102.setText(String.valueOf(oTrans.getDeductionInfo(tbl_row, 102)));
+                
             initGrid();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -355,9 +355,7 @@ public class AddDeductionController implements Initializable {
                         else{
                             MsgBox.showOk("Amount entered exceeds the amount allocated.");
                             txtField.requestFocus();
-                        
                         }
-
                         txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx",tbl_row,(String)oTrans.getDetail(pnRow, "sEmployID")),"##0.00"));
                         loadEmployee();
                         break;

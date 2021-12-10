@@ -167,24 +167,20 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
             
             txtField11.focusedProperty().addListener(txtField_Focus);
             txtField12.focusedProperty().addListener(txtField_Focus);
+            
             txtField03.focusedProperty().addListener(txtField_Focus);
             txtField04.focusedProperty().addListener(txtField_Focus);
             txtField05.focusedProperty().addListener(txtField_Focus);
             txtField06.focusedProperty().addListener(txtField_Focus);
             txtField07.focusedProperty().addListener(txtField_Focus);
             txtField08.focusedProperty().addListener(txtArea_Focus); 
-            
-            txtField08.focusedProperty().addListener(txtArea_Focus);            
+                        
             pnEditMode = oTrans.getEditMode();
             pbLoaded = true;
             loadEmployee();
-            loadIncentives();
-            initGrid();
-      
+            loadIncentives();      
             initFields(pnEditMode);
             
-            pnEditMode = oTrans.getEditMode();
-            pbLoaded = true;
     }
     public static void setData(TableIncentives incdata){
         incModel = incdata;    
@@ -275,10 +271,6 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
         System.out.println(txtField.getId());
         int lnIndex = Integer.parseInt(txtField.getId().substring(8,10));
         String lsValue = txtField.getText();
-        double x;
-        double y;
-        double z;
-
         if (lsValue == null) return;
             
         if(!nv){ /*Lost Focus*/
@@ -303,8 +295,10 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                             oTrans.setIncentiveInfo(tbl_row, "nAmtGoalx", Double.valueOf(lsValue));
                         else    
                             oTrans.setIncentiveInfo(tbl_row, "nAmtGoalx", 0.00);
-                            txtField.setText(CommonUtils.NumberFormat((Number)oTrans.getIncentiveInfo(tbl_row, "nAmtGoalx"), "##0.00"));
-                        break;
+                        
+                            txtField.setText(CommonUtils.NumberFormat((Number)oTrans.getIncentiveInfo(tbl_row, "nAmtActlx"), "#,##0.00"));
+                            loadEmployee();
+                            break;
                     case 06:
                         if (StringUtil.isNumeric(lsValue)) 
                             oTrans.setIncentiveInfo(tbl_row, "nAmtActlx", Double.valueOf(lsValue));
@@ -318,8 +312,10 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                             oTrans.setIncentiveInfo(tbl_row, "nInctvAmt", Double.valueOf(lsValue));
                         else    
                             oTrans.setIncentiveInfo(tbl_row, "nInctvAmt", 0.00);
+                        
                             txtField.setText(CommonUtils.NumberFormat((Number)oTrans.getIncentiveInfo(tbl_row, "nInctvAmt"), "#,##0.00"));
-                         break;
+                            loadEmployee();
+                            break;
 
                     case 11:
                         if (StringUtil.isNumeric(lsValue))                        
@@ -336,13 +332,15 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                     
                         break;
                     case 12:
-                        if (StringUtil.isNumeric(lsValue))                        
+                        if (StringUtil.isNumeric(lsValue))  {                      
                             oTrans.setIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"), Double.valueOf(lsValue)); 
-                        else
+                        }else{
                             oTrans.setIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"), 0.00); 
-                        x = Double.parseDouble(txtField07.getText());
-                        y = Double.parseDouble(txtField102.getText());
-                        z = Double.parseDouble(lsValue);
+                        } 
+                        
+                        double x = Double.parseDouble(String.valueOf(oTrans.getIncentiveInfo(tbl_row, "nInctvAmt")));
+                        double y = Double.parseDouble(txtField102.getText());
+                        double z = Double.parseDouble(lsValue);
 
                         if (x >= (y + z - lastValue)){
                            txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(pnRow, "sEmployID")), "#,##0.00"));
@@ -374,7 +372,6 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                 txtField04.setText(incModel.getIncindex04());
                 txtField05.setText(incModel.getIncindex05());
                 txtField06.setText(incModel.getIncindex06());
-                txtField07.setText(incModel.getIncindex07());
                 txtField08.setText(incModel.getIncindex08());
 
                 txtField01.setDisable(state);
@@ -409,9 +406,10 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                 pnEditMode = oTrans.getEditMode();
                 pbLoaded = true;
             }
+                txtField07.setText((CommonUtils.NumberFormat((Number)oTrans.getIncentiveInfo(tbl_row, "nInctvAmt"), "#,##0.00")));
                 txtField101.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveInfo(tbl_row, 101), "##0.00") + " %");
                 txtField102.setText(String.valueOf(oTrans.getIncentiveInfo(tbl_row, 102)));
-                
+                initGrid();
         } catch (SQLException ex) {
             ex.printStackTrace();
             MsgBox.showOk(ex.getMessage()); 

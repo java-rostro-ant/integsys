@@ -635,7 +635,8 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                         if (!lsValue.isEmpty()){
                             if (oTrans.addDeduction(lsValue))
                                 loadIncentives();
-                            else
+                                pnEditMode = oTrans.getEditMode();
+                            }else{
                                 MsgBox.showOk(oTrans.getMessage());
                         }
                     break;
