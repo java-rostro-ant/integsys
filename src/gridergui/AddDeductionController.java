@@ -179,10 +179,6 @@ public class AddDeductionController implements Initializable {
             txtField05.setDisable(true);
             txtField06.setDisable(true);
         }
-         
-         loadDeductionDetail();
-         loadEmployee();
-         initGrid();
     }
     private void loadEmployee(){
         try {
@@ -192,9 +188,7 @@ public class AddDeductionController implements Initializable {
                 incEmp_data.add(new TableEmployeeIncentives(String.valueOf(lnCtr),
                         (String)oTrans.getDetail(lnCtr, "xEmployNm"),
                         oTrans.getDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(lnCtr, "sEmployID")).toString(),
-                        oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(lnCtr, "sEmployID")).toString()));  
-                
-               
+                        oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(lnCtr, "sEmployID")).toString()));                
             }   
                 txtField06.setText((CommonUtils.NumberFormat((Number)oTrans.getDeductionInfo(tbl_row, "nDedctAmt"), "#,##0.00")));
                 txtField101.setText((CommonUtils.NumberFormat((Number)oTrans.getDeductionInfo(tbl_row, 101),"##0.00")+ "%"));
@@ -216,8 +210,7 @@ public class AddDeductionController implements Initializable {
             case ENTER:
                 switch (lnIndex){ 
                 }
-        }
-            
+        }     
         switch (event.getCode()){
         case ENTER:
         case DOWN:

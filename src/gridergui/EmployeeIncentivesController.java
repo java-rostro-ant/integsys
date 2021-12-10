@@ -385,7 +385,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                 oTrans.getDeductionInfo(lnCtr, "nDedctAmt").toString(),
                 ""));          
         }
-        pnEditMode = EditMode.READY;
+        pnEditMode = oTrans.getEditMode();
         initGrid1();    
     }
     private void loadDetail(){
