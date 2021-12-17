@@ -326,7 +326,8 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
                 switch (lnIndex){
               
                 case 5: /*Search*/
-                   if (oTrans.SearchTransaction(txtSeeks05.getText(), false)){
+                case 6: /*Search*/
+                    if (oTrans.SearchTransaction(txtSeeks05.getText(), false)){
                             loadIncentives();
                             pnEditMode = oTrans.getEditMode();
                         } else 
