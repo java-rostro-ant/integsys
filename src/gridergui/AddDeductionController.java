@@ -42,7 +42,7 @@ import org.rmj.fund.manager.base.LMasDetTrans;
 /**
  * FXML Controller class
  *
- * @author user
+ * @author user 
  */
 public class AddDeductionController implements Initializable {
      private GRider oApp;
@@ -157,13 +157,18 @@ public class AddDeductionController implements Initializable {
          txtField101.focusedProperty().addListener(txtField_Focus);
          txtField102.focusedProperty().addListener(txtField_Focus);
          
+          if (incEmp_data.isEmpty()){
+                tblemployee.getSelectionModel().selectFirst();
+                pnRow = 1;
+                getSelectedItems();
+            } 
+         
          pnEditMode = oTrans.getEditMode();
          pbLoaded = true;
          loadDeductionDetail();
          loadEmployee();
          initGrid();
-         initFields(pnEditMode);
-         
+         initFields(pnEditMode);     
     }
     
     private void initFields(int fnValue){
@@ -178,6 +183,7 @@ public class AddDeductionController implements Initializable {
             txtField04.setDisable(true);
             txtField05.setDisable(true);
             txtField06.setDisable(true);
+            txtField04.requestFocus();
         }
     }
     private void loadEmployee(){
@@ -191,9 +197,12 @@ public class AddDeductionController implements Initializable {
                         oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(lnCtr, "sEmployID")).toString()));                
             }   
                 txtField06.setText((CommonUtils.NumberFormat((Number)oTrans.getDeductionInfo(tbl_row, "nDedctAmt"), "#,##0.00")));
+                if (oTrans.getDeductionInfo(tbl_row, 101).toString().equals("NaN")){
+                    txtField101.setText("0.00 %");
+                }else{
                 txtField101.setText((CommonUtils.NumberFormat((Number)oTrans.getDeductionInfo(tbl_row, 101),"##0.00")+ "%"));
-                txtField102.setText(String.valueOf(oTrans.getDeductionInfo(tbl_row, 102)));
-                
+                txtField102.setText((CommonUtils.NumberFormat((Number)oTrans.getDeductionInfo(tbl_row, 102),"#,##0.00")));
+                }
             initGrid();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -274,7 +283,7 @@ public class AddDeductionController implements Initializable {
             
             });
         });
-        tblemployee.setItems(incEmp_data);   
+        tblemployee.setItems(incEmp_data); 
     }
     
     private void loadDetail(){
@@ -305,6 +314,10 @@ public class AddDeductionController implements Initializable {
     @FXML
     private void tblemployee_Clicked(MouseEvent event) {
         pnRow = tblemployee.getSelectionModel().getSelectedIndex() + 1;  
+        getSelectedItems();
+    }
+    
+    private void getSelectedItems(){
         try {
             txtField03.setText((String) oTrans.getDetail(pnRow, "xEmployNm"));
             txtField04.setText((String) oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID")).toString());
@@ -316,6 +329,7 @@ public class AddDeductionController implements Initializable {
             MsgBox.showOk(ex.getMessage()); 
         }
     }
+    
     final ChangeListener<? super Boolean> txtField_Focus = (o,ov,nv)->{ 
         if (!pbLoaded) return;
         
@@ -337,16 +351,19 @@ public class AddDeductionController implements Initializable {
                             oTrans.setDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"), Double.valueOf(lsValue));
                         else
                             oTrans.setDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"), 0.00);
-                            x = Double.parseDouble(txtField06   .getText());
+                           
+                        
+                        x = Double.parseDouble(txtField06   .getText());
                             y = Double.parseDouble(txtField102.getText());
                             z = Double.parseDouble(lsValue);
 
                         if (x >= (y + z - lastValue)){
-                            txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx",tbl_row,(String)oTrans.getDetail(pnRow, "sEmployID")),"##0.00"));
+                            txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx",tbl_row,(String)oTrans.getDetail(pnRow, "sEmployID")),"#,##0.00"));
                             loadEmployee();
                         }
                         else{
                             MsgBox.showOk("Amount entered exceeds the amount allocated.");
+                            txtField.setText("0.00");
                             txtField.requestFocus();
                         }
                         txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx",tbl_row,(String)oTrans.getDetail(pnRow, "sEmployID")),"##0.00"));
@@ -365,7 +382,7 @@ public class AddDeductionController implements Initializable {
                         if (StringUtil.isNumeric(lsValue)) 
                             oTrans.setDeductionInfo(tbl_row, "nDedctAmt", Double.valueOf(lsValue));
                         else    
-                            oTrans.setDeductionInfo(tbl_row, "nDedctAmt", 0.00);
+                            oTrans.setDeductionInfo(tbl_row, "nDedctAmt", Double.valueOf(lsValue.replace(",","")));
                         
                             txtField.setText(CommonUtils.NumberFormat((Number)oTrans.getDeductionInfo(tbl_row, "nDedctAmt"), "#,##0.00"));
                             loadEmployee();
