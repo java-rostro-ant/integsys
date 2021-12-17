@@ -10,7 +10,6 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.Blend?>
-<?import javafx.scene.effect.Glow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -70,20 +69,16 @@
                         <Font name="MS Reference Sans Serif" size="12.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="txtField02" editable="false" layoutX="82.0" layoutY="35.0" prefHeight="23.0" prefWidth="252.0" style="-fx-border-radius: 5;" />
                   <Label layoutX="10.0" layoutY="68.0" text="Qty Goal">
                      <font>
                         <Font name="MS Reference Sans Serif" size="12.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="txtField03" layoutX="82.0" layoutY="61.0" prefHeight="23.0" prefWidth="73.0" style="-fx-border-radius: 5;" />
-                  <TextField fx:id="txtField05" layoutX="82.0" layoutY="87.0" prefHeight="23.0" prefWidth="73.0" style="-fx-border-radius: 5;" />
                   <Label layoutX="179.0" layoutY="68.0" text="Actual Goal">
                      <font>
                         <Font name="MS Reference Sans Serif" size="12.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="txtField07" layoutX="82.0" layoutY="114.0" prefHeight="23.0" prefWidth="252.0" style="-fx-border-radius: 5;" />
                   <Label layoutX="9.0" layoutY="122.0" text="Inc. Amt.">
                      <font>
                         <Font name="MS Reference Sans Serif" size="12.0" />
@@ -94,8 +89,6 @@
                         <Font name="MS Reference Sans Serif" size="12.0" />
                      </font>
                   </Label>
-                  <TextArea fx:id="txtField08" layoutX="82.0" layoutY="142.0" prefHeight="46.0" prefWidth="252.0" style="-fx-border-radius: 5;" />
-                  <TextField fx:id="txtField04" layoutX="260.0" layoutY="61.0" prefHeight="23.0" prefWidth="73.0" style="-fx-border-radius: 5;" />
                   <Label layoutX="10.0" layoutY="94.0" text="Amt. Goal">
                      <font>
                         <Font name="MS Reference Sans Serif" size="12.0" />
@@ -106,7 +99,6 @@
                         <Font name="MS Reference Sans Serif" size="12.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="txtField06" layoutX="260.0" layoutY="87.0" prefHeight="23.0" prefWidth="73.0" style="-fx-border-radius: 5;" />
                   <Separator layoutX="6.0" layoutY="194.0" prefHeight="3.0" prefWidth="327.0" style="-fx-background-color: oran;" />
                   <Label layoutX="11.0" layoutY="207.0" text="Totl Alloc %:">
                      <font>
@@ -128,6 +120,12 @@
                         <Font name="Arial Bold Italic" size="15.0" />
                      </font>
                   </Label>
+                  <TextField fx:id="txtField02" editable="false" layoutX="84.0" layoutY="36.0" prefHeight="25.0" prefWidth="245.0" />
+                  <TextField fx:id="txtField03" layoutX="84.0" layoutY="63.0" prefHeight="25.0" prefWidth="83.0" />
+                  <TextField fx:id="txtField04" layoutX="254.0" layoutY="63.0" prefHeight="25.0" prefWidth="75.0" />
+                  <TextField fx:id="txtField05" layoutX="84.0" layoutY="89.0" prefHeight="25.0" prefWidth="83.0" />
+                  <TextField fx:id="txtField06" layoutX="254.0" layoutY="89.0" prefHeight="25.0" prefWidth="75.0" />
+                  <TextField fx:id="txtField07" layoutX="84.0" layoutY="117.0" prefHeight="25.0" prefWidth="245.0" />
                </children>
             </AnchorPane>
             <AnchorPane layoutX="4.0" layoutY="238.0" prefHeight="92.0" prefWidth="339.0" style="-fx-border-color: orange; -fx-border-radius: 5;">
@@ -137,14 +135,6 @@
                         <Font name="Arial Bold" size="12.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="txtField10" editable="false" layoutX="94.0" layoutY="10.0" prefHeight="23.0" prefWidth="236.0" style="-fx-border-radius: 5;">
-                     <effect>
-                        <Glow />
-                     </effect>
-                     <font>
-                        <Font name="System Bold" size="12.0" />
-                     </font>
-                  </TextField>
                   <Label layoutX="15.0" layoutY="60.0" text="Alloc %">
                      <font>
                         <Font name="MS Reference Sans Serif" size="12.0" />
@@ -155,17 +145,11 @@
                         <Font name="MS Reference Sans Serif" size="12.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="txtField11" layoutX="72.0" layoutY="55.0" prefHeight="23.0" prefWidth="91.0" style="-fx-border-radius: 5;">
-                     <effect>
-                        <Glow />
-                     </effect>
-                  </TextField>
-                  <TextField fx:id="txtField12" layoutX="241.0" layoutY="55.0" prefHeight="23.0" prefWidth="91.0" style="-fx-border-radius: 5;">
-                     <effect>
-                        <Glow />
-                     </effect>
-                  </TextField>
                   <Separator layoutX="6.0" layoutY="44.0" prefHeight="3.0" prefWidth="327.0" style="-fx-background-color: oran;" />
+                  <TextArea fx:id="txtField08" layoutX="83.0" layoutY="-86.0" prefHeight="38.0" prefWidth="245.0" />
+                  <TextField fx:id="txtField10" editable="false" layoutX="83.0" layoutY="10.0" prefHeight="25.0" prefWidth="245.0" />
+                  <TextField fx:id="txtField11" layoutX="72.0" layoutY="55.0" prefHeight="25.0" prefWidth="75.0" />
+                  <TextField fx:id="txtField12" layoutX="250.0" layoutY="55.0" prefHeight="25.0" prefWidth="75.0" />
                </children>
             </AnchorPane>
             <AnchorPane layoutX="347.0" layoutY="4.0" prefHeight="326.0" prefWidth="471.0" style="-fx-border-color: orange; -fx-border-radius: 5;">
