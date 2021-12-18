@@ -342,8 +342,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                         }else{
                             oTrans.setIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"), 0.00); 
                         } 
-//                        txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(pnRow, "sEmployID")), "#,##0.00"));
-//                        loadEmployee();
+
                         
                         double x = Double.parseDouble(String.valueOf(oTrans.getIncentiveInfo(tbl_row, "nInctvAmt")));
                         double y = Double.parseDouble(String.valueOf(oTrans.getIncentiveInfo(tbl_row, 102)));
@@ -441,7 +440,6 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                     double labl = Double.parseDouble(String.valueOf(oTrans.getIncentiveInfo(tbl_row, "nInctvAmt")));
                     if (box > labl){
                         MsgBox.showOk("Amount entered exceeds the amount allocated.");
-                        
                     }else {
                         CommonUtils.closeStage(btnOk);
                     }
