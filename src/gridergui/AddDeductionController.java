@@ -360,19 +360,13 @@ public class AddDeductionController implements Initializable {
                             txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx",tbl_row,(String)oTrans.getDetail(pnRow, "sEmployID")),"#,##0.00"));
                             loadEmployee();
                         }
-                        else{
-//                            MsgBox.showOk("Amount entered exceeds the amount allocated.");
-//                            txtField.setText("0.00");
-//                            txtField.requestFocus();
-//                            
-                            txtField.setText("0.00");
+                        else{                         
                             oTrans.setDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"), lastValue);
                             MsgBox.showOk("Amount entered exceeds the amount allocated.");
                             loadEmployee();
                             txtField.requestFocus();
                         }
-                        txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx",tbl_row,(String)oTrans.getDetail(pnRow, "sEmployID")),"##0.00"));
-                        loadEmployee();
+
                         break;
                     case 05:
                         if (StringUtil.isNumeric(lsValue))                        
