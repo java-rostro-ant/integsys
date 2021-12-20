@@ -337,9 +337,7 @@ public class AddDeductionController implements Initializable {
         System.out.println(txtField.getId());
         int lnIndex = Integer.parseInt(txtField.getId().substring(8,10));
         String lsValue = txtField.getText();
-        double x;
-        double y;
-        double z;
+
         
         if (lsValue == null) return;
             
@@ -357,7 +355,15 @@ public class AddDeductionController implements Initializable {
                             y = Double.parseDouble(txtField102.getText());
                             z = Double.parseDouble(lsValue);
 
+<<<<<<< Updated upstream
                         if (x >= (y + z - lastValue)){
+=======
+                            double x = Double.parseDouble(String.valueOf(oTrans.getDeductionInfo(tbl_row, "nDedctAmt")));
+                            double y = Double.parseDouble(String.valueOf(String.valueOf(oTrans.getDeductionInfo(tbl_row, 102))));
+                            double z = Double.parseDouble(lsValue);
+
+                        if (x >= y){
+>>>>>>> Stashed changes
                             txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx",tbl_row,(String)oTrans.getDetail(pnRow, "sEmployID")),"#,##0.00"));
                             loadEmployee();
                         }
