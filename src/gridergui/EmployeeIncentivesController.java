@@ -716,7 +716,6 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         txtField04.setText((String) oTrans.getMaster(4));
         txtField05.setText((String) oTrans.getMaster(5));
         txtField16.setText((String) oTrans.getMaster(16));
-            
         txtField04.setDisable(false);
             
         for (int lnCtr = 1; lnCtr <= oTrans.getItemCount(); lnCtr++){
