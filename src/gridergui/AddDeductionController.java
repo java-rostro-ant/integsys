@@ -300,8 +300,8 @@ public class AddDeductionController implements Initializable {
                 pnEditMode = oTrans.getEditMode();
                 pbLoaded = true;
             }
-                txtField101.setText(String.valueOf(oTrans.getDeductionInfo(tbl_row, 101) + "%"));
-                txtField102.setText(String.valueOf(oTrans.getDeductionInfo(tbl_row, 102)));
+                txtField101.setText(String.valueOf(oTrans.getDeductionInfo(tbl_row, "xAllocPer") + "%"));
+                txtField102.setText(String.valueOf(oTrans.getDeductionInfo(tbl_row, "xAllcAmtx")));
             
             MsgBox.showOk(String.valueOf(oTrans.getDeductionInfo(tbl_row, "nDedctAmt")));
         } catch (SQLException ex) {
@@ -315,14 +315,15 @@ public class AddDeductionController implements Initializable {
     private void tblemployee_Clicked(MouseEvent event) {
         pnRow = tblemployee.getSelectionModel().getSelectedIndex() + 1;  
         getSelectedItems();
-    }
+    }           
     
     private void getSelectedItems(){
         try {
             txtField03.setText((String) oTrans.getDetail(pnRow, "xEmployNm"));
-            txtField04.setText((String) oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID")).toString());
-            txtField05.setText((String) oTrans.getDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID")).toString());
+            txtField04.setText(CommonUtils.NumberFormat((Number) oTrans.getDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID")), "##0.00"));
+            txtField05.setText(CommonUtils.NumberFormat((Number) oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID")), "#,##0.00"));
             lastValue = (double) oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"));
+            txtField04.requestFocus();
         }   
         catch (SQLException ex) {
             ex.printStackTrace();
@@ -337,9 +338,6 @@ public class AddDeductionController implements Initializable {
         System.out.println(txtField.getId());
         int lnIndex = Integer.parseInt(txtField.getId().substring(8,10));
         String lsValue = txtField.getText();
-        double x;
-        double y;
-        double z;
         
         if (lsValue == null) return;
             
@@ -347,26 +345,26 @@ public class AddDeductionController implements Initializable {
             try {
                 switch (lnIndex){
                     case 04:
-                        if (StringUtil.isNumeric(lsValue))                        
+                        if (StringUtil.isNumeric(lsValue)){                        
                             oTrans.setDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"), Double.valueOf(lsValue));
-                        else
+                        }else{
                             oTrans.setDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"), 0.00);
+                        }
+                            double x = Double.parseDouble(String.valueOf(oTrans.getDeductionInfo(tbl_row, "nDedctAmt")));
+                            double y = Double.parseDouble(String.valueOf(txtField102.getText().replace(",","")));
+                            double z = Double.parseDouble(String.valueOf(lsValue));
+                                    
+                        if (x >= ((y+z)-lastValue)){
 
-                            x = Double.parseDouble(String.valueOf(oTrans.getDeductionInfo(tbl_row, "nDedctAmt")));
-                            y = Double.parseDouble(String.valueOf(String.valueOf(oTrans.getDeductionInfo(tbl_row, 102))));
-//                            z = Double.parseDouble(lsValue);
-
-                        if (x >= y){
                             txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx",tbl_row,(String)oTrans.getDetail(pnRow, "sEmployID")),"#,##0.00"));
                             loadEmployee();
                         }
-                        else{                         
-                            oTrans.setDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"), lastValue);
+                        else{
                             MsgBox.showOk("Amount entered exceeds the amount allocated.");
+                            oTrans.setDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"), lastValue);
                             loadEmployee();
-                            txtField.requestFocus();
+                            txtField.requestFocus(); 
                         }
-
                         break;
                     case 05:
                         if (StringUtil.isNumeric(lsValue))                        
@@ -401,6 +399,4 @@ public class AddDeductionController implements Initializable {
             txtField.selectAll();
         }     
     };
-    
-
 }
