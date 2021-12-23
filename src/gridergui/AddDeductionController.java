@@ -61,6 +61,8 @@ public class AddDeductionController implements Initializable {
     private int pnSubItems = 0;
     public int tbl_row = 0;
     private double lastValue = (double)0;
+    
+    private double lastpercValue = (double)0;
     private boolean state = false;
     
     private ObservableList<TableIncentives> inc_data = FXCollections.observableArrayList();
@@ -303,7 +305,7 @@ public class AddDeductionController implements Initializable {
                 txtField101.setText(String.valueOf(oTrans.getDeductionInfo(tbl_row, "xAllocPer") + "%"));
                 txtField102.setText(String.valueOf(oTrans.getDeductionInfo(tbl_row, "xAllcAmtx")));
             
-            MsgBox.showOk(String.valueOf(oTrans.getDeductionInfo(tbl_row, "nDedctAmt")));
+            
         } catch (SQLException ex) {
             ex.printStackTrace();
             MsgBox.showOk(ex.getMessage()); 
@@ -323,6 +325,7 @@ public class AddDeductionController implements Initializable {
             txtField04.setText(CommonUtils.NumberFormat((Number) oTrans.getDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID")), "##0.00"));
             txtField05.setText(CommonUtils.NumberFormat((Number) oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID")), "#,##0.00"));
             lastValue = (double) oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"));
+            lastpercValue = (double) oTrans.getDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"));
             txtField04.requestFocus();
         }   
         catch (SQLException ex) {
@@ -367,14 +370,25 @@ public class AddDeductionController implements Initializable {
                         }
                         break;
                     case 05:
-                        if (StringUtil.isNumeric(lsValue))                        
+                        if (StringUtil.isNumeric(lsValue))  {                      
                             oTrans.setDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"), Double.valueOf(lsValue));
-                        else
+                        }else{
                             oTrans.setDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"), 0.00);
-
-                            txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID")), "#,##0.00"));
-                            loadEmployee();
-                        break;
+                        }   
+                            double maxalloc = 100.00;
+                            double allocperc = Double.parseDouble(String.valueOf(lsValue));
+                            double alloc = Double.parseDouble(String.valueOf(txtField101.getText().replace("%", "")));
+                            
+                            if (maxalloc >= (allocperc + alloc) - lastpercValue){
+                                txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID")), "#,##0.00"));
+                                loadEmployee();
+                            }else{
+                                MsgBox.showOk("Amount entered exceeds the amount allocated.");
+                                oTrans.setIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"), lastpercValue); 
+                                loadEmployee();
+                                txtField.requestFocus();
+                            }
+                            break;
                     case 06:
                         if (StringUtil.isNumeric(lsValue)) 
                             oTrans.setDeductionInfo(tbl_row, "nDedctAmt", Double.valueOf(lsValue));

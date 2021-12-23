@@ -161,7 +161,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
             txtField06.setOnKeyPressed(this::txtField_KeyPressed);
             txtField07.setOnKeyPressed(this::txtField_KeyPressed);
             txtField08.setOnKeyPressed(this::txtArea_KeyPressed);
-            
+            txtField10.setOnKeyPressed(this::txtField_KeyPressed);
             txtField11.setOnKeyPressed(this::txtField_KeyPressed);
             txtField12.setOnKeyPressed(this::txtField_KeyPressed);
             
@@ -325,13 +325,24 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                             break;
 
                     case 11:
-                        if (StringUtil.isNumeric(lsValue))                        
+                        if (StringUtil.isNumeric(lsValue)) {                       
                             oTrans.setIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"), Double.valueOf(lsValue));
-                        else
-                            oTrans.setIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"), 0.00);
-
-                        txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID")), "##0.00"));                        
-                        loadEmployee();
+                        }else{
+                            oTrans.setIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"), lsValue);
+                        }
+                            double maxalloc = 100.00;
+                            double allocperc = Double.parseDouble(String.valueOf(lsValue));
+                            double alloc = Double.parseDouble(String.valueOf(txtField101.getText().replace("%", "")));
+                            
+                            if (maxalloc >= (allocperc + alloc) - lastpercValue){
+                                txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID")), "#,##0.00"));                        
+                                loadEmployee();
+                            }else{
+                                MsgBox.showOk("Amount entered exceeds the amount allocated.");
+                                oTrans.setIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"), lastpercValue); 
+                                loadEmployee();
+                                txtField.requestFocus();
+                            }
                         break;
                         
                     case 12:
@@ -414,7 +425,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                 if (oTrans.getIncentiveInfo(tbl_row, 101).toString().equals("NaN")){
                     txtField101.setText("0.00 %");
                 }else{
-                    txtField101.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveInfo(tbl_row, 101), "##0.00") + " %");
+                    txtField101.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveInfo(tbl_row, 101), "#,##0.00" ) + "%");
                     txtField102.setText(CommonUtils.NumberFormat((Number)oTrans.getIncentiveInfo(tbl_row, 102),"#,##0.00"));
                 }
                 
@@ -476,7 +487,9 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                 txtField11.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID")), "##0.00"));
                 txtField12.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(pnRow, "sEmployID")), "#,##0.00"));
                 lastValue = (double) oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"));
+                lastpercValue = (double) oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"));
                 txtField11.requestFocus();
+                
             } 
             catch (SQLException ex) {
                 Logger.getLogger(AddIncentivesController.class.getName()).log(Level.SEVERE, null, ex);
