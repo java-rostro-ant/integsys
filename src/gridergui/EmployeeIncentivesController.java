@@ -48,7 +48,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
-import static junit.framework.Assert.fail;
 import org.rmj.appdriver.StringUtil;
 import org.rmj.appdriver.agentfx.ShowMessageFX;
 import org.rmj.fund.manager.base.LMasDetTrans;
@@ -674,7 +673,6 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                             loadMaster();
                             loadIncentives();
                             pnEditMode = EditMode.READY;
-                            MsgBox.showOk(String.valueOf(pnEditMode));
                         }else
                             MsgBox.showOk(oTrans.getMessage());
                         break;
