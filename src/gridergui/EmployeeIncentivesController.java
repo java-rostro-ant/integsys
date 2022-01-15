@@ -25,6 +25,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.SortEvent;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -66,6 +67,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
     
     private int pnIndex = -1;    
     private int pnRow = -1;
+    private int pnEmp = -1;
     private int pnEditMode;
     private int lnCtr;
 
@@ -150,6 +152,8 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
     private Button btnActivate;
     @FXML
     private Button btnDeactivate;
+    @FXML
+    private Button btnDelEmp;
     
     public void setTransaction(String fsValue){
         oTransnox = fsValue;
@@ -197,6 +201,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         btnBrowse.setOnAction(this::cmdButton_Click);
         btnUpdate.setOnAction(this::cmdButton_Click);
         btnCancel.setOnAction(this::cmdButton_Click);
+        btnDelEmp.setOnAction(this::cmdButton_Click);
         
         //initialize class
         oTrans  = new Incentive(oApp, oApp.getBranchCode(), false);
@@ -310,6 +315,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         btnCancel.setVisible(lbShow);
         btnSearch.setVisible(lbShow);
         btnSave.setVisible(lbShow);
+        btnDelEmp.setVisible(lbShow);
         btnActivate.setVisible(lbShow);
         btnDeactivate.setVisible(lbShow);
         btnAddIncentives.setVisible(lbShow);
@@ -612,6 +618,12 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         String lsButton = ((Button)event.getSource()).getId();
         try {
                 switch (lsButton){
+                case "btnDelEmp":
+                    if (oTrans.removeDetail(pnEmp+ 1))
+                        loadDetail();
+                    else
+                        MsgBox.showOk(oTrans.getMessage());
+                    break;
                 case "btnNew": 
                         if (oTrans.NewTransaction() ){
                             clearFields();
@@ -726,6 +738,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         }       
         initGrid();
         pnRow = 0;
+        pnEmp = 0;
     } 
     private void clearFields(){
         txtField01.setText("");
@@ -789,6 +802,11 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         });
         tblIncentives.setItems(inc_data);
         tblIncentives.autosize();
+    }
+    
+    @FXML
+    private void tblemployee_Clicked(MouseEvent event) {
+        pnEmp = tblemployee.getSelectionModel().getSelectedIndex();
     }
     
     @FXML
