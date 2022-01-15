@@ -105,6 +105,14 @@
                                     <Blend />
                                  </effect>
                               </Button>
+                              <Button fx:id="btnDelEmp" contentDisplay="TOP" ellipsisString="" layoutX="360.0" layoutY="10.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="RM Emp.">
+                                 <graphic>
+                                    <FontAwesomeIconView glyphName="MINUS" size="20" />
+                                 </graphic>
+                                 <effect>
+                                    <Blend />
+                                 </effect>
+                              </Button>
                            </children>
                         </HBox>
                         <Button fx:id="btnClose" contentDisplay="TOP" ellipsisString="" layoutX="807.0" layoutY="2.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="70.0" text="Close" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="3.0">
@@ -222,7 +230,7 @@
                                  <bottom>
                                     <AnchorPane prefWidth="896.0" style="-fx-border-color: #F88222; -fx-border-radius: 5;" BorderPane.alignment="CENTER">
                                        <children>
-                                          <TableView fx:id="tblemployee" layoutX="6.0" layoutY="6.0" prefHeight="281.0" prefWidth="881.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0">
+                                          <TableView fx:id="tblemployee" layoutX="6.0" layoutY="6.0" onMouseClicked="#tblemployee_Clicked" prefHeight="281.0" prefWidth="881.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="4.0">
                                              <columns>
                                                 <TableColumn fx:id="index01" editable="false" maxWidth="40.0" minWidth="35.0" prefWidth="-1.0" sortable="false" text="No." />
                                                 <TableColumn fx:id="index02" editable="false" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="-1.0" sortable="false" text="Employee" />
