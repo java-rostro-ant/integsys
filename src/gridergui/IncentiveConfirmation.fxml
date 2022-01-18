@@ -68,7 +68,7 @@
                                              </font>
                                           </Label>
                                           <TextField fx:id="txtField16" disable="true" editable="false" layoutX="135.0" layoutY="61.0" prefHeight="23.0" prefWidth="238.0" promptText="GMC Dagupan - Honda" style="-fx-border-radius: 5;" AnchorPane.rightAnchor="4.0" />
-                                          <TextField fx:id="txtField03" disable="true" layoutX="135.0" layoutY="87.0" prefHeight="23.0" prefWidth="238.0" promptText="Press F3" style="-fx-border-radius: 5;" AnchorPane.rightAnchor="4.0" />
+                                          <TextField fx:id="txtField03" disable="true" layoutX="128.0" layoutY="83.0" prefHeight="23.0" prefWidth="238.0" promptText="Press F3" style="-fx-border-radius: 5;" AnchorPane.rightAnchor="5.0" />
                                           <Label layoutX="9.0" layoutY="95.0" text="Department">
                                              <font>
                                                 <Font name="MS Reference Sans Serif" size="12.0" />
@@ -92,7 +92,7 @@
                                  <center>
                                     <AnchorPane prefWidth="551.0" style="-fx-border-color: #F88222; -fx-border-radius: 5;" BorderPane.alignment="CENTER">
                                        <children>
-                                          <TableView fx:id="tblincetives" onMouseClicked="#tblIncentives_Clicked" layoutX="6.0" layoutY="5.0" prefWidth="539.0" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="3.0">
+                                          <TableView fx:id="tblincetives" layoutX="6.0" layoutY="5.0" onMouseClicked="#tblIncentives_Clicked" prefWidth="539.0" AnchorPane.bottomAnchor="3.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="3.0" AnchorPane.topAnchor="3.0">
                                              <columns>
                                                 <TableColumn fx:id="incIndex01" editable="false" minWidth="210.0" prefWidth="-1.0" text="Incentive/Deduction" />
                                                 <TableColumn fx:id="incIndex02" minWidth="110.0" prefWidth="-1.0" text="Goal" />
@@ -120,13 +120,11 @@
                                              </effect>
                                              <columns>
                                                 <TableColumn fx:id="empIndex01" editable="false" minWidth="20.0" prefWidth="30.0" text="No." />
-                                                <TableColumn fx:id="empIndex02" prefWidth="200.0" text="Employee" />
-                                                <TableColumn fx:id="empIndex03" prefWidth="200.0" text="Level" />
-                                                <TableColumn fx:id="empIndex04" prefWidth="200.0" text="Position" />
+                                                <TableColumn fx:id="empIndex02" prefWidth="250.0" text="Employee" />
+                                                <TableColumn fx:id="empIndex03" prefWidth="250.0" text="Level" />
+                                                <TableColumn fx:id="empIndex04" prefWidth="250.0" text="Position" />
                                                 <TableColumn fx:id="empIndex05" prefWidth="100.0" text="Service Year" />
-                                                <TableColumn fx:id="empIndex06" prefWidth="200.0" text="Bank Name" />
-                                                <TableColumn fx:id="empIndex07" prefWidth="150.0" text="Account No." />
-                                                <TableColumn fx:id="empIndex08" prefWidth="150.0" text=" Total Amount" />
+                                                <TableColumn fx:id="empIndex06" prefWidth="150.0" text=" Total Amount" />
                                              </columns>
                                           </TableView>
                                        </children>
