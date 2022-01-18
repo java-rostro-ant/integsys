@@ -60,6 +60,8 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
     private int pdIndex = -1;
     private int pnOldRow = -1;
     private int pnRow = 0;
+    private int pninc = -1;
+    
     private boolean pbLoaded = false;
     private boolean state = false;
     private LMasDetTrans oListener;
@@ -130,6 +132,8 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
     private Label txtField101;
     @FXML
     private Label txtField102;
+    @FXML
+    private Button btnDelEmp;
   
     public void setGRider(GRider foValue) {
         
@@ -153,6 +157,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
     public void initialize(URL url, ResourceBundle rb) {
 
             btnOk.setOnAction(this::cmdButton_Click);
+            btnDelEmp.setOnAction(this::cmdButton_Click);
             btnExit.setOnAction(this::cmdButton_Click);
             
             txtField03.setOnKeyPressed(this::txtField_KeyPressed);
@@ -260,6 +265,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                     switch (lnIndex){
                         case 8:
                            oTrans.setIncentiveInfo(tbl_row, "sRemarksx", lsValue); break;
+                           
                     }
                 } else
                     txtField.selectAll();
@@ -438,19 +444,31 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
     }
     
     private void cmdButton_Click(ActionEvent event) {
-        String lsButton = ((Button)event.getSource()).getId();
-        switch (lsButton){
-            case "btnOk":
-               CommonUtils.closeStage(btnOk);             
-                break;
-                
-            case "btnExit":
-                CommonUtils.closeStage(btnExit);
-                break;
-                
-            default:
-                ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
-                return;
+        try {
+            String lsButton = ((Button)event.getSource()).getId();
+            switch (lsButton){
+                case "btnDelEmp":
+                    if (oTrans.removeIncentive(incModel.getxInctvCde())){
+                        CommonUtils.closeStage(btnDelEmp);
+                        MsgBox.showOk("Incentives succesfully remove");
+                    }else{
+                        MsgBox.showOk(oTrans.getMessage());
+                    }
+                    
+                case "btnOk":
+                    CommonUtils.closeStage(btnOk);
+                    break;
+                    
+                case "btnExit":
+                    CommonUtils.closeStage(btnExit);
+                    break;
+                    
+                default:
+                    ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
+                    return;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AddIncentivesController.class.getName()).log(Level.SEVERE, null, ex);
         }
     } 
     
@@ -487,7 +505,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                 txtField11.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID")), "##0.00"));
                 txtField12.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(pnRow, "sEmployID")), "#,##0.00"));
                 lastValue = (double) oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"));
-                lastpercValue = (double) oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"));
+                
                 txtField11.requestFocus();
                 
             } 

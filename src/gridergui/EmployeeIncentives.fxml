@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="AnchorMain" style="-fx-border-color: orange; -fx-border-radius: 5;" stylesheets="@/css/EmployeeIncentives.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="AnchorMain" style="-fx-border-color: orange; -fx-border-radius: 5;" stylesheets="@/css/EmployeeIncentives.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
    <children>
       <StackPane layoutX="9.0" layoutY="388.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -81,6 +81,14 @@
                                     <Blend />
                                  </effect>
                               </Button>
+                              <Button fx:id="btnDelEmp" contentDisplay="TOP" ellipsisString="" layoutX="360.0" layoutY="10.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="RM Emp.">
+                                 <graphic>
+                                    <FontAwesomeIconView glyphName="MINUS" size="20" />
+                                 </graphic>
+                                 <effect>
+                                    <Blend />
+                                 </effect>
+                              </Button>
                               <Button fx:id="btnCancel" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Cancel">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="CLOSE" size="20" />
@@ -100,14 +108,6 @@
                               <Button fx:id="btnDeactivate" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="50.0" prefWidth="76.0" text="Deactivate">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="UNDO" size="20" />
-                                 </graphic>
-                                 <effect>
-                                    <Blend />
-                                 </effect>
-                              </Button>
-                              <Button fx:id="btnDelEmp" contentDisplay="TOP" ellipsisString="" layoutX="360.0" layoutY="10.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="RM Emp.">
-                                 <graphic>
-                                    <FontAwesomeIconView glyphName="MINUS" size="20" />
                                  </graphic>
                                  <effect>
                                     <Blend />

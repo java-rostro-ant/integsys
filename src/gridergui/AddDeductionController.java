@@ -6,6 +6,7 @@ package gridergui;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import static gridergui.AddIncentivesController.incModel;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.SQLException;
@@ -111,6 +112,8 @@ public class AddDeductionController implements Initializable {
     private Label txtField101;
     @FXML
     private Label txtField102;
+    @FXML
+    private Button btnDelEmp;
 
     public void setGRider(GRider foValue) {
         
@@ -142,6 +145,7 @@ public class AddDeductionController implements Initializable {
         
          btnOk.setOnAction(this::cmdButton_Click);
          btnExit.setOnAction(this::cmdButton_Click);
+         btnDelEmp.setOnAction(this::cmdButton_Click);
          
          txtField02.setOnKeyPressed(this::txtField_KeyPressed);
          txtField03.setOnKeyPressed(this::txtField_KeyPressed);
@@ -252,19 +256,32 @@ public class AddDeductionController implements Initializable {
     }
 
     private void cmdButton_Click(ActionEvent event) {
-        String lsButton = ((Button)event.getSource()).getId();
-        switch (lsButton){
-            case "btnOk":
-                CommonUtils.closeStage(btnOk);
-                break;
-            case "btnExit":
-                CommonUtils.closeStage(btnExit);
-                break;
-                
-            default:
-                ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
-                return;
-        }
+         try {
+             String lsButton = ((Button)event.getSource()).getId();
+             switch (lsButton){
+               case "btnDelEmp":
+                    {
+                            MsgBox.showOk(String.valueOf(tbl_row));
+                            if (oTrans.removeDeduction(tbl_row)){
+                                CommonUtils.closeStage(btnDelEmp);
+                            }else{
+                                MsgBox.showOk(oTrans.getMessage());
+                            }
+                       
+                    }
+                 case "btnOk":
+                     CommonUtils.closeStage(btnOk);
+                     break;
+                 case "btnExit":
+                     CommonUtils.closeStage(btnExit);
+                     break;
+                     
+                 default:
+                     ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
+                     return;
+             }} catch (SQLException ex) {
+             Logger.getLogger(AddDeductionController.class.getName()).log(Level.SEVERE, null, ex);
+         }
     } 
     
     public void initGrid() {   
@@ -315,18 +332,21 @@ public class AddDeductionController implements Initializable {
             
     @FXML
     private void tblemployee_Clicked(MouseEvent event) {
-        pnRow = tblemployee.getSelectionModel().getSelectedIndex() + 1;  
-        getSelectedItems();
+        if (event.getClickCount()== 2){
+            pnRow = tblemployee.getSelectionModel().getSelectedIndex() + 1;  
+            getSelectedItems();
+        }
+        
     }           
     
     private void getSelectedItems(){
         try {
             txtField03.setText((String) oTrans.getDetail(pnRow, "xEmployNm"));
-            txtField04.setText(CommonUtils.NumberFormat((Number) oTrans.getDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID")), "##0.00"));
-            txtField05.setText(CommonUtils.NumberFormat((Number) oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID")), "#,##0.00"));
+            txtField05.setText(CommonUtils.NumberFormat((Number) oTrans.getDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID")), "##0.00"));
+            txtField04.setText(CommonUtils.NumberFormat((Number) oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID")), "#,##0.00"));
             lastValue = (double) oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"));
-            lastpercValue = (double) oTrans.getDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"));
-            txtField04.requestFocus();
+//            lastpercValue = (double) oTrans.getDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"));
+            txtField05.requestFocus();
         }   
         catch (SQLException ex) {
             ex.printStackTrace();

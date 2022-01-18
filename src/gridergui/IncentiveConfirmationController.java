@@ -5,6 +5,7 @@
  */
 package gridergui;
 
+import transaction.*;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.io.IOException;
 import java.net.URL;
@@ -148,7 +149,7 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
     private TableColumn incIndex06;
     
     private final ObservableList<TableIncentives> data = FXCollections.observableArrayList();
-    private final ObservableList<Release> emp_data = FXCollections.observableArrayList();
+    private final ObservableList<IncentiveConfirmationModel> emp_data = FXCollections.observableArrayList();
    @FXML
     private Label lblHeader;    
     @FXML
@@ -207,6 +208,7 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         tblincentives_column();
         tblemployee_column();
         txtSeeks05.setOnKeyPressed(this::txtField_KeyPressed); 
+        txtSeeks06.setOnKeyPressed(this::txtField_KeyPressed); 
         
 //        if(transNox.isEmpty()){
 //           pnEditMode = EditMode.UNKNOWN;
@@ -324,17 +326,38 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
            switch (event.getCode()){
             case F3:
                 switch (lnIndex){
-              
-                case 5: /*Search*/
-                case 6: /*Search*/
-                    if (oTrans.SearchTransaction(txtSeeks05.getText(), false)){
-                            loadIncentives();
-                            pnEditMode = oTrans.getEditMode();
-                        } else 
-                            MsgBox.showOk(oTrans.getMessage());
-                     break;
+                    case 5: /*Search*/
+                        if (oTrans.SearchTransaction(txtSeeks05.getText(), false)){
+                                loadIncentives();
+                                pnEditMode = oTrans.getEditMode();
+                            } else 
+                                MsgBox.showOk(oTrans.getMessage());
+                         break;
+                    case 6: /*Search*/
+                        if (oTrans.SearchTransaction(txtSeeks06.getText(), false)){
+                                loadIncentives();
+                                pnEditMode = oTrans.getEditMode();
+                            } else 
+                                MsgBox.showOk(oTrans.getMessage());
+                         break;
                 }   
             case ENTER:
+                switch (lnIndex){
+                    case 5: /*Search*/
+                        if (oTrans.SearchTransaction(txtSeeks05.getText(), false)){
+                                loadIncentives();
+                                pnEditMode = oTrans.getEditMode();
+                            } else 
+                                MsgBox.showOk(oTrans.getMessage());
+                         break;
+                    case 6: /*Search*/
+                        if (oTrans.SearchTransaction(txtSeeks06.getText(), false)){
+                                loadIncentives();
+                                pnEditMode = oTrans.getEditMode();
+                            } else 
+                                MsgBox.showOk(oTrans.getMessage());
+                         break;
+                }   
             case DOWN:
                 CommonUtils.SetNextFocus(txtField); break;
             case UP:
@@ -352,12 +375,12 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         incIndex04.setStyle("-fx-alignment: CENTER-RIGHT");
         incIndex05.setStyle("-fx-alignment: CENTER-RIGHT");
         incIndex06.setStyle("-fx-alignment: CENTER-RIGHT");
-        incIndex01.setCellValueFactory(new PropertyValueFactory<Release,String>("incindex02"));
-        incIndex02.setCellValueFactory(new PropertyValueFactory<Release,String>("incindex03"));
-        incIndex03.setCellValueFactory(new PropertyValueFactory<Release,String>("incindex04"));
-        incIndex04.setCellValueFactory(new PropertyValueFactory<Release,String>("incindex05"));
-        incIndex05.setCellValueFactory(new PropertyValueFactory<Release,String>("incindex06"));
-        incIndex06.setCellValueFactory(new PropertyValueFactory<Release,String>("incindex07"));
+        incIndex01.setCellValueFactory(new PropertyValueFactory<IncentiveConfirmationModel,String>("incindex02"));
+        incIndex02.setCellValueFactory(new PropertyValueFactory<IncentiveConfirmationModel,String>("incindex03"));
+        incIndex03.setCellValueFactory(new PropertyValueFactory<IncentiveConfirmationModel,String>("incindex04"));
+        incIndex04.setCellValueFactory(new PropertyValueFactory<IncentiveConfirmationModel,String>("incindex05"));
+        incIndex05.setCellValueFactory(new PropertyValueFactory<IncentiveConfirmationModel,String>("incindex06"));
+        incIndex06.setCellValueFactory(new PropertyValueFactory<IncentiveConfirmationModel,String>("incindex07"));
          /*making column's position uninterchangebale*/
         tblincetives.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblincetives.lookup("TableHeaderRow");
@@ -379,10 +402,10 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         
     }
     public void initEmployeeGrid() {
-        empIndex08.setStyle("-fx-alignment: CENTER-RIGHT");
+        empIndex06.setStyle("-fx-alignment: CENTER-RIGHT");
         empIndex02.setStyle("-fx-alignment: CENTER-LEFT");
-        empIndex06.setStyle("-fx-alignment: CENTER-LEFT");
-//        empIndex01.setCellValueFactory(new PropertyValueFactory<Release,String>("empIndex01"));
+//        empIndex06.setStyle("-fx-alignment: CENTER-LEFT");
+//        empIndex01.setCellValueFactory(new PropertyValueFactory<IncentiveConfirmationModel,String>("empIndex01"));
         incIndex01.setCellFactory(column -> {
                       return new TableCell<TableIncentives, String>() {
                           @Override
@@ -401,13 +424,11 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
                           }
                       };
                   });
-        empIndex02.setCellValueFactory(new PropertyValueFactory<Release,String>("empIndex02"));
-        empIndex03.setCellValueFactory(new PropertyValueFactory<Release,String>("empIndex03"));
-        empIndex04.setCellValueFactory(new PropertyValueFactory<Release,String>("empIndex04"));
-        empIndex05.setCellValueFactory(new PropertyValueFactory<Release,String>("empIndex05"));
-        empIndex06.setCellValueFactory(new PropertyValueFactory<Release,String>("empIndex06"));
-        empIndex07.setCellValueFactory(new PropertyValueFactory<Release,CheckBox>("empIndex07"));
-        empIndex08.setCellValueFactory(new PropertyValueFactory<Release,CheckBox>("empIndex08"));
+        empIndex02.setCellValueFactory(new PropertyValueFactory<IncentiveConfirmationModel,String>("empIndex02"));
+        empIndex03.setCellValueFactory(new PropertyValueFactory<IncentiveConfirmationModel,String>("empIndex03"));
+        empIndex04.setCellValueFactory(new PropertyValueFactory<IncentiveConfirmationModel,String>("empIndex04"));
+        empIndex05.setCellValueFactory(new PropertyValueFactory<IncentiveConfirmationModel,String>("empIndex05"));
+        empIndex06.setCellValueFactory(new PropertyValueFactory<IncentiveConfirmationModel,String>("empIndex06"));
          /*making column's position uninterchangebale*/
         tblemployee.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblemployee.lookup("TableHeaderRow");
@@ -476,7 +497,8 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
                 priceWithDecimal(Double.valueOf(oTrans.getIncentiveInfo(lnCtr, "nAmtGoalx").toString())),
                 priceWithDecimal(Double.valueOf(oTrans.getIncentiveInfo(lnCtr, "nAmtActlx").toString())),
                 priceWithDecimal(Double.valueOf(oTrans.getIncentiveInfo(lnCtr, "nInctvAmt").toString())),
-                oTrans.getIncentiveInfo(lnCtr, "sRemarksx").toString()));
+                oTrans.getIncentiveInfo(lnCtr, "sRemarksx").toString(),
+                oTrans.getIncentiveInfo(lnCtr, "xInctvCD").toString()));
 
              System.out.println(oTrans.getIncentiveInfo(lnCtr, "xInctvNme"));
              System.out.println(oTrans.getIncentiveInfo(lnCtr, "nQtyGoalx"));
@@ -495,6 +517,7 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
                      "",
                      "",
                      oTrans.getDeductionInfo(lnCtr, "nDedctAmt").toString(),
+                     "",
                      ""));
 
                  //to display these fields on grid.
@@ -511,24 +534,14 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
             String lsBankAcct;
             emp_data.clear();
                 for(lnCtr  = 1; lnCtr  <= oTrans.getItemCount(); lnCtr ++){
-                trans = oTrans.getBankInfo((String) oTrans.getDetail(lnCtr, "sEmployID"));
                 
-                if(trans != null){
-                    lsBankName = trans.getMaster(8).toString();
-                    lsBankAcct = trans.getMaster(3).toString();
-                }else{
-                    lsBankName = "";
-                    lsBankAcct = "";
-                }
                 /*DecimalFormat*/ 
                 
-                emp_data.add(new Release(String.valueOf(lnCtr),
+                emp_data.add(new IncentiveConfirmationModel(String.valueOf(lnCtr),
                         oTrans.getDetail(lnCtr , "xEmployNm").toString(),
                         oTrans.getDetail(lnCtr , "xEmpLevNm").toString(),
                         oTrans.getDetail(lnCtr , "xPositnNm").toString(),
                         oTrans.getDetail(lnCtr , "xSrvcYear").toString(),
-                        lsBankName,
-                        lsBankAcct,
                         priceWithDecimal((Double)(oTrans.getDetail(lnCtr , "nTotalAmt")))));
                
             }
@@ -622,14 +635,12 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         
     }
     public void tblemployee_column(){
-         empIndex01.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.03));
-         empIndex02.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.167));
-         empIndex03.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.14));
-         empIndex04.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.14));
-         empIndex05.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.07));
+         empIndex01.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.035));
+         empIndex02.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.240));
+         empIndex03.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.214));
+         empIndex04.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.214));
+         empIndex05.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.14));
          empIndex06.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.14));
-         empIndex07.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.129));
-         empIndex08.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.167));
          
          empIndex01.setResizable(false);  
          empIndex02.setResizable(false);  
@@ -637,8 +648,7 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
          empIndex04.setResizable(false);  
          empIndex05.setResizable(false);  
          empIndex06.setResizable(false); 
-         empIndex07.setResizable(false); 
-         empIndex08.setResizable(false);  
+         
     }
     
      @FXML

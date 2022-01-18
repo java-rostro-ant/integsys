@@ -274,6 +274,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                     switch (lnIndex){
                         case 21: /*search oTransaction*/
                             if (oTrans.SearchTransaction(txtSeeks21.getText(), true)){
+                                
                                 loadMaster();
                                 loadIncentives();
                                 pnEditMode = EditMode.READY;
@@ -369,6 +370,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
     private void loadIncentives() throws SQLException{
         //load to grid the incentives.
         inc_data.clear();
+        oTrans.displayMasFields();
         for (lnCtr = 1; lnCtr <= oTrans.getIncentiveCount(); lnCtr++){
             inc_data.add(new TableIncentives(String.valueOf(lnCtr),
                 oTrans.getIncentiveInfo(lnCtr, "xInctvNme").toString(),
@@ -377,7 +379,8 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                 oTrans.getIncentiveInfo(lnCtr, "nAmtGoalx").toString(),
                 oTrans.getIncentiveInfo(lnCtr, "nAmtActlx").toString(),
                 oTrans.getIncentiveInfo(lnCtr, "nInctvAmt").toString(),
-                oTrans.getIncentiveInfo(lnCtr, "sRemarksx").toString()));
+                oTrans.getIncentiveInfo(lnCtr, "sRemarksx").toString(),
+                oTrans.getIncentiveInfo(lnCtr, "sInctveCD").toString()));
         }
         
         for (lnCtr = 1; lnCtr <= oTrans.getDeductionCount(); lnCtr++){
@@ -388,6 +391,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                 "",
                 "",
                 oTrans.getDeductionInfo(lnCtr, "nDedctAmt").toString(),
+                "",
                 ""));          
         }
         pnEditMode = oTrans.getEditMode();
@@ -460,7 +464,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         
         if (lsValue == null) return;
             
-        try {
+        try {   
             if(!nv){ /*Lost Focus*/
                 switch (lnIndex){
                     case 1:
@@ -814,7 +818,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         
         try {
             
-            pnRow = tblIncentives.getSelectionModel().getSelectedIndex(); 
+                pnRow = tblIncentives.getSelectionModel().getSelectedIndex(); 
             TableIncentives ti = (TableIncentives) tblIncentives.getItems().get(pnRow);
             
             if(ti.getIncindex02().contains("Deduction")){

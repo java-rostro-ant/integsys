@@ -20,6 +20,7 @@ public class TableIncentives {
     private SimpleStringProperty incindex06;
     private SimpleStringProperty incindex07;
     private SimpleStringProperty incindex08;
+    private SimpleStringProperty xInctvCde;
     
     TableIncentives(String incindex01, 
                     String incindex02, 
@@ -28,7 +29,8 @@ public class TableIncentives {
                     String incindex05, 
                     String incindex06, 
                     String incindex07, 
-                    String incindex08){
+                    String incindex08,
+                    String InctvCde){
         
         this.incindex01 = new SimpleStringProperty(incindex01);
         this.incindex02 = new SimpleStringProperty(incindex02);
@@ -38,9 +40,16 @@ public class TableIncentives {
         this.incindex06 = new SimpleStringProperty(incindex06);
         this.incindex07 = new SimpleStringProperty(incindex07);
         this.incindex08 = new SimpleStringProperty(incindex08);
+        this.xInctvCde = new SimpleStringProperty(InctvCde);
     }
 
+    public String getxInctvCde() {
+        return xInctvCde.get();
+    }
 
+    public void setxInctvCde(String xInctvCde) {
+        this.xInctvCde.set(xInctvCde);
+    }
     
     public String getIncindex01(){return incindex01.get();}
     public void setIncindex01(String incindex01){this.incindex01.set(incindex01);}

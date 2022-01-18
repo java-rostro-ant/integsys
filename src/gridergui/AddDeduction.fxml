@@ -141,6 +141,14 @@
                   <Blend />
                </effect>
             </Button>
+            <Button fx:id="btnDelEmp" contentDisplay="TOP" ellipsisString="" layoutX="14.0" layoutY="9.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="78.0" text="RM. Dedctn" textAlignment="JUSTIFY">
+               <graphic>
+                  <FontAwesomeIconView glyphName="MINUS" size="20" />
+               </graphic>
+               <effect>
+                  <Blend />
+               </effect>
+            </Button>
          </children>
       </AnchorPane>
    </children>
