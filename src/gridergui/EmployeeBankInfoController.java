@@ -151,8 +151,8 @@ public class EmployeeBankInfoController implements Initializable , ScreenInterfa
         txtField2.setOnKeyPressed(this::txtField_KeyPressed);
         txtField3.setOnKeyPressed(this::txtField_KeyPressed); 
         txtField3.textProperty().addListener((final ObservableValue<? extends String> ov, final String oldValue, final String newValue) -> {
-            if (txtField3.getText().length() > 12) {
-                String s = txtField3.getText().substring(0, 12);
+            if (txtField3.getText().length() > 16) {
+                String s = txtField3.getText().substring(0, 16);
                 txtField3.setText(s);
             }
         });
@@ -270,11 +270,17 @@ public class EmployeeBankInfoController implements Initializable , ScreenInterfa
         txtField1.setDisable(!lbShow);
         txtField2.setDisable(!lbShow);
         txtField3.setDisable(!lbShow);
-        
+        if(fnValue == EditMode.UPDATE){
+            txtField1.setDisable(lbShow);
+            txtField2.requestFocus();
+        }
+         if(fnValue == EditMode.ADDNEW){
+            txtField1.setDisable(false);
+            txtField1.requestFocus();
+        }
         if (lbShow){
             txtSeeks5.setDisable(lbShow);
             txtSeeks5.clear();
-            txtField1.requestFocus();
             btnCancel.setVisible(lbShow);
             btnSearch.setVisible(lbShow);
             btnSave.setVisible(lbShow);
@@ -385,7 +391,7 @@ public class EmployeeBankInfoController implements Initializable , ScreenInterfa
     private void txtField_KeyPressed(KeyEvent event){
         TextField txtField = (TextField)event.getSource();        
         int lnIndex = Integer.parseInt(txtField.getId().substring(8, 9));
-             
+        System.out.println("Keypress = " + lnIndex);
         try{
            switch (event.getCode()){
             case F3:
@@ -405,6 +411,21 @@ public class EmployeeBankInfoController implements Initializable , ScreenInterfa
                      break;
                 }   
             case ENTER:
+                switch (lnIndex){
+                case 1: /*sBranchCd*/
+                     oTrans.searchEmployee(txtField.getText(), false);
+                     break;
+                case 2: /*sBankNme*/
+                     oTrans.searchBank(txtField.getText(), false); 
+                     break;
+                case 5: /*Search*/
+                    if (oTrans.SearchRecord(txtSeeks5.getText(), false)){
+                        loadRecord();
+                        pnEditMode = EditMode.READY;
+                    } else 
+                        MsgBox.showOk(oTrans.getMessage());
+                     break;
+                }   
             case DOWN:
                 CommonUtils.SetNextFocus(txtField); break;
             case UP:
