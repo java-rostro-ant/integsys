@@ -261,9 +261,9 @@ public class AddDeductionController implements Initializable {
              switch (lsButton){
                case "btnDelEmp":
                     {
-                            MsgBox.showOk(String.valueOf(tbl_row));
                             if (oTrans.removeDeduction(tbl_row)){
                                 CommonUtils.closeStage(btnDelEmp);
+                                MsgBox.showOk("Deduction succesfully remove ");
                             }else{
                                 MsgBox.showOk(oTrans.getMessage());
                             }
