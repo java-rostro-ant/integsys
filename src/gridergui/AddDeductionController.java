@@ -174,9 +174,14 @@ public class AddDeductionController implements Initializable {
          loadDeductionDetail();
          loadEmployee();
          initGrid();
-         initFields(pnEditMode);     
+         initFields(pnEditMode);       
+         initButton(pnEditMode);
+            
     }
-    
+    private void initButton(int fnValue){
+        boolean lbShow = (fnValue == EditMode.ADDNEW);
+        btnDelEmp.setVisible(lbShow);
+     }
     private void initFields(int fnValue){
         boolean lbShow = (fnValue == EditMode.UPDATE || fnValue == EditMode.ADDNEW);
         if(lbShow){

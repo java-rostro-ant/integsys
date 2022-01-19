@@ -53,6 +53,7 @@
                                                       <MenuItem fx:id="mnuEmployeeIncentives" mnemonicParsing="false" onAction="#mnuEmployeeIncentivesClick" text="Entry" />
                                                       <MenuItem fx:id="mnuIncentiveConfirmation" mnemonicParsing="false" onAction="#mnuIncentiveConfirmationClick" text="Confirmation" />
                                                       <MenuItem fx:id="mnuIncentiveReleasing" mnemonicParsing="false" onAction="#mnuIncentiveReleasingClick" text="Releasing" />
+                                                      <MenuItem fx:id="mnuIncentiveHistory" mnemonicParsing="false" onAction="#mnuIncentiveHistoryClick" text="History" />
                                                    </items>
                                                 </Menu>
                                           </items>

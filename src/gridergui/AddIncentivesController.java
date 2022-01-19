@@ -190,8 +190,13 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
             loadEmployee();
             loadIncentives();      
             initFields(pnEditMode);
+            initButton(pnEditMode);
             
     }
+    private void initButton(int fnValue){
+        boolean lbShow = (fnValue == EditMode.ADDNEW);
+        btnDelEmp.setVisible(lbShow);
+     }
     public static void setData(TableIncentives incdata){
         incModel = incdata;    
     }
