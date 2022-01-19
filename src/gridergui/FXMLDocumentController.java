@@ -57,6 +57,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private MenuItem mnuIncentiveParameter;
     @FXML
+    private MenuItem mnuIncentiveHistory;
+    @FXML
     private Pane view;
     @FXML
     private MenuItem mnuEmployeeIncentivesBank;
@@ -172,6 +174,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return new MpBranchPerformanceController();
             case "MpAreaPerformance.fxml":
                 return new MpAreaPerformanceController();
+            case "IncentiveHistory.fxml":
+                return new IncentiveHistoryController();
             default:
                 return null;
         }
@@ -218,6 +222,11 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuMPAreaClick(ActionEvent event) {
         setScene(loadAnimate("MpAreaPerformance.fxml"));
+    }
+    
+    @FXML
+    private void mnuIncentiveHistoryClick(ActionEvent event) {
+        setScene(loadAnimate("IncentiveHistory.fxml"));
     }
     private void getTime(){
         Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {            

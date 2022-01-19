@@ -5,7 +5,6 @@
  */
 package gridergui;
 
-import transaction.*;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.io.IOException;
 import java.net.URL;
@@ -58,7 +57,7 @@ import org.rmj.fund.manager.parameters.IncentiveBankInfo;
  *
  * @author user
  */
-public class IncentiveConfirmationController implements Initializable, ScreenInterface {
+public class IncentiveHistoryController implements Initializable, ScreenInterface {
     private GRider oApp;
     private Incentive oTrans;
     private IncentiveBankInfo trans;
@@ -96,13 +95,9 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
     @FXML
     private Button btnBrowse;
     @FXML
-    private Button btnApproved;
-    @FXML
     private Button btnDisapproved;
     @FXML
     private Button btnClose;
-    @FXML
-    private Button btnUpdate;
     @FXML
     private HBox hbButtons;
     
@@ -198,18 +193,32 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         };
         oTrans = new Incentive(oApp, oApp.getBranchCode(), false);
         oTrans.setListener(oListener);
-        oTrans.setTranStat(10);
+        oTrans.setTranStat(1023);
         oTrans.setWithUI(true);
          
         btnBrowse.setOnAction(this::cmdButton_Click);
         btnClose.setOnAction(this::cmdButton_Click);
-        btnApproved.setOnAction(this::cmdButton_Click);
         btnDisapproved.setOnAction(this::cmdButton_Click);
-        btnUpdate.setOnAction(this::cmdButton_Click);
         tblincentives_column();
         tblemployee_column();
         txtSeeks05.setOnKeyPressed(this::txtField_KeyPressed); 
         txtSeeks06.setOnKeyPressed(this::txtField_KeyPressed); 
+        
+//        if(transNox.isEmpty()){
+//           pnEditMode = EditMode.UNKNOWN;
+//            initButton(pnEditMode);
+//        }else{
+//            try {
+//                if (oTrans.SearchTransaction(transNox, true)){
+//                    loadIncentives();
+//                    pnEditMode = oTrans.getEditMode();
+//                    initButton(pnEditMode);
+//                } else
+//                    MsgBox.showOk(oTrans.getMessage());
+//            } catch (SQLException ex) {
+//                Logger.getLogger(IncentiveConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
         try { 
             if(transNox.isEmpty()){
                 pnEditMode = EditMode.UNKNOWN;
@@ -238,10 +247,8 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
     private void initButton(int fnValue){
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         btnBrowse.setVisible(!lbShow);
-        btnApproved.setVisible(!lbShow);
         btnDisapproved.setVisible(!lbShow);
         btnBrowse.setManaged(!lbShow);
-        btnApproved.setManaged(!lbShow);
         btnDisapproved.setManaged(!lbShow);
         Check01.setDisable(true);
         Check02.setDisable(true);
@@ -262,14 +269,6 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
                         } else 
                             MsgBox.showOk(oTrans.getMessage());
                     break;
-                    
-                case "btnApproved":
-                    if (oTrans.CloseTransaction()){
-                            MsgBox.showOk("Transaction success approved");
-                            clearFields();
-                        } else 
-                            MsgBox.showOk(oTrans.getMessage());
-                    break;
                 case "btnDisapproved":
                     if (oTrans.CancelTransaction()){
                             MsgBox.showOk("Transaction success disapproved");
@@ -277,18 +276,10 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
                         } else 
                             MsgBox.showOk(oTrans.getMessage());
                     break;
-                case "btnUpdate":
-                    loadIncentives();
-                    if(transNox == null || transNox.isEmpty()){
-                        MsgBox.showOk("No record selected!");
-                    }else{
-                        pnEditMode = oTrans.getEditMode();
-                        loadUpdate();
-                    }
-                    break;
+               
                
                 case "btnClose":
-                    if(ShowMessageFX.OkayCancel(null, "Employee Bank Info", "Do you want to disregard changes?") == true){
+                    if(ShowMessageFX.OkayCancel(null, "Incentive Approval History", "Do you want to disregard changes?") == true){
                         unloadForm();
                         break;
                     } else
@@ -754,7 +745,7 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
             System.exit(1);
         }
     }
-    private void clearFields(){
+     private void clearFields(){
         txtField01.setText("");
         txtField02.setText("");
         txtField03.setText("");
@@ -770,7 +761,6 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         emp_data.clear();
         oTrans = new Incentive(oApp, oApp.getBranchCode(), false);
         oTrans.setListener(oListener);
-        oTrans.setTranStat(10);
         oTrans.setWithUI(true);
         pnEditMode = EditMode.UNKNOWN;
     }
