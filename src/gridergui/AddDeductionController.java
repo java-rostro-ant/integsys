@@ -350,8 +350,7 @@ public class AddDeductionController implements Initializable {
             txtField05.setText(CommonUtils.NumberFormat((Number) oTrans.getDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID")), "##0.00"));
             txtField04.setText(CommonUtils.NumberFormat((Number) oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID")), "#,##0.00"));
             lastValue = (double) oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"));
-//            lastpercValue = (double) oTrans.getDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"));
-            txtField05.requestFocus();
+            txtField04.requestFocus();
         }   
         catch (SQLException ex) {
             ex.printStackTrace();
