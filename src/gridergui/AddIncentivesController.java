@@ -499,9 +499,10 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
 
     @FXML
     private void tblemployee_Clicked(MouseEvent event) {
-        pnRow = tblemployee.getSelectionModel().getSelectedIndex() + 1;  
-        getSelectedItem();
-
+        if (event.getClickCount()== 2){
+            pnRow = tblemployee.getSelectionModel().getSelectedIndex() + 1;  
+            getSelectedItem();
+        }
     }
     private void getSelectedItem(){
 

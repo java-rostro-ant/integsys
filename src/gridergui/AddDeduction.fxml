@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="VBoxForm" stylesheets="@/css/EmployeeIncentives.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="VBoxForm" stylesheets="@/css/EmployeeIncentives.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
    <children>
       <AnchorPane prefHeight="30.0" prefWidth="821.0" style="-fx-background-color: #4C4C4C;">
          <children>
@@ -112,7 +112,7 @@
                   </Label>
                   <TextField fx:id="txtField02" layoutX="95.0" layoutY="38.0" prefHeight="25.0" prefWidth="238.0" />
                   <TextField fx:id="txtField06" layoutX="95.0" layoutY="70.0" prefHeight="25.0" prefWidth="238.0" />
-                  <TextField fx:id="txtField03" layoutX="95.0" layoutY="115.0" prefHeight="25.0" prefWidth="238.0" />
+                  <TextField fx:id="txtField03" editable="false" layoutX="95.0" layoutY="115.0" prefHeight="25.0" prefWidth="238.0" />
                   <TextField fx:id="txtField04" layoutX="125.0" layoutY="145.0" prefHeight="25.0" prefWidth="207.0" />
                   <TextField fx:id="txtField05" layoutX="125.0" layoutY="177.0" prefHeight="25.0" prefWidth="207.0" />
                </children>
