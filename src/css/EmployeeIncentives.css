@@ -30,6 +30,13 @@
         orange,
         white;
 }
+.text-field:disabled {
+    -fx-text-fill: black;
+    -fx-opacity: 1.0;
+    -fx-background-color:
+        grey,
+        white;
+}
 
 #btnClose:hover{
   -fx-background-color: #ed1800;
