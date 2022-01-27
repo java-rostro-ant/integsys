@@ -337,11 +337,9 @@ public class AddDeductionController implements Initializable {
             
     @FXML
     private void tblemployee_Clicked(MouseEvent event) {
-        if (event.getClickCount()== 2){
+
             pnRow = tblemployee.getSelectionModel().getSelectedIndex() + 1;  
-            getSelectedItems();
-        }
-        
+            getSelectedItems();       
     }           
     
     private void getSelectedItems(){
@@ -384,12 +382,12 @@ public class AddDeductionController implements Initializable {
                         if (x >= ((y+z)-lastValue)){
 
                             txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx",tbl_row,(String)oTrans.getDetail(pnRow, "sEmployID")),"#,##0.00"));
-                            loadEmployee();
+                            
                         }
                         else{
                             MsgBox.showOk("Amount entered exceeds the amount allocated.");
                             oTrans.setDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"), lastValue);
-                            loadEmployee();
+                            
                             txtField.requestFocus(); 
                         }
                         break;
@@ -405,11 +403,11 @@ public class AddDeductionController implements Initializable {
                             
                             if (maxalloc >= (allocperc + alloc) - lastpercValue){
                                 txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID")), "#,##0.00"));
-                                loadEmployee();
+                                
                             }else{
                                 MsgBox.showOk("Amount entered exceeds the amount allocated.");
                                 oTrans.setIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"), lastpercValue); 
-                                loadEmployee();
+                                
                                 txtField.requestFocus();
                             }
                             break;
@@ -420,7 +418,7 @@ public class AddDeductionController implements Initializable {
                             oTrans.setDeductionInfo(tbl_row, "nDedctAmt", Double.valueOf(lsValue.replace(",","")));
                         
                             txtField.setText(CommonUtils.NumberFormat((Number)oTrans.getDeductionInfo(tbl_row, "nDedctAmt"), "#,##0.00"));
-                            loadEmployee();
+                            
                             break;
                     case 101:
                         oTrans.getDeductionInfo(tbl_row, "xAllocPer");
@@ -435,6 +433,7 @@ public class AddDeductionController implements Initializable {
         } else{ //Focus
             pnIndex = lnIndex;
             txtField.selectAll();
+            loadEmployee();
         }     
     };
 }

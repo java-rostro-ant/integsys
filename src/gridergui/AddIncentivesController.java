@@ -315,7 +315,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                             oTrans.setIncentiveInfo(tbl_row, "nAmtGoalx", 0.00);
                         
                             txtField.setText(CommonUtils.NumberFormat((Number)oTrans.getIncentiveInfo(tbl_row, "nAmtActlx"), "#,##0.00"));
-                            loadEmployee();
+                            
                             break;
                     case 06:
                         if (StringUtil.isNumeric(lsValue)) 
@@ -332,7 +332,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                             oTrans.setIncentiveInfo(tbl_row, "nInctvAmt",  Double.valueOf(lsValue.replace(",","")));
                         
                             txtField.setText(CommonUtils.NumberFormat((Number)oTrans.getIncentiveInfo(tbl_row, "nInctvAmt"), "#,##0.00"));
-                            loadEmployee();
+                            
                             break;
 
                     case 11:
@@ -347,11 +347,11 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                             
                             if (maxalloc >= (allocperc + alloc) - lastpercValue){
                                 txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID")), "#,##0.00"));                        
-                                loadEmployee();
+                                
                             }else{
                                 MsgBox.showOk("Amount entered exceeds the amount allocated.");
                                 oTrans.setIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"), lastpercValue); 
-                                loadEmployee();
+                                
                                 txtField.requestFocus();
                             }
                         break;
@@ -368,12 +368,11 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
 
                         if (x >= ((z+y)-lastValue)){ 
                            txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(pnRow, "sEmployID")), "#,##0.00"));
-                           loadEmployee();
+                           
                         }
                         else{
                             MsgBox.showOk("Amount entered exceeds the amount allocated.");
                             oTrans.setIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"), lastValue); 
-                            loadEmployee();
                             txtField.requestFocus();                   
                         }
                         break;
@@ -385,7 +384,8 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
         } else{ //Focus
             pnIndex = lnIndex;
             txtField.selectAll();
-        }     
+            loadEmployee();
+        } 
     };
     
     public void loadIncentives(){
@@ -499,11 +499,9 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
 
     @FXML
     private void tblemployee_Clicked(MouseEvent event) {
-        if (event.getClickCount()== 2){
             pnRow = tblemployee.getSelectionModel().getSelectedIndex() + 1;  
             getSelectedItem();
         }
-    }
     private void getSelectedItem(){
 
             try {
