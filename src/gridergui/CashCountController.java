@@ -142,6 +142,11 @@ public class CashCountController implements Initializable , ScreenInterface{
             public void DetailRetreive(int fnRow, int fnIndex, Object foValue) {
             }
         };
+        
+        btnBrowse.setOnAction(this::cmdButton_Click);
+        btnClose.setOnAction(this::cmdButton_Click);
+        btnApproved.setOnAction(this::cmdButton_Click);
+        btnDisapproved.setOnAction(this::cmdButton_Click);
         oTrans = new Incentive(oApp, oApp.getBranchCode(), false);
         oTrans.setListener(oListener);
         oTrans.setWithUI(true);
