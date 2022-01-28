@@ -6,8 +6,6 @@ package gridergui;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
-import static gridergui.AddIncentivesController.incModel;
-import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
@@ -25,7 +23,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
@@ -433,6 +430,7 @@ public class AddDeductionController implements Initializable {
         } else{ //Focus
             pnIndex = lnIndex;
             txtField.selectAll();
+            txtField.setText(txtField.getText().replace(",", ""));
             loadEmployee();
         }     
     };

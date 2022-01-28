@@ -181,9 +181,15 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
             txtField08.focusedProperty().addListener(txtArea_Focus);
             
             if (incEmp_data.isEmpty()){
-                tblemployee.getSelectionModel().selectFirst();
-                pnRow = 1;
-                getSelectedItem();
+                try {
+                    tblemployee.getSelectionModel().selectFirst();
+                    pnRow = 1;
+                    getSelectedItem();
+                    txtField07.setText((CommonUtils.NumberFormat((Number)oTrans.getIncentiveInfo(tbl_row, "nInctvAmt"), "#,##0.00")));
+                } catch (SQLException ex) {
+                    Logger.getLogger(AddIncentivesController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+               
             } 
             pnEditMode = oTrans.getEditMode();
             pbLoaded = true;
@@ -249,6 +255,8 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
             
         switch (event.getCode()){
         case ENTER:
+            switch (lnIndex){ 
+                }
         case DOWN:
             CommonUtils.SetNextFocus(txtField);
             break;
@@ -314,7 +322,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                         else    
                             oTrans.setIncentiveInfo(tbl_row, "nAmtGoalx", 0.00);
                         
-                            txtField.setText(CommonUtils.NumberFormat((Number)oTrans.getIncentiveInfo(tbl_row, "nAmtActlx"), "#,##0.00"));
+                            txtField.setText(CommonUtils.NumberFormat((Number)oTrans.getIncentiveInfo(tbl_row, "nAmtGoalx"), "#,##0.00"));
                             
                             break;
                     case 06:
@@ -322,14 +330,14 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                             oTrans.setIncentiveInfo(tbl_row, "nAmtActlx", Double.valueOf(lsValue));
                         else    
                             oTrans.setIncentiveInfo(tbl_row, "nAmtActlx", 0.00);
-                             txtField.setText(CommonUtils.NumberFormat((Number)oTrans.getIncentiveInfo(tbl_row, "nAmtActlx"), "##0.00"));
+                             txtField.setText(CommonUtils.NumberFormat((Number)oTrans.getIncentiveInfo(tbl_row, "nAmtActlx"), "#,##0.00"));
                         break;
                         
                     case 07:
                         if (StringUtil.isNumeric(lsValue)) 
                             oTrans.setIncentiveInfo(tbl_row, "nInctvAmt", Double.valueOf(lsValue));
-                        else 
-                            oTrans.setIncentiveInfo(tbl_row, "nInctvAmt",  Double.valueOf(lsValue.replace(",","")));
+                       
+                        
                         
                             txtField.setText(CommonUtils.NumberFormat((Number)oTrans.getIncentiveInfo(tbl_row, "nInctvAmt"), "#,##0.00"));
                             
@@ -384,6 +392,12 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
         } else{ //Focus
             pnIndex = lnIndex;
             txtField.selectAll();
+//            txtField.setText();
+            if(lsValue.contains(",")){
+                String replaceVal = txtField07.getText().replace(",", "");
+                txtField.setText(replaceVal);
+                System.out.println(replaceVal);
+            }
             loadEmployee();
         } 
     };
@@ -431,9 +445,9 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
 
                 pnEditMode = oTrans.getEditMode();
                 pbLoaded = true;
-            }     
-                txtField07.setText((CommonUtils.NumberFormat((Number)oTrans.getIncentiveInfo(tbl_row, "nInctvAmt"), "#,##0.00")));
-                if (oTrans.getIncentiveInfo(tbl_row, 101).toString().equals("NaN")){
+            }  
+            
+                 if (oTrans.getIncentiveInfo(tbl_row, 101).toString().equals("NaN")){
                     txtField101.setText("0.00 %");
                 }else{
                     txtField101.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveInfo(tbl_row, 101), "#,##0.00" ) + "%");
