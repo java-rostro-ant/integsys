@@ -56,7 +56,12 @@
                                                       <MenuItem fx:id="mnuIncentiveHistory" mnemonicParsing="false" onAction="#mnuIncentiveHistoryClick" text="History" />
                                                    </items>
                                                 </Menu>
-                                                <MenuItem fx:id="mnuCashCount" mnemonicParsing="false" onAction="#mnuCashCountClick" text="Cash Count" />
+                                                <Menu fx:id="mnuTransaction111" mnemonicParsing="false" text="CashCount">
+                                                   <items>
+                                                      <MenuItem fx:id="mnuCashCount" mnemonicParsing="false" onAction="#mnuCashCountClick" text="Confirmation" />
+                                                      <MenuItem fx:id="mnuCashCountHistory" mnemonicParsing="false" onAction="#mnuCashCountHistoryClick" text="History" />
+                                                   </items>
+                                                </Menu>
                                           </items>
                                         </Menu>
                                         <Menu mnemonicParsing="false" text="Reports" />

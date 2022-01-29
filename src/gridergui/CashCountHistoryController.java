@@ -5,6 +5,7 @@
  */
 package gridergui;
 
+import static gridergui.CashCountController.oTrans;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -26,10 +27,7 @@ import org.rmj.appdriver.GRider;
 import org.rmj.appdriver.agent.MsgBox;
 import org.rmj.appdriver.agentfx.CommonUtils;
 import org.rmj.appdriver.agentfx.ShowMessageFX;
-import org.rmj.appdriver.constants.EditMode;
 import org.rmj.fund.manager.base.CashCount;
-import org.rmj.fund.manager.base.Incentive;
-import org.rmj.fund.manager.base.LMasDetTrans;
 import org.rmj.fund.manager.base.LTransaction;
 
 /**
@@ -37,7 +35,7 @@ import org.rmj.fund.manager.base.LTransaction;
  *
  * @author user
  */
-public class CashCountController implements Initializable , ScreenInterface{
+public class CashCountHistoryController  implements Initializable , ScreenInterface{
     private GRider oApp;
     
     static CashCount oTrans;
@@ -81,7 +79,7 @@ public class CashCountController implements Initializable , ScreenInterface{
     
     @FXML
     private Label lblStatus;
-
+    
     @FXML
     private TextField txtField01;
     @FXML
@@ -162,10 +160,6 @@ public class CashCountController implements Initializable , ScreenInterface{
     private TextField txtSeeks39;
     @FXML
     private Button btnBrowse;
-    @FXML
-    private Button btnApproved;
-    @FXML
-    private Button btnDisapproved;
     @FXML
     private Button btnClose;
     @FXML
@@ -257,12 +251,11 @@ public class CashCountController implements Initializable , ScreenInterface{
         
         btnBrowse.setOnAction(this::cmdButton_Click);
         btnClose.setOnAction(this::cmdButton_Click);
-        btnApproved.setOnAction(this::cmdButton_Click);
-        btnDisapproved.setOnAction(this::cmdButton_Click);
         txtSeeks38.setOnKeyPressed(this::txtField_KeyPressed);
         txtSeeks39.setOnKeyPressed(this::txtField_KeyPressed);
         oTrans = new CashCount(oApp, oApp.getBranchCode(), false);
         oTrans.setListener(listener);
+        oTrans.setTranStat(1023);
         oTrans.setWithUI(true);
     }   
     @Override
@@ -314,22 +307,6 @@ public class CashCountController implements Initializable , ScreenInterface{
                         }else 
                             MsgBox.showOk(oTrans.getMessage());
                     break;
-                    
-                case "btnApproved":
-                    if (oTrans.CloseTransaction()){
-                            MsgBox.showOk("Transaction successfully approved");
-                            clearFields();
-                        } else 
-                            MsgBox.showOk(oTrans.getMessage());
-                    break;
-                case "btnDisapproved":
-                    if (oTrans.CancelTransaction()){
-                            MsgBox.showOk("Transaction successfully disapproved");
-                            clearFields();
-                        } else 
-                            MsgBox.showOk(oTrans.getMessage());
-                    break;
-               
                 case "btnClose":
                     if(ShowMessageFX.OkayCancel(null, "Employee Bank Info", "Do you want to disregard changes?") == true){
                         unloadForm();
@@ -478,7 +455,8 @@ public class CashCountController implements Initializable , ScreenInterface{
             txtField14.setText(oTrans.getMaster(10).toString());
             txtField15.setText(oTrans.getMaster(9).toString());
             txtField16.setText(oTrans.getMaster(8).toString());
-            txtField17.setText(oTrans.getMaster(7).toString());
+//            txtField17.setText(oTrans.getMaster(7).toString());
+            txtField17.setText("5");
             txtField18.setText(oTrans.getMaster(6).toString());
             txtField19.setText(oTrans.getMaster(5).toString());
             txtField20.setText(oTrans.getMaster(4).toString());
