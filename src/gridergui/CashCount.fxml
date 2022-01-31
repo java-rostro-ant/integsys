@@ -459,7 +459,7 @@
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                             </rowConstraints>
                                              <children>
-                                                <Label prefHeight="17.0" prefWidth="152.0" text="Requested By:" textAlignment="CENTER" GridPane.rowIndex="4">
+                                                <Label prefHeight="17.0" prefWidth="152.0" text="Requested By:" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="4">
                                                    <font>
                                                       <Font name="System Bold" size="12.0" />
                                                    </font>
@@ -467,8 +467,11 @@
                                                       <Insets left="10.0" />
                                                    </padding>
                                                 </Label>
-                                                <TextField fx:id="txtField31" disable="true" editable="false" minHeight="-Infinity" prefHeight="25.0" style="-fx-opacity: 1.0;" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                <Label prefHeight="17.0" prefWidth="152.0" text="Entry By:" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="4">
+                                                <TextField fx:id="txtField31" disable="true" editable="false" minHeight="-Infinity" prefHeight="25.0" style="-fx-opacity: 1.0;" GridPane.columnIndex="3" GridPane.rowIndex="4">
+                                                   <GridPane.margin>
+                                                      <Insets right="5.0" />
+                                                   </GridPane.margin></TextField>
+                                                <Label prefHeight="17.0" prefWidth="152.0" text="Entry By:" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="3">
                                                    <font>
                                                       <Font name="System Bold" size="12.0" />
                                                    </font>
@@ -476,12 +479,12 @@
                                                       <Insets left="10.0" />
                                                    </padding>
                                                 </Label>
-                                                <TextField fx:id="txtField32" disable="true" editable="false" layoutX="183.0" layoutY="73.0" minHeight="-Infinity" prefHeight="25.0" style="-fx-opacity: 1.0;" GridPane.columnIndex="3" GridPane.rowIndex="4">
+                                                <TextField fx:id="txtField32" disable="true" editable="false" layoutX="183.0" layoutY="73.0" minHeight="-Infinity" prefHeight="25.0" style="-fx-opacity: 1.0;" GridPane.columnIndex="3" GridPane.rowIndex="3">
                                                    <GridPane.margin>
                                                       <Insets right="5.0" />
                                                    </GridPane.margin>
                                                 </TextField>
-                                                <Label prefHeight="17.0" prefWidth="152.0" text="Transaction No. :" textAlignment="CENTER" GridPane.rowIndex="3">
+                                                <Label prefHeight="17.0" prefWidth="152.0" text="Transaction No. :" textAlignment="CENTER" GridPane.rowIndex="2">
                                                    <font>
                                                       <Font name="System Bold" size="12.0" />
                                                    </font>
@@ -489,7 +492,7 @@
                                                       <Insets left="10.0" />
                                                    </padding>
                                                 </Label>
-                                                <Label layoutX="10.0" layoutY="49.0" prefHeight="17.0" prefWidth="152.0" text="Branch :" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                                                <Label layoutX="10.0" layoutY="49.0" prefHeight="17.0" prefWidth="152.0" text="Branch :" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="2">
                                                    <font>
                                                       <Font name="System Bold" size="12.0" />
                                                    </font>
@@ -497,13 +500,13 @@
                                                       <Insets left="10.0" />
                                                    </padding>
                                                 </Label>
-                                                <TextField fx:id="txtField29" disable="true" editable="false" layoutX="196.0" layoutY="133.0" minHeight="-Infinity" prefHeight="25.0" style="-fx-opacity: 1.0;" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                <TextField fx:id="txtField30" disable="true" editable="false" layoutX="196.0" layoutY="45.0" minHeight="-Infinity" prefHeight="25.0" style="-fx-opacity: 1.0;" GridPane.columnIndex="3" GridPane.rowIndex="3">
+                                                <TextField fx:id="txtField29" disable="true" editable="false" layoutX="196.0" layoutY="133.0" minHeight="-Infinity" prefHeight="25.0" style="-fx-opacity: 1.0;" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                <TextField fx:id="txtField30" disable="true" editable="false" layoutX="196.0" layoutY="45.0" minHeight="-Infinity" prefHeight="25.0" style="-fx-opacity: 1.0;" GridPane.columnIndex="3" GridPane.rowIndex="2">
                                                    <GridPane.margin>
                                                       <Insets right="5.0" />
                                                    </GridPane.margin>
                                                 </TextField>
-                                                <Label layoutX="10.0" layoutY="137.0" prefHeight="17.0" prefWidth="152.0" text="Official Receipt No." textAlignment="CENTER" GridPane.rowIndex="5">
+                                                <Label layoutX="10.0" layoutY="137.0" prefHeight="17.0" prefWidth="152.0" text="Official Receipt No." textAlignment="CENTER" GridPane.rowIndex="4">
                                                    <font>
                                                       <Font name="System Bold" size="12.0" />
                                                    </font>
@@ -511,7 +514,7 @@
                                                       <Insets left="10.0" />
                                                    </padding>
                                                 </Label>
-                                                <Label layoutX="10.0" layoutY="167.0" prefHeight="17.0" prefWidth="152.0" text="Sales Invoice No." textAlignment="CENTER" GridPane.rowIndex="6">
+                                                <Label layoutX="10.0" layoutY="167.0" prefHeight="17.0" prefWidth="152.0" text="Sales Invoice No." textAlignment="CENTER" GridPane.rowIndex="5">
                                                    <font>
                                                       <Font name="System Bold" size="12.0" />
                                                    </font>
@@ -519,7 +522,7 @@
                                                       <Insets left="10.0" />
                                                    </padding>
                                                 </Label>
-                                                <Label layoutX="10.0" layoutY="197.0" prefHeight="17.0" prefWidth="152.0" text="Provisional Receipt No." textAlignment="CENTER" GridPane.rowIndex="7">
+                                                <Label layoutX="10.0" layoutY="197.0" prefHeight="17.0" prefWidth="152.0" text="Provisional Receipt No." textAlignment="CENTER" GridPane.rowIndex="6">
                                                    <font>
                                                       <Font name="System Bold" size="12.0" />
                                                    </font>
@@ -527,7 +530,7 @@
                                                       <Insets left="10.0" />
                                                    </padding>
                                                 </Label>
-                                                <Label layoutX="10.0" layoutY="227.0" prefHeight="17.0" prefWidth="152.0" text="Collection Receipt No." textAlignment="CENTER" GridPane.rowIndex="8">
+                                                <Label layoutX="10.0" layoutY="227.0" prefHeight="17.0" prefWidth="152.0" text="Collection Receipt No." textAlignment="CENTER" GridPane.rowIndex="7">
                                                    <font>
                                                       <Font name="System Bold" size="12.0" />
                                                    </font>
@@ -535,10 +538,10 @@
                                                       <Insets left="10.0" />
                                                    </padding>
                                                 </Label>
-                                                <TextField fx:id="txtField33" disable="true" editable="false" minHeight="-Infinity" prefHeight="25.0" style="-fx-opacity: 1.0;" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                                                <TextField fx:id="txtField34" disable="true" editable="false" minHeight="-Infinity" prefHeight="25.0" style="-fx-opacity: 1.0;" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                                                <TextField fx:id="txtField35" disable="true" editable="false" minHeight="-Infinity" prefHeight="25.0" style="-fx-opacity: 1.0;" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                                                <TextField fx:id="txtField36" disable="true" editable="false" minHeight="-Infinity" prefHeight="25.0" style="-fx-opacity: 1.0;" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                                                <TextField fx:id="txtField33" disable="true" editable="false" minHeight="-Infinity" prefHeight="25.0" style="-fx-opacity: 1.0;" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                <TextField fx:id="txtField34" disable="true" editable="false" minHeight="-Infinity" prefHeight="25.0" style="-fx-opacity: 1.0;" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                <TextField fx:id="txtField35" disable="true" editable="false" minHeight="-Infinity" prefHeight="25.0" style="-fx-opacity: 1.0;" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                                <TextField fx:id="txtField36" disable="true" editable="false" minHeight="-Infinity" prefHeight="25.0" style="-fx-opacity: 1.0;" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                                                 <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: orange;" GridPane.columnSpan="6">
                                                    <children>
                                                       <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -563,7 +566,7 @@
                                                       </GridPane>
                                                    </children>
                                                 </AnchorPane>
-                                                <Label layoutX="280.0" layoutY="77.0" prefHeight="17.0" prefWidth="152.0" text="Date Transact :" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                                <Label layoutX="280.0" layoutY="77.0" prefHeight="17.0" prefWidth="152.0" text="Date Transact :" textAlignment="CENTER" GridPane.rowIndex="3">
                                                    <font>
                                                       <Font name="System Bold" size="12.0" />
                                                    </font>
@@ -571,9 +574,9 @@
                                                       <Insets left="10.0" />
                                                    </padding>
                                                 </Label>
-                                                <TextField fx:id="txtField37" disable="true" editable="false" layoutX="380.0" layoutY="73.0" minHeight="-Infinity" prefHeight="25.0" style="-fx-opacity: 1.0;" GridPane.columnIndex="3" GridPane.rowIndex="2">
+                                                <TextField fx:id="txtField37" disable="true" editable="false" layoutX="380.0" layoutY="73.0" minHeight="-Infinity" prefHeight="25.0" style="-fx-opacity: 1.0;" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                                    <GridPane.margin>
-                                                      <Insets right="5.0" />
+                                                      <Insets />
                                                    </GridPane.margin>
                                                 </TextField>
                                              </children>

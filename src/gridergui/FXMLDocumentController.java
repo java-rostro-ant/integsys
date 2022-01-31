@@ -63,6 +63,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private MenuItem mnuCashCountHistory;
     @FXML
+    private MenuItem mnuCashCountEntry;
+    @FXML
     private Pane view;
     @FXML
     private MenuItem mnuEmployeeIncentivesBank;
@@ -184,6 +186,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return new CashCountController();
             case "CashCountHistory.fxml":
                 return new CashCountHistoryController();
+            case "CashCountEntry.fxml":
+                return new CashCountEntryController();
             default:
                 return null;
         }
@@ -243,6 +247,10 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuCashCountHistoryClick(ActionEvent event) {
         setScene(loadAnimate("CashCountHistory.fxml"));
+    }
+    @FXML
+    private void mnuCashCountEntryClick(ActionEvent event) {
+        setScene(loadAnimate("CashCountEntry.fxml"));
     }
     private void getTime(){
         Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {            
