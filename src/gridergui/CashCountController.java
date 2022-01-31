@@ -364,6 +364,7 @@ public class CashCountController implements Initializable , ScreenInterface{
                             MsgBox.showOk(oTrans.getMessage());
                         break;
                 }   
+                break;
             case ENTER:
                 switch (lnIndex){
                     case 38: /*Search*/
@@ -379,10 +380,11 @@ public class CashCountController implements Initializable , ScreenInterface{
                             MsgBox.showOk(oTrans.getMessage());
                         break;
                 }   
+                break;
             case DOWN:
                 CommonUtils.SetNextFocus(txtField); break;
             case UP:
-                CommonUtils.SetPreviousFocus(txtField);
+                CommonUtils.SetPreviousFocus(txtField);break;
         } 
         }catch(SQLException e){
                 MsgBox.showOk(e.getMessage());
@@ -424,6 +426,16 @@ public class CashCountController implements Initializable , ScreenInterface{
         txtField26.setText("0.00");
         txtField27.setText("0.00");
         txtField28.setText("0.00");
+//      OTHER DETAILS
+        txtField29.setText("");
+        txtField30.setText("");
+        txtField31.setText("");
+        txtField32.setText("");
+        txtField33.setText("");
+        txtField34.setText("");
+        txtField35.setText("");
+        txtField36.setText("");
+        txtField37.setText("");
         
         txtSeeks38.setText("");
         txtSeeks39.setText("");
