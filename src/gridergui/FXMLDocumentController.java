@@ -84,6 +84,22 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private Label DateAndTime;
     @FXML
     private Label AppUser;
+    @FXML
+    private Menu mnuFiles;
+    @FXML
+    private Menu mnuFiles01;
+    @FXML
+    private Menu mnuFiles02;
+    @FXML
+    private Menu mnuTransaction11;
+    @FXML
+    private Menu mnuTransaction111;
+    @FXML
+    private Menu mnuInventory01;
+    @FXML
+    private MenuItem mnuInventoryReq;
+    @FXML
+    private MenuItem mnuInventoryHistory;
     
     /**
      * Initializes the controller class.
@@ -184,6 +200,10 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return new CashCountController();
             case "CashCountHistory.fxml":
                 return new CashCountHistoryController();
+//            case "Inventory.fxml":
+//                return new CashCountController();
+            case "InventoryHistory.fxml":
+                return new InventoryHistoryController();
             default:
                 return null;
         }
@@ -244,6 +264,13 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private void mnuCashCountHistoryClick(ActionEvent event) {
         setScene(loadAnimate("CashCountHistory.fxml"));
     }
+//    private void mnuInventoryReq(ActionEvent event) {
+//        setScene(loadAnimate("CashCount.fxml"));
+//    }
+    @FXML
+    private void mnuInventoryHistoryClick(ActionEvent event) {
+        setScene(loadAnimate("InventoryHistory.fxml"));
+    }
     private void getTime(){
         Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {            
         Calendar cal = Calendar.getInstance();
@@ -270,5 +297,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         clock.setCycleCount(Animation.INDEFINITE);
         clock.play();
     }
+
+    
  
 }

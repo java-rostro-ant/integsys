@@ -763,7 +763,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         index03.setStyle("-fx-alignment: CENTER-LEFT;");
         index04.setStyle("-fx-alignment: CENTER-LEFT;");
         index05.setStyle("-fx-alignment: CENTER-LEFT;");
-        index06.setStyle("-fx-alignment: CENTER-LEFT;");
+        index06.setStyle("-fx-alignment: CENTER-RIGHT;");
         
         index01.setCellValueFactory(new PropertyValueFactory<>("index01"));
         index02.setCellValueFactory(new PropertyValueFactory<>("index02"));

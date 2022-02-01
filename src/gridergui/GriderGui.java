@@ -30,8 +30,7 @@ public class GriderGui extends Application {
         FXMLDocumentController controller = new FXMLDocumentController();
         controller.setGRider(oApp);
         
-        view.setController(controller);
-        
+        view.setController(controller);        
         Parent parent = view.load();
         Scene scene = new Scene(parent);
 //        Parent root = FXMLLoader.load(getClass().getResource(pxeMainForm));
