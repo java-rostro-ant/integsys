@@ -200,8 +200,6 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return new CashCountController();
             case "CashCountHistory.fxml":
                 return new CashCountHistoryController();
-//            case "Inventory.fxml":
-//                return new CashCountController();
             case "InventoryHistory.fxml":
                 return new InventoryHistoryController();
             default:
@@ -264,9 +262,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private void mnuCashCountHistoryClick(ActionEvent event) {
         setScene(loadAnimate("CashCountHistory.fxml"));
     }
-//    private void mnuInventoryReq(ActionEvent event) {
-//        setScene(loadAnimate("CashCount.fxml"));
-//    }
+
     @FXML
     private void mnuInventoryHistoryClick(ActionEvent event) {
         setScene(loadAnimate("InventoryHistory.fxml"));
