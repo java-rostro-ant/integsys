@@ -367,27 +367,49 @@ public class AddDeductionController implements Initializable {
             try {
                 switch (lnIndex){
                     case 04:
-                        if (StringUtil.isNumeric(lsValue)){                        
-                            oTrans.setDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"), Double.valueOf(lsValue));
-                        }else{
-                            oTrans.setDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"), 0.00);
-                        }
-                            double x = Double.parseDouble(String.valueOf(oTrans.getDeductionInfo(tbl_row, "nDedctAmt")));
-                            double y = Double.parseDouble(String.valueOf(txtField102.getText().replace(",","")));
-                            double z = Double.parseDouble(String.valueOf(lsValue));
-                                    
-                        if (x >= ((y+z)-lastValue)){
+                        double x = Double.parseDouble(String.valueOf(oTrans.getIncentiveInfo(tbl_row, "nInctvAmt")));
+                          double y = Double.parseDouble(String.valueOf(txtField102.getText().replace(",","")));
 
-                            txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx",tbl_row,(String)oTrans.getDetail(pnRow, "sEmployID")),"#,##0.00"));
-                            
-                        }
-                        else{
-                            MsgBox.showOk("Amount entered exceeds the amount allocated.");
+                        if (y <= x){
+                            if (StringUtil.isNumeric(lsValue)){                        
+                                oTrans.setDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"), Double.valueOf(lsValue));
+                            }else{
+                                oTrans.setDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"), 0.00);
+                            }
+                                txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx",tbl_row,(String)oTrans.getDetail(pnRow, "sEmployID")),"#,##0.00"));
+                        }else{   
                             oTrans.setDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"), lastValue);
+                            MsgBox.showOk("Amount entered exceeds the amount allocated.");
+                            txtField.setText(CommonUtils.NumberFormat((Number)lastValue, "#,##0.00"));
+                            txtField.requestFocus();
                             
-                            txtField.requestFocus(); 
-                        }
+                            break;
+                            }
                         break;
+//                        
+//                        
+//                        
+//                        if (StringUtil.isNumeric(lsValue)){                        
+//                            oTrans.setDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"), Double.valueOf(lsValue));
+//                        }else{
+//                            oTrans.setDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"), 0.00);
+//                        }
+//                            double x = Double.parseDouble(String.valueOf(oTrans.getDeductionInfo(tbl_row, "nDedctAmt")));
+//                            double y = Double.parseDouble(String.valueOf(txtField102.getText().replace(",","")));
+//                            double z = Double.parseDouble(String.valueOf(lsValue).replace(",",""));
+//                            double v = Double.parseDouble(String.valueOf(lastValue).replace(",",""));        
+//                        if (x >= ((y+z)-v)){
+//
+//                            txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx",tbl_row,(String)oTrans.getDetail(pnRow, "sEmployID")),"#,##0.00"));
+//                            
+//                        }
+//                        else{
+//                            MsgBox.showOk("Amount entered exceeds the amount allocated.");
+//                            oTrans.setDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"), lastValue);
+//                            
+//                            txtField.requestFocus(); 
+//                        }
+//                        break;
                     case 05:
                         if (StringUtil.isNumeric(lsValue))  {                      
                             oTrans.setDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"), Double.valueOf(lsValue));

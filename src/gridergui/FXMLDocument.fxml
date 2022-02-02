@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="300.0" prefWidth="750.0" style="-fx-background-color: #FFFFFF;" stylesheets="@../css/MainPanelStyle.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" prefHeight="300.0" prefWidth="750.0" style="-fx-background-color: #FFFFFF;" stylesheets="@../css/MainPanelStyle.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
    <children>
       <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -62,6 +62,12 @@
                                                       <MenuItem fx:id="mnuCashCountEntry" mnemonicParsing="false" onAction="#mnuCashCountEntryClick" text="Entry" />
                                                       <MenuItem fx:id="mnuCashCount" mnemonicParsing="false" onAction="#mnuCashCountClick" text="Confirmation" />
                                                       <MenuItem fx:id="mnuCashCountHistory" mnemonicParsing="false" onAction="#mnuCashCountHistoryClick" text="History" />
+                                                   </items>
+                                                </Menu>
+                                                <Menu fx:id="mnuInventory01" mnemonicParsing="false" text="Inventory">
+                                                   <items>
+                                                      <MenuItem fx:id="mnuInventoryReq" mnemonicParsing="false" text="Request Stock" />
+                                                      <MenuItem fx:id="mnuInventoryHistory" mnemonicParsing="false" onAction="#mnuInventoryHistoryClick" text="History" />
                                                    </items>
                                                 </Menu>
                                           </items>
