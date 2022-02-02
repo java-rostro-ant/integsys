@@ -198,6 +198,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return new MpAreaPerformanceController();
             case "IncentiveHistory.fxml":
                 return new IncentiveHistoryController();
+            case "CashCountEntry.fxml":
+                return new CashCountEntryController();
             case "CashCount.fxml":
                 return new CashCountController();
             case "CashCountHistory.fxml":
@@ -263,16 +265,18 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         setScene(loadAnimate("CashCount.fxml"));
     }
     @FXML
+    private void mnuCashCountEntryClick(ActionEvent event) {
+        setScene(loadAnimate("CashCountEntry.fxml"));
+    }
+    @FXML
     private void mnuCashCountHistoryClick(ActionEvent event) {
         setScene(loadAnimate("CashCountHistory.fxml"));
     }
-
-
     @FXML
     private void mnuInventoryHistoryClick(ActionEvent event) {
         setScene(loadAnimate("InventoryHistory.fxml"));
 
-
+    }
     private void getTime(){
         Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {            
         Calendar cal = Calendar.getInstance();
