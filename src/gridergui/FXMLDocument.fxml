@@ -58,6 +58,8 @@
                                                 </Menu>
                                                 <Menu fx:id="mnuTransaction111" mnemonicParsing="false" text="CashCount">
                                                    <items>
+                                                      <MenuItem fx:id="mnuCashCountRequest" mnemonicParsing="false" text="Request" />
+                                                      <MenuItem fx:id="mnuCashCountEntry" mnemonicParsing="false" onAction="#mnuCashCountEntryClick" text="Entry" />
                                                       <MenuItem fx:id="mnuCashCount" mnemonicParsing="false" onAction="#mnuCashCountClick" text="Confirmation" />
                                                       <MenuItem fx:id="mnuCashCountHistory" mnemonicParsing="false" onAction="#mnuCashCountHistoryClick" text="History" />
                                                    </items>

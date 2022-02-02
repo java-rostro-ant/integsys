@@ -5,7 +5,6 @@
  */
 package gridergui;
 
-import static gridergui.CashCountController.oTrans;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -27,6 +26,7 @@ import org.rmj.appdriver.GRider;
 import org.rmj.appdriver.agent.MsgBox;
 import org.rmj.appdriver.agentfx.CommonUtils;
 import org.rmj.appdriver.agentfx.ShowMessageFX;
+import org.rmj.appdriver.constants.EditMode;
 import org.rmj.fund.manager.base.CashCount;
 import org.rmj.fund.manager.base.LTransaction;
 
@@ -35,11 +35,13 @@ import org.rmj.fund.manager.base.LTransaction;
  *
  * @author user
  */
-public class CashCountHistoryController  implements Initializable , ScreenInterface{
+public class CashCountEntryController implements Initializable , ScreenInterface{
     private GRider oApp;
     
     static CashCount oTrans;
     static LTransaction listener;
+    private int pnEditMode;
+    private boolean pbLoaded = false;
     
     @FXML
     private Label lbl1000p ;
@@ -161,6 +163,14 @@ public class CashCountHistoryController  implements Initializable , ScreenInterf
     @FXML
     private Button btnBrowse;
     @FXML
+    private Button btnNew;
+    @FXML
+    private Button btnSave;
+    @FXML
+    private Button btnUpdate;
+    @FXML
+    private Button btnCancel;
+    @FXML
     private Button btnClose;
     @FXML
     private AnchorPane AnchorMainCashCount;
@@ -250,6 +260,10 @@ public class CashCountHistoryController  implements Initializable , ScreenInterf
         };
         
         btnBrowse.setOnAction(this::cmdButton_Click);
+        btnNew.setOnAction(this::cmdButton_Click);
+        btnSave.setOnAction(this::cmdButton_Click);
+        btnUpdate.setOnAction(this::cmdButton_Click);
+        btnCancel.setOnAction(this::cmdButton_Click);
         btnClose.setOnAction(this::cmdButton_Click);
         txtSeeks38.setOnKeyPressed(this::txtField_KeyPressed);
         txtSeeks39.setOnKeyPressed(this::txtField_KeyPressed);
@@ -257,6 +271,8 @@ public class CashCountHistoryController  implements Initializable , ScreenInterf
         oTrans.setListener(listener);
         oTrans.setTranStat(1023);
         oTrans.setWithUI(true);
+        pnEditMode = EditMode.UNKNOWN;
+        initButton(pnEditMode);
     }   
     @Override
     public void setGRider(GRider foValue) {
@@ -295,7 +311,6 @@ public class CashCountHistoryController  implements Initializable , ScreenInterf
     }
    private void cmdButton_Click(ActionEvent event) {
         String lsButton = ((Button)event.getSource()).getId();
-        System.out.println(lsButton);
         try {
             switch (lsButton){
                 case "btnBrowse":
@@ -307,6 +322,44 @@ public class CashCountHistoryController  implements Initializable , ScreenInterf
                         }else 
                             MsgBox.showOk(oTrans.getMessage());
                     break;
+                case "btnNew": //create new transaction
+                        pbLoaded = true;
+                        pnEditMode = EditMode.ADDNEW;
+                        clearFields();
+//                        if (oTrans.NewRecord()){
+//                            clearFields();
+//                            loadRecord();
+//                            pnEditMode = oTrans.getEditMode();
+//                        } else 
+//                            MsgBox.showOk(oTrans.getMessage());
+                    break;
+                 case "btnSave":
+//                        if(sendIncentives()){
+//                             if (oTrans.SaveRecord()){
+//                                clearFields();
+//                                MsgBox.showOk("Record Save Successfully.");
+//                                pnEditMode = EditMode.UNKNOWN;
+//                            } else 
+//                                MsgBox.showOk(oTrans.getMessage());
+//                        }
+                       
+                    break;
+                case "btnUpdate":
+                        pnEditMode = EditMode.UPDATE;
+//                        if (oTrans.UpdateTransaction()){
+//                            pnEditMode = oTrans.getEditMode();
+//                        } else 
+//                            MsgBox.showOk(oTrans.getMessage());
+                    break;
+                case "btnCancel":
+                    
+                    clearFields();
+                    oTrans = new CashCount(oApp, oApp.getBranchCode(), false);
+                    oTrans.setListener(listener);
+                    oTrans.setWithUI(true);
+                    pnEditMode = EditMode.UNKNOWN;
+                    //reload detail
+                    break;
                 case "btnClose":
                     if(ShowMessageFX.OkayCancel(null, "Employee Bank Info", "Do you want to disregard changes?") == true){
                         unloadForm();
@@ -314,12 +367,71 @@ public class CashCountHistoryController  implements Initializable , ScreenInterf
                     } else
                         return;
             }
-            
+            initButton(pnEditMode);
         } catch (SQLException e) {
             e.printStackTrace();
             MsgBox.showOk(e.getMessage());
         }
     } 
+    private void initButton(int fnValue){
+        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
+        
+        btnCancel.setVisible(lbShow);
+        btnSave.setVisible(lbShow);
+        
+        btnSave.setManaged(lbShow);
+        btnCancel.setManaged(lbShow);
+        btnUpdate.setVisible(!lbShow);
+        btnBrowse.setVisible(!lbShow);
+        btnNew.setVisible(!lbShow);
+        
+        txtSeeks38.setDisable(lbShow);
+        txtSeeks39.setDisable(lbShow);
+        txtField01.requestFocus();
+//      PESO QUANTITY
+        txtField01.setDisable(!lbShow);
+        txtField02.setDisable(!lbShow);
+        txtField03.setDisable(!lbShow);
+        txtField04.setDisable(!lbShow);
+        txtField05.setDisable(!lbShow);
+        txtField06.setDisable(!lbShow);
+
+//      COINS QUANTITY
+        txtField13.setDisable(!lbShow);
+        txtField14.setDisable(!lbShow);
+        txtField15.setDisable(!lbShow);
+        txtField16.setDisable(!lbShow);
+        txtField17.setDisable(!lbShow);
+        txtField18.setDisable(!lbShow);
+        txtField19.setDisable(!lbShow);
+        txtField20.setDisable(!lbShow);
+        txtField31.setDisable(!lbShow);
+        txtField33.setDisable(!lbShow);
+        txtField34.setDisable(!lbShow);
+        txtField35.setDisable(!lbShow);
+        txtField36.setDisable(!lbShow);
+        txtField37.setDisable(!lbShow);
+        
+        if (lbShow){
+            txtSeeks38.setDisable(lbShow);
+            txtSeeks39.setDisable(lbShow);
+            txtSeeks38.clear();
+            txtSeeks39.clear();
+            txtField01.requestFocus();
+            btnCancel.setVisible(lbShow);
+            btnSave.setVisible(lbShow);
+            btnUpdate.setVisible(!lbShow);
+            btnBrowse.setVisible(!lbShow);
+            btnNew.setVisible(!lbShow);
+            btnBrowse.setManaged(false);
+            btnNew.setManaged(false);
+            btnUpdate.setManaged(false);
+        }
+        else{
+            txtSeeks38.setDisable(lbShow);
+            txtSeeks38.requestFocus();
+        }
+    }
    private void txtField_KeyPressed(KeyEvent event){
         TextField txtField = (TextField)event.getSource();        
         int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
@@ -404,6 +516,16 @@ public class CashCountHistoryController  implements Initializable , ScreenInterf
         txtField27.setText("0.00");
         txtField28.setText("0.00");
         
+        txtField29.setText("");
+        txtField30.setText("");
+        txtField31.setText("");
+        txtField32.setText("");
+        txtField33.setText("");
+        txtField34.setText("");
+        txtField35.setText("");
+        txtField36.setText("");
+        txtField37.setText("");
+        
         txtSeeks38.setText("");
         txtSeeks39.setText("");
         lblPesoTotal.setText("₱ 0.00");
@@ -413,7 +535,6 @@ public class CashCountHistoryController  implements Initializable , ScreenInterf
         oTrans.setListener(listener);
         oTrans.setWithUI(true);
     }
-
     private void loadCasCount() {
           try {
             if(oTrans.getMaster(29).toString().equalsIgnoreCase("0")){
@@ -457,8 +578,7 @@ public class CashCountHistoryController  implements Initializable , ScreenInterf
             txtField14.setText(oTrans.getMaster(10).toString());
             txtField15.setText(oTrans.getMaster(9).toString());
             txtField16.setText(oTrans.getMaster(8).toString());
-//            txtField17.setText(oTrans.getMaster(7).toString());
-            txtField17.setText("5");
+            txtField17.setText(oTrans.getMaster(7).toString());
             txtField18.setText(oTrans.getMaster(6).toString());
             txtField19.setText(oTrans.getMaster(5).toString());
             txtField20.setText(oTrans.getMaster(4).toString());
@@ -553,4 +673,5 @@ public class CashCountHistoryController  implements Initializable , ScreenInterf
         DecimalFormat formatter = new DecimalFormat("###,###,##0.00");
         return formatter.format(price);
     }
+    
 }
