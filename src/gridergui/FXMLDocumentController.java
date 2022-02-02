@@ -271,7 +271,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuInventoryHistoryClick(ActionEvent event) {
         setScene(loadAnimate("InventoryHistory.fxml"));
-
+    }
 
     private void getTime(){
         Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {            
