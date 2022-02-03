@@ -384,7 +384,6 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                                 txtField.setText(CommonUtils.NumberFormat((Number)oTrans.getIncentiveInfo(tbl_row, "nInctvAmt"), "#,##0.00"));
                         
                          }else{
-                            MsgBox.showOk(def.toString());
                             oTrans.setIncentiveInfo(tbl_row, "nInctvAmt", Double.valueOf(def));
                             
                             MsgBox.showOk("Incenteves is already allocated, Unable to update incentives");
@@ -502,8 +501,8 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                 //get
                 incEmp_data.add(new TableEmployeeIncentives(String.valueOf(lnCtr),
                 (String) oTrans.getDetail(lnCtr, "xEmployNm"),
-                 oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")).toString(),
-                 oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")).toString()));
+                 (CommonUtils.NumberFormat((Number)oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00")),
+                 (CommonUtils.NumberFormat((Number)oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00"))));
                 pnEditMode = oTrans.getEditMode();
                 pbLoaded = true;
             }  
