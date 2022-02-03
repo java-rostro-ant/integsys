@@ -350,18 +350,21 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
             btnActivate.setVisible(!lbShow);
             btnDeactivate.setVisible(!lbShow);
             
-            if (lbShow = (fnValue == EditMode.UPDATE)) {
-                btnAddIncentives.setDisable(true);
-                btnAddDeductions.setDisable(true);
-            }   
+              
         }
         else{
             txtSeeks21.setDisable(lbShow);
             txtSeeks21.requestFocus();
             txtSeeks22.setDisable(lbShow);  
         }
+        if (lbShow = (fnValue == EditMode.UPDATE)) {
+                btnAddIncentives.setDisable(true);
+                btnAddDeductions.setDisable(true);
+        } else {
+                btnAddIncentives.setDisable(false);
+                btnAddDeductions.setDisable(false);
+        }
     }
-    
     @Override
     public void setGRider(GRider foValue) {
         oApp = foValue;
@@ -406,7 +409,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                     oTrans.getDetail(lnCtr, "xEmpLevNm").toString(),
                     oTrans.getDetail(lnCtr, "xPositnNm").toString(),
                     oTrans.getDetail(lnCtr, "xSrvcYear").toString(),
-                    oTrans.getDetail(lnCtr, "nTotalAmt").toString()));
+                    (CommonUtils.NumberFormat((Number)oTrans.getDetail(lnCtr, "nTotalAmt"), "#,##0.00"))));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -423,7 +426,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                     oTrans.getDetail(lnCtr, "xEmpLevNm").toString(),
                     oTrans.getDetail(lnCtr, "xPositnNm").toString(),
                     oTrans.getDetail(lnCtr, "xSrvcYear").toString(),
-                    oTrans.getDetail(lnCtr, "nTotalAmt").toString()));
+                    (CommonUtils.NumberFormat((Number)oTrans.getDetail(lnCtr, "nTotalAmt"), "#,##0.00"))));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -623,16 +626,20 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         try {
                 switch (lsButton){
                 case "btnDelEmp":
-                    if (oTrans.removeDetail(pnEmp+ 1))
-                        loadDetail();
-                    else
-                        MsgBox.showOk(oTrans.getMessage());
+                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to remove this employee?") == true){  
+                        if (oTrans.removeDetail(pnEmp+ 1))
+                            loadDetail();
+                        else
+                            MsgBox.showOk(oTrans.getMessage());
+                    }
+                  
                     break;
                 case "btnNew": 
                         if (oTrans.NewTransaction() ){
                             clearFields();
                             loadMaster();
-                            pnEditMode = oTrans.getEditMode();
+                            pnEditMode = EditMode.ADDNEW;
+                            
                         } else
                             MsgBox.showOk(oTrans.getMessage());
                     break;
@@ -640,9 +647,8 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                     //pbLoaded = true;
                         if (oTrans.searchIncentive("", false)){
                             loadIncentives();
-                            pnEditMode = oTrans.getEditMode();
-                        }else
-                            MsgBox.showOk(oTrans.getMessage());
+                            pnEditMode = EditMode.ADDNEW;
+                        }
                     break;
                 case "btnAddDeductions":
                     String lsValue = ShowMessageFX.InputText("Please input deduction description.", "Add Deduction", "Add Deduction");
@@ -650,9 +656,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                         if (!lsValue.isEmpty()){
                             if (oTrans.addDeduction(lsValue))
                                 loadIncentives();
-                                pnEditMode = oTrans.getEditMode();
-                            }else{
-                                MsgBox.showOk(oTrans.getMessage());
+                                pnEditMode = EditMode.ADDNEW;
                         }
                     break;
                 case "btnClose":
@@ -709,8 +713,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                                 oTrans.setWithUI(true);
                                 pnEditMode = EditMode.UNKNOWN;
                             }
-                        }else
-                            MsgBox.showOk((oTrans.getMessage()));
+                        }
                     break;
             }
             initButton(pnEditMode);
@@ -718,8 +721,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                     e.printStackTrace();
                     MsgBox.showOk(e.getMessage());
                 } 
-    } 
-   
+    }
     private void loadMaster() throws SQLException {
         txtSeeks21.setText((String) oTrans.getMaster(1));
         txtSeeks22.setText((String) oTrans.getMaster(16));
@@ -778,6 +780,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
             });
         });
         tblemployee.setItems(data);
+        tblemployee.getSelectionModel().select(pnEmp + 1);
         tblemployee.autosize();
     }
     
