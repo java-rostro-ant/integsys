@@ -821,7 +821,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         
         try {
             
-                pnRow = tblIncentives.getSelectionModel().getSelectedIndex(); 
+            pnRow = tblIncentives.getSelectionModel().getSelectedIndex(); 
             TableIncentives ti = (TableIncentives) tblIncentives.getItems().get(pnRow);
             
             if(ti.getIncindex02().contains("Deduction")){

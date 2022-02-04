@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="VBoxForm" stylesheets="@/css/EmployeeIncentives.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
+<VBox fx:id="VBoxForm" stylesheets="@/css/EmployeeIncentives.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <AnchorPane prefHeight="30.0" prefWidth="821.0" style="-fx-background-color: #4C4C4C;">
          <children>
@@ -179,6 +179,14 @@
             <Button fx:id="btnDelEmp" contentDisplay="TOP" ellipsisString="" layoutX="14.0" layoutY="9.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Remove" textAlignment="JUSTIFY">
                <graphic>
                   <FontAwesomeIconView glyphName="MINUS" size="20" />
+               </graphic>
+               <effect>
+                  <Blend />
+               </effect>
+            </Button>
+            <Button fx:id="btnReset" contentDisplay="TOP" ellipsisString="" layoutX="91.0" layoutY="9.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="108.0" text="Reset Incentives" textAlignment="JUSTIFY">
+               <graphic>
+                  <FontAwesomeIconView glyphName="REFRESH" size="20" />
                </graphic>
                <effect>
                   <Blend />
