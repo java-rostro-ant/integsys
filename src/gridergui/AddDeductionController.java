@@ -51,6 +51,7 @@ public class AddDeductionController implements Initializable {
     private boolean pbLoaded = false;
     private LMasDetTrans oListener;
     
+    private static final String REGEX = "^[0-9]{1,7}([,.][0-9]{1,2})?$";
     private String psOldRec;
     private String psCode;
     private Incentive oTrans;
@@ -104,6 +105,8 @@ public class AddDeductionController implements Initializable {
     @FXML
     private Button btnExit;
     @FXML
+    private Button btnReset;
+    @FXML
     private TextField txtField06;
     @FXML
     private Label txtField101;
@@ -143,6 +146,7 @@ public class AddDeductionController implements Initializable {
          btnOk.setOnAction(this::cmdButton_Click);
          btnExit.setOnAction(this::cmdButton_Click);
          btnDelEmp.setOnAction(this::cmdButton_Click);
+         btnReset.setOnAction(this::cmdButton_Click);
          
          txtField02.setOnKeyPressed(this::txtField_KeyPressed);
          txtField03.setOnKeyPressed(this::txtField_KeyPressed);
@@ -159,7 +163,6 @@ public class AddDeductionController implements Initializable {
          txtField06.focusedProperty().addListener(txtField_Focus);
          txtField101.focusedProperty().addListener(txtField_Focus);
          txtField102.focusedProperty().addListener(txtField_Focus);
-         
          
          pnEditMode = oTrans.getEditMode();
          pbLoaded = true;
@@ -179,6 +182,7 @@ public class AddDeductionController implements Initializable {
     private void initButton(int fnValue){
         boolean lbShow = (fnValue == EditMode.ADDNEW);
         btnDelEmp.setVisible(lbShow);
+        btnReset.setVisible(lbShow);
      }
     private void initFields(int fnValue){
         boolean lbShow = (fnValue == EditMode.UPDATE || fnValue == EditMode.ADDNEW);
@@ -277,8 +281,8 @@ public class AddDeductionController implements Initializable {
     }
 
     private void cmdButton_Click(ActionEvent event) {
-         try {
-             String lsButton = ((Button)event.getSource()).getId();
+        try{
+            String lsButton = ((Button)event.getSource()).getId();
              switch (lsButton){
                case "btnDelEmp":
                     {
@@ -290,7 +294,19 @@ public class AddDeductionController implements Initializable {
                             }
                        
                     }
-                 case "btnOk":
+                    break;
+                case "btnReset":
+                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to reset all deductions?") == true){  
+                        
+                        oTrans.resetDeductionEmployeeAllocation(tbl_row);
+                        clearFields();
+                        MsgBox.showOk("Deduction succesfully remove ");
+                        loadEmployee();
+                       
+                    }
+                        
+                    break;
+                case "btnOk":
                      CommonUtils.closeStage(btnOk);
                      
                      break;
@@ -301,33 +317,11 @@ public class AddDeductionController implements Initializable {
                  default:
                      ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
                      break;
-             }} catch (SQLException ex) {
+             }
+        }catch (SQLException ex) {
              Logger.getLogger(AddDeductionController.class.getName()).log(Level.SEVERE, null, ex);
-         }
+         }   
     } 
-    
-    public void initGrid() {   
-        
-        empIncindex01.setStyle("-fx-alignment: CENTER;");
-        empIncindex02.setStyle("-fx-alignment: CENTER-LEFT;");
-        empIncindex03.setStyle("-fx-alignment: CENTER-LEFT;");
-        empIncindex04.setStyle("-fx-alignment: CENTER-LEFT;");
-        
-        empIncindex01.setCellValueFactory(new PropertyValueFactory<>("empIncindex01"));
-        empIncindex02.setCellValueFactory(new PropertyValueFactory<>("empIncindex02")); 
-        empIncindex03.setCellValueFactory(new PropertyValueFactory<>("empIncindex03"));
-        empIncindex04.setCellValueFactory(new PropertyValueFactory<>("empIncindex04")); 
-        tblemployee.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblemployee.lookup("TableHeaderRow");
-            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                header.setReordering(false);
-            
-            });
-        });
-        tblemployee.setItems(incEmp_data); 
-        tblemployee.getSelectionModel().select(pnRow - 1);
-    }
-    
     private void loadDetail(){
         
         try {
@@ -352,7 +346,27 @@ public class AddDeductionController implements Initializable {
             System.exit(1);
         }
     }
+    public void initGrid() {   
+        
+        empIncindex01.setStyle("-fx-alignment: CENTER;");
+        empIncindex02.setStyle("-fx-alignment: CENTER-LEFT;");
+        empIncindex03.setStyle("-fx-alignment: CENTER-LEFT;");
+        empIncindex04.setStyle("-fx-alignment: CENTER-LEFT;");
+        
+        empIncindex01.setCellValueFactory(new PropertyValueFactory<>("empIncindex01"));
+        empIncindex02.setCellValueFactory(new PropertyValueFactory<>("empIncindex02")); 
+        empIncindex03.setCellValueFactory(new PropertyValueFactory<>("empIncindex03"));
+        empIncindex04.setCellValueFactory(new PropertyValueFactory<>("empIncindex04")); 
+        tblemployee.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblemployee.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
             
+            });
+        });
+        tblemployee.setItems(incEmp_data); 
+        tblemployee.getSelectionModel().select(pnRow - 1);
+    }     
     @FXML
     private void tblemployee_Clicked(MouseEvent event) {
 
@@ -531,4 +545,9 @@ public class AddDeductionController implements Initializable {
             loadEmployee();
         }     
     };
+
+    private void clearFields() {
+        txtField04.setText("0.00");
+        txtField05.setText("0.00");
+    }
 }
