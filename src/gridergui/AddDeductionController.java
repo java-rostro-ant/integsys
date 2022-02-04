@@ -180,7 +180,7 @@ public class AddDeductionController implements Initializable {
             
     }
     private void initButton(int fnValue){
-        boolean lbShow = (fnValue == EditMode.ADDNEW);
+        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         btnDelEmp.setVisible(lbShow);
         btnReset.setVisible(lbShow);
      }
