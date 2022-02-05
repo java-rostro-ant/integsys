@@ -271,7 +271,7 @@ public class IncentiveHistoryController implements Initializable, ScreenInterfac
                     break;
                 case "btnDisapproved":
                     if (oTrans.CancelTransaction()){
-                            MsgBox.showOk("Transaction success disapproved");
+                            MsgBox.showOk("Transaction success disapproved.");
                             clearFields();
                         } else 
                             MsgBox.showOk(oTrans.getMessage());
@@ -279,7 +279,7 @@ public class IncentiveHistoryController implements Initializable, ScreenInterfac
                
                
                 case "btnClose":
-                    if(ShowMessageFX.OkayCancel(null, "Incentive Approval History", "Do you want to disregard changes?") == true){
+                    if(ShowMessageFX.OkayCancel(null, "Incentive Approval History", "Are you sure, do you want to close?") == true){
                         unloadForm();
                         break;
                     } else

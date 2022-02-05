@@ -223,21 +223,21 @@ public class EmployeeBankInfoController implements Initializable , ScreenInterfa
                     break;
                 case "btnActivate":
                     if (oTrans.ActivateRecord()){
-                        MsgBox.showOk("Account successfully activated!");
+                        MsgBox.showOk("Account successfully activated.");
                         clearFields();
                     }else
                         MsgBox.showOk(oTrans.getMessage());
                     break;
                 case "btnDeactivate":
                     if (oTrans.DeactivateRecord()){
-                        MsgBox.showOk("Account successfully deactivated!");
+                        MsgBox.showOk("Account successfully deactivated.");
                         clearFields();
                     }else
                         MsgBox.showOk(oTrans.getMessage());
                     break;
 
                 case "btnClose":
-                    if(ShowMessageFX.OkayCancel(null, "Employee Bank Info", "Do you want to disregard changes?") == true){
+                    if(ShowMessageFX.OkayCancel(null, "Employee Bank Info", "Are you sure, do you want to close?") == true){
                         unloadForm();
                         break;
                     } else

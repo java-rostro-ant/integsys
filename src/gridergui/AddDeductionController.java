@@ -1,5 +1,5 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-dedamtsault.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
  */
 package gridergui;
@@ -8,6 +8,7 @@ import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -60,6 +61,7 @@ public class AddDeductionController implements Initializable {
     private int pnSubItems = 0;
     public int tbl_row = 0;
     private double lastValue = (double)0;
+    private double total_alloc = (double)0;
     
     private double lastpercValue = (double)0;
     private boolean state = false;
@@ -203,11 +205,15 @@ public class AddDeductionController implements Initializable {
         try {
             incEmp_data.clear();
             int lnRow = oTrans.getItemCount(); 
+            total_alloc = (double)0;
             for (int lnCtr = 1; lnCtr <= lnRow; lnCtr++){
                 incEmp_data.add(new TableEmployeeIncentives(String.valueOf(lnCtr),
                         (String)oTrans.getDetail(lnCtr, "xEmployNm"),
                         oTrans.getDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(lnCtr, "sEmployID")).toString(),
                         oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(lnCtr, "sEmployID")).toString()));                
+            
+                double allAmt = Double.parseDouble(oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(lnCtr, "sEmployID")).toString());
+                total_alloc += allAmt;
             }   
                 txtField06.setText((CommonUtils.NumberFormat((Number)oTrans.getDeductionInfo(tbl_row, "nDedctAmt"), "#,##0.00")));
                 if (oTrans.getDeductionInfo(tbl_row, 101).toString().equals("NaN")){
@@ -226,39 +232,39 @@ public class AddDeductionController implements Initializable {
         TextField txtField = (TextField)event.getSource();
         int lnIndex = Integer.parseInt(((TextField)event.getSource()).getId().substring(8,10));
         String lsValue = txtField.getText();
-        try{
+//        try{
             switch (event.getCode()) {
                 case F3:
                     break;
                 case ENTER:
-                    switch (lnIndex){ 
-                        case 04:
-                            if (StringUtil.isNumeric(lsValue)){                        
-                                    oTrans.setDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"), Double.valueOf(lsValue));
-                            }
-                        break;
-                        case 05:
-                            if (StringUtil.isNumeric(lsValue))  {                      
-                                oTrans.setDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"), Double.valueOf(lsValue));
-                            }
-                        break; 
-                        case 06:
-                            if (StringUtil.isNumeric(lsValue)) {
-                               oTrans.setDeductionInfo(tbl_row, "nDedctAmt", Double.valueOf(lsValue));
-                            }
-                        break;
-                    } 
-                    loadEmployee();
+//                    switch (lnIndex){ 
+//                        case 04:
+//                            if (StringUtil.isNumeric(lsValue)){                        
+//                                    oTrans.setDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"), Double.valueOf(lsValue));
+//                            }
+//                        break;
+//                        case 05:
+//                            if (StringUtil.isNumeric(lsValue))  {                      
+//                                oTrans.setDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"), Double.valueOf(lsValue));
+//                            }
+//                        break; 
+//                        case 06:
+//                            if (StringUtil.isNumeric(lsValue)) {
+//                               oTrans.setDeductionInfo(tbl_row, "nDedctAmt", Double.valueOf(lsValue));
+//                            }
+//                        break;
+//                    } 
+//                    loadEmployee();
                 case DOWN:
                     CommonUtils.SetNextFocus(txtField);
                     break;
                 case UP:
                     CommonUtils.SetPreviousFocus(txtField);
                 }
-        } catch (SQLException e) {
-                MsgBox.showOk(e.getMessage());
-                System.exit(1);
-            }
+//        } catch (SQLException e) {
+//                MsgBox.showOk(e.getMessage());
+//                System.exit(1);
+//            }
     }
     
     public void loadDeductionDetail(){
@@ -416,7 +422,7 @@ public class AddDeductionController implements Initializable {
                         double y = Double.parseDouble(String.valueOf(txtField102.getText().replace(",","")));
                         if(x <= 0){
                             oTrans.setDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"), lastValue);
-                            MsgBox.showOk("Amount field must not equal to 0.00.");
+                            MsgBox.showOk("Amount field must not equal to 0.00!");
                             txtField.setText(CommonUtils.NumberFormat((Number)lastValue, "#,##0.00"));
                             txtField06.requestFocus();
                         }else{
@@ -436,7 +442,7 @@ public class AddDeductionController implements Initializable {
 
                                     }else{
                                         
-                                        MsgBox.showOk("Amount entered exceeds the amount allocated.");
+                                        MsgBox.showOk("Amount entered exceeds the amount allocated!");
                                         oTrans.setDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"), Double.valueOf(lastValue));
                                         txtField.setText(CommonUtils.NumberFormat((Number)lastValue, "#,##0.00"));
                                         txtField.requestFocus();
@@ -444,7 +450,7 @@ public class AddDeductionController implements Initializable {
                                     }  
                             }else{   
                                 oTrans.setDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"), lastValue);
-                                MsgBox.showOk("Amount entered exceeds the amount allocated.");
+                                MsgBox.showOk("Amount entered exceeds the amount allocated!");
                                 txtField.setText(CommonUtils.NumberFormat((Number)lastValue, "#,##0.00"));
                                 txtField.requestFocus();
 
@@ -460,7 +466,7 @@ public class AddDeductionController implements Initializable {
                         double maxalloc = 100.00;
                         if(dedamt <= 0){
                             oTrans.setDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"), lastValue);
-                            MsgBox.showOk("Amount field must not equal to 0.00.");
+                            MsgBox.showOk("Amount field must not equal to 0.00!");
                             txtField.setText(CommonUtils.NumberFormat((Number)lastValue, "##0.00"));
                             txtField06.requestFocus();
                         }else{
@@ -475,14 +481,14 @@ public class AddDeductionController implements Initializable {
                                     if (maxalloc >= new_y ){
                                         txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID")), "#,##0.00"));
                                     }else{
-                                       MsgBox.showOk("Amount entered exceeds the amount allocated.");
+                                       MsgBox.showOk("Amount entered exceeds the amount allocated!");
                                         oTrans.setDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"), Double.valueOf(lastValue));
                                         txtField.setText(CommonUtils.NumberFormat((Number)lastValue, "#,##0.00"));
                                         txtField.requestFocus();
                                     }  
                             }else{
                                 oTrans.setDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"), lastValue);
-                                MsgBox.showOk("Amount entered exceeds the amount allocated.");
+                                MsgBox.showOk("Amount entered exceeds the amount allocated!");
                                 txtField.setText(CommonUtils.NumberFormat((Number)lastValue, "#,##0.00"));
                                 txtField.requestFocus();
                                 break;
@@ -492,41 +498,55 @@ public class AddDeductionController implements Initializable {
                         
                     case 06:
                         double dedamts = Double.parseDouble(String.valueOf(oTrans.getDeductionInfo(tbl_row, "nDedctAmt")));
-                        
-                        if(dedamts <= 0){
-                            double ded_allc_amt = Double.parseDouble(oTrans.getDeductionInfo(tbl_row, "xAllocAmt").toString().replace(",", ""));
-                            double ded_allc_per = Double.parseDouble(oTrans.getDeductionInfo(tbl_row, "xAllocPer").toString().replace(",", ""));
-                            double amountVal = Double.parseDouble(String.valueOf(oTrans.getDeductionInfo(tbl_row, "nDedctAmt")));
-                            
-                            if(ded_allc_amt >0 || ded_allc_per >0){
-                                if(pnEditMode == EditMode.ADDNEW){
-                                    if(amountVal >0 || !txtField06.getText().equalsIgnoreCase("0.00")){
-                                        oTrans.setDeductionInfo(tbl_row, "nDedctAmt", Double.valueOf(lsValue));
-                            
-                                    }else{
-                                        oTrans.setDeductionInfo(tbl_row, "nDedctAmt", Double.valueOf(lsValue.replace(",","")));
-                                        txtField.setText(CommonUtils.NumberFormat((Number)lastValue, "##0.00"));
-                                        txtField06.requestFocus();
-                                    }
-                                }else{
-                                    if(amountVal <0){
-                                        oTrans.setDeductionInfo(tbl_row, "nDedctAmt", Double.valueOf(lsValue.replace(",","")));
-                                        MsgBox.showOk("Amount field must not equal to 0.00.");
-                                        txtField.setText(CommonUtils.NumberFormat((Number)lastValue, "##0.00"));
-                                        txtField06.requestFocus();
-                                    }
-                                }
-                                    
-                            }
+                        double amount_val = Double.parseDouble(priceWithDecimal(Double.parseDouble(txtField06.getText().replace(",", ""))).replace(",", ""));
+                        double alloc_percent = Double.parseDouble(String.valueOf(oTrans.getDeductionInfo(tbl_row, "xAllocPer")).replace(",",""));
+                        double alloc_amount = Double.parseDouble(String.valueOf(oTrans.getDeductionInfo(tbl_row, "xAllocAmt")).replace(",",""));
+                        if(dedamts > 0 || !String.valueOf(amount_val).equalsIgnoreCase("0.0") || amount_val > 0 ){
                            
-                        }else{
-                           if (StringUtil.isNumeric(lsValue)) {
-                            oTrans.setDeductionInfo(tbl_row, "nDedctAmt", Double.valueOf(lsValue));
-                            }else {   
-                                oTrans.setDeductionInfo(tbl_row, "nDedctAmt", Double.valueOf(lsValue.replace(",","")));
+                            if(alloc_percent > 0 && total_alloc > 0){
+                                MsgBox.showOk("Deduction is already allocated, Unable to update deductions!" );
+                                oTrans.setDeductionInfo(tbl_row, "nDedctAmt", dedamts);
+                                txtField.setText(CommonUtils.NumberFormat((Number)dedamts, "#,##0.00")); 
+                            }else if(alloc_percent >0 && total_alloc <= 0){
+                                
+                                 if (StringUtil.isNumeric(lsValue)){
+                                        oTrans.setDeductionInfo(tbl_row, "nDedctAmt", Double.parseDouble(lsValue.replace(",", "")));
+                                    }
                                 txtField.setText(CommonUtils.NumberFormat((Number)oTrans.getDeductionInfo(tbl_row, "nDedctAmt"), "#,##0.00"));
-                            } 
+
+                            }else if(alloc_percent <= 0 && total_alloc > 0){
+                                oTrans.setDeductionInfo(tbl_row, "nDedctAmt", dedamts);
+                                txtField.setText(CommonUtils.NumberFormat((Number)dedamts, "#,##0.00")); 
+                            }else{
+                                
+                                if (StringUtil.isNumeric(lsValue)){
+                                    oTrans.setDeductionInfo(tbl_row, "nDedctAmt", Double.parseDouble(lsValue.replace(",", "")));
+                                 }
+                                txtField.setText(CommonUtils.NumberFormat((Number)oTrans.getDeductionInfo(tbl_row, "nDedctAmt"), "#,##0.00"));
+
+                            }
+                        }else{
+                            if(dedamts <= 0 || amount_val <= 0){
+                                oTrans.setDeductionInfo(tbl_row, "nDedctAmt", Double.parseDouble(lsValue.replace(",","")));
+                                txtField.setText(CommonUtils.NumberFormat((Number)lastValue, "##0.00"));
+                                txtField06.requestFocus();
+                            }else{
+                                if ((String.valueOf(txtField102.getText()).equals("0.00"))){
+
+                                    if (StringUtil.isNumeric(lsValue)){
+                                        oTrans.setDeductionInfo(tbl_row, "nDedctAmt", Double.parseDouble(lsValue.replace(",", "")));
+                                    }
+                                    txtField.setText(CommonUtils.NumberFormat((Number)oTrans.getDeductionInfo(tbl_row, "nDedctAmt"), "#,##0.00"));
+
+                                 }else{
+                                    oTrans.setDeductionInfo(tbl_row, "nDedctAmt", dedamts);
+                                    MsgBox.showOk("Deduction is already allocated, Unable to update deductions!" + dedamts);
+                                    txtField.setText(CommonUtils.NumberFormat((Number)dedamts, "#,##0.00"));
+
+                               }
+                            }
                         }
+                        loadEmployee();
                         break;
                     case 101:
                         oTrans.getDeductionInfo(tbl_row, "xAllocPer");
@@ -549,5 +569,9 @@ public class AddDeductionController implements Initializable {
     private void clearFields() {
         txtField04.setText("0.00");
         txtField05.setText("0.00");
+    }
+    public static String priceWithDecimal (Double price) {
+        DecimalFormat formatter = new DecimalFormat("###,###,##0.00");
+        return formatter.format(price);
     }
 }
