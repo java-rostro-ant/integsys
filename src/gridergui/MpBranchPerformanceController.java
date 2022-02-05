@@ -179,7 +179,7 @@ public class MpBranchPerformanceController implements Initializable , ScreenInte
                     break;
                 
                 case "btnClose":
-                    if(ShowMessageFX.OkayCancel(null, "Employee Bank Info", "Do you want to disregard changes?") == true){
+                    if(ShowMessageFX.OkayCancel(null, "MP Branch Performance", "Are you sure, do you want to close?") == true){
                         unloadForm();
                         break;
                     } else

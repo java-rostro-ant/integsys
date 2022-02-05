@@ -660,21 +660,20 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                         }
                     break;
                 case "btnClose":
-                        if(ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true){
+                        if(ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to close?") == true){
                             if(state){
                                 onsuccessUpdate();
                             }else{ 
                                 unloadForm();
                             }
                             break;
-                        } else
-                            MsgBox.showOk(oTrans.getMessage());
+                        } 
                             return;
                 case "btnSave":
                     System.out.println(oTrans.getEditMode());
                         if (oTrans.SaveTransaction()){
                             
-                            MsgBox.showOk("Transaction save successfully");
+                            MsgBox.showOk("Transaction save successfully.");
                             if(state){
                                onsuccessUpdate();
                             }else{

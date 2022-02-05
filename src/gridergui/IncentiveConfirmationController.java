@@ -265,14 +265,14 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
                     
                 case "btnApproved":
                     if (oTrans.CloseTransaction()){
-                            MsgBox.showOk("Transaction success approved");
+                            MsgBox.showOk("Transaction success approved.");
                             clearFields();
                         } else 
                             MsgBox.showOk(oTrans.getMessage());
                     break;
                 case "btnDisapproved":
                     if (oTrans.CancelTransaction()){
-                            MsgBox.showOk("Transaction success disapproved");
+                            MsgBox.showOk("Transaction success disapproved.");
                             clearFields();
                         } else 
                             MsgBox.showOk(oTrans.getMessage());
@@ -288,7 +288,7 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
                     break;
                
                 case "btnClose":
-                    if(ShowMessageFX.OkayCancel(null, "Employee Bank Info", "Do you want to disregard changes?") == true){
+                    if(ShowMessageFX.OkayCancel(null, "Employee Bank Info", "Are you sure, do you want to close?") == true){
                         unloadForm();
                         break;
                     } else

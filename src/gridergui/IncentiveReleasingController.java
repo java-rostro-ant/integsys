@@ -369,7 +369,7 @@ public class IncentiveReleasingController implements Initializable, ScreenInterf
                     break;    
                 case "btnApproved": //approve transaction
                     if (oTrans.ConfirmTransaction()){
-                            MsgBox.showOk("Transaction success approved");
+                            MsgBox.showOk("Transaction success approved.");
                             clearFields();
                             pnEditMode = oTrans.getEditMode();
                         } else 
@@ -377,7 +377,7 @@ public class IncentiveReleasingController implements Initializable, ScreenInterf
                     break;
                 case "btnDisapproved": //disapprove transaction
                     if (oTrans.CancelTransaction()){
-                            MsgBox.showOk("Transaction success disapproved");
+                            MsgBox.showOk("Transaction success disapproved.");
                             clearFields();
                             pnEditMode = oTrans.getEditMode();
                         } else 
@@ -389,7 +389,7 @@ public class IncentiveReleasingController implements Initializable, ScreenInterf
                     break;
                
                 case "btnClose": //close releasing form
-                    if(ShowMessageFX.OkayCancel(null, "Employee Bank Info", "Do you want to disregard changes?") == true){
+                    if(ShowMessageFX.OkayCancel(null, "Incentive Releasing", "Are you sure, do you want to close?") == true){
                         unloadForm();
                         break;
                     } else

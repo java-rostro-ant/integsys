@@ -258,7 +258,7 @@ public class McAreaPerformanceController implements Initializable , ScreenInterf
                     break;
                 
                 case "btnClose":
-                    if(ShowMessageFX.OkayCancel(null, "Employee Bank Info", "Do you want to disregard changes?") == true){
+                    if(ShowMessageFX.OkayCancel(null, "MC Area Performance", "Are you sure, do you want to close?") == true){
                         unloadForm();
                         break;
                     } else

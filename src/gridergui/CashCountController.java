@@ -317,21 +317,21 @@ public class CashCountController implements Initializable , ScreenInterface{
                     
                 case "btnApproved":
                     if (oTrans.CloseTransaction()){
-                            MsgBox.showOk("Transaction successfully approved");
+                            MsgBox.showOk("Transaction successfully approved.");
                             clearFields();
                         } else 
                             MsgBox.showOk(oTrans.getMessage());
                     break;
                 case "btnDisapproved":
                     if (oTrans.CancelTransaction()){
-                            MsgBox.showOk("Transaction successfully disapproved");
+                            MsgBox.showOk("Transaction successfully disapproved.");
                             clearFields();
                         } else 
                             MsgBox.showOk(oTrans.getMessage());
                     break;
                
                 case "btnClose":
-                    if(ShowMessageFX.OkayCancel(null, "Employee Bank Info", "Do you want to disregard changes?") == true){
+                     if(ShowMessageFX.OkayCancel(null, "Cash Count", "Are you sure, do you want to close?") == true){
                         unloadForm();
                         break;
                     } else
