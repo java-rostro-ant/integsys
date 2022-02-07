@@ -657,6 +657,8 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                             if (oTrans.addDeduction(lsValue))
                                 loadIncentives();
                                 pnEditMode = EditMode.ADDNEW;
+                        }else{
+                            MsgBox.showOk("Deduction description field required!");
                         }
                     break;
                 case "btnClose":

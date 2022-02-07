@@ -7,9 +7,12 @@ package gridergui;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import java.awt.print.Book;
 import java.net.URL;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,6 +20,8 @@ import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -24,6 +29,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TablePosition;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -32,7 +39,6 @@ import javafx.scene.input.KeyCode;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import org.rmj.appdriver.GRider;
 import org.rmj.appdriver.StringUtil;
@@ -152,40 +158,6 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
     }
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-//            oListener = new LMasDetTrans() {
-//                @Override
-//                public void MasterRetreive(int fnIndex, Object foValue) {
-//                    System.out.println("MasterRetreive = " + fnIndex);
-//                    switch(fnIndex){
-//                        case 11:
-//                            txtField11.setText((String) foValue); 
-//                            
-//                            break;
-//                        case 12:
-//                            try {
-//                                double x = Double.parseDouble(String.valueOf(oTrans.getIncentiveInfo(tbl_row, "nInctvAmt")));
-//
-//                                double y = Double.parseDouble(String.valueOf(txtField102.getText().replace(",","")));
-//                                System.out.println(x);
-//                                System.out.println(y);
-//                                if (y > x){
-//                                    MsgBox.showOk("Amount entered exceeds the amount allocated.");
-//                                    txtField12.setText(CommonUtils.NumberFormat((Number)lastValue, "#,##0.00"));
-//                                    txtField12.requestFocus();
-//                                }
-//                            } catch (SQLException ex) {
-//                            Logger.getLogger(AddIncentivesController.class.getName()).log(Level.SEVERE, null, ex);
-//                            }
-//                            
-//                        loadEmployee();
-//                        break;
-//                    }
-//                }
-//                @Override
-//                public void DetailRetreive(int fnRow, int fnIndex, Object foValue) {
-//                    System.out.println("DetailRetreive = " + foValue);
-//                }
-//             };
             btnOk.setOnAction(this::cmdButton_Click);
             btnDelEmp.setOnAction(this::cmdButton_Click);
             btnExit.setOnAction(this::cmdButton_Click);
@@ -222,8 +194,6 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                 }
                
             } 
-//            oTrans.setListener(oListener);
-//            oTrans.setWithUI(true);
             pnEditMode = oTrans.getEditMode();
             pbLoaded = true;
             loadEmployee();
@@ -432,6 +402,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
 
                                 if (maxalloc >= new_y ){  
                                     txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID")), "##0.00"));
+                                
                                 }else{
                                     MsgBox.showOk("Amount entered exceeds the amount allocated!");
                                     oTrans.setIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"), lastpercValue); 
@@ -453,8 +424,10 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                                 txtField07.requestFocus();
                             }else{
                                 oTrans.setIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"), Double.parseDouble(lsValue));
+                              
                             }
                         }
+                        
                         break;
                         
                     case 12:
@@ -480,8 +453,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
 
                                 if(new_inctv_amt >= new_total_amount){
                                     txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(pnRow, "sEmployID")), "#,##0.00"));
-                                
-                                    loadEmployee();
+                                    
                                 }else{
                                     
                                      MsgBox.showOk("Incenteves is already allocated, Unable to update incentives!");
@@ -489,7 +461,6 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                                     txtField.setText(CommonUtils.NumberFormat((Number)lastValue, "#,##0.00"));
                                     txtField.requestFocus();
                                 }
-
                             }else{
                                  if(inctv_amt != inctv_amt_field_value){
                                        MsgBox.showOk("Incenteves is already allocated, Unable to update incentives!");
@@ -498,7 +469,10 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                                 txtField.setText(CommonUtils.NumberFormat((Number)lastValue, "#,##0.00"));
                                 txtField.requestFocus();
                             } 
+                            
                         }
+                        
+                            loadEmployee();
                         break;
                     default:
                         loadEmployee();
@@ -552,6 +526,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
             incEmp_data.clear();
             int lnRow = oTrans.getItemCount(); 
             total_alloc = (double)0;
+             List list = new ArrayList();
             for (int lnCtr = 1; lnCtr <= lnRow; lnCtr++){
                 //get
                 incEmp_data.add(new TableEmployeeIncentives(String.valueOf(lnCtr),
@@ -623,7 +598,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
     } 
     
     public void initGrid() {   
-    
+     
         empIncindex01.setStyle("-fx-alignment: CENTER;");
         empIncindex02.setStyle("-fx-alignment: CENTER-LEFT;");
         empIncindex03.setStyle("-fx-alignment: CENTER-LEFT;");
@@ -640,16 +615,27 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
             });
         });
         tblemployee.setItems(incEmp_data);
-        tblemployee.getSelectionModel().select(pnRow - 1);
+        tblemployee.setRowFactory(tv -> {
+            TableRow<TableEmployeeIncentives> rows = new TableRow<>();
+            rows.setOnMouseClicked(event -> {
+                pnRow = rows.getIndex() + 1;
+                getSelectedItem();
+            });
+            
+            return rows;
+        });
+          tblemployee.getSelectionModel().select(pnRow - 1);
     }
+  
 
-    @FXML
-    private void tblemployee_Clicked(MouseEvent event) {
-           
-            pnRow = tblemployee.getSelectionModel().getSelectedIndex() + 1;  
-   
-            getSelectedItem();
-        }
+
+//    @FXML
+//    private void tblemployee_Clicked(MouseEvent event) {
+//           
+//            pnRow = tblemployee.getSelectionModel().getSelectedIndex() + 1;  
+//   
+//            getSelectedItem();
+//        }
     private void getSelectedItem(){
 
             try {
@@ -675,4 +661,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
         DecimalFormat formatter = new DecimalFormat("###,###,##0.00");
         return formatter.format(price);
     }
+
+   
+      
 }
