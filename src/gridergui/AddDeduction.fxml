@@ -119,7 +119,7 @@
             </AnchorPane>
             <AnchorPane layoutX="347.0" layoutY="4.0" prefHeight="326.0" prefWidth="471.0" style="-fx-border-color: orange; -fx-border-radius: 5;">
                <children>
-                  <TableView fx:id="tblemployee" editable="true" layoutX="5.0" layoutY="4.0" onMouseClicked="#tblemployee_Clicked" prefHeight="318.0" prefWidth="462.0">
+                  <TableView fx:id="tblemployee" editable="true" layoutX="5.0" layoutY="4.0" prefHeight="318.0" prefWidth="462.0">
                      <columns>
                         <TableColumn fx:id="empIncindex01" maxWidth="40.0" minWidth="35.0" prefWidth="35.0" text="No." />
                         <TableColumn fx:id="empIncindex02" maxWidth="250.0" minWidth="200.0" prefWidth="200.0" resizable="false" text="Employee" />

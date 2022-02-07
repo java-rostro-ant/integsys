@@ -23,6 +23,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -143,38 +144,6 @@ public class AddDeductionController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-//         oListener = new LMasDetTrans() {
-//                @Override
-//                public void MasterRetreive(int fnIndex, Object foValue) {
-//                     switch(fnIndex){
-//                        case 05:
-//                            txtField05.setText((String) foValue); 
-//                            
-//                            break;
-//                        case 04:
-//                            try {
-//                                double x = Double.parseDouble(String.valueOf(oTrans.getIncentiveInfo(tbl_row, "nInctvAmt")));
-//
-//                                double y = Double.parseDouble(String.valueOf(txtField102.getText().replace(",","")));
-//                                System.out.println(x);
-//                                System.out.println(y);
-//                                if (y > x){
-//                                    MsgBox.showOk("Amount entered exceeds the amount allocated.");
-//                                    txtField04.setText(CommonUtils.NumberFormat((Number)lastValue, "#,##0.00"));
-//                                    txtField04.requestFocus();
-//                                }
-//                            } catch (SQLException ex) {
-//                            Logger.getLogger(AddIncentivesController.class.getName()).log(Level.SEVERE, null, ex);
-//                            }
-//                        break;
-//                    }
-//                }
-//                @Override
-//                public void DetailRetreive(int fnRow, int fnIndex, Object foValue) {
-//                    loadEmployee();
-//                }
-//             };
          btnOk.setOnAction(this::cmdButton_Click);
          btnExit.setOnAction(this::cmdButton_Click);
          btnDelEmp.setOnAction(this::cmdButton_Click);
@@ -196,8 +165,6 @@ public class AddDeductionController implements Initializable {
          txtField101.focusedProperty().addListener(txtField_Focus);
          txtField102.focusedProperty().addListener(txtField_Focus);
          
-//         oTrans.setListener(oListener);
-//        oTrans.setWithUI(true);
         pnEditMode = oTrans.getEditMode();
          pbLoaded = true;
           if (incEmp_data.isEmpty()){
@@ -382,14 +349,31 @@ public class AddDeductionController implements Initializable {
             });
         });
         tblemployee.setItems(incEmp_data); 
+          
+        tblemployee.setRowFactory(tv -> {
+            TableRow<TableEmployeeIncentives> rows = new TableRow<>();
+            rows.setOnMouseClicked(event -> {
+//                 TableCell c = (TableCell) t.getSource();
+//                int index = c.getIndex();
+//                TableEmployeeIncentives rowData = rows.getItem();
+//                txtField10.setText(rowData.getEmpIncindex02());
+//                txtField11.setText(rowData.getEmpIncindex03());
+//                txtField12.setText(rowData.getEmpIncindex04());  
+                
+                pnRow = rows.getIndex() + 1;
+                getSelectedItems();
+            });
+            
+            return rows;
+        });
         tblemployee.getSelectionModel().select(pnRow - 1);
     }     
-    @FXML
-    private void tblemployee_Clicked(MouseEvent event) {
-
-            pnRow = tblemployee.getSelectionModel().getSelectedIndex() + 1;  
-            getSelectedItems();       
-    }           
+//    @FXML
+//    private void tblemployee_Clicked(MouseEvent event) {
+//
+//            pnRow = tblemployee.getSelectionModel().getSelectedIndex() + 1;  
+//            getSelectedItems();       
+//    }           
     
     private void getSelectedItems(){
         try {
@@ -514,7 +498,10 @@ public class AddDeductionController implements Initializable {
                         if(dedamts > 0 || !String.valueOf(amount_val).equalsIgnoreCase("0.0") || amount_val > 0 ){
                            
                             if(alloc_percent > 0 && total_alloc > 0){
-                                MsgBox.showOk("Deduction is already allocated, Unable to update deductions!" );
+                                if(dedamts != amount_val){
+                                      MsgBox.showOk("Deduction is already allocated, Unable to update deductions!" );
+                                  }
+                               
                                 oTrans.setDeductionInfo(tbl_row, "nDedctAmt", dedamts);
                                 txtField.setText(CommonUtils.NumberFormat((Number)dedamts, "#,##0.00")); 
                             }else if(alloc_percent >0 && total_alloc <= 0){
@@ -550,7 +537,10 @@ public class AddDeductionController implements Initializable {
 
                                  }else{
                                     oTrans.setDeductionInfo(tbl_row, "nDedctAmt", dedamts);
-                                    MsgBox.showOk("Deduction is already allocated, Unable to update deductions!" + dedamts);
+                                    
+                                    if(dedamts != amount_val){
+                                       MsgBox.showOk("Deduction is already allocated, Unable to update deductions!" + dedamts);
+                                    }
                                     txtField.setText(CommonUtils.NumberFormat((Number)dedamts, "#,##0.00"));
 
                                }
