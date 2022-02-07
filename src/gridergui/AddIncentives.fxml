@@ -184,7 +184,7 @@
                   <Blend />
                </effect>
             </Button>
-            <Button fx:id="btnReset" contentDisplay="TOP" ellipsisString="" layoutX="91.0" layoutY="9.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="108.0" text="Reset Incentives" textAlignment="JUSTIFY">
+            <Button fx:id="btnReset" contentDisplay="TOP" ellipsisString="" layoutX="91.0" layoutY="9.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Reset Alc" textAlignment="JUSTIFY">
                <graphic>
                   <FontAwesomeIconView glyphName="REFRESH" size="20" />
                </graphic>

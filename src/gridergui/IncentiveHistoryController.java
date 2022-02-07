@@ -639,7 +639,6 @@ public class IncentiveHistoryController implements Initializable, ScreenInterfac
                 loadDeductionDetail(pnRow + 1 - (oTrans.getIncentiveCount())); 
                 
             } else{
-                AddIncentivesController.setData(ti);
                 loadIncentiveDetail((String) oTrans.getIncentiveInfo(pnRow + 1, "sInctveCD"), pnRow + 1); 
             }
             
