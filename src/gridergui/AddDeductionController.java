@@ -144,7 +144,37 @@ public class AddDeductionController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-        
+//         oListener = new LMasDetTrans() {
+//                @Override
+//                public void MasterRetreive(int fnIndex, Object foValue) {
+//                     switch(fnIndex){
+//                        case 05:
+//                            txtField05.setText((String) foValue); 
+//                            
+//                            break;
+//                        case 04:
+//                            try {
+//                                double x = Double.parseDouble(String.valueOf(oTrans.getIncentiveInfo(tbl_row, "nInctvAmt")));
+//
+//                                double y = Double.parseDouble(String.valueOf(txtField102.getText().replace(",","")));
+//                                System.out.println(x);
+//                                System.out.println(y);
+//                                if (y > x){
+//                                    MsgBox.showOk("Amount entered exceeds the amount allocated.");
+//                                    txtField04.setText(CommonUtils.NumberFormat((Number)lastValue, "#,##0.00"));
+//                                    txtField04.requestFocus();
+//                                }
+//                            } catch (SQLException ex) {
+//                            Logger.getLogger(AddIncentivesController.class.getName()).log(Level.SEVERE, null, ex);
+//                            }
+//                        break;
+//                    }
+//                }
+//                @Override
+//                public void DetailRetreive(int fnRow, int fnIndex, Object foValue) {
+//                    loadEmployee();
+//                }
+//             };
          btnOk.setOnAction(this::cmdButton_Click);
          btnExit.setOnAction(this::cmdButton_Click);
          btnDelEmp.setOnAction(this::cmdButton_Click);
@@ -166,7 +196,9 @@ public class AddDeductionController implements Initializable {
          txtField101.focusedProperty().addListener(txtField_Focus);
          txtField102.focusedProperty().addListener(txtField_Focus);
          
-         pnEditMode = oTrans.getEditMode();
+//         oTrans.setListener(oListener);
+//        oTrans.setWithUI(true);
+        pnEditMode = oTrans.getEditMode();
          pbLoaded = true;
           if (incEmp_data.isEmpty()){
                 tblemployee.getSelectionModel().selectFirst();
@@ -174,6 +206,8 @@ public class AddDeductionController implements Initializable {
                 getSelectedItems();
                 
             } 
+          
+            
          loadDeductionDetail();
          loadEmployee();
          initGrid();
@@ -232,39 +266,16 @@ public class AddDeductionController implements Initializable {
         TextField txtField = (TextField)event.getSource();
         int lnIndex = Integer.parseInt(((TextField)event.getSource()).getId().substring(8,10));
         String lsValue = txtField.getText();
-//        try{
-            switch (event.getCode()) {
-                case F3:
-                    break;
-                case ENTER:
-//                    switch (lnIndex){ 
-//                        case 04:
-//                            if (StringUtil.isNumeric(lsValue)){                        
-//                                    oTrans.setDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"), Double.valueOf(lsValue));
-//                            }
-//                        break;
-//                        case 05:
-//                            if (StringUtil.isNumeric(lsValue))  {                      
-//                                oTrans.setDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID"), Double.valueOf(lsValue));
-//                            }
-//                        break; 
-//                        case 06:
-//                            if (StringUtil.isNumeric(lsValue)) {
-//                               oTrans.setDeductionInfo(tbl_row, "nDedctAmt", Double.valueOf(lsValue));
-//                            }
-//                        break;
-//                    } 
-//                    loadEmployee();
-                case DOWN:
-                    CommonUtils.SetNextFocus(txtField);
-                    break;
-                case UP:
-                    CommonUtils.SetPreviousFocus(txtField);
-                }
-//        } catch (SQLException e) {
-//                MsgBox.showOk(e.getMessage());
-//                System.exit(1);
-//            }
+        switch (event.getCode()) {
+            case F3:
+                break;
+            case ENTER:
+            case DOWN:
+                CommonUtils.SetNextFocus(txtField);
+                break;
+            case UP:
+                CommonUtils.SetPreviousFocus(txtField);
+            }
     }
     
     public void loadDeductionDetail(){
@@ -453,8 +464,6 @@ public class AddDeductionController implements Initializable {
                                 MsgBox.showOk("Amount entered exceeds the amount allocated!");
                                 txtField.setText(CommonUtils.NumberFormat((Number)lastValue, "#,##0.00"));
                                 txtField.requestFocus();
-
-                                break;
                             }
                         }
                         break;
@@ -491,9 +500,10 @@ public class AddDeductionController implements Initializable {
                                 MsgBox.showOk("Amount entered exceeds the amount allocated!");
                                 txtField.setText(CommonUtils.NumberFormat((Number)lastValue, "#,##0.00"));
                                 txtField.requestFocus();
-                                break;
                             }
                         }
+                        
+                            loadEmployee();
                         break;
                         
                     case 06:
@@ -546,7 +556,8 @@ public class AddDeductionController implements Initializable {
                                }
                             }
                         }
-                        loadEmployee();
+                        
+                            loadEmployee();
                         break;
                     case 101:
                         oTrans.getDeductionInfo(tbl_row, "xAllocPer");
