@@ -266,16 +266,14 @@ public class AddDeductionController implements Initializable {
                                       pnRow = 1;
 
 
-                                  tblemployee.getVisibleLeafColumns();
                                   int max = tblemployee.getItems().size();
                                   pnRow = Math.min(pnRow, max);
                                   if((tblemployee.getSelectionModel().getSelectedIndex()) == max-1){
                                       pnRow = 1;
-                                      tblemployee.scrollTo(pnRow-1);
-                                  }else{
-                                      tblemployee.scrollTo(pnRow-1);
                                   }
-                                 }
+                                  
+                                tblemployee.scrollTo(pnRow-1);
+                                }
                             } 
 
                             loadEmployee();
@@ -311,7 +309,7 @@ public class AddDeductionController implements Initializable {
                 switch (lnIndex){
                     case 06:     
                         if (total_alloc > Double.parseDouble(lsValue)){
-                            if (MsgBox.showOkCancel("Incentive amount is less than the total cash that is already allocated." +
+                            if (MsgBox.showOkCancel("Deduction amount is less than the total cash that is already allocated." +
                                     "\n\nDo you want to reset allocation and continue?") == MsgBox.RESP_YES_OK){
                                 oTrans.resetIncentiveEmployeeAllocation(psCode);
                             } else break;

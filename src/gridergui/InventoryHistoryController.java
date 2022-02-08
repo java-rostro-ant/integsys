@@ -322,7 +322,6 @@ public class InventoryHistoryController  implements Initializable , ScreenInterf
     private void tblInvDetails_Clicked() {
         pnRow = tblInvDetails.getSelectionModel().getSelectedIndex() + 1;
        getSelectedItem();
-       
         tblInvDetails.setOnKeyReleased((KeyEvent t)-> {
                 KeyCode key = t.getCode();
                     

@@ -297,6 +297,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                         case 3: /*search department*/
                             if(!oTrans.searchDepartment(lsValue, false)) {
                                 txtField.setText((String) oTrans.getMaster("xDeptName"));
+                                loadMaster();
                                 MsgBox.showOk("Unable to update department.");
                             } 
                                 
