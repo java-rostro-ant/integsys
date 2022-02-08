@@ -102,6 +102,10 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private MenuItem mnuInventoryReq;
     @FXML
     private MenuItem mnuInventoryHistory;
+    @FXML
+    private MenuItem mnuExit;
+    @FXML
+    private MenuItem mnuCashCountRequest;
     
     /**
      * Initializes the controller class.
@@ -126,6 +130,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         } catch (SQLException ex) {
             Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        initMenu();
     }    
     
     @Override
@@ -304,6 +310,21 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         clock.play();
     }
 
-    
- 
+    private void initMenu(){
+        //control menus to show based on user level or department
+        mnuFiles02.setVisible(false);
+        
+        //compliance management;
+        mnuIncentiveParameter.setVisible("034;".contains(oApp.getDepartment())); 
+        //finance management;
+        mnuEmployeeIncentivesBank.setVisible("028;".contains(oApp.getDepartment()));
+        
+        if (!mnuIncentiveParameter.isVisible() && !mnuEmployeeIncentivesBank.isVisible())
+            mnuFiles01.setVisible(false);
+        else
+            mnuFiles01.setVisible(true);
+        
+        //compliance management;
+        mnuIncentiveReleasing.setVisible("028;".contains(oApp.getDepartment()));
+    }
 }

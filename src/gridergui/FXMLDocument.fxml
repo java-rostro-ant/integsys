@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="300.0" prefWidth="750.0" style="-fx-background-color: #FFFFFF;" stylesheets="@../css/MainPanelStyle.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
+<AnchorPane id="AnchorPane" prefHeight="300.0" prefWidth="750.0" style="-fx-background-color: #FFFFFF;" stylesheets="@../css/MainPanelStyle.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -30,12 +30,6 @@
                                       <menus>
                                         <Menu fx:id="mnuFiles" mnemonicParsing="false" text="Files">
                                           <items>
-                                                <Menu fx:id="mnuFiles01" mnemonicParsing="false" text="Parameters">
-                                                   <items>
-                                                      <MenuItem fx:id="mnuIncentiveParameter" mnemonicParsing="false" onAction="#mnuIncentiveParameterClick" text="Incentive" />
-                                                      <MenuItem fx:id="mnuEmployeeIncentivesBank" mnemonicParsing="false" onAction="#mnuEmployeeBankInfoClick" text="Employee Incentive Bank Info" />
-                                                   </items>
-                                                </Menu>
                                                 <Menu fx:id="mnuFiles02" mnemonicParsing="false" text="Branch Performance">
                                                    <items>
                                                       <MenuItem fx:id="mnuMCBranch" mnemonicParsing="false" onAction="#mnuMCBranchClick" text="MC Branch Performance" />
@@ -44,6 +38,13 @@
                                                       <MenuItem fx:id="mnuMPArea" mnemonicParsing="false" onAction="#mnuMPAreaClick" text="MP Area Performance" />
                                                    </items>
                                                 </Menu>
+                                                <Menu fx:id="mnuFiles01" mnemonicParsing="false" text="Parameters">
+                                                   <items>
+                                                      <MenuItem fx:id="mnuIncentiveParameter" mnemonicParsing="false" onAction="#mnuIncentiveParameterClick" text="Incentive" />
+                                                      <MenuItem fx:id="mnuEmployeeIncentivesBank" mnemonicParsing="false" onAction="#mnuEmployeeBankInfoClick" text="Employee Incentive Bank Info" />
+                                                   </items>
+                                                </Menu>
+                                              <MenuItem fx:id="mnuExit" mnemonicParsing="false" text="Exit" />
                                           </items>
                                         </Menu>
                                         <Menu fx:id="mnuTransaction" mnemonicParsing="false" text="Transactions">
@@ -56,17 +57,17 @@
                                                       <MenuItem fx:id="mnuIncentiveHistory" mnemonicParsing="false" onAction="#mnuIncentiveHistoryClick" text="History" />
                                                    </items>
                                                 </Menu>
-                                                <Menu fx:id="mnuTransaction111" mnemonicParsing="false" text="CashCount">
+                                                <Menu fx:id="mnuTransaction111" mnemonicParsing="false" text="Cash Count">
                                                    <items>
-                                                      <MenuItem fx:id="mnuCashCountRequest" mnemonicParsing="false" text="Request" />
-                                                      <MenuItem fx:id="mnuCashCountEntry" mnemonicParsing="false" onAction="#mnuCashCountEntryClick" text="Entry" />
+                                                      <MenuItem fx:id="mnuCashCountRequest" mnemonicParsing="false" text="Request" visible="false" />
+                                                      <MenuItem fx:id="mnuCashCountEntry" mnemonicParsing="false" onAction="#mnuCashCountEntryClick" text="Entry" visible="false" />
                                                       <MenuItem fx:id="mnuCashCount" mnemonicParsing="false" onAction="#mnuCashCountClick" text="Confirmation" />
                                                       <MenuItem fx:id="mnuCashCountHistory" mnemonicParsing="false" onAction="#mnuCashCountHistoryClick" text="History" />
                                                    </items>
                                                 </Menu>
-                                                <Menu fx:id="mnuInventory01" mnemonicParsing="false" text="Inventory">
+                                                <Menu fx:id="mnuInventory01" mnemonicParsing="false" text="Inventory Count">
                                                    <items>
-                                                      <MenuItem fx:id="mnuInventoryReq" mnemonicParsing="false" text="Request Stock" />
+                                                      <MenuItem fx:id="mnuInventoryReq" mnemonicParsing="false" text="Request Stock" visible="false" />
                                                       <MenuItem fx:id="mnuInventoryHistory" mnemonicParsing="false" onAction="#mnuInventoryHistoryClick" text="History" />
                                                    </items>
                                                 </Menu>
