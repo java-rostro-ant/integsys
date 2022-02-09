@@ -271,10 +271,9 @@ public class AddDeductionController implements Initializable {
                                   pnRow = Math.min(pnRow, max);
                                   if((tblemployee.getSelectionModel().getSelectedIndex()) == max-1){
                                       pnRow = 1;
-                                      tblemployee.scrollTo(pnRow-1);
-                                  }else{
-                                      tblemployee.scrollTo(pnRow-1);
-                                  }
+                                    }
+                                   tblemployee.scrollTo(pnRow-1);
+                                 
                                  }
                             } 
 
