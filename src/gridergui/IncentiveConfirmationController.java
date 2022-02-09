@@ -163,11 +163,13 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         oListener = new LMasDetTrans() {
             @Override
             public void MasterRetreive(int fnIndex, Object foValue) {
+              
                 switch(fnIndex){
                     case 1:
                         txtSeeks05.setText((String) foValue);
                         txtField01.setText((String) foValue); 
                         transNox = (String) foValue;
+                        setTransaction((String) foValue);
                         break;
                     case 2:
                         txtField02.setText((String) foValue); break;
@@ -177,13 +179,6 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
                         txtField05.setText((String) foValue); break;
                     case 17:
                         txtField03.setText((String) foValue); 
-                    {
-                        try {
-                            loadIncentives();
-                        } catch (SQLException ex) {
-                            MsgBox.showOk(ex.getMessage());
-                        }
-                    }
                         break;
 
                     case 16:
@@ -194,6 +189,7 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
 
             @Override
             public void DetailRetreive(int fnRow, int fnIndex, Object foValue) {
+              System.out.println("loaded");
             }
         };
         oTrans = new Incentive(oApp, oApp.getBranchCode(), false);
@@ -211,11 +207,11 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         txtSeeks05.setOnKeyPressed(this::txtField_KeyPressed); 
         txtSeeks06.setOnKeyPressed(this::txtField_KeyPressed); 
         try { 
-            if(transNox.isEmpty()){
+            if(getTransNox().isEmpty()){
                 pnEditMode = EditMode.UNKNOWN;
                 initButton(pnEditMode);
             } else {
-                if (oTrans.SearchTransaction(transNox, true)){
+                if (oTrans.SearchTransaction(getTransNox(), true)){
                     loadIncentives();
                     pnEditMode = EditMode.READY;
                     initButton(pnEditMode);
@@ -230,6 +226,9 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
     }    
     public void setTransNox(String transVal){
         transNox = transVal;
+    }  
+    public String getTransNox(){
+        return transNox;
     }
     @Override
     public void setGRider(GRider foValue) {
@@ -255,15 +254,29 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         try {
             switch (lsButton){
                 case "btnBrowse":
-                        if (oTrans.SearchTransaction(txtSeeks05.getText(), false)){
-                            loadIncentives();
+                    if(txtSeeks05.isFocused()){
+                         if (oTrans.SearchTransaction(txtSeeks05.getText(), true)){
+                            loadIncentives();    
                             oTrans.displayDetFields();
                             pnEditMode = oTrans.getEditMode();
-                        } else 
-                            MsgBox.showOk(oTrans.getMessage());
+                        } 
+                        else {
+                            MsgBox.showOk(oTrans.getMessage() + " browse");
+                        }
+                    }else{
+                         if (oTrans.SearchTransaction(txtSeeks06.getText(), false)){
+                            loadIncentives();    
+                            oTrans.displayDetFields();
+                            pnEditMode = oTrans.getEditMode();
+                        } 
+                        else {
+                            MsgBox.showOk(oTrans.getMessage() + " browse");
+                        }
+                    }
+                       
                     break;
                     
-                case "btnApproved":
+                case "btnApproved": 
                     if (oTrans.CloseTransaction()){
                             MsgBox.showOk("Transaction success approved.");
                             clearFields();
@@ -278,15 +291,20 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
                             MsgBox.showOk(oTrans.getMessage());
                     break;
                 case "btnUpdate":
-                    loadIncentives();
-                    if(transNox == null || transNox.isEmpty()){
-                        MsgBox.showOk("No record selected!");
-                    }else{
+                    
+                     loadIncentives(); 
+                    if(getTransNox() != null || !getTransNox().isEmpty()){
+                        if("1".equals((String) oTrans.getMaster("cTranStat")) && 
+                            !oApp.getDepartment().equals("034")){
+                            MsgBox.showOk("Only CM can update confirmed transactions.");
+                            return;
+                        }
                         pnEditMode = oTrans.getEditMode();
                         loadUpdate();
+                    }else{
+                        MsgBox.showOk("No record selected!");
                     }
                     break;
-               
                 case "btnClose":
                     if(ShowMessageFX.OkayCancel(null, "Employee Bank Info", "Are you sure, do you want to close?") == true){
                         unloadForm();
@@ -304,43 +322,30 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
      private void txtField_KeyPressed(KeyEvent event){
         TextField txtField = (TextField)event.getSource();        
         int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
-             
+        System.out.println(lnIndex);
         try{
            switch (event.getCode()){
             case F3:
-                switch (lnIndex){
-                    case 5: /*Search*/
-                        if (oTrans.SearchTransaction(txtSeeks05.getText(), false)){
-                                loadIncentives();
-                                pnEditMode = oTrans.getEditMode();
-                            } else 
-                                MsgBox.showOk(oTrans.getMessage());
-                         break;
-                    case 6: /*Search*/
-                        if (oTrans.SearchTransaction(txtSeeks06.getText(), false)){
-                                loadIncentives();
-                                pnEditMode = oTrans.getEditMode();
-                            } else 
-                                MsgBox.showOk(oTrans.getMessage());
-                         break;
-                }   
             case ENTER:
-                switch (lnIndex){
+                  switch (lnIndex){
                     case 5: /*Search*/
-                        if (oTrans.SearchTransaction(txtSeeks05.getText(), false)){
-                                loadIncentives();
+                        if (oTrans.SearchTransaction(txtSeeks05.getText(), true)){
+                            loadIncentives();
                                 pnEditMode = oTrans.getEditMode();
-                            } else 
-                                MsgBox.showOk(oTrans.getMessage());
-                         break;
+                        } else {
+                            MsgBox.showOk(oTrans.getMessage());
+                        }
+                        break;
                     case 6: /*Search*/
                         if (oTrans.SearchTransaction(txtSeeks06.getText(), false)){
-                                loadIncentives();
-                                pnEditMode = oTrans.getEditMode();
-                            } else 
-                                MsgBox.showOk(oTrans.getMessage());
-                         break;
+                            loadIncentives();
+                            pnEditMode = oTrans.getEditMode();
+                       }else {
+                            MsgBox.showOk(oTrans.getMessage());
+                        }
+                        break;
                 }   
+                  break;
             case DOWN:
                 CommonUtils.SetNextFocus(txtField); break;
             case UP:
@@ -432,8 +437,9 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         
          data.clear();
          int lnCtr; 
-         
+         setTransaction((String)oTrans.getMaster(1));
          transNox = (String)oTrans.getMaster(1);
+         
          System.out.println("INCENTIVES");
          txtField01.setText((String)oTrans.getMaster(1));
          txtSeeks05.setText((String)oTrans.getMaster(1));
@@ -544,19 +550,21 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
           
     }
     private AnchorPane setScene(){
+        
+        try {    
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("EmployeeIncentives.fxml"));
 
             EmployeeIncentivesController loControl = new EmployeeIncentivesController();
             loControl.setGRider(oApp);
             loControl.setState(true);
-            loControl.setTransaction(transNox);
+            loControl.setTransaction((String)oTrans.getMaster(1));
+            
             fxmlLoader.setController(loControl);
             
             //load the main interface
                 
           AnchorPane root;
-        try {
             root = (AnchorPane) fxmlLoader.load();
             FadeTransition ft = new FadeTransition(Duration.millis(1500));
             ft.setNode(root);
@@ -569,7 +577,9 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
             return root;
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
-        }
+        } catch (SQLException ex) {
+                Logger.getLogger(IncentiveConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
+            }
         
         return null;
     }
@@ -753,6 +763,7 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
             System.exit(1);
         }
     }
+    
     private void clearFields(){
         txtField01.setText("");
         txtField02.setText("");

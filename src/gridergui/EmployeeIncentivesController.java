@@ -207,6 +207,12 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         //initialize class
         oTrans  = new Incentive(oApp, oApp.getBranchCode(), false);
         oTrans.setListener(oListener);
+      
+        if(!oTransnox.isEmpty()){
+            oTrans.setTranStat(10);
+        }else{
+            oTrans.setTranStat(0);
+        }
         oTrans.setWithUI(true);
         
         /*Add listener to text fields*/
