@@ -20,7 +20,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="AnchorPaneInventory" style="-fx-border-color: orange; -fx-border-radius: 5;" stylesheets="@../css/EmployeeIncentives.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" >
+<AnchorPane fx:id="AnchorPaneInventory" style="-fx-border-color: orange; -fx-border-radius: 5;" stylesheets="@../css/EmployeeIncentives.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <StackPane layoutX="9.0" layoutY="388.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -141,7 +141,7 @@
                                                             <Font name="System Bold" size="12.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField fx:id="txtField01" GridPane.columnIndex="1">
+                                                      <TextField fx:id="txtField01" editable="false" GridPane.columnIndex="1">
                                                          <font>
                                                             <Font name="System Bold" size="13.0" />
                                                          </font></TextField>
@@ -189,7 +189,7 @@
                                                   <columns>
                                                       <TableColumn fx:id="index01" maxWidth="-1.0" minWidth="40.0" prefWidth="-1.0" text="No." />
                                                     <TableColumn fx:id="index02" maxWidth="-1.0" minWidth="290.0" prefWidth="-1.0" text="Barcode" />
-                                                    <TableColumn fx:id="index03" maxWidth="-1.0" minWidth="500.0" prefWidth="-1.0" text="Description" />
+                                                    <TableColumn fx:id="index03" maxWidth="-1.0" minWidth="480.0" prefWidth="-1.0" text="Description" />
                                                   </columns>
                                                    <columnResizePolicy>
                                                       <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
