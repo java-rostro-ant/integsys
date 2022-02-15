@@ -73,7 +73,10 @@
                                                 </Menu>
                                           </items>
                                         </Menu>
-                                        <Menu mnemonicParsing="false" text="Reports" />
+                                        <Menu mnemonicParsing="false" text="Reports">
+                                             <items>
+                                                <MenuItem fx:id="mnuStandardReport" mnemonicParsing="false" onAction="#mnuStandardReportClick" text="Standard" />
+                                             </items></Menu>
                                       </menus>
                                     </MenuBar>
                                  </children>

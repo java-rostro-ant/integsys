@@ -72,6 +72,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private MenuItem mnuIncentiveReleasing;
     @FXML
     private MenuItem mnuIncentiveConfirmation;
+    @FXML
+    private MenuItem mnuStandardReport;
     
     @FXML
     private MenuItem mnuMCBranch;
@@ -213,6 +215,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
             case "InventoryHistory.fxml":
                 return new InventoryHistoryController();
+            case "Reports.fxml":
+                return new ReportsController();
 
             default:
                 return null;
@@ -281,6 +285,11 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuInventoryHistoryClick(ActionEvent event) {
         setScene(loadAnimate("InventoryHistory.fxml"));
+
+    }
+    @FXML
+    private void mnuStandardReportClick(ActionEvent event) {
+        setScene(loadAnimate("Reports.fxml"));
 
     }
     private void getTime(){

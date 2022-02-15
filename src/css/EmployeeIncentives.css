@@ -155,3 +155,29 @@
 .check-box:disabled{
   -fx-opacity: 1;
 }
+/*  Radio Button Css*/
+.radio-button .radio {
+    -fx-border-width: 1px;
+    -fx-border-color: orange;
+    -fx-background-color: white;
+    -fx-border-radius: 15px;
+    -fx-padding: 4px;
+}
+.radio-button .radio:selected {
+    -fx-background-color: white;
+}
+.radio-button -radio:armed {
+    -fx-background-color: white;
+}
+.radio-button -radio:determinate {
+    -fx-background-color: white;
+}
+.radio-button -radio:indeterminate {
+    -fx-background-color: white;
+}
+.radio-button .dot {
+    -fx-mark-highlight-color: orange ;
+    -fx-mark-color: orange ;
+    -fx-background-radius: 15px;
+    -fx-padding: 4px;
+}

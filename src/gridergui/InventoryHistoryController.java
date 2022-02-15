@@ -121,7 +121,7 @@ public class InventoryHistoryController  implements Initializable , ScreenInterf
      * Initializes the controller class.
      */
     @Override
-    public void initialize(URL url, ResourceBundle rb) {   
+    public void initialize(URL url, ResourceBundle rb) { 
         listener = new LTransaction() {
             @Override
                 public void MasterRetreive(int fnIndex, Object foValue) {
@@ -130,7 +130,6 @@ public class InventoryHistoryController  implements Initializable , ScreenInterf
                 public void DetailRetreive(int fnRow, int fnIndex, Object foValue) throws SQLException {
                     loadMaster();
                     loadDetail();
-                    getSelectedItem();
                 }
         
         };
@@ -142,11 +141,10 @@ public class InventoryHistoryController  implements Initializable , ScreenInterf
             txtSeeks38.setOnKeyPressed(this::txtField_KeyPressed);
             txtSeeks39.setOnKeyPressed(this::txtField_KeyPressed);
             
-            tblIncentives_column();
             initGrid();
+           
             
-            
-            
+
             oTrans = new InventoryCount(oApp, oApp.getBranchCode(), false);
             oTrans.setListener(listener);
             oTrans.setTranStat(1023);
@@ -174,12 +172,17 @@ public class InventoryHistoryController  implements Initializable , ScreenInterf
             String lsButton = ((Button)event.getSource()).getId();
             switch (lsButton){
                 case "btnBrowse":
-                        if (oTrans.SearchTransaction(txtSeeks38.getText(), false)){
+                        if (oTrans.SearchTransaction(txtSeeks38.getText(), true)){
+                            clearFields();
+                            loadMaster();
+                            loadDetail();
+                        }else if (oTrans.SearchTransaction(txtSeeks39.getText(), false)){
                             clearFields();
                             loadMaster();
                             loadDetail();
                         }else{
                             MsgBox.showOk(oTrans.getMessage());
+                            clearFields();
                         }
                     break;
                 case "btnClose":
@@ -208,6 +211,7 @@ public class InventoryHistoryController  implements Initializable , ScreenInterf
                             loadDetail();
                         } else 
                             MsgBox.showOk(oTrans.getMessage());
+                            clearFields();
                         break;
                     case 39: /*Search*/
                         if (oTrans.SearchTransaction(txtSeeks39.getText(), false)){
@@ -216,6 +220,7 @@ public class InventoryHistoryController  implements Initializable , ScreenInterf
                             loadDetail();
                         } else 
                             MsgBox.showOk(oTrans.getMessage());
+                            clearFields();
                         break;
                 }   
                 break;
@@ -285,9 +290,7 @@ public class InventoryHistoryController  implements Initializable , ScreenInterf
                 System.out.println( oTrans.getDetail(lnCtr, "xBarrcode").toString());
                 System.out.println( oTrans.getDetail(lnCtr, "xDescript").toString());
             }
-        tblInvDetails.getSelectionModel().select(pnRow - 1);
-        
-        
+        tblInvDetails.getSelectionModel().select(pnRow - 1);   
     } 
  
     private void initGrid() {
@@ -308,42 +311,35 @@ public class InventoryHistoryController  implements Initializable , ScreenInterf
         data.clear();
         tblInvDetails.setItems(data); 
     }
-    
-    public void tblIncentives_column(){
-         index01.prefWidthProperty().bind(tblInvDetails.widthProperty().multiply(0.04));
-         index02.prefWidthProperty().bind(tblInvDetails.widthProperty().multiply(0.42));
-         index03.prefWidthProperty().bind(tblInvDetails.widthProperty().multiply(0.42));
-         
-         index01.setResizable(false);  
-         index02.setResizable(false);  
-         index03.setResizable(false); 
-    }
+
     @FXML
     private void tblInvDetails_Clicked() {
         pnRow = tblInvDetails.getSelectionModel().getSelectedIndex() + 1;
-       getSelectedItem();
+        getSelectedItem();
        
         tblInvDetails.setOnKeyReleased((KeyEvent t)-> {
                 KeyCode key = t.getCode();
-                    
-                if (key == KeyCode.DOWN){
-                    System.out.println(tblInvDetails.getItems().size() + "ola");
-                    if (pnRow == tblInvDetails.getItems().size()) {
-                        pnRow = tblInvDetails.getItems().size();
-                        getSelectedItem();
-                    }else {
-                    int y = 1;
-                    pnRow = pnRow + y;
-                    getSelectedItem();
-                    }
-                }else if(key ==KeyCode.UP){
-                    int x = -1;
-                    pnRow = pnRow + x;
-                    System.out.println("tj" + pnRow);
-                    if (pnRow <= 1){
-                        pnRow = 1;
-                    }
-                    getSelectedItem();
+                switch (key){
+                    case DOWN:
+                        pnRow = tblInvDetails.getSelectionModel().getSelectedIndex();
+                        if (pnRow == tblInvDetails.getItems().size()) {
+                            pnRow = tblInvDetails.getItems().size();
+                            getSelectedItem();
+                        }else {
+                            int y = 1;
+                            pnRow = pnRow + y;
+                            getSelectedItem();
+                        }
+                        break;
+                    case UP:
+                        int pnRows = 0;
+                        int x = -1;
+                        pnRows = tblInvDetails.getSelectionModel().getSelectedIndex() + 1;
+                            pnRow = pnRows; 
+                            getSelectedItem();
+                        break;
+                    default:
+                        return; 
                 }
             });
     }
@@ -387,6 +383,22 @@ public class InventoryHistoryController  implements Initializable , ScreenInterf
                 case 11:
                 case 13:
                 case 14:
+                    
+            }
+        } else
+            txtField.selectAll();
+    };
+    final ChangeListener<? super Boolean> txtArea_Focus = (o,ov,nv)->{ 
+        if (!pbLoaded) return;
+        
+        TextArea txtField = (TextArea)((ReadOnlyBooleanPropertyBase)o).getBean();
+        int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
+        String lsValue = txtField.getText();
+        
+        if (lsValue == null) return;
+        if(!nv){ /*Lost Focus*/
+            switch (lnIndex){
+                case 12:
                     
             }
         } else
