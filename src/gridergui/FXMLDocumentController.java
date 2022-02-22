@@ -5,6 +5,7 @@
  */
 package gridergui;
 
+import static gridergui.GriderGui.oApp;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.ResultSet;
@@ -43,6 +44,7 @@ import org.rmj.appdriver.SQLUtil;
  */
 public class FXMLDocumentController implements Initializable, ScreenInterface {
     private GRider oApp;
+    private String reportName;
     
     @FXML
     private Pane btnMin;
@@ -156,11 +158,11 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private AnchorPane loadAnimate(String fsFormName){
         ScreenInterface fxObj = getController(fsFormName);
         fxObj.setGRider(oApp);
-        
+       
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(fxObj.getClass().getResource(fsFormName));
-        fxmlLoader.setController(fxObj);      
-   
+        fxmlLoader.setController(fxObj);    
+        
         AnchorPane root;
         try {
             root = (AnchorPane) fxmlLoader.load();
@@ -180,7 +182,6 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     }
     
     private ScreenInterface getController(String fsValue){
-        System.out.println(fsValue);
         switch (fsValue){
             case "MainScreenBG.fxml":
                 return new MainScreenBGController();
@@ -216,7 +217,9 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             case "InventoryHistory.fxml":
                 return new InventoryHistoryController();
             case "Reports.fxml":
-                return new ReportsController();
+                ReportsController reports = new ReportsController();
+                reports.setReportCategory(reportName);
+                return  reports;
 
             default:
                 return null;
@@ -289,8 +292,18 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     }
     @FXML
     private void mnuStandardReportClick(ActionEvent event) {
+        reportName = "STANDARD";
         setScene(loadAnimate("Reports.fxml"));
-
+    }
+    @FXML
+    private void mnuAuditReportClick(ActionEvent event) {
+        reportName = "AUDIT";
+        setScene(loadAnimate("Reports.fxml"));
+    }
+    @FXML
+    private void mnuPayrollReportClick(ActionEvent event) {
+        reportName = "PAYROLL";
+        setScene(loadAnimate("Reports.fxml"));
     }
     private void getTime(){
         Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {            
