@@ -76,6 +76,8 @@
                                         <Menu mnemonicParsing="false" text="Reports">
                                              <items>
                                                 <MenuItem fx:id="mnuStandardReport" mnemonicParsing="false" onAction="#mnuStandardReportClick" text="Standard" />
+                                                <MenuItem fx:id="mnuAuditReport" mnemonicParsing="false" onAction="#mnuAuditReportClick" text="Audit" />
+                                                <MenuItem fx:id="mnuPayrollReport" mnemonicParsing="false" onAction="#mnuPayrollReportClick" text="Payroll" />
                                              </items></Menu>
                                       </menus>
                                     </MenuBar>
