@@ -6,6 +6,7 @@
 package gridergui;
 
 import java.net.URL;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRResultSetDataSource;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
@@ -192,8 +194,6 @@ public class ReportsController implements Initializable, ScreenInterface{
         reportPane.setLeftAnchor(swingNode,0.0);
         reportPane.setRightAnchor(swingNode,0.0);
         reportPane.getChildren().add(swingNode);
-
-        
     }    
  
     @Override
@@ -246,46 +246,39 @@ public class ReportsController implements Initializable, ScreenInterface{
               gpIndex02.setVisible(false);
               gpIndex03.setManaged(false);
               gpIndex03.setVisible(false);
-              
-//            vbContainer.getChildren().clear();
-//            vbContainer.getChildren().add(gpStandard);
         }else if(reportCategory.equalsIgnoreCase("AUDIT")){
               gpIndex03.setManaged(false);
               gpIndex03.setVisible(false);
               gpIndex04.setManaged(false);
               gpIndex04.setVisible(false);
-//            vbContainer.getChildren().clear();
-//            vbContainer.getChildren().add(gpAudit);
         }else if(reportCategory.equalsIgnoreCase("PAYROLL")){
               gpIndex04.setManaged(false);
               gpIndex05.setManaged(false);
               gpIndex04.setVisible(false);
               gpIndex05.setVisible(false);
-//            vbContainer.getChildren().clear();
-//            vbContainer.getChildren().add(gpPayroll);
         }
     }
     private void cmdButton_Click(ActionEvent event) {
-        try {
             String lsButton = ((Button)event.getSource()).getId();
             switch (lsButton){
                 case "btnGenerate":
                     showProgress();
+                    loadReport();
+                    
                    
-                    if (oTrans.SearchTransaction("", false)){
-                           
-                        reportPane.requestFocus();
-                        
-                        loadDetail();
-                            
-                    }else
-                        MsgBox.showOk(oTrans.getMessage());
-                        hideProgress();
-                        break;
+//                    if (oTrans.SearchTransaction("", false)){
+//                           
+//                        reportPane.requestFocus();
+//                       
+//                        loadDetail();
+//                        hideProgress();
+//                            
+//                    }else{
+//                        hideProgress();
+//                        MsgBox.showOk(oTrans.getMessage());
+//                    } 
+                break;
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(AddIncentivesController.class.getName()).log(Level.SEVERE, null, ex);
-        }
     } 
     
     private void showProgress(){
@@ -294,14 +287,44 @@ public class ReportsController implements Initializable, ScreenInterface{
         ProgressIndicator pi = new ProgressIndicator();
         pi.setOpacity(1.0);
         pi.setStyle(" -fx-progress-color: #0086b3;");
-
         VBox box = new VBox(pi);
         box.setAlignment(Pos.CENTER);
-
-        // Grey Background
         vbProgress.getChildren().add(box);
     }
     private void hideProgress(){
         vbProgress.getChildren().clear();
+    }
+    private boolean loadReport(){
+        String lsReport = "D://GGC_Java_Systems/reports/BankAccountInfo.jasper";
+        String lsSQL = "SELECT e.sBranchNm bankInfo05, c.sCompnyNm bankInfo02, d.sBankName bankInfo03, a.sBankAcct bankInfo04" +
+            "   FROM Employee_Incentive_Bank_Info a LEFT JOIN Client_Master c ON a.sEmployID = c.sClientID\n" +
+            "   LEFT JOIN Banks d ON a.sBankIDxx = d.sBankIDxx\n" +
+            "	, Employee_Master001 b LEFT JOIN Branch e ON b.sBranchCd = e.sBranchCd\n" +
+            "   WHERE a.sEmployID = b.sEmployID\n" +
+            "	AND b.cRecdStat = '1' ORDER BY e.sBranchNm;";
+
+        ResultSet loRS = oApp.executeQuery(lsSQL);
+        //Convert the data-source to JasperReport data-source
+        JRResultSetDataSource jrRS = new JRResultSetDataSource(loRS);
+
+        //Create the parameter
+        Map<String, Object> params = new HashMap<>();
+        params.put("sReportNm", "Report Name");
+        params.put("sPrintdBy", "Printed By");
+        params.put("sCompnyNm", "Company Name");
+        params.put("sBranchNm", "Branch Name");
+        params.put("sAddressx", "Branch Address");
+
+        try {
+            jasperPrint = JasperFillManager.fillReport(lsReport,
+                                                        params, 
+                                                        jrRS);
+
+            if (jasperPrint != null) showReport();
+        } catch (JRException e) {
+            e.printStackTrace();
+        }
+
+        return true;
     }
 }

@@ -337,9 +337,9 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         mnuFiles02.setVisible(false);
         
         //compliance management;
-        mnuIncentiveParameter.setVisible("034;".contains(oApp.getDepartment())); 
+        mnuIncentiveParameter.setVisible("034;026;".contains(oApp.getDepartment())); 
         //finance management;
-        mnuEmployeeIncentivesBank.setVisible("028;".contains(oApp.getDepartment()));
+        mnuEmployeeIncentivesBank.setVisible("028;026;".contains(oApp.getDepartment()));
         
         if (!mnuIncentiveParameter.isVisible() && !mnuEmployeeIncentivesBank.isVisible())
             mnuFiles01.setVisible(false);
@@ -347,6 +347,6 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             mnuFiles01.setVisible(true);
         
         //compliance management;
-        mnuIncentiveReleasing.setVisible("028;".contains(oApp.getDepartment()));
+        mnuIncentiveReleasing.setVisible("028;026;".contains(oApp.getDepartment()));
     }
 }
