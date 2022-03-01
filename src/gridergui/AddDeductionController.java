@@ -98,6 +98,8 @@ public class AddDeductionController implements Initializable {
     @FXML
     private TableColumn<?, ?> empIncindex04;
     @FXML
+    private TableColumn<?, ?> empIncindex05;
+    @FXML
     private Button btnOk;
     @FXML
     private Button btnExit;
@@ -367,7 +369,8 @@ public class AddDeductionController implements Initializable {
                     incEmp_data.add(new TableEmployeeIncentives(String.valueOf(lnCtr),
                                             (String) oTrans.getDetail(lnCtr, "xEmployNm"),
                                             (CommonUtils.NumberFormat((Number)oTrans.getDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00")),
-                                            (CommonUtils.NumberFormat((Number)oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00"))));
+                                            (CommonUtils.NumberFormat((Number)oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00")),
+                                            (CommonUtils.NumberFormat((Number)0.0, "#,##0.00"))));
 
                     double allAmt = Double.parseDouble(oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(lnCtr, "sEmployID")).toString());
                     total_alloc += allAmt;
@@ -380,7 +383,8 @@ public class AddDeductionController implements Initializable {
                     incEmp_data.set(lnCtr -1 , new TableEmployeeIncentives(String.valueOf(lnCtr),
                                             (String) oTrans.getDetail(lnCtr, "xEmployNm"),
                                             (CommonUtils.NumberFormat((Number)oTrans.getDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00")),
-                                            (CommonUtils.NumberFormat((Number)oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00"))));
+                                            (CommonUtils.NumberFormat((Number)oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00")),
+                                            (CommonUtils.NumberFormat((Number)0.0, "#,##0.00"))));
 
                     double allAmt = Double.parseDouble(oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(lnCtr, "sEmployID")).toString());
                     total_alloc += allAmt;
@@ -450,13 +454,15 @@ public class AddDeductionController implements Initializable {
     public void initGrid() {   
         empIncindex01.setStyle("-fx-alignment: CENTER;");
         empIncindex02.setStyle("-fx-alignment: CENTER-LEFT;");
-        empIncindex03.setStyle("-fx-alignment: CENTER-LEFT;");
-        empIncindex04.setStyle("-fx-alignment: CENTER-LEFT;");
+        empIncindex03.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
+        empIncindex04.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
+        empIncindex05.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
         
         empIncindex01.setCellValueFactory(new PropertyValueFactory<>("empIncindex01"));
         empIncindex02.setCellValueFactory(new PropertyValueFactory<>("empIncindex02")); 
         empIncindex03.setCellValueFactory(new PropertyValueFactory<>("empIncindex03"));
         empIncindex04.setCellValueFactory(new PropertyValueFactory<>("empIncindex04")); 
+        empIncindex05.setCellValueFactory(new PropertyValueFactory<>("empIncindex05")); 
         
         tblemployee.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblemployee.lookup("TableHeaderRow");

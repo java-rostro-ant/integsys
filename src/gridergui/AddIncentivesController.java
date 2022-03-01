@@ -89,6 +89,8 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
     @FXML
     private TableColumn<?, ?> empIncindex04;
     @FXML
+    private TableColumn<?, ?> empIncindex05;
+    @FXML
     private TextField txtField10;
     @FXML
     private TextField txtField11;
@@ -459,7 +461,8 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                     incEmp_data.add(new TableEmployeeIncentives(String.valueOf(lnCtr),
                                         (String) oTrans.getDetail(lnCtr, "xEmployNm"),
                                         (CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00")),
-                                        (CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00"))));
+                                        (CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00")),
+                                        (CommonUtils.NumberFormat((Number)0.0, "#,##0.00"))));
 
                     double allAmt = Double.parseDouble(oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")).toString());
                     total_alloc += allAmt;
@@ -471,7 +474,8 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                     incEmp_data.set(lnCtr -1 , new TableEmployeeIncentives(String.valueOf(lnCtr),
                                             (String) oTrans.getDetail(lnCtr, "xEmployNm"),
                                             (CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00")),
-                                            (CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00"))));
+                                            (CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00")),
+                                            (CommonUtils.NumberFormat((Number)0.0, "#,##0.00"))));
 
                     double allAmt = Double.parseDouble(oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")).toString());
                     total_alloc += allAmt;
@@ -536,13 +540,15 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
     public void initGrid() {   
         empIncindex01.setStyle("-fx-alignment: CENTER;");
         empIncindex02.setStyle("-fx-alignment: CENTER-LEFT;");
-        empIncindex03.setStyle("-fx-alignment: CENTER-LEFT;");
-        empIncindex04.setStyle("-fx-alignment: CENTER-LEFT;");
+        empIncindex03.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
+        empIncindex04.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
+        empIncindex05.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
         
         empIncindex01.setCellValueFactory(new PropertyValueFactory<>("empIncindex01"));
         empIncindex02.setCellValueFactory(new PropertyValueFactory<>("empIncindex02")); 
         empIncindex03.setCellValueFactory(new PropertyValueFactory<>("empIncindex03"));
         empIncindex04.setCellValueFactory(new PropertyValueFactory<>("empIncindex04")); 
+        empIncindex05.setCellValueFactory(new PropertyValueFactory<>("empIncindex05")); 
         
         tblemployee.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblemployee.lookup("TableHeaderRow");
