@@ -17,7 +17,7 @@
 
 <VBox fx:id="VBoxForm" stylesheets="@/css/EmployeeIncentives.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <AnchorPane prefHeight="30.0" prefWidth="821.0" style="-fx-background-color: #4C4C4C;">
+      <AnchorPane prefHeight="30.0" prefWidth="901.0" style="-fx-background-color: #4C4C4C;">
          <children>
             <ImageView fitHeight="37.0" fitWidth="327.0" layoutY="1.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -38,7 +38,7 @@
                   <Image url="@../images/icon.png" />
                </image>
             </ImageView>
-            <Button fx:id="btnExit" layoutX="796.0" layoutY="4.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="21.0">
+            <Button fx:id="btnExit" layoutX="796.0" layoutY="4.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="21.0" AnchorPane.rightAnchor="5.0">
                <font>
                   <Font name="System Bold" size="8.0" />
                </font>
@@ -117,14 +117,15 @@
                   <TextField fx:id="txtField05" layoutX="125.0" layoutY="177.0" prefHeight="25.0" prefWidth="207.0" />
                </children>
             </AnchorPane>
-            <AnchorPane layoutX="347.0" layoutY="4.0" prefHeight="326.0" prefWidth="471.0" style="-fx-border-color: orange; -fx-border-radius: 5;">
+            <AnchorPane layoutX="347.0" layoutY="4.0" prefHeight="326.0" style="-fx-border-color: orange; -fx-border-radius: 5;">
                <children>
-                  <TableView fx:id="tblemployee" editable="true" layoutX="5.0" layoutY="4.0" onMouseClicked="#tblemployee_Clicked" prefHeight="318.0" prefWidth="462.0">
+                  <TableView fx:id="tblemployee" editable="true" layoutX="5.0" layoutY="4.0" onMouseClicked="#tblemployee_Clicked" prefHeight="318.0" prefWidth="553.0">
                      <columns>
                         <TableColumn fx:id="empIncindex01" maxWidth="40.0" minWidth="35.0" prefWidth="35.0" text="No." />
                         <TableColumn fx:id="empIncindex02" maxWidth="250.0" minWidth="200.0" prefWidth="200.0" resizable="false" text="Employee" />
                         <TableColumn fx:id="empIncindex03" maxWidth="120.0" minWidth="100.0" prefWidth="100.0" resizable="false" text="Alloc. %" />
                         <TableColumn fx:id="empIncindex04" maxWidth="120.0" minWidth="100.0" prefWidth="100.0" resizable="false" text="Alloc. Amt" />
+                        <TableColumn fx:id="empIncindex05" maxWidth="120.0" minWidth="100.0" prefWidth="100.0" resizable="false" text="Total Amt" />
                      </columns>
                   </TableView>
                </children>
@@ -133,7 +134,7 @@
       </AnchorPane>
       <AnchorPane prefHeight="68.0" prefWidth="746.0" style="-fx-background-color: #4C4C4C;">
          <children>
-            <Button fx:id="btnOk" contentDisplay="TOP" ellipsisString="" layoutX="729.0" layoutY="9.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="OK">
+            <Button fx:id="btnOk" contentDisplay="TOP" ellipsisString="" layoutX="729.0" layoutY="9.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="OK" AnchorPane.rightAnchor="5.0">
                <graphic>
                   <FontAwesomeIconView glyphName="CHECK" size="20" />
                </graphic>

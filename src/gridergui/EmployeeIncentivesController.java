@@ -698,12 +698,21 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                         }
                     break;
                  case "btnBrowse":
-                         if (oTrans.SearchTransaction(txtSeeks21.getText(), false)){
+                        
+                        if (oTrans.SearchTransaction(txtSeeks21.getText(), true)){
                             loadMaster();
                             loadIncentives();
-                            pnEditMode = EditMode.READY;
-                        }else
+                        } else if(oTrans.SearchTransaction(txtSeeks22.getText(), false)){
+                            loadMaster();
+                            loadIncentives();
+                        }else 
                             MsgBox.showOk(oTrans.getMessage());
+//                         if (oTrans.SearchTransaction(txtSeeks21.getText(), false)){
+//                            loadMaster();
+//                            loadIncentives();
+//                            pnEditMode = EditMode.READY;
+//                        }else
+//                            MsgBox.showOk(oTrans.getMessage());
                         break;
                  case "btnUpdate":  
                         if (oTrans.UpdateTransaction()){

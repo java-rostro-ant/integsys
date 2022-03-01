@@ -16,16 +16,19 @@ public class TableEmployeeIncentives {
     private SimpleStringProperty empIncindex02; 
     private SimpleStringProperty empIncindex03;
     private SimpleStringProperty empIncindex04;
+    private SimpleStringProperty empIncindex05;
     
     TableEmployeeIncentives(String empIncindex01, 
                     String empIncindex02, 
                     String empIncindex03, 
-                    String empIncindex04){
+                    String empIncindex04, 
+                    String empIncindex05){
         
         this.empIncindex01 = new SimpleStringProperty(empIncindex01);
         this.empIncindex02 = new SimpleStringProperty(empIncindex02);
         this.empIncindex03 = new SimpleStringProperty(empIncindex03);
         this.empIncindex04 = new SimpleStringProperty(empIncindex04);
+        this.empIncindex05 = new SimpleStringProperty(empIncindex05);
     }
 
 
@@ -41,5 +44,8 @@ public class TableEmployeeIncentives {
     
     public String getEmpIncindex04(){return empIncindex04.get();}
     public void setEmpIncindex04(String empIncindex04){this.empIncindex04.set(empIncindex04);}
+    
+    public String getEmpIncindex05(){return empIncindex05.get();}
+    public void setEmpIncindex05(String empIncindex05){this.empIncindex04.set(empIncindex05);}
     
 }
