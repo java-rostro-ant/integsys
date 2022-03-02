@@ -8,7 +8,6 @@ import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import java.net.URL;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -370,7 +369,7 @@ public class AddDeductionController implements Initializable {
                                             (String) oTrans.getDetail(lnCtr, "xEmployNm"),
                                             (CommonUtils.NumberFormat((Number)oTrans.getDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00")),
                                             (CommonUtils.NumberFormat((Number)oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00")),
-                                            (CommonUtils.NumberFormat((Number)0.0, "#,##0.00"))));
+                                            (CommonUtils.NumberFormat((Number)oTrans.getDeductionEmployeeAllocationInfo("nTotalAmt", tbl_row, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00"))));
 
                     double allAmt = Double.parseDouble(oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(lnCtr, "sEmployID")).toString());
                     total_alloc += allAmt;
@@ -384,7 +383,7 @@ public class AddDeductionController implements Initializable {
                                             (String) oTrans.getDetail(lnCtr, "xEmployNm"),
                                             (CommonUtils.NumberFormat((Number)oTrans.getDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00")),
                                             (CommonUtils.NumberFormat((Number)oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00")),
-                                            (CommonUtils.NumberFormat((Number)0.0, "#,##0.00"))));
+                                            (CommonUtils.NumberFormat((Number)oTrans.getDeductionEmployeeAllocationInfo("nTotalAmt", tbl_row, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00"))));
 
                     double allAmt = Double.parseDouble(oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(lnCtr, "sEmployID")).toString());
                     total_alloc += allAmt;
