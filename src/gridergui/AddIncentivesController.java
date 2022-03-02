@@ -271,8 +271,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                                  }
                             }
                             
-                            
-                             break;
+                            break;
                         case 12:
                             double lnOldAmt = Double.valueOf(String.valueOf(oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"))));
 
@@ -462,7 +461,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                                         (String) oTrans.getDetail(lnCtr, "xEmployNm"),
                                         (CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00")),
                                         (CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00")),
-                                        (CommonUtils.NumberFormat((Number)0.0, "#,##0.00"))));
+                                        (CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nTotalAmt", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00"))));
 
                     double allAmt = Double.parseDouble(oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")).toString());
                     total_alloc += allAmt;
@@ -475,7 +474,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                                             (String) oTrans.getDetail(lnCtr, "xEmployNm"),
                                             (CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00")),
                                             (CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00")),
-                                            (CommonUtils.NumberFormat((Number)0.0, "#,##0.00"))));
+                                            (CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nTotalAmt", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00"))));
 
                     double allAmt = Double.parseDouble(oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")).toString());
                     total_alloc += allAmt;
