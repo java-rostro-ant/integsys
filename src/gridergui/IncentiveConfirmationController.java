@@ -246,26 +246,12 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         try {
             switch (lsButton){
                 case "btnBrowse":
-                    if(txtSeeks05.isFocused()){
-                         if (oTrans.SearchTransaction(txtSeeks05.getText(), true)){
-                            loadIncentives();    
-                            oTrans.displayDetFields();
-                            pnEditMode = oTrans.getEditMode();
-                        } 
-                        else {
-                            MsgBox.showOk(oTrans.getMessage());
-                        }
-                    }else{
-                         if (oTrans.SearchTransaction(txtSeeks06.getText(), false)){
-                            loadIncentives();    
-                            oTrans.displayDetFields();
-                            pnEditMode = oTrans.getEditMode();
-                        } 
-                        else {
-                            MsgBox.showOk(oTrans.getMessage());
-                        }
-                    }
-                       
+                    if (oTrans.SearchTransaction(txtSeeks05.getText(), true)){
+                        loadIncentives();
+                    } else if(oTrans.SearchTransaction(txtSeeks06.getText(), false)){
+                        loadIncentives();
+                    } else 
+                        MsgBox.showOk(oTrans.getMessage());   
                     break;
                 case "btnApproved": 
                     if (oTrans.CloseTransaction()){
@@ -322,32 +308,34 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
            switch (event.getCode()){
             case F3:
             case ENTER:
-                  switch (lnIndex){
+                switch (lnIndex){
                     case 5: /*Search*/
                         if (oTrans.SearchTransaction(txtSeeks05.getText(), true)){
-                            loadIncentives();
+                                loadIncentives();
                                 pnEditMode = oTrans.getEditMode();
-                        } else {
-                            MsgBox.showOk(oTrans.getMessage());
-                        }
+                            } else 
+                                MsgBox.showOk(oTrans.getMessage());
                         break;
                     case 6: /*Search*/
                         if (oTrans.SearchTransaction(txtSeeks06.getText(), false)){
-                            loadIncentives();
-                            pnEditMode = oTrans.getEditMode();
-                       }else {
-                            MsgBox.showOk(oTrans.getMessage());
-                        }
+                                loadIncentives();
+                                pnEditMode = oTrans.getEditMode();
+                            } else 
+                                MsgBox.showOk(oTrans.getMessage());
                         break;
-                }   
-                  break;
-            case DOWN:
-                CommonUtils.SetNextFocus(txtField); break;
-            case UP:
-                CommonUtils.SetPreviousFocus(txtField);
+                }
+            
         } 
         }catch(SQLException e){
                 MsgBox.showOk(e.getMessage());
+        }
+        switch (event.getCode()){
+        case ENTER:
+        case DOWN:
+            CommonUtils.SetNextFocus(txtField);
+            break;
+        case UP:
+            CommonUtils.SetPreviousFocus(txtField);
         }
         
     }
@@ -385,9 +373,14 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         
     }
     public void initEmployeeGrid() {
-        empIndex06.setStyle("-fx-alignment: CENTER-RIGHT");
-        empIndex02.setStyle("-fx-alignment: CENTER-LEFT");
-        
+        empIndex05.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
+        empIndex06.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
+        empIndex07.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
+        empIndex08.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
+        empIndex02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        empIndex03.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        empIndex04.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+
         empIndex01.setCellValueFactory(new PropertyValueFactory<IncentiveConfirmationModel,String>("empIndex01"));
         incIndex01.setCellFactory(column -> {
                       return new TableCell<TableIncentives, String>() {
@@ -412,6 +405,8 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         empIndex04.setCellValueFactory(new PropertyValueFactory<IncentiveConfirmationModel,String>("empIndex04"));
         empIndex05.setCellValueFactory(new PropertyValueFactory<IncentiveConfirmationModel,String>("empIndex05"));
         empIndex06.setCellValueFactory(new PropertyValueFactory<IncentiveConfirmationModel,String>("empIndex06"));
+        empIndex07.setCellValueFactory(new PropertyValueFactory<IncentiveConfirmationModel,String>("empIndex06"));
+        empIndex08.setCellValueFactory(new PropertyValueFactory<IncentiveConfirmationModel,String>("empIndex06"));
          /*making column's position uninterchangebale*/
         tblemployee.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblemployee.lookup("TableHeaderRow");
@@ -529,6 +524,8 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
                         oTrans.getDetail(lnCtr , "xEmpLevNm").toString(),
                         oTrans.getDetail(lnCtr , "xPositnNm").toString(),
                         oTrans.getDetail(lnCtr , "xSrvcYear").toString(),
+                        priceWithDecimal((Double)(oTrans.getDetail(lnCtr , "nTotalAmt"))),
+                        priceWithDecimal((Double)(oTrans.getDetail(lnCtr , "nTotalAmt"))),
                         priceWithDecimal((Double)(oTrans.getDetail(lnCtr , "nTotalAmt")))));
                
             }
@@ -627,18 +624,13 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
     }
     public void tblemployee_column(){
          empIndex01.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.035));
-         empIndex02.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.240));
-         empIndex03.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.214));
-         empIndex04.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.214));
-         empIndex05.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.14));
-         empIndex06.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.14));
-         
-         empIndex01.setResizable(false);  
-         empIndex02.setResizable(false);  
-         empIndex03.setResizable(false);  
-         empIndex04.setResizable(false);  
-         empIndex05.setResizable(false);  
-         empIndex06.setResizable(false); 
+         empIndex02.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.210));
+         empIndex03.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.195));
+         empIndex04.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.195));
+         empIndex05.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.08));
+         empIndex06.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.09));
+         empIndex07.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.09));
+         empIndex08.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.09));
          
     }
     

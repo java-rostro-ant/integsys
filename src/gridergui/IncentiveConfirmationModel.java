@@ -20,6 +20,8 @@ public class IncentiveConfirmationModel {
     private SimpleStringProperty empIndex04;  
     private SimpleStringProperty empIndex05;
     private SimpleStringProperty empIndex06;  
+    private SimpleStringProperty empIndex07;
+    private SimpleStringProperty empIndex08;  
     
     private SimpleStringProperty incIndex01;
     private SimpleStringProperty incIndex02;    
@@ -42,13 +44,15 @@ public class IncentiveConfirmationModel {
     }
   
     public IncentiveConfirmationModel(String empIndex01, String empIndex02, String empIndex03,
-            String empIndex04, String empIndex05, String empIndex06){
+            String empIndex04, String empIndex05, String empIndex06, String empIndex07, String empIndex08){
         this.empIndex01 = new SimpleStringProperty(empIndex01);
         this.empIndex02 = new SimpleStringProperty(empIndex02);
         this.empIndex03 = new SimpleStringProperty(empIndex03);
         this.empIndex04 = new SimpleStringProperty(empIndex04);
         this.empIndex05 = new SimpleStringProperty(empIndex05);
         this.empIndex06 = new SimpleStringProperty(empIndex06);
+        this.empIndex07 = new SimpleStringProperty(empIndex07);
+        this.empIndex08 = new SimpleStringProperty(empIndex08);
     }
     
     public String getIncIndex01(){return incIndex01.get();}
@@ -92,4 +96,10 @@ public class IncentiveConfirmationModel {
     
     public String getEmpIndex06(){return empIndex06.get();}
     public void setEmpIndex06(String empIndex06){this.empIndex06.set(empIndex06);}
+    
+    public String getEmpIndex07(){return empIndex07.get();}
+    public void setEmpIndex07(String empIndex07){this.empIndex07.set(empIndex07);}
+    
+    public String getEmpIndex08(){return empIndex08.get();}
+    public void setEmpIndex08(String empIndex08){this.empIndex08.set(empIndex08);}
 }
