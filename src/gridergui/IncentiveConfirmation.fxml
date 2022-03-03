@@ -166,12 +166,12 @@
                                                 <Font name="System Bold" size="12.0" />
                                              </font>
                                           </Label>
-                                          <CheckBox fx:id="Check01" layoutX="667.0" layoutY="9.0" mnemonicParsing="false" text="CM Confirmed" AnchorPane.rightAnchor="281.0">
+                                          <CheckBox fx:id="Check01" layoutX="667.0" layoutY="9.0" mnemonicParsing="false" text="CSS Confirmed" AnchorPane.rightAnchor="281.0">
                                              <font>
                                                 <Font name="System Bold" size="12.0" />
                                              </font>
                                           </CheckBox>
-                                          <CheckBox fx:id="Check02" layoutX="795.0" layoutY="9.0" mnemonicParsing="false" text="CSS Confirmed" AnchorPane.rightAnchor="151.0">
+                                          <CheckBox fx:id="Check02" layoutX="795.0" layoutY="9.0" mnemonicParsing="false" text="CM Confirmed" AnchorPane.rightAnchor="151.0">
                                              <font>
                                                 <Font name="System Bold" size="12.0" />
                                              </font>

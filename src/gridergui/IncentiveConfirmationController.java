@@ -1,11 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package gridergui;
 
-import transaction.*;
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.io.IOException;
 import java.net.URL;
@@ -245,9 +239,7 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         Check01.setDisable(true);
         Check02.setDisable(true);
         txtField01.setDisable(true);
-        txtField02.setDisable(true);
-     
-       
+        txtField02.setDisable(true);  
     }
     private void cmdButton_Click(ActionEvent event) {
         String lsButton = ((Button)event.getSource()).getId();
@@ -258,41 +250,44 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
                         loadIncentives();
                     } else if(oTrans.SearchTransaction(txtSeeks06.getText(), false)){
                         loadIncentives();
-                    }else 
+                    } else 
                         MsgBox.showOk(oTrans.getMessage());   
                     break;
-                    
                 case "btnApproved": 
                     if (oTrans.CloseTransaction()){
-                            MsgBox.showOk("Transaction success approved.");
+                            MsgBox.showOk("Transaction was successfully approved.");
                             clearFields();
                         } else 
                             MsgBox.showOk(oTrans.getMessage());
                     break;
                 case "btnDisapproved":
                     if (oTrans.CancelTransaction()){
-                            MsgBox.showOk("Transaction success disapproved.");
+                            MsgBox.showOk("Transaction was successfully disapproved.");
                             clearFields();
                         } else 
                             MsgBox.showOk(oTrans.getMessage());
                     break;
                 case "btnUpdate":
-                    
-                     loadIncentives(); 
+                    loadIncentives(); 
                     if(getTransNox() != null || !getTransNox().isEmpty()){
-                        if("1".equals((String) oTrans.getMaster("cTranStat")) && 
-                            !oApp.getDepartment().equals("034")){
+                        if("1".equals((String) oTrans.getMaster("cTranStat")) && !oApp.getDepartment().equals("034")){
                             MsgBox.showOk("Only CM can update confirmed transactions.");
                             return;
                         }
+                        
+                        if ("1".equals((String) oTrans.getMaster("cApprovd2"))){
+                            MsgBox.showOk("This transaction was already CM Confirmed. Unable to update.");
+                            return;
+                        }
+                        
                         pnEditMode = oTrans.getEditMode();
                         loadUpdate();
                     }else{
-                        MsgBox.showOk("No record selected!");
+                        MsgBox.showOk("No record was loaded!");
                     }
                     break;
                 case "btnClose":
-                    if(ShowMessageFX.OkayCancel(null, "Employee Bank Info", "Are you sure, do you want to close?") == true){
+                    if(ShowMessageFX.OkayCancel(null, "Confirm", "Are you sure, do you want to close?") == true){
                         unloadForm();
                         break;
                     } else
@@ -385,7 +380,7 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         empIndex02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         empIndex03.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         empIndex04.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-//        empIndex06.setStyle("-fx-alignment: CENTER-LEFT");
+
         empIndex01.setCellValueFactory(new PropertyValueFactory<IncentiveConfirmationModel,String>("empIndex01"));
         incIndex01.setCellFactory(column -> {
                       return new TableCell<TableIncentives, String>() {
@@ -435,25 +430,28 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
          setTransaction((String)oTrans.getMaster(1));
          transNox = (String)oTrans.getMaster(1);
          
-         System.out.println("INCENTIVES");
-         txtField01.setText((String)oTrans.getMaster(1));
-         txtSeeks05.setText((String)oTrans.getMaster(1));
-         txtSeeks06.setText((String)oTrans.getMaster(16));
-         txtField02.setText(oTrans.getMaster(2).toString());
-         txtField03.setText((String)oTrans.getMaster(17));
-         txtField04.setText((String)oTrans.getMaster(4));
-         txtField05.setText((String)oTrans.getMaster(5));
-         txtField16.setText((String)oTrans.getMaster(16));
+        System.out.println("INCENTIVES");
+        txtField01.setText((String)oTrans.getMaster(1));
+        txtSeeks05.setText((String)oTrans.getMaster(1));
+        txtSeeks06.setText((String)oTrans.getMaster(16));
+        txtField02.setText(oTrans.getMaster(2).toString());
+        txtField03.setText((String)oTrans.getMaster(17));
+        txtField04.setText((String)oTrans.getMaster(4));
+        txtField05.setText((String)oTrans.getMaster(5));
+        txtField16.setText((String)oTrans.getMaster(16));
+         
         if(oTrans.getMaster("cApprovd1").toString().equalsIgnoreCase("1")){
             Check01.selectedProperty().setValue(true);
         }else{
             Check01.selectedProperty().setValue(false);
         }
+        
         if(oTrans.getMaster("cApprovd2").toString().equalsIgnoreCase("1")){
             Check02.selectedProperty().setValue(true);
         }else{
             Check02.selectedProperty().setValue(false);
         }
+        
         if(oTrans.getMaster(15).toString().equalsIgnoreCase("0")){
         lblStatus.setVisible(true);
             lblStatus.setText("OPEN");
@@ -638,7 +636,6 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
     
      @FXML
     private void tblIncentives_Clicked(MouseEvent event) {
-        
         try {
             
             pnRow = tblincetives.getSelectionModel().getSelectedIndex(); 
