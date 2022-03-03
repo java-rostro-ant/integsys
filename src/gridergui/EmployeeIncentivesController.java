@@ -106,6 +106,10 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
     @FXML
     private TableColumn index06;
     @FXML
+    private TableColumn index07;
+    @FXML
+    private TableColumn index08;
+    @FXML
     private AnchorPane searchBar;
     @FXML
     private TextField txtField01;
@@ -424,6 +428,8 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                     oTrans.getDetail(lnCtr, "xEmpLevNm").toString(),
                     oTrans.getDetail(lnCtr, "xPositnNm").toString(),
                     oTrans.getDetail(lnCtr, "xSrvcYear").toString(),
+                    (CommonUtils.NumberFormat((Number)oTrans.getDetail(lnCtr, "nTotalAmt"), "#,##0.00")),
+                    (CommonUtils.NumberFormat((Number)oTrans.getDetail(lnCtr, "nTotalAmt"), "#,##0.00")),
                     (CommonUtils.NumberFormat((Number)oTrans.getDetail(lnCtr, "nTotalAmt"), "#,##0.00"))));
             }
         } catch (SQLException e) {
@@ -441,6 +447,8 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                     oTrans.getDetail(lnCtr, "xEmpLevNm").toString(),
                     oTrans.getDetail(lnCtr, "xPositnNm").toString(),
                     oTrans.getDetail(lnCtr, "xSrvcYear").toString(),
+                    (CommonUtils.NumberFormat((Number)oTrans.getDetail(lnCtr, "nTotalAmt"), "#,##0.00")),
+                    (CommonUtils.NumberFormat((Number)oTrans.getDetail(lnCtr, "nTotalAmt"), "#,##0.00")),
                     (CommonUtils.NumberFormat((Number)oTrans.getDetail(lnCtr, "nTotalAmt"), "#,##0.00"))));
             }
         } catch (SQLException e) {
@@ -758,6 +766,8 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                     oTrans.getDetail(lnCtr, "xEmpLevNm").toString(),
                     oTrans.getDetail(lnCtr, "xPositnNm").toString(),
                     oTrans.getDetail(lnCtr, "xSrvcYear").toString(),
+                    oTrans.getDetail(lnCtr, "nTotalAmt").toString(),
+                    oTrans.getDetail(lnCtr, "nTotalAmt").toString(),
                     oTrans.getDetail(lnCtr, "nTotalAmt").toString()));
         }       
         pnRow = 0;
@@ -778,11 +788,13 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         
     private void initGrid() {
         index01.setStyle("-fx-alignment: CENTER;");
-        index02.setStyle("-fx-alignment: CENTER-LEFT;");
-        index03.setStyle("-fx-alignment: CENTER-LEFT;");
-        index04.setStyle("-fx-alignment: CENTER-LEFT;");
-        index05.setStyle("-fx-alignment: CENTER-LEFT;");
-        index06.setStyle("-fx-alignment: CENTER-RIGHT;");
+        index02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        index03.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        index04.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+        index05.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 0 0 5;");
+        index06.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
+        index07.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
+        index08.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
         
         index01.setCellValueFactory(new PropertyValueFactory<>("index01"));
         index02.setCellValueFactory(new PropertyValueFactory<>("index02"));
@@ -790,6 +802,8 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         index04.setCellValueFactory(new PropertyValueFactory<>("index04"));
         index05.setCellValueFactory(new PropertyValueFactory<>("index05"));
         index06.setCellValueFactory(new PropertyValueFactory<>("index06"));
+        index07.setCellValueFactory(new PropertyValueFactory<>("index07"));
+        index08.setCellValueFactory(new PropertyValueFactory<>("index08"));
         tblemployee.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblemployee.lookup("TableHeaderRow");
             header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
@@ -873,19 +887,15 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
     }
     
     public void tblemployee_column(){
-         index01.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.04));
-         index02.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.275));
-         index03.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.24));
-         index04.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.24));
-         index05.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.10));
-         index06.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.10));
-         
-         index01.setResizable(false);  
-         index02.setResizable(false);  
-         index03.setResizable(false);  
-         index04.setResizable(false);  
-         index05.setResizable(false);  
-         index06.setResizable(false);  
+         index01.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.035));
+         index02.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.210));
+         index03.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.195));
+         index04.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.195));
+         index05.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.08));
+         index06.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.09));
+         index07.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.09));
+         index08.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.09));
+          
     }
     
     private void onsuccessUpdate(){
