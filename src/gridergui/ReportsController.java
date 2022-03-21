@@ -22,6 +22,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
@@ -297,13 +299,18 @@ public class ReportsController implements Initializable, ScreenInterface{
         vbProgress.getChildren().clear();
     }
     private boolean loadReport(){
-        String lsReport = "D://GGC_Java_Systems/reports/BankAccountInfo.jasper";
-        String lsSQL = "SELECT e.sBranchNm bankInfo05, c.sCompnyNm bankInfo02, d.sBankName bankInfo03, a.sBankAcct bankInfo04" +
-            "   FROM Employee_Incentive_Bank_Info a LEFT JOIN Client_Master c ON a.sEmployID = c.sClientID\n" +
-            "   LEFT JOIN Banks d ON a.sBankIDxx = d.sBankIDxx\n" +
-            "	, Employee_Master001 b LEFT JOIN Branch e ON b.sBranchCd = e.sBranchCd\n" +
-            "   WHERE a.sEmployID = b.sEmployID\n" +
-            "	AND b.cRecdStat = '1' ORDER BY e.sBranchNm;";
+ if (rbChart.isSelected()){
+        String lsReport = "D://GGC_Java_Systems/reports/BankInfoChart.jasper";
+        String lsSQL = "SELECT COUNT(sBankAcct) AS bankInfo04, e.sBranchNm bankInfo05, d.sBankName bankInfo03, c.sCompnyNm bankInfo02\n" +
+              " FROM Employee_Incentive_Bank_Info a \n" +
+              " LEFT JOIN Client_Master c\n" +
+              "  ON a.sEmployID = c.sClientID \n" +
+              "  LEFT JOIN Banks d \n" +
+              "  ON a.sBankIDxx = d.sBankIDxx,\n" +
+              "   Employee_Master001 b \n" +
+              "   LEFT JOIN Branch e \n" +
+              "   ON b.sBranchCd = e.sBranchCd \n" +
+              "   WHERE a.sEmployID = b.sEmployID AND b.cRecdStat = '1' GROUP BY d.sBankName ORDER BY e.sBranchNm";
 
         ResultSet loRS = oApp.executeQuery(lsSQL);
         //Convert the data-source to JasperReport data-source
@@ -326,7 +333,45 @@ public class ReportsController implements Initializable, ScreenInterface{
         } catch (JRException e) {
             e.printStackTrace();
         }
+}
+else if (rbDetailed.isSelected()){
+         String lsReport = "D://GGC_Java_Systems/reports/BankAccountInfo.jasper";
+         String lsSQL = "SELECT e.sBranchNm bankInfo05, c.sCompnyNm bankInfo02, d.sBankName bankInfo03, a.sBankAcct bankInfo04" +
+                  "   FROM Employee_Incentive_Bank_Info a LEFT JOIN Client_Master c ON a.sEmployID = c.sClientID\n" +
+                  "   LEFT JOIN Banks d ON a.sBankIDxx = d.sBankIDxx\n" +
+                 "	, Employee_Master001 b LEFT JOIN Branch e ON b.sBranchCd = e.sBranchCd\n" +
+                  "   WHERE a.sEmployID = b.sEmployID\n" +
+                  "	AND b.cRecdStat = '1' ORDER BY e.sBranchNm;";
 
+        ResultSet loRS = oApp.executeQuery(lsSQL);
+        //Convert the data-source to JasperReport data-source
+        JRResultSetDataSource jrRS = new JRResultSetDataSource(loRS);
+
+        //Create the parameter
+        Map<String, Object> params = new HashMap<>();
+        params.put("sReportNm", "Report Name");
+        params.put("sPrintdBy", "Printed By");
+        params.put("sCompnyNm", "Company Name");
+        params.put("sBranchNm", "Branch Name");
+        params.put("sAddressx", "Branch Address");
+
+        try {
+            jasperPrint = JasperFillManager.fillReport(lsReport,
+                                                        params, 
+                                                        jrRS);
+
+            if (jasperPrint != null) showReport();
+        } catch (JRException e) {
+            e.printStackTrace();
+        }
+}
+else if(rbSummarized.isSelected()){
+System.out.println("wala pa");
+}else if(rbGlobal.isSelected()){
+System.out.println("wala pa");
+}
         return true;
     }
 }
+
+
