@@ -237,8 +237,8 @@
                                                 <TableColumn fx:id="index03" editable="false" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="250.0" resizable="false" sortable="false" text="Level" />
                                                 <TableColumn fx:id="index04" editable="false" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="250.0" resizable="false" sortable="false" text="Position" />
                                                 <TableColumn fx:id="index05" editable="false" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="100.0" sortable="false" text="Service Year" />
-                                                <TableColumn fx:id="index06" editable="false" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="150.0" resizable="false" sortable="false" text="Total Incentive" />
-                                                <TableColumn fx:id="index07" editable="false" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="150.0" resizable="false" sortable="false" text="Total Deduct." />
+                                                <TableColumn fx:id="index06" editable="false" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="150.0" resizable="false" sortable="false" text="Incentive" />
+                                                <TableColumn fx:id="index07" editable="false" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="150.0" resizable="false" sortable="false" text="Deduction" />
                                                 <TableColumn fx:id="index08" editable="false" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="150.0" resizable="false" sortable="false" text="Net Amount" />
                                              </columns>
                                              <effect>

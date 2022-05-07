@@ -426,12 +426,12 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         
     }
     private void loadIncentives() throws SQLException{
-            //load to grid the incentives.
+        //load to grid the incentives.
         
-         data.clear();
-         int lnCtr; 
-         setTransaction((String)oTrans.getMaster(1));
-         transNox = (String)oTrans.getMaster(1);
+        data.clear();
+        int lnCtr; 
+        setTransaction((String)oTrans.getMaster(1));
+        transNox = (String)oTrans.getMaster(1);
          
         System.out.println("INCENTIVES");
         txtField01.setText((String)oTrans.getMaster(1));
@@ -527,9 +527,9 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
                         oTrans.getDetail(lnCtr , "xEmpLevNm").toString(),
                         oTrans.getDetail(lnCtr , "xPositnNm").toString(),
                         oTrans.getDetail(lnCtr , "xSrvcYear").toString(),
-                        priceWithDecimal((Double)(oTrans.getDetail(lnCtr , "nTotalAmt"))),
-                        priceWithDecimal((Double)(oTrans.getDetail(lnCtr , "nTotalAmt"))),
-                        priceWithDecimal((Double)(oTrans.getDetail(lnCtr , "nTotalAmt")))));
+                        (CommonUtils.NumberFormat((Number)oTrans.getDetail(lnCtr, "xIncentve"), "#,##0.00")),
+                        (CommonUtils.NumberFormat((Number)oTrans.getDetail(lnCtr, "xDeductnx"), "#,##0.00")),
+                        (CommonUtils.NumberFormat((Number)oTrans.getDetail(lnCtr, "nTotalAmt"), "#,##0.00"))));
                
             }
             initEmployeeGrid();

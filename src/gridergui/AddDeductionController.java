@@ -253,7 +253,7 @@ public class AddDeductionController implements Initializable {
                            double lnOldpercent = Double.parseDouble(oTrans.getDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID")).toString());
 
                             if(lnIncAmt <= 0){
-                                 ShowMessageFX.Warning(getStage(), "Please specify deduction amount value!", "Warning", null);
+                                ShowMessageFX.Warning(getStage(), "Please specify deduction amount value!", "Warning", null);
                                 
                                 txtField.setText(String.valueOf(lastValue));
                                 txtField.requestFocus();
