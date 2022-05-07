@@ -33,6 +33,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.rmj.appdriver.GRider;
 import org.rmj.appdriver.agent.MsgBox;
@@ -127,6 +128,9 @@ public class IncentiveReleasingController implements Initializable, ScreenInterf
     
     private final ObservableList<Release> data = FXCollections.observableArrayList();
     private final ObservableList<Release> emp_data = FXCollections.observableArrayList();
+    private Stage getStage(){
+	return (Stage) txtField01.getScene().getWindow();
+    }
     /**
      * Initializes the controller class.
      * @param url
@@ -173,7 +177,7 @@ public class IncentiveReleasingController implements Initializable, ScreenInterf
         txtField02.setDisable(true);
         initButton(pnEditMode);
     }    
-
+    
     @Override
     public void setGRider(GRider foValue) {
         oApp = foValue;
@@ -210,7 +214,7 @@ public class IncentiveReleasingController implements Initializable, ScreenInterf
                             }
                             System.out.println(oTrans.getTag(post));
                         } catch (SQLException ex) {
-                            MsgBox.showOk(ex.getMessage());
+                            ShowMessageFX.Warning(getStage(),ex.getMessage(), "Warning", null);
                         }
                     });
                     
@@ -218,7 +222,7 @@ public class IncentiveReleasingController implements Initializable, ScreenInterf
                 }
             initGrid();
         } catch (SQLException | ParseException e) {
-            MsgBox.showOk(e.getMessage());
+            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
         }
     }
     private void initButton(int fnValue){
@@ -340,7 +344,7 @@ public class IncentiveReleasingController implements Initializable, ScreenInterf
                             loadRecord();
                             pnEditMode = oTrans.getEditMode();
                         } else 
-                            MsgBox.showOk(oTrans.getMessage());
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                     break;
                 case "btnNew": //create new transaction
                         pbLoaded = true;
@@ -348,7 +352,7 @@ public class IncentiveReleasingController implements Initializable, ScreenInterf
                             loadRecord();
                             pnEditMode = oTrans.getEditMode();
                         } else 
-                            MsgBox.showOk(oTrans.getMessage());
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                     break;
                 case "btnRelease": //release transaction
 //                  if (oTrans.ReleaseTransaction()){
@@ -356,32 +360,32 @@ public class IncentiveReleasingController implements Initializable, ScreenInterf
 //                            clearFields();
 //                            pnEditMode = oTrans.getEditMode();
 //                        } else 
-//                            MsgBox.showOk(oTrans.getMessage());
+//                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
 //                    break;
                  case "btnSave": //save transaction
                         if (oTrans.SaveTransaction()){
-                            MsgBox.showOk("Transaction Successfully Saved.");
+                            ShowMessageFX.Warning(getStage(), "Transaction Successfully Saved.","Warning", null);
                             clearFields();
                         } else {
-                            MsgBox.showOk(oTrans.getMessage());
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                         }
                        
                     break;    
                 case "btnApproved": //approve transaction
                     if (oTrans.ConfirmTransaction()){
-                            MsgBox.showOk("Transaction success approved.");
+                            ShowMessageFX.Warning(getStage(), "Transaction successfully approved.","Warning", null);
                             clearFields();
                             pnEditMode = oTrans.getEditMode();
                         } else 
-                            MsgBox.showOk(oTrans.getMessage());
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                     break;
                 case "btnDisapproved": //disapprove transaction
                     if (oTrans.CancelTransaction()){
-                            MsgBox.showOk("Transaction success disapproved.");
+                            ShowMessageFX.Warning(getStage(),"Transaction successfully disapproved.", "Warning", null);
                             clearFields();
                             pnEditMode = oTrans.getEditMode();
                         } else 
-                            MsgBox.showOk(oTrans.getMessage());
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                     break;
                 case "btnCancel": //cancel transaction
                     clearFields();
@@ -399,7 +403,7 @@ public class IncentiveReleasingController implements Initializable, ScreenInterf
             initButton(pnEditMode);
         } catch (SQLException e) {
             e.printStackTrace();
-            MsgBox.showOk(e.getMessage());
+            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
         }
     } 
     
@@ -437,7 +441,7 @@ public class IncentiveReleasingController implements Initializable, ScreenInterf
             initEmployeeGrid();
            
         } catch (SQLException ex) {
-            MsgBox.showOk(ex.getMessage());
+            ShowMessageFX.Warning(getStage(),ex.getMessage(), "Warning", null);
         }
         
     }
@@ -456,7 +460,7 @@ public class IncentiveReleasingController implements Initializable, ScreenInterf
                             loadRecord();
                             pnEditMode = oTrans.getEditMode();
                         } else 
-                            MsgBox.showOk(oTrans.getMessage());
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                      break;
                 }   
             case ENTER:
@@ -466,7 +470,7 @@ public class IncentiveReleasingController implements Initializable, ScreenInterf
                 CommonUtils.SetPreviousFocus(txtField);
         } 
         }catch(SQLException e){
-                MsgBox.showOk(e.getMessage());
+                ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
         }
         
     }

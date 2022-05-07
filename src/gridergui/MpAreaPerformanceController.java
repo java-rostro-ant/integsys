@@ -25,6 +25,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.rmj.appdriver.GRider;
 import org.rmj.appdriver.agent.MsgBox;
@@ -84,7 +85,9 @@ public class MpAreaPerformanceController implements Initializable , ScreenInterf
     private HBox hbButtons;
     @FXML
     private Label lblHeader;
-
+    private Stage getStage(){
+	return (Stage) txtField01.getScene().getWindow();
+    }
     /**
      * Initializes the controller class.
      */
@@ -113,7 +116,7 @@ public class MpAreaPerformanceController implements Initializable , ScreenInterf
                                lblStatus.setVisible(false); 
                             }
                         } catch (SQLException ex) {
-                             MsgBox.showOk(oTrans.getMessage());
+                             ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                         }
                          break;
                 }
@@ -189,7 +192,7 @@ public class MpAreaPerformanceController implements Initializable , ScreenInterf
             initButton(pnEditMode);
 //        } catch (SQLException e) {
 //            e.printStackTrace();
-//            MsgBox.showOk(e.getMessage());
+//            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
 //        }
     } 
     private void initButton(int fnValue){
@@ -284,7 +287,7 @@ public class MpAreaPerformanceController implements Initializable , ScreenInterf
             txtField02.setText((String) oTrans.getMaster(2));
             txtSeeks05.setText((String) oTrans.getMaster(2));
         } catch (SQLException e) {
-            MsgBox.showOk(e.getMessage());
+            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
         }
     }
     
@@ -295,7 +298,7 @@ public class MpAreaPerformanceController implements Initializable , ScreenInterf
             oTrans.setMaster("sInctveDs", txtField02.getText());
             
             } catch (SQLException ex) {
-              MsgBox.showOk(ex.getMessage());
+              ShowMessageFX.Warning(getStage(),ex.getMessage(), "Warning", null);
         }
 
         return true;
@@ -318,7 +321,7 @@ public class MpAreaPerformanceController implements Initializable , ScreenInterf
                         break;
                 }
             } catch (SQLException e) {
-                MsgBox.showOk(e.getMessage());
+                ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
             }
             
         } else{ //Focus

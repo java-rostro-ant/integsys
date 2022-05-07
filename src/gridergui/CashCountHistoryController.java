@@ -22,6 +22,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.rmj.appdriver.GRider;
 import org.rmj.appdriver.agent.MsgBox;
@@ -165,6 +166,9 @@ public class CashCountHistoryController  implements Initializable , ScreenInterf
     @FXML
     private AnchorPane AnchorMainCashCount;
     
+   private Stage getStage(){
+	return (Stage) txtField01.getScene().getWindow();
+   }
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         listener = new LTransaction() {
@@ -293,6 +297,7 @@ public class CashCountHistoryController  implements Initializable , ScreenInterf
         }
         return null;
     }
+
    private void cmdButton_Click(ActionEvent event) {
         String lsButton = ((Button)event.getSource()).getId();
         System.out.println(lsButton);
@@ -305,7 +310,7 @@ public class CashCountHistoryController  implements Initializable , ScreenInterf
                         } else if(oTrans.SearchTransaction(txtSeeks39.getText(), false)){
                             loadCasCount();
                         }else 
-                            MsgBox.showOk(oTrans.getMessage());
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                     break;
                 case "btnClose":
                     if(ShowMessageFX.OkayCancel(null, "Cash Count History", "Are you sure, do you want to close?") == true){
@@ -317,7 +322,7 @@ public class CashCountHistoryController  implements Initializable , ScreenInterf
             
         } catch (SQLException e) {
             e.printStackTrace();
-            MsgBox.showOk(e.getMessage());
+            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
         }
     } 
    private void txtField_KeyPressed(KeyEvent event){
@@ -332,13 +337,13 @@ public class CashCountHistoryController  implements Initializable , ScreenInterf
                         if (oTrans.SearchTransaction(txtSeeks38.getText(), true)){
                             loadCasCount();
                         } else 
-                            MsgBox.showOk(oTrans.getMessage());
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                         break;
                     case 39: /*Search*/
                         if (oTrans.SearchTransaction(txtSeeks39.getText(), false)){
                             loadCasCount();
                         } else 
-                            MsgBox.showOk(oTrans.getMessage());
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                         break;
                 }   
                 break;
@@ -348,13 +353,13 @@ public class CashCountHistoryController  implements Initializable , ScreenInterf
                         if (oTrans.SearchTransaction(txtSeeks38.getText(), true)){
                             loadCasCount();
                         } else 
-                            MsgBox.showOk(oTrans.getMessage());
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                         break;
                     case 39: /*Search*/
                         if (oTrans.SearchTransaction(txtSeeks39.getText(), false)){
                             loadCasCount();
                         } else 
-                            MsgBox.showOk(oTrans.getMessage());
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                         break;
                 }  
                 break;
@@ -364,7 +369,7 @@ public class CashCountHistoryController  implements Initializable , ScreenInterf
                 CommonUtils.SetPreviousFocus(txtField);break;
         } 
         }catch(SQLException e){
-                MsgBox.showOk(e.getMessage());
+                ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
         }
         
     }
@@ -482,7 +487,7 @@ public class CashCountHistoryController  implements Initializable , ScreenInterf
             computeTotalCoins();
             computeGrandTotal();
         } catch (SQLException e) {
-            MsgBox.showOk(e.getMessage());
+            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
         }
     }
     private void computePeso(TextField txtQty, Label value, TextField txtTotal){
@@ -513,7 +518,7 @@ public class CashCountHistoryController  implements Initializable , ScreenInterf
            
         lblPesoTotal.setText("₱ " + priceWithDecimal(subtotal));
         }catch(NumberFormatException e){
-//            MsgBox.showOk(e.getMessage());
+//            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
             e.printStackTrace();
         }
     }
@@ -532,7 +537,7 @@ public class CashCountHistoryController  implements Initializable , ScreenInterf
            
         lblCoinTotal.setText("₱ " + priceWithDecimal(subtotal));
         }catch(NumberFormatException e){
-//            MsgBox.showOk(e.getMessage());
+//            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
             e.printStackTrace();
         }
     }
@@ -545,7 +550,7 @@ public class CashCountHistoryController  implements Initializable , ScreenInterf
            
             lblGrandTotal.setText("₱ " + priceWithDecimal(total));
         }catch(NumberFormatException e){
-//            MsgBox.showOk(e.getMessage());
+//            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
             e.printStackTrace();
         }
     }

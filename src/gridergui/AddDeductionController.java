@@ -28,6 +28,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import org.rmj.appdriver.GRider;
 import org.rmj.appdriver.StringUtil;
 import org.rmj.appdriver.agent.MsgBox;
@@ -134,6 +135,9 @@ public class AddDeductionController implements Initializable {
         state = fsValue;
     }
     
+   private Stage getStage(){
+	return (Stage) txtField01.getScene().getWindow();
+    }
     /**
      * Initializes the controller class.
      */
@@ -211,7 +215,7 @@ public class AddDeductionController implements Initializable {
             txtField04.requestFocus();
         }
     }
-   
+
     private void txtField_KeyPressed(KeyEvent event){
         TextField txtField = (TextField)event.getSource();
         int lnIndex = Integer.parseInt(((TextField)event.getSource()).getId().substring(8,10));
@@ -235,7 +239,7 @@ public class AddDeductionController implements Initializable {
                             double lnOldAmt = Double.parseDouble(oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID")).toString());
 
                             if (total_alloc - lnOldAmt + Double.valueOf(lsValue) > lnIncAmt){
-                                MsgBox.showOk("The specified amount will exceed the deduction allocation.");
+                                ShowMessageFX.Warning(getStage(), "The specified amount will exceed the deduction allocation.", "Warning", null);
                                 
                                 txtField.setText(String.valueOf(lastValue));
                                 txtField04.requestFocus();
@@ -249,12 +253,13 @@ public class AddDeductionController implements Initializable {
                            double lnOldpercent = Double.parseDouble(oTrans.getDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID")).toString());
 
                             if(lnIncAmt <= 0){
-                                 MsgBox.showOk("Please specify deduction amount value!");
+                                ShowMessageFX.Warning(getStage(), "Please specify deduction amount value!", "Warning", null);
+                                
                                 txtField.setText(String.valueOf(lastValue));
                                 txtField.requestFocus();
                             } else{
                                  if (lastpercValue - lnOldpercent + Double.valueOf(lsValue) > 100){
-                                    MsgBox.showOk("The specified percentage will exceed the deduction allocation.");
+                                    ShowMessageFX.Warning(getStage(), "The specified percentage will exceed the deduction allocation.", "Warning", null);
 
                                     txtField.setText(String.valueOf(lastValue));
                                     txtField04.requestFocus();
@@ -333,7 +338,7 @@ public class AddDeductionController implements Initializable {
                 pnIndex = lnIndex;
             } 
         } catch (SQLException e) {
-            MsgBox.showOk(e.getMessage());
+            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
         }
     };
     
@@ -402,7 +407,7 @@ public class AddDeductionController implements Initializable {
             tblemployee.getSelectionModel().select(pnRow - 1);
         } catch (SQLException ex) {
             ex.printStackTrace();
-            MsgBox.showOk(ex.getMessage()); 
+            ShowMessageFX.Warning(getStage(),ex.getMessage(), "Warning", null);
             System.exit(1);
         }   
     }
@@ -415,9 +420,9 @@ public class AddDeductionController implements Initializable {
                     {
                             if (oTrans.removeDeduction(tbl_row)){
                                 CommonUtils.closeStage(btnDelEmp);
-                                MsgBox.showOk("Deduction succesfully remove ");
+                                ShowMessageFX.Warning(getStage(),"Deduction succesfully remove ", "Warning", null);
                             }else{
-                                MsgBox.showOk(oTrans.getMessage());
+                                ShowMessageFX.Warning(oTrans.getMessage(),"Warning", null);
                             }
                        
                     }
@@ -426,7 +431,7 @@ public class AddDeductionController implements Initializable {
                     if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure you want to reset all deductions?") == true){  
                         
                         oTrans.resetDeductionEmployeeAllocation(tbl_row);
-                        MsgBox.showOk("Allocation reset successful.");
+                        ShowMessageFX.Warning(getStage(), "Allocation reset successful.", "Warning", null);
                         loadEmployee();
                         getSelectedItems();
                        
@@ -489,7 +494,8 @@ public class AddDeductionController implements Initializable {
         }   
         catch (SQLException ex) {
             ex.printStackTrace();
-            MsgBox.showOk(ex.getMessage()); 
+            ShowMessageFX.Warning(getStage(), ex.getMessage(), "Warning", null);
+ 
         }
     }
     

@@ -21,6 +21,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.rmj.appdriver.GRider;
 import org.rmj.appdriver.agent.MsgBox;
@@ -265,6 +266,11 @@ public class CashCountController implements Initializable , ScreenInterface{
         oTrans.setListener(listener);
         oTrans.setWithUI(true);
     }   
+
+       private Stage getStage(){
+	return (Stage) txtField01.getScene().getWindow();
+    }
+
     @Override
     public void setGRider(GRider foValue) {
         oApp = foValue;
@@ -300,6 +306,7 @@ public class CashCountController implements Initializable , ScreenInterface{
         }
         return null;
     }
+
    private void cmdButton_Click(ActionEvent event) {
         String lsButton = ((Button)event.getSource()).getId();
         System.out.println(lsButton);
@@ -312,22 +319,22 @@ public class CashCountController implements Initializable , ScreenInterface{
                         } else if(oTrans.SearchTransaction(txtSeeks39.getText(), false)){
                             loadCasCount();
                         }else 
-                            MsgBox.showOk(oTrans.getMessage());
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                     break;
                     
                 case "btnApproved":
                     if (oTrans.CloseTransaction()){
-                            MsgBox.showOk("Transaction successfully approved.");
+                            ShowMessageFX.Warning(getStage(), "Transaction successfully approved.","Warning", null);
                             clearFields();
                         } else 
-                            MsgBox.showOk(oTrans.getMessage());
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                     break;
                 case "btnDisapproved":
                     if (oTrans.CancelTransaction()){
-                            MsgBox.showOk("Transaction successfully disapproved.");
+                            ShowMessageFX.Warning(getStage(),"Transaction successfully disapproved.", "Warning", null);
                             clearFields();
                         } else 
-                            MsgBox.showOk(oTrans.getMessage());
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                     break;
                
                 case "btnClose":
@@ -340,7 +347,7 @@ public class CashCountController implements Initializable , ScreenInterface{
             
         } catch (SQLException e) {
             e.printStackTrace();
-            MsgBox.showOk(e.getMessage());
+            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
         }
     } 
    private void txtField_KeyPressed(KeyEvent event){
@@ -355,13 +362,13 @@ public class CashCountController implements Initializable , ScreenInterface{
                         if (oTrans.SearchTransaction(txtSeeks38.getText(), true)){
                             loadCasCount();
                         } else 
-                            MsgBox.showOk(oTrans.getMessage());
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                         break;
                     case 39: /*Search*/
                         if (oTrans.SearchTransaction(txtSeeks39.getText(), false)){
                             loadCasCount();
                         } else 
-                            MsgBox.showOk(oTrans.getMessage());
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                         break;
                 }   
                 break;
@@ -371,13 +378,13 @@ public class CashCountController implements Initializable , ScreenInterface{
                         if (oTrans.SearchTransaction(txtSeeks38.getText(), true)){
                             loadCasCount();
                         } else 
-                            MsgBox.showOk(oTrans.getMessage());
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                         break;
                     case 39: /*Search*/
                         if (oTrans.SearchTransaction(txtSeeks39.getText(), false)){
                             loadCasCount();
                         } else 
-                            MsgBox.showOk(oTrans.getMessage());
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                         break;
                 }   
                 break;
@@ -387,7 +394,7 @@ public class CashCountController implements Initializable , ScreenInterface{
                 CommonUtils.SetPreviousFocus(txtField);break;
         } 
         }catch(SQLException e){
-                MsgBox.showOk(e.getMessage());
+                ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
         }
         
     }
@@ -514,7 +521,7 @@ public class CashCountController implements Initializable , ScreenInterface{
             computeTotalCoins();
             computeGrandTotal();
         } catch (SQLException e) {
-            MsgBox.showOk(e.getMessage());
+            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
         }
     }
     private void computePeso(TextField txtQty, Label value, TextField txtTotal){
@@ -545,7 +552,7 @@ public class CashCountController implements Initializable , ScreenInterface{
            
         lblPesoTotal.setText("₱ " + priceWithDecimal(subtotal));
         }catch(NumberFormatException e){
-//            MsgBox.showOk(e.getMessage());
+//            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
             e.printStackTrace();
         }
     }
@@ -564,7 +571,7 @@ public class CashCountController implements Initializable , ScreenInterface{
            
         lblCoinTotal.setText("₱ " + priceWithDecimal(subtotal));
         }catch(NumberFormatException e){
-//            MsgBox.showOk(e.getMessage());
+//            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
             e.printStackTrace();
         }
     }
@@ -577,7 +584,7 @@ public class CashCountController implements Initializable , ScreenInterface{
            
             lblGrandTotal.setText("₱ " + priceWithDecimal(total));
         }catch(NumberFormatException e){
-//            MsgBox.showOk(e.getMessage());
+//            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
             e.printStackTrace();
         }
     }
