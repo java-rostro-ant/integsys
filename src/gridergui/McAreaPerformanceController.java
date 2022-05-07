@@ -28,6 +28,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.rmj.appdriver.GRider;
 import org.rmj.appdriver.StringUtil;
@@ -179,7 +180,9 @@ public class McAreaPerformanceController implements Initializable , ScreenInterf
         
         pbLoaded = true;
     }    
-
+    private Stage getStage(){
+	return (Stage) txtField01.getScene().getWindow();
+    }
     @Override
     public void setGRider(GRider foValue) {
          oApp = foValue;
@@ -196,10 +199,10 @@ public class McAreaPerformanceController implements Initializable , ScreenInterf
                                 loadRecord();
                                 pnEditMode = oTrans.getEditMode();
                             }else {
-                                MsgBox.showOk(oTrans.getMessage());
+                                ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                             }
                         } catch (SQLException e) {
-                                MsgBox.showOk(e.getMessage());
+                                ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
                         }
                     }
                     break;
@@ -211,9 +214,9 @@ public class McAreaPerformanceController implements Initializable , ScreenInterf
                                 loadRecord();
                                 pnEditMode = oTrans.getEditMode();
                                 } else 
-                                    MsgBox.showOk(oTrans.getMessage());
+                                    ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                             } catch (SQLException e) {
-                                MsgBox.showOk(e.getMessage());
+                                ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
                             }
                        
                     break;
@@ -222,10 +225,10 @@ public class McAreaPerformanceController implements Initializable , ScreenInterf
                         try {
                             if (oTrans.SaveRecord()){
                                 clearFields();
-                                MsgBox.showOk("Record Save Successfully.");
+                                ShowMessageFX.Warning(getStage(), "Record Save Successfully.","Warning", null);
                                 pnEditMode = EditMode.UNKNOWN;
                             }else{
-                                 MsgBox.showOk(oTrans.getMessage());
+                                 ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                             }
                         } catch (SQLException ex) {
                             Logger.getLogger(McBranchPerformanceController.class.getName()).log(Level.SEVERE, null, ex);
@@ -240,10 +243,10 @@ public class McAreaPerformanceController implements Initializable , ScreenInterf
                                 loadRecord();
                                 pnEditMode = oTrans.getEditMode();
                             } else {
-                                MsgBox.showOk(oTrans.getMessage());
+                                ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                             }
                         } catch (SQLException e) {
-                                MsgBox.showOk(e.getMessage());
+                                ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
                         }
                     }
                     break;
@@ -268,7 +271,7 @@ public class McAreaPerformanceController implements Initializable , ScreenInterf
             initButton(pnEditMode);
 //        } catch (SQLException e) {
 //            e.printStackTrace();
-//            MsgBox.showOk(e.getMessage());
+//            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
 //        }
     } 
     private void initButton(int fnValue){
@@ -372,7 +375,7 @@ public class McAreaPerformanceController implements Initializable , ScreenInterf
             txtSeeks07.setText(oTrans.getMaster(2).toString());
             txtSeeks08.setText(oTrans.getMaster(12).toString());
         } catch (SQLException e) {
-            MsgBox.showOk(e.getMessage());
+            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
         }
     }
     
@@ -388,7 +391,7 @@ public class McAreaPerformanceController implements Initializable , ScreenInterf
                             if (oTrans.searchArea(txtField01.getText(), false)){
                                 pnEditMode = oTrans.getEditMode();
                             } else {
-                                MsgBox.showOk(oTrans.getMessage());
+                                ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                             }
                         } catch (SQLException ex) {
                             Logger.getLogger(McBranchPerformanceController.class.getName()).log(Level.SEVERE, null, ex);
@@ -400,7 +403,7 @@ public class McAreaPerformanceController implements Initializable , ScreenInterf
                                 loadRecord();
                                 pnEditMode = oTrans.getEditMode();
                             } else {
-                                MsgBox.showOk(oTrans.getMessage());
+                                ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                             }
                         } catch (SQLException ex) {
                             Logger.getLogger(McBranchPerformanceController.class.getName()).log(Level.SEVERE, null, ex);
@@ -413,7 +416,7 @@ public class McAreaPerformanceController implements Initializable , ScreenInterf
                                 loadRecord();
                                 pnEditMode = oTrans.getEditMode();
                             } else {
-                                MsgBox.showOk(oTrans.getMessage());
+                                ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                             }
                         } catch (SQLException ex) {
                             Logger.getLogger(McBranchPerformanceController.class.getName()).log(Level.SEVERE, null, ex);
@@ -473,7 +476,7 @@ public class McAreaPerformanceController implements Initializable , ScreenInterf
                             break;
                     }
             } catch (SQLException e) {
-                MsgBox.showOk(e.getMessage());
+                ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
             }
             
         } else{ //Focus

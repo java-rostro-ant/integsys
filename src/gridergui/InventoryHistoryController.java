@@ -38,10 +38,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.rmj.appdriver.GRider;
 import org.rmj.appdriver.agent.MsgBox;
 import org.rmj.appdriver.agentfx.CommonUtils;
+import org.rmj.appdriver.agentfx.ShowMessageFX;
 import org.rmj.appdriver.constants.EditMode;
 import org.rmj.fund.manager.base.CashCount;
 import org.rmj.fund.manager.base.InventoryCount;
@@ -117,6 +119,9 @@ public class InventoryHistoryController  implements Initializable , ScreenInterf
     @FXML
     private TextField txtField14;
 
+    private Stage getStage(){
+	return (Stage) txtField01.getScene().getWindow();
+    }
     /**
      * Initializes the controller class.
      */
@@ -151,7 +156,8 @@ public class InventoryHistoryController  implements Initializable , ScreenInterf
             oTrans.setWithUI(true);
             pbLoaded = true;
     } 
-    
+
+
     @Override
     public void setGRider(GRider foValue) {
         oApp = foValue;
@@ -181,7 +187,7 @@ public class InventoryHistoryController  implements Initializable , ScreenInterf
                             loadMaster();
                             loadDetail();
                         }else{
-                            MsgBox.showOk(oTrans.getMessage());
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                             clearFields();
                         }
                     break;
@@ -210,7 +216,7 @@ public class InventoryHistoryController  implements Initializable , ScreenInterf
                             loadMaster();
                             loadDetail();
                         } else 
-                            MsgBox.showOk(oTrans.getMessage());
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                             clearFields();
                         break;
                     case 39: /*Search*/
@@ -219,7 +225,7 @@ public class InventoryHistoryController  implements Initializable , ScreenInterf
                             loadMaster();
                             loadDetail();
                         } else 
-                            MsgBox.showOk(oTrans.getMessage());
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                             clearFields();
                         break;
                 }   
@@ -232,7 +238,7 @@ public class InventoryHistoryController  implements Initializable , ScreenInterf
                             loadMaster();
                             loadDetail();
                         } else 
-                            MsgBox.showOk(oTrans.getMessage());
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                         break;
                     case 39: /*Search*/
                         if (oTrans.SearchTransaction(txtSeeks39.getText(), false)){
@@ -240,7 +246,7 @@ public class InventoryHistoryController  implements Initializable , ScreenInterf
                             loadMaster();
                             loadDetail();
                         } else 
-                            MsgBox.showOk(oTrans.getMessage());
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                         break;
                 }   
                 break;
@@ -250,7 +256,7 @@ public class InventoryHistoryController  implements Initializable , ScreenInterf
                 CommonUtils.SetPreviousFocus(txtField);break;
             }    
         }catch(SQLException e){
-                MsgBox.showOk(e.getMessage());
+                ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
         }
     }
     
@@ -359,7 +365,7 @@ public class InventoryHistoryController  implements Initializable , ScreenInterf
             }   
             catch (SQLException ex) {
                 ex.printStackTrace();
-                MsgBox.showOk(ex.getMessage()); 
+                ShowMessageFX.Warning(getStage(),ex.getMessage(), "Warning", null);
             }
     }
     
