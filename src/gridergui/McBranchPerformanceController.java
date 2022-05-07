@@ -104,7 +104,10 @@ public class McBranchPerformanceController implements Initializable , ScreenInte
     @FXML
     private Label lblHeader;
     private FXMLLoader fxmlLoader;
-   
+    private Stage getStage(){
+	return (Stage) txtField01.getScene().getWindow();
+    }
+
 
     /**
      * Initializes the controller class.
@@ -203,10 +206,10 @@ public class McBranchPerformanceController implements Initializable , ScreenInte
                                 loadRecord();
                                 pnEditMode = oTrans.getEditMode();
                             }else {
-                                MsgBox.showOk(oTrans.getMessage());
+                                ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                             }
                         } catch (SQLException e) {
-                                MsgBox.showOk(e.getMessage());
+                                ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
                         }
                     }
                     break;
@@ -218,9 +221,9 @@ public class McBranchPerformanceController implements Initializable , ScreenInte
                                 loadRecord();
                                 pnEditMode = oTrans.getEditMode();
                                 } else 
-                                    MsgBox.showOk(oTrans.getMessage());
+                                    ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                             } catch (SQLException e) {
-                                MsgBox.showOk(e.getMessage());
+                                ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
                             }
                        
                     break;
@@ -229,10 +232,10 @@ public class McBranchPerformanceController implements Initializable , ScreenInte
                         try {
                             if (oTrans.SaveRecord()){
                                 clearFields();
-                                MsgBox.showOk("Record Save Successfully.");
+                                ShowMessageFX.Warning(getStage(), "Record Save Successfully.","Warning", null);
                                 pnEditMode = EditMode.UNKNOWN;
                             }else{
-                                 MsgBox.showOk(oTrans.getMessage());
+                                 ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                             }
                         } catch (SQLException ex) {
                             Logger.getLogger(McBranchPerformanceController.class.getName()).log(Level.SEVERE, null, ex);
@@ -247,10 +250,10 @@ public class McBranchPerformanceController implements Initializable , ScreenInte
                                 loadRecord();
                                 pnEditMode = oTrans.getEditMode();
                             } else {
-                                MsgBox.showOk(oTrans.getMessage());
+                                ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                             }
                         } catch (SQLException e) {
-                                MsgBox.showOk(e.getMessage());
+                                ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
                         }
                     }
                     break;
@@ -285,7 +288,7 @@ public class McBranchPerformanceController implements Initializable , ScreenInte
             initButton(pnEditMode);
 //        } catch (SQLException e) {
 //            e.printStackTrace();
-//            MsgBox.showOk(e.getMessage());
+//            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
 //        }
     } 
     private void initButton(int fnValue){
@@ -389,7 +392,7 @@ public class McBranchPerformanceController implements Initializable , ScreenInte
             txtSeeks07.setText(oTrans.getMaster(2).toString());
             txtSeeks08.setText(oTrans.getMaster(12).toString());
         } catch (SQLException e) {
-            MsgBox.showOk(e.getMessage());
+            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
         }
     }
     
@@ -405,7 +408,7 @@ public class McBranchPerformanceController implements Initializable , ScreenInte
                             if (oTrans.searchBranch(txtField01.getText(), false)){
                                 pnEditMode = oTrans.getEditMode();
                             } else {
-                                MsgBox.showOk(oTrans.getMessage());
+                                ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                             }
                         } catch (SQLException ex) {
                             Logger.getLogger(McBranchPerformanceController.class.getName()).log(Level.SEVERE, null, ex);
@@ -417,7 +420,7 @@ public class McBranchPerformanceController implements Initializable , ScreenInte
                                 loadRecord();
                                 pnEditMode = oTrans.getEditMode();
                             } else {
-                                MsgBox.showOk(oTrans.getMessage());
+                                ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                             }
                         } catch (SQLException ex) {
                             Logger.getLogger(McBranchPerformanceController.class.getName()).log(Level.SEVERE, null, ex);
@@ -430,7 +433,7 @@ public class McBranchPerformanceController implements Initializable , ScreenInte
                                 loadRecord();
                                 pnEditMode = oTrans.getEditMode();
                             } else {
-                                MsgBox.showOk(oTrans.getMessage());
+                                ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                             }
                         } catch (SQLException ex) {
                             Logger.getLogger(McBranchPerformanceController.class.getName()).log(Level.SEVERE, null, ex);
@@ -490,7 +493,7 @@ public class McBranchPerformanceController implements Initializable , ScreenInte
                             break;
                     }
             } catch (SQLException e) {
-                MsgBox.showOk(e.getMessage());
+                ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
             }
             
         } else{ //Focus

@@ -153,6 +153,10 @@ public class IncentiveHistoryController implements Initializable, ScreenInterfac
     public void setTransaction(String fsValue){
         transNox = fsValue;
     }
+    private Stage getStage(){
+	return (Stage) txtField01.getScene().getWindow();
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {     
         oListener = new LMasDetTrans() {
@@ -176,7 +180,7 @@ public class IncentiveHistoryController implements Initializable, ScreenInterfac
                         try {
                             loadIncentives();
                         } catch (SQLException ex) {
-                            MsgBox.showOk(ex.getMessage());
+                            ShowMessageFX.Warning(getStage(),ex.getMessage(), "Warning", null);
                         }
                     }
                         break;
@@ -214,7 +218,7 @@ public class IncentiveHistoryController implements Initializable, ScreenInterfac
 //                    pnEditMode = oTrans.getEditMode();
 //                    initButton(pnEditMode);
 //                } else
-//                    MsgBox.showOk(oTrans.getMessage());
+//                    ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
 //            } catch (SQLException ex) {
 //                Logger.getLogger(IncentiveConfirmationController.class.getName()).log(Level.SEVERE, null, ex);
 //            }
@@ -229,7 +233,7 @@ public class IncentiveHistoryController implements Initializable, ScreenInterfac
                     pnEditMode = EditMode.READY;
                     initButton(pnEditMode);
                 } else
-                    MsgBox.showOk(oTrans.getMessage());
+                    ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
             }
         } catch (SQLException ex) {
             Logger.getLogger(EmployeeIncentivesController.class.getName()).log(Level.SEVERE, null, ex);
@@ -267,14 +271,14 @@ public class IncentiveHistoryController implements Initializable, ScreenInterfac
                     } else if(oTrans.SearchTransaction(txtSeeks06.getText(), false)){
                         loadIncentives();
                     }else 
-                        MsgBox.showOk(oTrans.getMessage());
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                     break;
                 case "btnDisapproved":
                     if (oTrans.CancelTransaction()){
-                            MsgBox.showOk("Transaction success disapproved.");
+                            ShowMessageFX.Warning(getStage(),"Transaction successfully disapproved.", "Warning", null);
                             clearFields();
                         } else 
-                            MsgBox.showOk(oTrans.getMessage());
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                     break;
                
                
@@ -289,7 +293,7 @@ public class IncentiveHistoryController implements Initializable, ScreenInterfac
             initButton(pnEditMode);
         } catch (SQLException e) {
             e.printStackTrace();
-            MsgBox.showOk(e.getMessage());
+            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
         }
     } 
      private void txtField_KeyPressed(KeyEvent event){
@@ -306,19 +310,19 @@ public class IncentiveHistoryController implements Initializable, ScreenInterfac
                                 loadIncentives();
                                 pnEditMode = oTrans.getEditMode();
                             } else 
-                                MsgBox.showOk(oTrans.getMessage());
+                                ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                         break;
                     case 6: /*Search*/
                         if (oTrans.SearchTransaction(txtSeeks06.getText(), false)){
                                 loadIncentives();
                                 pnEditMode = oTrans.getEditMode();
                             } else 
-                                MsgBox.showOk(oTrans.getMessage());
+                                ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                         break;
                 }
         } 
         }catch(SQLException e){
-                MsgBox.showOk(e.getMessage());
+                ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
         }
         switch (event.getCode()){
         case ENTER:
@@ -637,7 +641,7 @@ public class IncentiveHistoryController implements Initializable, ScreenInterfac
             
         } catch (SQLException ex) {
             ex.printStackTrace();
-            MsgBox.showOk(ex.getMessage());
+            ShowMessageFX.Warning(getStage(),ex.getMessage(), "Warning", null);
         }
     }
     private void loadDeductionDetail(int fnRow) throws SQLException{
@@ -684,7 +688,7 @@ public class IncentiveHistoryController implements Initializable, ScreenInterfac
             loadIncentives();
         } catch (IOException e) {
             e.printStackTrace();
-            MsgBox.showOk(e.getMessage());
+            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
             System.exit(1);
         }
     }
@@ -733,7 +737,7 @@ public class IncentiveHistoryController implements Initializable, ScreenInterfac
             loadIncentives();
         } catch (IOException e) {
             e.printStackTrace();
-            MsgBox.showOk(e.getMessage());
+            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
             System.exit(1);
         }
     }

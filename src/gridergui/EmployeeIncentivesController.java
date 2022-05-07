@@ -164,7 +164,9 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
     public void setState(boolean fsValue){
         state = fsValue;
     }
-    
+    private Stage getStage(){
+	return (Stage) txtField01.getScene().getWindow();
+    }
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {  
@@ -258,9 +260,9 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                         pnEditMode = oTrans.getEditMode(); 
                         initButton(pnEditMode);
                       } else 
-                        MsgBox.showOk(oTrans.getMessage());
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                 } else
-                    MsgBox.showOk(oTrans.getMessage());
+                    ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
             }
         } catch (SQLException ex) {
             Logger.getLogger(EmployeeIncentivesController.class.getName()).log(Level.SEVERE, null, ex);
@@ -294,7 +296,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                                 loadIncentives();
                                 pnEditMode = EditMode.READY;
                             }else
-                                MsgBox.showOk(oTrans.getMessage());
+                                ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                             break;
                         case 22:/*search branch*/
                             if (oTrans.SearchTransaction(txtSeeks22.getText(), false)){
@@ -302,12 +304,12 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                                 loadIncentives();
                                 pnEditMode = EditMode.READY;
                             }else
-                                MsgBox.showOk(oTrans.getMessage());
+                                ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                             break;
                         case 3: /*search department*/
                             if(!oTrans.searchDepartment(lsValue, false)) {
                                 txtField.setText((String) oTrans.getMaster("xDeptName"));
-                                MsgBox.showOk("Unable to update department.");
+                                ShowMessageFX.Warning(getStage(), "Unable to update department.", "Warning", null);
                             } 
                                 
                             break;
@@ -315,7 +317,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
             }      
         } catch (SQLException e) {
             e.printStackTrace();
-            MsgBox.showOk(e.getMessage());
+            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
         }
         
         switch (event.getCode()){
@@ -416,7 +418,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            MsgBox.showOk(e.getMessage());
+            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
         }
     }
     private void loadDetail(){
@@ -434,7 +436,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            MsgBox.showOk(e.getMessage());
+            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
         }
     }
     
@@ -453,7 +455,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            MsgBox.showOk(e.getMessage());
+            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
         }
     }
 
@@ -476,7 +478,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
 
                 pnIndex = lnIndex;
             } catch (SQLException e) {
-                MsgBox.showOk(e.getMessage());
+                ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
                 System.exit(1);
             }
     };
@@ -509,7 +511,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
 
             pnIndex = lnIndex;
         } catch (SQLException e) {
-            MsgBox.showOk(e.getMessage());
+            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
             System.exit(1);
         }
     };
@@ -591,7 +593,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
             loadIncentives();
         } catch (IOException e) {
             e.printStackTrace();
-            MsgBox.showOk(e.getMessage());
+            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
             System.exit(1);
         }
     }
@@ -639,7 +641,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
             loadIncentives();
         } catch (IOException e) {
             e.printStackTrace();
-            MsgBox.showOk(e.getMessage());
+            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
             System.exit(1);
         }
     }
@@ -653,7 +655,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                         if (oTrans.removeDetail(pnEmp+ 1))
                             loadDetail();
                         else
-                            MsgBox.showOk(oTrans.getMessage());
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                     }
                   
                     break;
@@ -663,7 +665,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                             loadMaster();
                             pnEditMode = EditMode.ADDNEW;
                         } else
-                            MsgBox.showOk(oTrans.getMessage());
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                     break;
                 case "btnAddIncentives":
                     if (oTrans.searchIncentive("", false)){
@@ -691,7 +693,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                 case "btnSave":
                         if (oTrans.SaveTransaction()){
                             
-                            MsgBox.showOk("Transaction save successfully.");
+                            ShowMessageFX.Warning(getStage(), "Transaction save successfully.", "Warning", null);
                             if(state){
                                onsuccessUpdate();
                             }else{
@@ -702,7 +704,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                                 pnEditMode = EditMode.UNKNOWN;
                             }
                         } else {
-                            MsgBox.showOk(oTrans.getMessage());
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                         }
                     break;
                  case "btnBrowse":
@@ -714,19 +716,19 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                             loadMaster();
                             loadIncentives();
                         }else 
-                            MsgBox.showOk(oTrans.getMessage());
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
 //                         if (oTrans.SearchTransaction(txtSeeks21.getText(), false)){
 //                            loadMaster();
 //                            loadIncentives();
 //                            pnEditMode = EditMode.READY;
 //                        }else
-//                            MsgBox.showOk(oTrans.getMessage());
+//                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                         break;
                  case "btnUpdate":  
                         if (oTrans.UpdateTransaction()){
                             pnEditMode = oTrans.getEditMode(); 
                           } else 
-                            MsgBox.showOk(oTrans.getMessage());
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                     break;
                 case "btnCancel":
                         if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true){  
@@ -745,7 +747,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
             initButton(pnEditMode);
         } catch (SQLException e) {
                     e.printStackTrace();
-                    MsgBox.showOk(e.getMessage());
+                    ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
                 } 
     }
     private void loadMaster() throws SQLException {
@@ -864,7 +866,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
             
         } catch (SQLException ex) {
             ex.printStackTrace();
-            MsgBox.showOk(ex.getMessage());
+            ShowMessageFX.Warning(getStage(),ex.getMessage(), "Warning", null);
         }
     }
     

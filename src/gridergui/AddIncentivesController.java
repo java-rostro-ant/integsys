@@ -28,6 +28,7 @@ import static javafx.scene.input.KeyCode.ENTER;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import org.rmj.appdriver.GRider;
 import org.rmj.appdriver.StringUtil;
 import org.rmj.appdriver.agent.MsgBox;
@@ -136,6 +137,10 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
     
     public void setState(boolean fsValue){
         state = fsValue;
+    }
+
+    private Stage getStage(){
+	return (Stage) txtField01.getScene().getWindow();
     }
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -256,13 +261,13 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                         case 11:
                             double lnOldpercent = Double.parseDouble(oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID")).toString());
                             if(lnIncAmt <= 0){
-                                 MsgBox.showOk("Please specify incentive amount value!");
+                                 ShowMessageFX.Warning(getStage(), "Please specify incentive amount value!", "Warning", null);
                                 
                                 txtField.setText(String.valueOf(lastValue));
                                 txtField07.requestFocus();
                             }else{
                                  if (lastpercValue - lnOldpercent + Double.valueOf(lsValue) > 100){
-                                    MsgBox.showOk("The specified percentage will exceed the incentive allocation.");
+                                    ShowMessageFX.Warning(getStage(),"The specified percentage will exceed the incentive allocation.", "Warning", null);
                                 
                                     txtField.setText(String.valueOf(lastValue));
                                     txtField.requestFocus();
@@ -276,7 +281,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                             double lnOldAmt = Double.valueOf(String.valueOf(oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"))));
 
                             if (total_alloc - lnOldAmt + Double.valueOf(lsValue) > lnIncAmt){
-                                MsgBox.showOk("The specified amount will exceed the incentive allocation.");
+                                ShowMessageFX.Warning(getStage(),"The specified amount will exceed the incentive allocation.", "Warning", null);
                             } else{
                                 oTrans.setIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"), Double.valueOf(lsValue));
 
@@ -335,7 +340,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
 
                 pnIndex = lnIndex;
             } catch (SQLException e) {
-                MsgBox.showOk(e.getMessage());
+                ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
                 System.exit(1);
             }
     };
@@ -415,7 +420,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                 pnIndex = lnIndex;
             } 
         } catch (SQLException e) {
-            MsgBox.showOk(e.getMessage());
+            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
         }
     };
     
@@ -494,7 +499,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
             tblemployee.getSelectionModel().select(pnRow - 1);
         } catch (SQLException ex) {
             ex.printStackTrace();
-            MsgBox.showOk(ex.getMessage()); 
+            ShowMessageFX.Warning(getStage(),ex.getMessage(), "Warning", null); 
             System.exit(1);
         }   
     }
@@ -506,16 +511,16 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                 case "btnDelEmp":
                     if (oTrans.removeIncentive(psCode)){
                         CommonUtils.closeStage(btnDelEmp);
-                        MsgBox.showOk("Incentives removed succesfully.");
+                        ShowMessageFX.Warning(getStage(), "Incentives removed succesfully.", "Warning", null);
                     }else{
-                        MsgBox.showOk(oTrans.getMessage());
+                        ShowMessageFX.Warning(oTrans.getMessage(),"Warning", null);
                     }
                     break;
                     
                 case "btnReset":
                     if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Reset incentive allocation?") == true){  
                         oTrans.resetIncentiveEmployeeAllocation(psCode);
-                        MsgBox.showOk("Allocation reset successful.");
+                        ShowMessageFX.Warning(getStage(),"Allocation reset successful.","Warning", null);
                         loadEmployee();
                         getSelectedItem();
                     }

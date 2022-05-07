@@ -24,6 +24,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.rmj.appdriver.GRider;
 import org.rmj.appdriver.agent.MsgBox;
@@ -87,6 +88,10 @@ public class EmployeeBankInfoController implements Initializable , ScreenInterfa
     private HBox hbButtons;
     @FXML
     private Label lblHeader;
+
+    private Stage getStage(){
+	return (Stage) txtField1.getScene().getWindow();
+    }
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         oListener = new LMasDetTrans() {
@@ -114,7 +119,7 @@ public class EmployeeBankInfoController implements Initializable , ScreenInterfa
                                lblStatus.setVisible(false); 
                             }
                         } catch (SQLException ex) {
-                             MsgBox.showOk(oTrans.getMessage());
+                             ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                         }
                         break;
                     case 8: //xBankName
@@ -165,7 +170,7 @@ public class EmployeeBankInfoController implements Initializable , ScreenInterfa
     public void setGRider(GRider foValue) {
         oApp = foValue;
     }
-    
+
     private void cmdButton_Click(ActionEvent event) {
         String lsButton = ((Button)event.getSource()).getId();
         try {
@@ -175,40 +180,40 @@ public class EmployeeBankInfoController implements Initializable , ScreenInterfa
                             loadRecord();
                             pnEditMode = EditMode.READY;
                         } else 
-                            MsgBox.showOk(oTrans.getMessage());
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                     break;
                 case "btnNew": //create new transaction
                         if (oTrans.NewRecord()){
                             if (!oTrans.searchBank("Banco De Oro", false))
-                                    MsgBox.showOk(oTrans.getMessage());
+                                    ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                             loadRecord();
                             pnEditMode = oTrans.getEditMode();
                         } else 
-                            MsgBox.showOk(oTrans.getMessage());
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                     break;
                  case "btnSave":
                         if (oTrans.SaveRecord()){
                             clearFields();
                             pnEditMode = EditMode.UNKNOWN;
                         } else 
-                            MsgBox.showOk(oTrans.getMessage());
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                     break;
                 case "btnUpdate":
                         if (oTrans.UpdateRecord()){
                             pnEditMode = oTrans.getEditMode();
                         } else 
-                            MsgBox.showOk(oTrans.getMessage());
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                     break;
                 case "btnSearch":
                         switch (pnIndex){
                             case 1:
                                 if (!oTrans.searchEmployee(txtField1.getText(), false)) 
-                                    MsgBox.showOk(oTrans.getMessage());
+                                    ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
 
                                 break;
                             case 2:
                                 if (!oTrans.searchBank(txtField2.getText(), false))
-                                    MsgBox.showOk(oTrans.getMessage());
+                                    ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
 
                                 break;
                         }
@@ -223,17 +228,17 @@ public class EmployeeBankInfoController implements Initializable , ScreenInterfa
                     break;
                 case "btnActivate":
                     if (oTrans.ActivateRecord()){
-                        MsgBox.showOk("Account successfully activated.");
+                        ShowMessageFX.Warning(getStage(),"Account successfully activated.", "Warning", null);
                         clearFields();
                     }else
-                        MsgBox.showOk(oTrans.getMessage());
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                     break;
                 case "btnDeactivate":
                     if (oTrans.DeactivateRecord()){
-                        MsgBox.showOk("Account successfully deactivated.");
+                        ShowMessageFX.Warning(getStage(),"Account successfully deactivated.", "Warning", null);
                         clearFields();
                     }else
-                        MsgBox.showOk(oTrans.getMessage());
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                     break;
 
                 case "btnClose":
@@ -247,7 +252,7 @@ public class EmployeeBankInfoController implements Initializable , ScreenInterfa
             initButton(pnEditMode);
         } catch (SQLException e) {
             e.printStackTrace();
-            MsgBox.showOk(e.getMessage());
+            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
         }
     } 
     private void initButton(int fnValue){
@@ -357,7 +362,7 @@ public class EmployeeBankInfoController implements Initializable , ScreenInterfa
             
             if (!txtField1.isDisabled()) txtField1.requestFocus();
         } catch (SQLException e) {
-            MsgBox.showOk(e.getMessage());
+            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
         }
     }
     
@@ -380,7 +385,7 @@ public class EmployeeBankInfoController implements Initializable , ScreenInterfa
                         break;
                 }
             } catch (SQLException e) {
-                MsgBox.showOk(e.getMessage());
+                ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
             }
             
         } else{ //Focus
@@ -407,7 +412,7 @@ public class EmployeeBankInfoController implements Initializable , ScreenInterfa
                         loadRecord();
                         pnEditMode = EditMode.READY;
                     } else 
-                        MsgBox.showOk(oTrans.getMessage());
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                      break;
                 }   
             case ENTER:
@@ -423,7 +428,7 @@ public class EmployeeBankInfoController implements Initializable , ScreenInterfa
                         loadRecord();
                         pnEditMode = EditMode.READY;
                     } else 
-                        MsgBox.showOk(oTrans.getMessage());
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                      break;
                 }   
             case DOWN:
@@ -432,7 +437,7 @@ public class EmployeeBankInfoController implements Initializable , ScreenInterfa
                 CommonUtils.SetPreviousFocus(txtField);
         } 
         }catch(SQLException e){
-                MsgBox.showOk(e.getMessage());
+                ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
         }
         
     }
