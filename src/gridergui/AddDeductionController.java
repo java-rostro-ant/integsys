@@ -250,7 +250,6 @@ public class AddDeductionController implements Initializable {
 
                             if(lnIncAmt <= 0){
                                  MsgBox.showOk("Please specify deduction amount value!");
-                                
                                 txtField.setText(String.valueOf(lastValue));
                                 txtField.requestFocus();
                             } else{

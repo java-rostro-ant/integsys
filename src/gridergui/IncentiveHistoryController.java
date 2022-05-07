@@ -511,9 +511,9 @@ public class IncentiveHistoryController implements Initializable, ScreenInterfac
                         oTrans.getDetail(lnCtr , "xEmpLevNm").toString(),
                         oTrans.getDetail(lnCtr , "xPositnNm").toString(),
                         oTrans.getDetail(lnCtr , "xSrvcYear").toString(),
-                        priceWithDecimal((Double)(oTrans.getDetail(lnCtr , "nTotalAmt"))),
-                        priceWithDecimal((Double)(oTrans.getDetail(lnCtr , "nTotalAmt"))),
-                        priceWithDecimal((Double)(oTrans.getDetail(lnCtr , "nTotalAmt")))));
+                        (CommonUtils.NumberFormat((Number)oTrans.getDetail(lnCtr, "xIncentve"), "#,##0.00")),
+                        (CommonUtils.NumberFormat((Number)oTrans.getDetail(lnCtr, "xDeductnx"), "#,##0.00")),
+                        (CommonUtils.NumberFormat((Number)oTrans.getDetail(lnCtr, "nTotalAmt"), "#,##0.00"))));
                
             }
             initEmployeeGrid();

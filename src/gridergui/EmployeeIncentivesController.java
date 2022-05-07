@@ -428,8 +428,8 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                     oTrans.getDetail(lnCtr, "xEmpLevNm").toString(),
                     oTrans.getDetail(lnCtr, "xPositnNm").toString(),
                     oTrans.getDetail(lnCtr, "xSrvcYear").toString(),
-                    (CommonUtils.NumberFormat((Number)oTrans.getDetail(lnCtr, "nTotalAmt"), "#,##0.00")),
-                    (CommonUtils.NumberFormat((Number)oTrans.getDetail(lnCtr, "nTotalAmt"), "#,##0.00")),
+                    (CommonUtils.NumberFormat((Number)oTrans.getDetail(lnCtr, "xIncentve"), "#,##0.00")),
+                    (CommonUtils.NumberFormat((Number)oTrans.getDetail(lnCtr, "xDeductnx"), "#,##0.00")),
                     (CommonUtils.NumberFormat((Number)oTrans.getDetail(lnCtr, "nTotalAmt"), "#,##0.00"))));
             }
         } catch (SQLException e) {
