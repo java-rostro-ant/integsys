@@ -97,7 +97,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private Menu mnuFiles02;
     @FXML
-    private Menu mnuTransaction11;
+    private Menu mnuTransaction11,mnuTransaction112;
     @FXML
     private Menu mnuTransaction111;
     @FXML
@@ -109,7 +109,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private MenuItem mnuExit;
     @FXML
-    private MenuItem mnuCashCountRequest;
+    private MenuItem mnuCashCountRequest,mnuDepartmentIncentives,mnuDeptIncentivesApproval,mnuDeptIncentivesHistory;
     
     /**
      * Initializes the controller class.
@@ -213,7 +213,14 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return new CashCountController();
             case "CashCountHistory.fxml":
                 return new CashCountHistoryController();
-
+//
+            case "DeptIncentivesApproval.fxml":
+                return new DeptIncentivesApprovalController();
+            case "DeptIncentives.fxml":
+                return new DeptIncentivesController();
+            case "DeptIncentivesHist.fxml":
+                return new DeptIncentivesHistController();
+//
             case "InventoryHistory.fxml":
                 return new InventoryHistoryController();
             case "Reports.fxml":
@@ -305,6 +312,19 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         reportName = "PAYROLL";
         setScene(loadAnimate("Reports.fxml"));
     }
+    @FXML
+    private void mnuDepartmentIncentivesClick(ActionEvent event) {
+        setScene(loadAnimate("DeptIncentives.fxml"));
+    }
+    @FXML
+    private void mnuDeptIncentivesApprovalClick(ActionEvent event) {
+        setScene(loadAnimate("DeptIncentivesApproval.fxml"));
+    }
+    @FXML
+    private void mnuDeptIncentivesHistoryClick(ActionEvent event) {
+        setScene(loadAnimate("DeptIncentivesHist.fxml"));
+    }
+
     private void getTime(){
         Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {            
         Calendar cal = Calendar.getInstance();
