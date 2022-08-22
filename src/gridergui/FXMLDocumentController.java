@@ -109,7 +109,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private MenuItem mnuExit;
     @FXML
-    private MenuItem mnuCashCountRequest,mnuDepartmentIncentives,mnuDeptIncentivesApproval,mnuDeptIncentivesHistory;
+    private MenuItem mnuCashCountRequest,mnuDepartmentIncentives,mnuDeptIncentivesApproval,mnuDeptIncentiveReleasing,mnuDeptIncentivesHistory;
     
     /**
      * Initializes the controller class.
@@ -218,6 +218,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return new DeptIncentivesApprovalController();
             case "DeptIncentives.fxml":
                 return new DeptIncentivesController();
+            case "DeptIncentiveReleasing.fxml":
+                return new DeptIncentiveReleasingController();
             case "DeptIncentivesHist.fxml":
                 return new DeptIncentivesHistController();
 //
@@ -319,6 +321,10 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuDeptIncentivesApprovalClick(ActionEvent event) {
         setScene(loadAnimate("DeptIncentivesApproval.fxml"));
+    }
+    @FXML
+    private void mnuDeptIncentiveReleasingClick(ActionEvent event) {
+        setScene(loadAnimate("DeptIncentiveReleasing.fxml"));
     }
     @FXML
     private void mnuDeptIncentivesHistoryClick(ActionEvent event) {

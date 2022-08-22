@@ -29,7 +29,7 @@
                <top>
                   <AnchorPane prefHeight="25.0" style="-fx-background-color: #515151; -fx-background-radius: 5;" BorderPane.alignment="CENTER">
                      <children>
-                        <Label alignment="CENTER" layoutX="375.0" layoutY="-8.0" prefWidth="896.0" text="DEPARTMENT INCENTIVES HISTORY" textFill="WHITE" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <Label alignment="CENTER" layoutX="375.0" layoutY="-8.0" prefWidth="896.0" text="DEPARTMENT INCENTIVES RELEASING" textFill="WHITE" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <font>
                               <Font name="System Bold" size="13.0" />
                            </font>
@@ -49,6 +49,28 @@
                               <Button fx:id="btnBrowse" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Browse">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="FILE" size="20" />
+                                 </graphic>
+                                 <effect>
+                                    <Blend />
+                                 </effect>
+                                 <HBox.margin>
+                                    <Insets left="3.0" right="3.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button fx:id="btnRelease" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Release">
+                                 <graphic>
+                                    <FontAwesomeIconView fill="#147500" glyphName="CHECK" size="20" />
+                                 </graphic>
+                                 <effect>
+                                    <Blend />
+                                 </effect>
+                                 <HBox.margin>
+                                    <Insets left="3.0" />
+                                 </HBox.margin>
+                              </Button>
+                              <Button fx:id="btnClear" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Clear">
+                                 <graphic>
+                                    <FontAwesomeIconView glyphName="TRASH" size="20" />
                                  </graphic>
                                  <effect>
                                     <Blend />
