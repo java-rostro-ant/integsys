@@ -1,6 +1,7 @@
 package gridergui;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
+import static gridergui.DeptIncentivesHistController.priceWithDecimal;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -87,7 +88,7 @@ public class DeptIncentivesController implements Initializable, ScreenInterface 
     @FXML
     private TableView tblemployee;
     @FXML
-    private TableColumn index01,index02,index03,index04,index05;
+    private TableColumn index01,index02,index03,index04,index05,index06,index07;
     @FXML
     private Label lblTotal;
 
@@ -130,7 +131,7 @@ public class DeptIncentivesController implements Initializable, ScreenInterface 
         btnClose.setOnAction(this::cmdButton_Click);
         btnSave.setOnAction(this::cmdButton_Click);
         btnCancel.setOnAction(this::cmdButton_Click);
-        
+        btnSearch.setOnAction(this::cmdButton_Click);
         
         //initialize class
         oTrans  = new DeptIncentive(oApp, oApp.getBranchCode(), false);
@@ -355,15 +356,17 @@ public class DeptIncentivesController implements Initializable, ScreenInterface 
             if (txtField03.getText() != ""){
                 deptincdata.clear();
                 lnTotal = 0;
-                for (int lnCtr = 1; lnCtr <= oTrans.getItemCount(); lnCtr++){
-                    deptincdata.add(new DeptIncentivesModel(String.valueOf(lnCtr),
-                        oTrans.getDetail(lnCtr, "sEmployID").toString(),
-                        oTrans.getDetail(lnCtr, "xEmployNm").toString(),
-                        oTrans.getDetail(lnCtr, "xPositnNm").toString(),
-                        oTrans.getDetail(lnCtr, "dLastUpdt").toString(),
-                        oTrans.getDetail(lnCtr, "sRemarksx").toString(),
-                        (CommonUtils.NumberFormat((Number)oTrans.getDetail(lnCtr, "sOldAmtxx"), "#,##0.00")),
-                        (CommonUtils.NumberFormat((Number)oTrans.getDetail(lnCtr, "sNewAmtxx"), "#,##0.00"))));
+               for (int lnCtr = 1; lnCtr <= oTrans.getItemCount(); lnCtr++){
+                deptincdata.add(new DeptIncentivesModel(String.valueOf(lnCtr),
+                    oTrans.getDetail(lnCtr, "sEmployID").toString(),
+                    oTrans.getDetail(lnCtr, "xEmployNm").toString(),
+                    oTrans.getDetail(lnCtr, "xPositnNm").toString(),
+                    oTrans.getDetail(lnCtr, "dLastUpdt").toString(),
+                    oTrans.getDetail(lnCtr, "sRemarksx").toString(),
+                    oTrans.getDetail(lnCtr, "xBankName").toString(),
+                    oTrans.getDetail(lnCtr, "xBankAcct").toString(),
+                    priceWithDecimal(Double.valueOf(oTrans.getDetail(lnCtr, "sOldAmtxx").toString())),
+                    priceWithDecimal(Double.valueOf(oTrans.getDetail(lnCtr, "sNewAmtxx").toString()))));
                     lnTotal = lnTotal + Double.parseDouble(oTrans.getDetail(lnCtr, "sNewAmtxx").toString());
                 }
                 
@@ -578,6 +581,24 @@ public class DeptIncentivesController implements Initializable, ScreenInterface 
                             }
                         }
                     break;
+                case "btnSearch":
+                        if (txtField01.getText() != ""){
+                            if(oTrans.searchDepartment(txtField03.getText(), false)) {
+                                txtField03.setText((String) oTrans.getMaster("xDeptName")); 
+                                clearDetail();
+                                loadDetail();
+                                
+
+                               
+                            }else{
+                                txtField03.setText((String) oTrans.getMaster("xDeptName")); 
+                                ShowMessageFX.Warning(getStage(), "Unable to update department.", "Warning", null);
+                            
+                            }
+}
+                            
+                           
+                        break;
             }
             
             initButton(pnEditMode);
@@ -614,7 +635,9 @@ public class DeptIncentivesController implements Initializable, ScreenInterface 
         index02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index03.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index04.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        index05.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 0 0 5;");
+        index05.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
+        index06.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
+        index07.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
 
         
         index01.setCellValueFactory(new PropertyValueFactory<>("DetIndex01"));
@@ -622,6 +645,9 @@ public class DeptIncentivesController implements Initializable, ScreenInterface 
         index03.setCellValueFactory(new PropertyValueFactory<>("DetIndex04"));
         index04.setCellValueFactory(new PropertyValueFactory<>("DetIndex07"));
         index05.setCellValueFactory(new PropertyValueFactory<>("DetIndex08"));
+
+        index06.setCellValueFactory(new PropertyValueFactory<>("DetIndex09"));
+        index07.setCellValueFactory(new PropertyValueFactory<>("DetIndex10"));
 
         tblemployee.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblemployee.lookup("TableHeaderRow");

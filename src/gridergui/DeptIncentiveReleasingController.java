@@ -1,5 +1,7 @@
-
-
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
+ */
 package gridergui;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
@@ -8,16 +10,12 @@ import static gridergui.DeptIncentivesHistController.priceWithDecimal;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.animation.FadeTransition;
-import javafx.beans.property.ReadOnlyBooleanPropertyBase;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,8 +24,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.DateCell;
-import javafx.scene.control.DatePicker;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -37,27 +34,32 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
-import org.rmj.appdriver.GRider;
-import org.rmj.appdriver.agentfx.CommonUtils;
-import org.rmj.appdriver.constants.EditMode;
-import static javafx.scene.input.KeyCode.F3;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import javafx.util.Callback;
+import javafx.stage.Stage;
 import javafx.util.Duration;
-import org.rmj.appdriver.StringUtil;
+import org.rmj.appdriver.GRider;
+import org.rmj.appdriver.agentfx.CommonUtils;
 import org.rmj.appdriver.agentfx.ShowMessageFX;
+import org.rmj.appdriver.constants.EditMode;
+import org.rmj.fund.manager.base.DeptIncentive;
 import org.rmj.fund.manager.base.DeptIncentive;
 import org.rmj.fund.manager.base.LMasDetTrans;
+import org.rmj.fund.manager.parameters.IncentiveBankInfo;
 
-public class DeptIncentivesApprovalController implements Initializable, ScreenInterface {
+/**
+ * FXML Controller class
+ *
+ * @author User
+ */
+public class DeptIncentiveReleasingController implements Initializable, ScreenInterface {
     private final String pxeModuleName = "Department Incentives";
     private double xOffset = 0;
     private double yOffset = 0;
+    private double lnTotal = 0;
     
     private GRider oApp;
     private DeptIncentive oTrans;
@@ -80,7 +82,7 @@ public class DeptIncentivesApprovalController implements Initializable, ScreenIn
     @FXML
     private AnchorPane AnchorMain;
     @FXML
-    private Button btnBrowse,btnApprove,btnDisappr,btnCancel,btnClose;
+    private Button btnBrowse,btnRelease,btnClear,btnClose;
     @FXML
     private TextField txtField01,txtField02,txtField03,txtField04,txtField05;
     @FXML
@@ -90,9 +92,11 @@ public class DeptIncentivesApprovalController implements Initializable, ScreenIn
     @FXML
     private TableView tblemployee;
     @FXML
-    private TableColumn index01,index02,index03,index04,index05;
+    private TableColumn index01,index02,index03,index04,index05,index06,index07;
     @FXML
-    private Label lblStatus,lblTotal;
+    private Label lblStatus;
+    @FXML
+    private Label lblTotal;
     
     public void setTransaction(String fsValue){
         oTransnox = fsValue;
@@ -131,15 +135,13 @@ public class DeptIncentivesApprovalController implements Initializable, ScreenIn
         
   
         btnBrowse.setOnAction(this::cmdButton_Click);
+        btnRelease.setOnAction(this::cmdButton_Click);
+        btnClear.setOnAction(this::cmdButton_Click);
         btnClose.setOnAction(this::cmdButton_Click);
-        btnApprove.setOnAction(this::cmdButton_Click);
-        btnDisappr.setOnAction(this::cmdButton_Click);
-        btnCancel.setOnAction(this::cmdButton_Click);
+     
+      
+        initClass();
         
-        oTrans  = new DeptIncentive(oApp, oApp.getBranchCode(), false);
-        oTrans.setListener(oListener);
-        oTrans.setTranStat(1023);
-        oTrans.setWithUI(true);
      
         txtSearch01.setOnKeyPressed(this::txtField_KeyPressed);
 
@@ -149,7 +151,13 @@ public class DeptIncentivesApprovalController implements Initializable, ScreenIn
         tblemployee.setDisable(true);
             clearFields();
     } 
-        
+    private void initClass(){
+        oTrans  = new DeptIncentive(oApp, oApp.getBranchCode(), false);
+        oTrans.setListener(oListener);
+        oTrans.setTranStat(1023);
+        oTrans.setWithUI(true);
+        pnEditMode = EditMode.READY;
+    }   
     
     private void txtArea_KeyPressed(KeyEvent event){
         if (event.getCode() == ENTER || event.getCode() == DOWN){ 
@@ -179,7 +187,6 @@ public class DeptIncentivesApprovalController implements Initializable, ScreenIn
                         } else {
                             ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                         }
-                         pnEditMode = oTrans.getEditMode();
                         break;
                     }
                 break;
@@ -204,17 +211,11 @@ public class DeptIncentivesApprovalController implements Initializable, ScreenIn
     } 
     
     private void initButton(int fnValue){
-        boolean lbShow = (fnValue == EditMode.READY);
-        btnCancel.setVisible(lbShow);
-        btnDisappr.setVisible(lbShow);
-        btnApprove.setVisible(lbShow);
+        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
+     
 
-        btnBrowse.setManaged(!lbShow);
-        btnApprove.setManaged(lbShow);
-        btnCancel.setManaged(lbShow);
-        btnDisappr.setManaged(lbShow);
+//        btnBrowse.setManaged(!lbShow);
 
-        btnBrowse.setVisible(!lbShow);
 
 
         
@@ -251,14 +252,13 @@ public class DeptIncentivesApprovalController implements Initializable, ScreenIn
         pnRow = 0;
         pnEmp = 0;
 
-
 }
     private void loadDetail(){
         try {
             
             if (txtField01.getText() != ""){
             deptincdata.clear();
-            double lnTotal = 0;
+            
             for (int lnCtr = 1; lnCtr <= oTrans.getItemCount(); lnCtr++){
                 deptincdata.add(new DeptIncentivesModel(String.valueOf(lnCtr),
                     oTrans.getDetail(lnCtr, "sEmployID").toString(),
@@ -266,11 +266,15 @@ public class DeptIncentivesApprovalController implements Initializable, ScreenIn
                     oTrans.getDetail(lnCtr, "xPositnNm").toString(),
                     oTrans.getDetail(lnCtr, "dLastUpdt").toString(),
                     oTrans.getDetail(lnCtr, "sRemarksx").toString(),
+                    oTrans.getDetail(lnCtr, "xBankName").toString(),
+                    oTrans.getDetail(lnCtr, "xBankAcct").toString(),
                     priceWithDecimal(Double.valueOf(oTrans.getDetail(lnCtr, "sOldAmtxx").toString())),
                     priceWithDecimal(Double.valueOf(oTrans.getDetail(lnCtr, "sNewAmtxx").toString()))));
-                lnTotal = lnTotal + Double.parseDouble(oTrans.getDetail(lnCtr, "sNewAmtxx").toString());
-            }
-                lblTotal.setText((CommonUtils.NumberFormat((Number)lnTotal, "₱ " +"#,##0.00")));
+                    lnTotal = lnTotal + Double.parseDouble(oTrans.getDetail(lnCtr, "sNewAmtxx").toString());
+                }
+                
+            lblTotal.setText((CommonUtils.NumberFormat((Number)lnTotal, "₱ " +"#,##0.00")));
+          
             initGrid(); 
             
  
@@ -323,13 +327,13 @@ public class DeptIncentivesApprovalController implements Initializable, ScreenIn
                             if (oTrans.SearchTransaction(txtSearch01.getText(), true)){
                             loadMaster();
                             loadDetail();
-                            getSelectedEmployee();
                             
-                            pnEditMode = oTrans.getEditMode();
                         } else {
                             ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                         }
-                            
+                        break;
+                case "btnRelease": 
+                          
                         break;
                 case "btnClose":
                         if(ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to close?") == true){
@@ -341,52 +345,14 @@ public class DeptIncentivesApprovalController implements Initializable, ScreenIn
                             break;
                         } 
                             return;
-                case "btnApprove":
-                        if (oTrans.CloseTransaction()){
-                            
-                            ShowMessageFX.Warning(getStage(), "Transaction Approved successfully.", "Warning", null);
-                            if(state){
-                               onsuccessUpdate();
-                            }else{
-                                clearFields();
-                                oTrans = new DeptIncentive(oApp, oApp.getBranchCode(), false);
-                                oTrans.setListener(oListener);
-                                oTrans.setTranStat(1023);
-                                oTrans.setWithUI(true);
-                                pnEditMode = EditMode.UNKNOWN;
-                            }
-                        } else {
-                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
-                        }
-                    break;
-                case "btnDisappr":
-                        if (oTrans.CancelTransaction()){
-                            
-                            ShowMessageFX.Warning(getStage(), "Transaction Disapproved successfully.", "Warning", null);
-                            if(state){
-                               onsuccessUpdate();
-                            }else{
-                                clearFields();
-                                oTrans = new DeptIncentive(oApp, oApp.getBranchCode(), false);
-                                oTrans.setListener(oListener);
-                                oTrans.setTranStat(1023);
-                                oTrans.setWithUI(true);
-                                pnEditMode = EditMode.UNKNOWN;
-                            }
-                        } else {
-                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
-                        }
-                    break;
-
-                case "btnCancel":
-                        if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true){  
-                            clearFields();
-                            oTrans = new DeptIncentive(oApp, oApp.getBranchCode(), false);
-                            oTrans.setListener(oListener);
-                            oTrans.setTranStat(1023);
-                            oTrans.setWithUI(true);
-                            pnEditMode = EditMode.UNKNOWN;
-                        }
+                
+                case "btnClear":
+                     if(ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to clear all fields?") == true){
+                        clearFields();
+                        initClass();  
+                        break;
+                    } 
+                       
                     break;
             }
             
@@ -414,7 +380,6 @@ public class DeptIncentivesApprovalController implements Initializable, ScreenIn
         txtField041.setDisable(true);
         txtField051.setDisable(true);
         txtSearch01.setText("");
-        lblTotal.setText("0.0");
     }
 
     private void initGrid() {
@@ -422,7 +387,9 @@ public class DeptIncentivesApprovalController implements Initializable, ScreenIn
         index02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index03.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index04.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        index05.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 0 0 5;");
+        index05.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
+        index06.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
+        index07.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
 
         
         index01.setCellValueFactory(new PropertyValueFactory<>("DetIndex01"));
@@ -431,6 +398,9 @@ public class DeptIncentivesApprovalController implements Initializable, ScreenIn
         index04.setCellValueFactory(new PropertyValueFactory<>("DetIndex07"));
         index05.setCellValueFactory(new PropertyValueFactory<>("DetIndex08"));
 
+        index06.setCellValueFactory(new PropertyValueFactory<>("DetIndex09"));
+        index07.setCellValueFactory(new PropertyValueFactory<>("DetIndex10"));
+
         tblemployee.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblemployee.lookup("TableHeaderRow");
             header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
@@ -438,18 +408,20 @@ public class DeptIncentivesApprovalController implements Initializable, ScreenIn
             });
         });
         tblemployee.setItems(deptincdata);
-        tblemployee.getSelectionModel().select(pnEmp);
+                    
         tblemployee.setDisable(false);
         txtField041.setDisable(false);
         txtField051.setDisable(false);
+        tblemployee.getSelectionModel().select(pnRow);
+        getSelectedEmployee();
     }
     
      private void getSelectedEmployee() {
          if(!deptincdata.isEmpty()){
         txtField011.setText(deptincdata.get(pnEmp).getDetIndex03());
         txtField021.setText(deptincdata.get(pnEmp).getDetIndex04());
-        txtField031.setText(deptincdata.get(pnEmp).getDetIndex07());
-        txtField041.setText(deptincdata.get(pnEmp).getDetIndex08());
+        txtField031.setText(deptincdata.get(pnEmp).getDetIndex09());
+        txtField041.setText(deptincdata.get(pnEmp).getDetIndex10());
         txtField051.setText(deptincdata.get(pnEmp).getDetIndex06());
         txtField041.setDisable(false);
         txtField051.setDisable(false);
@@ -506,4 +478,4 @@ public class DeptIncentivesApprovalController implements Initializable, ScreenIn
         
         return null;
     }
-}       
+}
