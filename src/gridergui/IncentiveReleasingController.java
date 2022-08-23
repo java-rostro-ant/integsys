@@ -205,6 +205,7 @@ public class IncentiveReleasingController implements Initializable, ScreenInterf
                     oTrans.getTag(lnCtr)));
                     int post = lnCtr;
                     System.out.println(oTrans.getTag(post));
+                    
                     select.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
                         try {
                             if(newValue){

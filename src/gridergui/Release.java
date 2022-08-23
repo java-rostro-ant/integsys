@@ -55,6 +55,18 @@ public class Release {
         this.empIndex08 = new SimpleStringProperty(empIndex08);
     }
     
+    public Release(String empIndex01, String empIndex02, String empIndex03,
+            String empIndex04, String empIndex05, String empIndex06, 
+            String empIndex07){
+        this.empIndex01 = new SimpleStringProperty(empIndex01);
+        this.empIndex02 = new SimpleStringProperty(empIndex02);
+        this.empIndex03 = new SimpleStringProperty(empIndex03);
+        this.empIndex04 = new SimpleStringProperty(empIndex04);
+        this.empIndex05 = new SimpleStringProperty(empIndex05);
+        this.empIndex06 = new SimpleStringProperty(empIndex06);
+        this.empIndex07 = new SimpleStringProperty(empIndex07);
+    }
+    
     public String getIncIndex01(){return incIndex01.get();}
     public void setIncIndex01(String incIndex01){this.incIndex01.set(incIndex01);}
     

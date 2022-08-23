@@ -15,6 +15,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.animation.FadeTransition;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -47,6 +49,7 @@ import org.rmj.appdriver.agentfx.ShowMessageFX;
 import org.rmj.appdriver.constants.EditMode;
 import org.rmj.fund.manager.base.DeptIncentive;
 import org.rmj.fund.manager.base.DeptIncentive;
+import org.rmj.fund.manager.base.DeptIncentiveRelease;
 import org.rmj.fund.manager.base.LMasDetTrans;
 import org.rmj.fund.manager.parameters.IncentiveBankInfo;
 
@@ -62,235 +65,268 @@ public class DeptIncentiveReleasingController implements Initializable, ScreenIn
     private double lnTotal = 0;
     
     private GRider oApp;
-    private DeptIncentive oTrans;
+    private DeptIncentiveRelease oTrans;
+    private IncentiveBankInfo trans;
+   
     private LMasDetTrans oListener;
     
-    private String oTransnox = "";
-    private boolean state = false;
-    
-    private int pnIndex = -1;    
-    private int pnRow = -1;
-    private int pnEmp = -1;
-    private int oldPnEmp = -1;
     private int pnEditMode;
-    private int lnCtr;
-
+    private int pnRow = 0;
     private boolean pbLoaded = false;
-    
-    private ObservableList<DeptIncentivesModel> deptincdata = FXCollections.observableArrayList();
-
     @FXML
-    private AnchorPane AnchorMain;
+    private TextField txtField01;
     @FXML
-    private Button btnBrowse,btnRelease,btnClear,btnClose;
+    private TextField txtField02;
     @FXML
-    private TextField txtField01,txtField02,txtField03,txtField04,txtField05;
+    private TextField txtSeeks05;
     @FXML
-    private TextArea txtField06;
+    private Button btnNew;
     @FXML
-    private TextField txtField011,txtField021,txtField031,txtField041,txtField051,txtSearch01;
+    private Button btnSave;
+    @FXML
+    private Button btnBrowse;
+    @FXML
+    private Button btnRelease;
+    @FXML
+    private Button btnCancel;
+    @FXML
+    private Button btnApproved;
+    @FXML
+    private Button btnDisapproved;
+    @FXML
+    private Button btnClose;
+    @FXML
+    private HBox hbButtons;
+    @FXML
+    private AnchorPane AnchorMainIncentiveRelease;
+//    EMPLOYEE TABLE
     @FXML
     private TableView tblemployee;
-    @FXML
-    private TableColumn index01,index02,index03,index04,index05,index06,index07;
-    @FXML
-    private Label lblStatus;
-    @FXML
-    private Label lblTotal;
     
-    public void setTransaction(String fsValue){
-        oTransnox = fsValue;
-    }
-    public void setState(boolean fsValue){
-        state = fsValue;
-    }
+    @FXML
+    private TableColumn empIndex01;
+    @FXML
+    private TableColumn empIndex02;
+    @FXML
+    private TableColumn empIndex03;
+    @FXML
+    private TableColumn empIndex04;
+    @FXML
+    private TableColumn empIndex05;
+    @FXML
+    private TableColumn empIndex06;
+    @FXML
+    private TableColumn empIndex07;
+//    INCENTIVES TABLE
+    @FXML
+    private TableView tblincetives;
+    @FXML
+    private TableColumn incIndex01;
+    @FXML
+    private TableColumn incIndex02;
+    @FXML
+    private TableColumn incIndex03;
+    @FXML
+    private TableColumn incIndex04;
+    @FXML
+    private TableColumn incIndex05;
+    @FXML
+    private TableColumn incIndex06;
+    @FXML
+    private TableColumn incIndex07;
+    
+    private final ObservableList<Release> data = FXCollections.observableArrayList();
+    private final ObservableList<Release> emp_data = FXCollections.observableArrayList();
     private Stage getStage(){
 	return (Stage) txtField01.getScene().getWindow();
     }
-    
+    /**
+     * Initializes the controller class.
+     * @param url
+     * @param rb
+     */
     @Override
-    public void initialize(URL url, ResourceBundle rb) {  
-      
+    public void initialize(URL url, ResourceBundle rb) {
         oListener = new LMasDetTrans() {
             @Override
-            public void MasterRetreive(int fnIndex, Object foValue) {
-                switch(fnIndex){
-                    case 1:
-                        txtField01.setText((String) foValue); break;
-                    case 2:
-                        txtField02.setText((String) foValue); break;
-                    case 4:
-                        txtField04.setText((String) foValue); break;
-
+            public void MasterRetreive(int i, Object o) {
+//                loadRecord();
+                switch (i){
+                    case 3: //sBackAcct
+                        txtField01.setText((String) o);
+                        break;
+                    case 7: //xEmployNm
+                        txtField02.setText((String) o);
+                        break;
+                    
                 }
             }
+
             @Override
-            public void DetailRetreive(int fnRow, int fnIndex, Object foValue) {
-                    loadDetail();
-                    
- 
-                    
+            public void DetailRetreive(int i, int i1, Object o) {
+                System.out.println((String) o);
             }
-         };
+        };
         
-  
-        btnBrowse.setOnAction(this::cmdButton_Click);
-        btnRelease.setOnAction(this::cmdButton_Click);
-        btnClear.setOnAction(this::cmdButton_Click);
-        btnClose.setOnAction(this::cmdButton_Click);
-     
-      
-        initClass();
-        
-     
-        txtSearch01.setOnKeyPressed(this::txtField_KeyPressed);
-
-        initButton(EditMode.UNKNOWN);
-        pbLoaded = true;
-
-        tblemployee.setDisable(true);
-            clearFields();
-    } 
-    private void initClass(){
-        oTrans  = new DeptIncentive(oApp, oApp.getBranchCode(), false);
+        oTrans = new DeptIncentiveRelease(oApp, oApp.getBranchCode(), false);
         oTrans.setListener(oListener);
-        oTrans.setTranStat(1023);
+        oTrans.setTranStat(1);
         oTrans.setWithUI(true);
-        pnEditMode = EditMode.READY;
-    }   
+        btnNew.setOnAction(this::cmdButton_Click);
+        btnSave.setOnAction(this::cmdButton_Click);
+        btnBrowse.setOnAction(this::cmdButton_Click);
+        btnCancel.setOnAction(this::cmdButton_Click);
+        btnClose.setOnAction(this::cmdButton_Click);
+        btnApproved.setOnAction(this::cmdButton_Click);
+        btnDisapproved.setOnAction(this::cmdButton_Click);
+        btnRelease.setOnAction(this::cmdButton_Click);
+        txtSeeks05.setOnKeyPressed(this::txtField_KeyPressed);
+        
+        pnEditMode = EditMode.UNKNOWN;
+        
+        txtField01.setDisable(true);
+        txtField02.setDisable(true);
+        initButton(pnEditMode);
+    }    
     
-    private void txtArea_KeyPressed(KeyEvent event){
-        if (event.getCode() == ENTER || event.getCode() == DOWN){ 
-            event.consume();
-            CommonUtils.SetNextFocus((TextArea)event.getSource());
-        }else if (event.getCode() ==KeyCode.UP){
-        event.consume();
-            CommonUtils.SetPreviousFocus((TextArea)event.getSource());
-        }
-    }
-    private void txtField_KeyPressed(KeyEvent event){
-        TextField txtField = (TextField)event.getSource();
-        int lnIndex = Integer.parseInt(((TextField)event.getSource()).getId().substring(9,11));
-        String lsValue = txtField.getText();
-        
-       try {
-            switch (event.getCode()) {
-                case F3:
-                case ENTER:
- 
-                    switch (lnIndex){
-                        case 01: /*search Transaction*/
-                         if (oTrans.SearchTransaction(txtSearch01.getText(), true)){
-                            loadMaster();
-                            loadDetail();
-                            getSelectedEmployee();
-                        } else {
-                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
-                        }
-                        break;
-                    }
-                break;
-                
-            }
-            initButton(pnEditMode);
-            } catch (SQLException e) {
-            e.printStackTrace();
-            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
-        }
-               
-
-        
-        switch (event.getCode()){
-        case ENTER:
-        case DOWN:
-            CommonUtils.SetNextFocus(txtField);
-            break;
-        case UP:
-            CommonUtils.SetPreviousFocus(txtField);
-        }
-    } 
-    
-    private void initButton(int fnValue){
-        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-     
-
-//        btnBrowse.setManaged(!lbShow);
-
-
-
-        
-       
-    }
     @Override
     public void setGRider(GRider foValue) {
         oApp = foValue;
-    }    
-        private void loadMaster() throws SQLException {
-
-        txtField01.setText((String) oTrans.getMaster("sTransNox"));
-        txtSearch01.setText((String) oTrans.getMaster("sTransNox"));
-       
-        lblStatus.setVisible(true);
-        if(oTrans.getMaster(7).toString().equalsIgnoreCase("0")){
-            lblStatus.setText("OPEN");
-        }else if(oTrans.getMaster(7).toString().equalsIgnoreCase("1")){
-            lblStatus.setText("CLOSED");
-        }
-        else if(oTrans.getMaster(7).toString().equalsIgnoreCase("2")){
-            lblStatus.setText("POSTED");
-        }
-        else if(oTrans.getMaster(7).toString().equalsIgnoreCase("3")){
-            lblStatus.setText("CANCELLED");
-        }else{
-            lblStatus.setVisible(false);
-        }
-        txtField02.setText(dateToWord(oTrans.getMaster("dTransact").toString()));
-        txtField03.setText((String) oTrans.getMaster("xDeptName"));
-        txtField04.setText((String) oTrans.getMaster("xInctvNme"));
-        txtField05.setText(dateToWord(oTrans.getMaster("dEffctive").toString()));
-        txtField06.setText((String) oTrans.getMaster("sRemarksx"));
-        pnRow = 0;
-        pnEmp = 0;
-
-}
-    private void loadDetail(){
-        try {
-            
-            if (txtField01.getText() != ""){
-            deptincdata.clear();
-            
+    }
+    private void loadRecord() {
+        try { 
+            txtField01.setText((String)oTrans.getMaster("sTransNox"));
+            txtField02.setText(CommonUtils.xsDateMedium((Date) oTrans.getMaster("dTransact")));
+            data.clear();
             for (int lnCtr = 1; lnCtr <= oTrans.getItemCount(); lnCtr++){
-                deptincdata.add(new DeptIncentivesModel(String.valueOf(lnCtr),
-                    oTrans.getDetail(lnCtr, "sEmployID").toString(),
-                    oTrans.getDetail(lnCtr, "xEmployNm").toString(),
-                    oTrans.getDetail(lnCtr, "xPositnNm").toString(),
-                    oTrans.getDetail(lnCtr, "dLastUpdt").toString(),
-                    oTrans.getDetail(lnCtr, "sRemarksx").toString(),
-                    oTrans.getDetail(lnCtr, "xBankName").toString(),
-                    oTrans.getDetail(lnCtr, "xBankAcct").toString(),
-                    priceWithDecimal(Double.valueOf(oTrans.getDetail(lnCtr, "sOldAmtxx").toString())),
-                    priceWithDecimal(Double.valueOf(oTrans.getDetail(lnCtr, "sNewAmtxx").toString()))));
-                    lnTotal = lnTotal + Double.parseDouble(oTrans.getDetail(lnCtr, "sNewAmtxx").toString());
-                }
                 
-            lblTotal.setText((CommonUtils.NumberFormat((Number)lnTotal, "₱ " +"#,##0.00")));
-          
-            initGrid(); 
-            
- 
-            }
+                    System.out.println(oTrans.getDeptMaster(lnCtr,"sTransNox"));
+                    CheckBox select = new CheckBox();
+                    int post = lnCtr -1;
+                    if(oTrans.getTag(post)){
+                        select.setSelected(true);
+                        select.setDisable(true);
+                    }
+                    Date  date = new SimpleDateFormat("yyyy-MM-dd").parse(oTrans.getDeptMaster(lnCtr,"dTransact").toString());  
+                    SimpleDateFormat formatter =  new SimpleDateFormat("MMMMM dd, yyyy");
+                    String dTransact = formatter.format(date);
+                    Date  date1 = new SimpleDateFormat("yyyy-MM-dd").parse(oTrans.getDeptMaster(lnCtr,"dEffctive").toString());  
+                    SimpleDateFormat month_formatter =  new SimpleDateFormat("MMMMM yyyy");
+                    String sMonth = month_formatter.format(date1);
+                    data.add(new Release(oTrans.getDeptMaster(lnCtr,"sTransNox").toString(),
+                    oTrans.getDeptMaster(lnCtr,"xBranchNm").toString(),
+                    oTrans.getDeptMaster(lnCtr,"xDeptName").toString(),
+                    sMonth,
+                    dTransact,
+                    oTrans.getDeptMaster(lnCtr,"sRemarksx").toString(),
+                    select,
+                    oTrans.getTag(post)));
+                    select.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                        try {
+                            if(newValue){
+                                oTrans.setTag(post, true);
+                            }else{
+                                oTrans.setTag(post, false);
+                            }
+                        } catch (SQLException ex) {
+                            ShowMessageFX.Warning(getStage(),ex.getMessage(), "Warning", null);
+                        }
+                    });
+//                    
+                                
+                }
+            initGrid();
+//             | ParseException
         } catch (SQLException e) {
-            e.printStackTrace();
             ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
+        } catch (ParseException ex) {
+            Logger.getLogger(DeptIncentiveReleasingController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    private void initButton(int fnValue){
+        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
+        btnBrowse.setVisible(!lbShow);
+        btnApproved.setVisible(!lbShow);
+        btnRelease.setVisible(!lbShow);
+        btnDisapproved.setVisible(!lbShow);
+        btnNew.setVisible(!lbShow);
+        
+        btnCancel.setVisible(lbShow);
+        btnSave.setVisible(lbShow);
+        btnSave.setManaged(lbShow);
+        
+        btnBrowse.setManaged(!lbShow);
+        btnApproved.setManaged(!lbShow);
+        btnDisapproved.setManaged(!lbShow);
+        btnNew.setManaged(!lbShow);
+        if (lbShow){
+            btnSave.setVisible(lbShow);
+            btnBrowse.setVisible(!lbShow);  
+            btnNew.setVisible(!lbShow);
+            btnRelease.setVisible(!lbShow);
+            btnApproved.setVisible(!lbShow);
+            btnDisapproved.setVisible(!lbShow);
+            btnNew.setManaged(!lbShow);
+            btnBrowse.setManaged(!lbShow);
+            btnRelease.setManaged(!lbShow);
+            btnDisapproved.setManaged(!lbShow);
+            btnSave.setManaged(lbShow);
+            btnCancel.setManaged(lbShow);
+        }else{
+            txtSeeks05.requestFocus();
+        }
+       
+    }
+    public void initGrid() {
+        incIndex01.setCellValueFactory(new PropertyValueFactory<Release,String>("incIndex01"));
+        incIndex02.setCellValueFactory(new PropertyValueFactory<Release,String>("incIndex02"));
+        incIndex03.setCellValueFactory(new PropertyValueFactory<Release,String>("incIndex03"));
+        incIndex04.setCellValueFactory(new PropertyValueFactory<Release,String>("incIndex04"));
+        incIndex05.setCellValueFactory(new PropertyValueFactory<Release,String>("incIndex05"));
+        incIndex06.setCellValueFactory(new PropertyValueFactory<Release,String>("incIndex06"));
+        incIndex07.setCellValueFactory(new PropertyValueFactory<Release,CheckBox>("incIndex07"));
+        
+         /*making column's position uninterchangebale*/
+        tblincetives.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblincetives.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+        });
 
+        /*Assigning data to table*/
+        
+        tblincetives.setItems(data);
+        tblincetives.autosize();
+        
+    }
+    public void initEmployeeGrid() {
+        empIndex01.setCellValueFactory(new PropertyValueFactory<Release,String>("empIndex01"));
+        empIndex02.setCellValueFactory(new PropertyValueFactory<Release,String>("empIndex02"));
+        empIndex03.setCellValueFactory(new PropertyValueFactory<Release,String>("empIndex03"));
+        empIndex04.setCellValueFactory(new PropertyValueFactory<Release,String>("empIndex04"));
+        empIndex05.setCellValueFactory(new PropertyValueFactory<Release,String>("empIndex05"));
+        empIndex06.setCellValueFactory(new PropertyValueFactory<Release,String>("empIndex06"));
+        empIndex07.setCellValueFactory(new PropertyValueFactory<Release,CheckBox>("empIndex07"));
+         /*making column's position uninterchangebale*/
+        tblemployee.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblemployee.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+            header.prefWidthProperty().bind(tblemployee.widthProperty().divide(7));
+        });
+        /*Assigning data to table*/
+        
+        tblemployee.setItems(emp_data);
+        tblemployee.autosize();
+        
+    }
     private void unloadForm(){
-        StackPane myBox = (StackPane) AnchorMain.getParent();
+        StackPane myBox = (StackPane) AnchorMainIncentiveRelease.getParent();
         myBox.getChildren().clear();
         myBox.getChildren().add(getScene("MainScreenBG.fxml"));
     }
-    
     private AnchorPane getScene(String fsFormName){
          ScreenInterface fxObj = new MainScreenBGController();
          fxObj.setGRider(oApp);
@@ -316,166 +352,185 @@ public class DeptIncentiveReleasingController implements Initializable, ScreenIn
         }
         return null;
     }
-    
-
     private void cmdButton_Click(ActionEvent event) {
         String lsButton = ((Button)event.getSource()).getId();
         try {
-                switch (lsButton){
-                
-                case "btnBrowse": 
-                            if (oTrans.SearchTransaction(txtSearch01.getText(), true)){
-                            loadMaster();
-                            loadDetail();
-                            
+            switch (lsButton){
+                case "btnBrowse": //browse transaction
+                       pbLoaded = true;
+                        if (oTrans.SearchTransaction(txtSeeks05.getText(), true)){
+                               loadRecord();
+                               txtSeeks05.setText((String)oTrans.getMaster("sTransNox"));
+                               pnEditMode = oTrans.getEditMode();
+                           } else 
+                               ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                    
+                    break;
+                case "btnNew": //create new transaction
+                        pbLoaded = true;
+                        if (oTrans.NewTransaction()){
+                            emp_data.clear();
+                            txtSeeks05.clear();
+                            loadRecord();
+                            pnEditMode = oTrans.getEditMode();
+                        } else 
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                    break;
+                case "btnRelease": //release transaction
+//                  if (oTrans.ReleaseTransaction()){
+//                            MsgBox.showOk("Transaction releasing success!");
+//                            clearFields();
+//                            pnEditMode = oTrans.getEditMode();
+//                        } else 
+//                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                    break;
+                    
+                 case "btnSave": //save transaction
+                        if (oTrans.SaveTransaction()){
+                            ShowMessageFX.Warning(getStage(), "Transaction Successfully Saved.","Warning", null);
+                            clearFields();
                         } else {
                             ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                         }
-                        break;
-                case "btnRelease": 
-                          
-                        break;
-                case "btnClose":
-                        if(ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to close?") == true){
-                            if(state){
-                                onsuccessUpdate();
-                            }else{ 
-                                unloadForm();
-                            }
-                            break;
-                        } 
-                            return;
-                
-                case "btnClear":
-                     if(ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to clear all fields?") == true){
-                        clearFields();
-                        initClass();  
-                        break;
-                    } 
                        
+                    break;    
+                case "btnApproved": //approve transaction
+                    if(!oTrans.getMaster("sTransNox").toString().trim().isEmpty()){
+                        if(ShowMessageFX.OkayCancel(null, "Aprroved Incentive Releasing", "Are you sure, do you want to approve this transaction?") == true){
+                           if (oTrans.ConfirmTransaction()){
+                               ShowMessageFX.Warning(getStage(), "Transaction successfully approved.","Warning", null);
+                               clearFields();
+                               pnEditMode = oTrans.getEditMode();
+                           } else 
+                               ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                        } 
+                    }
+                    
                     break;
+                case "btnDisapproved": //disapprove transaction
+                    if(!oTrans.getMaster("sTransNox").toString().trim().isEmpty()){
+                        if(ShowMessageFX.OkayCancel(null, "Cancel Incentive Releasing", "Are you sure, do you want to cancel this transaction?") == true){
+                          if (oTrans.CancelTransaction()){
+                               ShowMessageFX.Warning(getStage(),"Transaction successfully disapproved.", "Warning", null);
+                               clearFields();
+                               pnEditMode = oTrans.getEditMode();
+                           } else 
+                               ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                        }
+                    }
+                    break;
+                case "btnCancel": //cancel transaction
+                    clearFields();
+                    //reload detail
+                    break;
+               
+                case "btnClose": //close releasing form
+                    if(ShowMessageFX.OkayCancel(null, "Incentive Releasing", "Are you sure, do you want to close?") == true){
+                        unloadForm();
+                        break;
+                    } else
+                        return;
             }
             
             initButton(pnEditMode);
         } catch (SQLException e) {
-                    e.printStackTrace();
-                    ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
-                } 
-    }
- 
-    private void clearFields(){
-        txtField01.setText("");
-        txtField02.setText("");
-        txtField03.setText("");
-        txtField04.setText("");
-        txtField011.setText("");
-        txtField021.setText("");
-        txtField031.setText("");
-        txtField041.setText("");
-        txtField051.setText("");
-        txtField06.setText("");
-        txtField05.setText("");
-        deptincdata.clear();
-        tblemployee.setDisable(true);
-        txtField041.setDisable(true);
-        txtField051.setDisable(true);
-        txtSearch01.setText("");
-    }
-
-    private void initGrid() {
-        index01.setStyle("-fx-alignment: CENTER;");
-        index02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        index03.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        index04.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        index05.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
-        index06.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
-        index07.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
-
-        
-        index01.setCellValueFactory(new PropertyValueFactory<>("DetIndex01"));
-        index02.setCellValueFactory(new PropertyValueFactory<>("DetIndex03"));
-        index03.setCellValueFactory(new PropertyValueFactory<>("DetIndex04"));
-        index04.setCellValueFactory(new PropertyValueFactory<>("DetIndex07"));
-        index05.setCellValueFactory(new PropertyValueFactory<>("DetIndex08"));
-
-        index06.setCellValueFactory(new PropertyValueFactory<>("DetIndex09"));
-        index07.setCellValueFactory(new PropertyValueFactory<>("DetIndex10"));
-
-        tblemployee.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-            TableHeaderRow header = (TableHeaderRow) tblemployee.lookup("TableHeaderRow");
-            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-                header.setReordering(false);
-            });
-        });
-        tblemployee.setItems(deptincdata);
-                    
-        tblemployee.setDisable(false);
-        txtField041.setDisable(false);
-        txtField051.setDisable(false);
-        tblemployee.getSelectionModel().select(pnRow);
-        getSelectedEmployee();
-    }
+            e.printStackTrace();
+            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
+        }
+    } 
     
-     private void getSelectedEmployee() {
-         if(!deptincdata.isEmpty()){
-        txtField011.setText(deptincdata.get(pnEmp).getDetIndex03());
-        txtField021.setText(deptincdata.get(pnEmp).getDetIndex04());
-        txtField031.setText(deptincdata.get(pnEmp).getDetIndex09());
-        txtField041.setText(deptincdata.get(pnEmp).getDetIndex10());
-        txtField051.setText(deptincdata.get(pnEmp).getDetIndex06());
-        txtField041.setDisable(false);
-        txtField051.setDisable(false);
-                oldPnEmp = pnEmp;
-        }
-
-} 
     @FXML
-    private void tblemployee_Clicked(MouseEvent event) {
-        pnEmp = tblemployee.getSelectionModel().getSelectedIndex();
-             
-            if(event.getClickCount()>0){
-                System.out.println("event click count = " + event.getClickCount());
-                if(!tblemployee.getItems().isEmpty())
-                getSelectedEmployee();
-                           
-            
-        
-    }
-}  
-     
-    private void onsuccessUpdate(){
-        StackPane myBox = (StackPane) AnchorMain.getParent();
-        myBox.getChildren().clear();
-        myBox.getChildren().add(setScene());
-          
-    }
-    private AnchorPane setScene(){
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("IncentiveConfirmation.fxml"));
-
-            IncentiveConfirmationController loControl = new IncentiveConfirmationController();
-            loControl.setGRider(oApp);
-            loControl.setTransaction(oTransnox);
-            fxmlLoader.setController(loControl);
-            
-            //load the main interface
-                
-          AnchorPane root;
+    private void tblIncentivesDetail_Click(MouseEvent event) {
+       
         try {
-            root = (AnchorPane) fxmlLoader.load();
-            FadeTransition ft = new FadeTransition(Duration.millis(1500));
-            ft.setNode(root);
-            ft.setFromValue(1);
-            ft.setToValue(1);
-            ft.setCycleCount(1);
-            ft.setAutoReverse(false);
-            ft.play();
-
-            return root;
-        } catch (IOException ex) {
-            System.err.println(ex.getMessage());
+            pnRow = tblincetives.getSelectionModel().getSelectedIndex();
+            String lsBankName;
+            String lsBankAcct;
+            emp_data.clear();
+          
+            if(oTrans.OpenDeptTransaction(oTrans.getDeptMaster(pnRow + 1, "sTransNox").toString())){
+                
+                for(int lnCtr  = 1; lnCtr  <= oTrans.getDetailItemCount(); lnCtr ++){
+                    
+//                  
+                    
+                    emp_data.add(new Release(String.valueOf(lnCtr),
+                         (String)oTrans.getDeptDetail(lnCtr , "xEmployNm"),
+                         (String)oTrans.getDeptDetail(lnCtr , "xPositnNm"),
+                         (String)oTrans.getDeptDetail(lnCtr, 11),
+                         (String)oTrans.getDeptDetail(lnCtr , 10),
+                         priceWithDecimal((String)oTrans.getDeptDetail(lnCtr, 5)),
+                         priceWithDecimal((String)oTrans.getDeptDetail(lnCtr, 6))));
+//                
+                }
+                initEmployeeGrid();
+            }
+        } catch (SQLException ex) {
+//            ShowMessageFX.Warning(getStage(),ex.getMessage(), "Warning", null);
+            ex.printStackTrace();
+        }catch (NullPointerException ex) {
+//            ShowMessageFX.Warning(getStage(),ex.getMessage(), "Warning", null);
+            ex.printStackTrace();
         }
         
-        return null;
+    }
+     private void txtField_KeyPressed(KeyEvent event){
+        TextField txtField = (TextField)event.getSource();        
+        int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
+             
+        try{
+           switch (event.getCode()){
+            case F3:
+            case ENTER:
+                switch (lnIndex){
+              
+                    case 5: /*Search*/
+                          pbLoaded = true;
+                        if (oTrans.SearchTransaction(txtSeeks05.getText(), true)){
+                               loadRecord();
+                               txtSeeks05.setText((String)oTrans.getMaster("sTransNox"));
+                               pnEditMode = oTrans.getEditMode();
+                           } else 
+                               ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                    
+                    break;
+                }   
+            case DOWN:
+                CommonUtils.SetNextFocus(txtField); break;
+            case UP:
+                CommonUtils.SetPreviousFocus(txtField);
+        } 
+        }catch(SQLException e){
+                ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
+        }
+        
+    }
+    public static String priceWithDecimal (String price) {
+        try{
+           
+            if(price == null){
+                price = "0";
+            }
+            Double dPrice = Double.parseDouble(price);
+            DecimalFormat formatter = new DecimalFormat("###,###,##0.00");
+            
+            return formatter.format(dPrice);
+        }catch(NullPointerException e){
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    private void clearFields() {
+        oTrans = new DeptIncentiveRelease(oApp, oApp.getBranchCode(), false);
+        oTrans.setListener(oListener);
+        oTrans.setTranStat(1);
+        oTrans.setWithUI(true);
+        pnEditMode = EditMode.UNKNOWN;
+        data.clear();
+        emp_data.clear();
+        txtField01.clear();
+        txtField02.clear();
+        txtSeeks05.clear();
     }
 }
