@@ -186,7 +186,7 @@ public class DeptIncentivesController implements Initializable, ScreenInterface 
                             if (txtField01.getText() != ""){
                             if(oTrans.searchDepartment(lsValue, false)) {
                                 txtField.setText((String) oTrans.getMaster("xDeptName")); 
-                                clearDetail();
+//                                clearDetail();
                                 loadDetail();
                                 
 
@@ -548,21 +548,21 @@ public class DeptIncentivesController implements Initializable, ScreenInterface 
                 case "btnSave":
 
                         if (lnTotal > 0){
-                        if (oTrans.SaveTransaction()){
-                            
-                            ShowMessageFX.Warning(getStage(), "Transaction save successfully.", "Warning", null);
-                            if(state){
-                               onsuccessUpdate();
-                            }else{
-                                clearFields();
-                                oTrans = new DeptIncentive(oApp, oApp.getBranchCode(), false);
-                                oTrans.setListener(oListener);
-                                oTrans.setWithUI(true);
-                                pnEditMode = EditMode.UNKNOWN;
+                            if (oTrans.SaveTransaction()){
+
+                                ShowMessageFX.Warning(getStage(), "Transaction save successfully.", "Warning", null);
+                                if(state){
+                                   onsuccessUpdate();
+                                }else{
+                                    clearFields();
+                                    oTrans = new DeptIncentive(oApp, oApp.getBranchCode(), false);
+                                    oTrans.setListener(oListener);
+                                    oTrans.setWithUI(true);
+                                    pnEditMode = EditMode.UNKNOWN;
+                                }
+                            } else {
+                                ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                             }
-                        } else {
-                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
-                        }
                         }else {
                             ShowMessageFX.Warning(getStage(), "Please Edit Transaction First", "Warning", null);
                         }
