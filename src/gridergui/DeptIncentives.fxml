@@ -276,8 +276,8 @@
                                                             <TableColumn fx:id="index01" editable="false" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="35.0" sortable="false" text="No." />
                                                             <TableColumn fx:id="index02" editable="false" maxWidth="-1.0" minWidth="215.0" prefWidth="-1.0" sortable="false" text="Employee" />
                                                             <TableColumn fx:id="index03" editable="false" maxWidth="-1.0" minWidth="140.0" prefWidth="-1.0" sortable="false" text="Position" />
-                                                            <TableColumn fx:id="index04" maxWidth="-1.0" minWidth="169.0" prefWidth="-1.0" text="Bank Name" />
-                                                            <TableColumn fx:id="index05" maxWidth="-1.0" minWidth="100.0" prefWidth="-1.0" text="Account No." />
+                                                            <TableColumn fx:id="index04" maxWidth="-1.0" minWidth="150.0" prefWidth="-1.0" text="Bank Name" />
+                                                            <TableColumn fx:id="index05" maxWidth="-1.0" minWidth="120.0" prefWidth="-1.0" text="Account No." />
                                                             <TableColumn fx:id="index06" editable="false" maxWidth="-1.0" minWidth="85.0" prefWidth="-1.0" sortable="false" text="Old Amount" />
                                                             <TableColumn fx:id="index07" editable="false" maxWidth="-1.0" minWidth="85.0" prefWidth="-1.0" sortable="false" text="New Amount" />
                                                          </columns>

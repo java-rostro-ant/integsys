@@ -768,8 +768,8 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                     oTrans.getDetail(lnCtr, "xEmpLevNm").toString(),
                     oTrans.getDetail(lnCtr, "xPositnNm").toString(),
                     oTrans.getDetail(lnCtr, "xSrvcYear").toString(),
-                    oTrans.getDetail(lnCtr, "nTotalAmt").toString(),
-                    oTrans.getDetail(lnCtr, "nTotalAmt").toString(),
+                    oTrans.getDetail(lnCtr, "xIncentve").toString(),
+                    oTrans.getDetail(lnCtr, "xDeductnx").toString(),
                     oTrans.getDetail(lnCtr, "nTotalAmt").toString()));
         }       
         pnRow = 0;
@@ -856,14 +856,11 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
             TableIncentives ti = (TableIncentives) tblIncentives.getItems().get(pnRow);
             
             if(ti.getIncindex02().contains("Deduction")){
-                
                 AddDeductionController.setData(ti);
                 loadDeductionDetail(pnRow + 1 - (oTrans.getIncentiveCount())); 
-                
             } else{
                 loadIncentiveDetail((String) oTrans.getIncentiveInfo(pnRow + 1, "sInctveCD"), pnRow + 1); 
             }
-            
         } catch (SQLException ex) {
             ex.printStackTrace();
             ShowMessageFX.Warning(getStage(),ex.getMessage(), "Warning", null);
@@ -914,7 +911,6 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
             loControl.setGRider(oApp);
             loControl.setTransaction(oTransnox);
             fxmlLoader.setController(loControl);
-            
             //load the main interface
                 
           AnchorPane root;
@@ -932,7 +928,6 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         } catch (IOException ex) {
             System.err.println(ex.getMessage());
         }
-        
         return null;
     }
-}       
+}
