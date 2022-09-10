@@ -86,6 +86,12 @@
                                                 <MenuItem fx:id="mnuStandardReport" mnemonicParsing="false" onAction="#mnuStandardReportClick" text="Standard" />
                                                 <MenuItem fx:id="mnuAuditReport" mnemonicParsing="false" onAction="#mnuAuditReportClick" text="Audit" />
                                                 <MenuItem fx:id="mnuPayrollReport" mnemonicParsing="false" onAction="#mnuPayrollReportClick" text="Payroll" />
+                                                <Menu fx:id="mnuAudit" mnemonicParsing="false" text="Audit">
+                                                  <items>
+                                                    <MenuItem fx:id="mnuAuditIncentiveReport" mnemonicParsing="false" onAction="#mnuAuditIncentiveReportClicked" text="Incentives" />
+                                                    <MenuItem fx:id="mnuAuditBankReport" mnemonicParsing="false" onAction="#mnuAuditBankReportClick" text="Bank Info" />
+                                                  </items>
+                                                </Menu>
                                              </items></Menu>
                                       </menus>
                                     </MenuBar>

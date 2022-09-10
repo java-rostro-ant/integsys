@@ -101,7 +101,7 @@ public class DeptIncentivesHistController implements Initializable, ScreenInterf
     @FXML
     private TableView tblemployee;
     @FXML
-    private TableColumn index01,index02,index03,index04,index05;
+    private TableColumn index01,index02,index03,index04,index05,index06,index07;
 
     
     public void setTransaction(String fsValue){
@@ -274,6 +274,8 @@ public class DeptIncentivesHistController implements Initializable, ScreenInterf
                     oTrans.getDetail(lnCtr, "xPositnNm").toString(),
                     oTrans.getDetail(lnCtr, "dLastUpdt").toString(),
                     oTrans.getDetail(lnCtr, "sRemarksx").toString(),
+                    oTrans.getDetail(lnCtr, "xBankName").toString(),
+                    oTrans.getDetail(lnCtr, "xBankAcct").toString(),
                     priceWithDecimal(Double.valueOf(oTrans.getDetail(lnCtr, "sOldAmtxx").toString())),
                     priceWithDecimal(Double.valueOf(oTrans.getDetail(lnCtr, "sNewAmtxx").toString()))));
                 lnTotal = lnTotal + Double.parseDouble(oTrans.getDetail(lnCtr, "sNewAmtxx").toString());
@@ -364,7 +366,9 @@ public class DeptIncentivesHistController implements Initializable, ScreenInterf
         index02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index03.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
         index04.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-        index05.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 0 0 5;");
+        index05.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
+        index06.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
+        index07.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
 
         
         index01.setCellValueFactory(new PropertyValueFactory<>("DetIndex01"));
@@ -372,6 +376,8 @@ public class DeptIncentivesHistController implements Initializable, ScreenInterf
         index03.setCellValueFactory(new PropertyValueFactory<>("DetIndex04"));
         index04.setCellValueFactory(new PropertyValueFactory<>("DetIndex07"));
         index05.setCellValueFactory(new PropertyValueFactory<>("DetIndex08"));
+        index06.setCellValueFactory(new PropertyValueFactory<>("DetIndex09"));
+        index07.setCellValueFactory(new PropertyValueFactory<>("DetIndex10"));
 
         tblemployee.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblemployee.lookup("TableHeaderRow");

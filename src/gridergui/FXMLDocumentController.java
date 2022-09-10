@@ -55,6 +55,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private Menu mnuTransaction;
     @FXML
+    private Menu mnuAudit;
+    @FXML
     private MenuItem mnuEmployeeIncentives;
     @FXML
     private MenuItem mnuIncentiveParameter;
@@ -66,6 +68,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private MenuItem mnuCashCountHistory;
     @FXML
     private MenuItem mnuCashCountEntry;
+    @FXML
+    private MenuItem mnuAuditIncentiveReport;
     @FXML
     private Pane view;
     @FXML
@@ -225,6 +229,10 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 //
             case "InventoryHistory.fxml":
                 return new InventoryHistoryController();
+            case "IncentiveReports.fxml":
+                IncentiveReportsController inc_reports = new IncentiveReportsController();
+                inc_reports.setReportCategory(reportName);
+                return  inc_reports;
             case "Reports.fxml":
                 ReportsController reports = new ReportsController();
                 reports.setReportCategory(reportName);
@@ -305,10 +313,21 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         setScene(loadAnimate("Reports.fxml"));
     }
     @FXML
+    private void mnuAuditIncentiveReportClicked(ActionEvent event) {
+        reportName = "AUDIT";
+        setScene(loadAnimate("IncentiveReports.fxml"));
+    }
+    @FXML
     private void mnuAuditReportClick(ActionEvent event) {
         reportName = "AUDIT";
         setScene(loadAnimate("Reports.fxml"));
     }
+    @FXML
+    private void mnuAuditBankReportClick(ActionEvent event) {
+        reportName = "AUDIT";
+        setScene(loadAnimate("Reports.fxml"));
+    }
+    
     @FXML
     private void mnuPayrollReportClick(ActionEvent event) {
         reportName = "PAYROLL";
