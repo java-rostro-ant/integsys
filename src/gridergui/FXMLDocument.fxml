@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="300.0" prefWidth="750.0" style="-fx-background-color: #FFFFFF;" stylesheets="@../css/MainPanelStyle.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="AnchorPane" prefHeight="300.0" prefWidth="750.0" style="-fx-background-color: #FFFFFF;" stylesheets="@../css/MainPanelStyle.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -84,14 +84,15 @@
                                         <Menu mnemonicParsing="false" text="Reports">
                                              <items>
                                                 <MenuItem fx:id="mnuStandardReport" mnemonicParsing="false" onAction="#mnuStandardReportClick" text="Standard" />
-                                                <MenuItem fx:id="mnuAuditReport" mnemonicParsing="false" onAction="#mnuAuditReportClick" text="Audit" />
-                                                <MenuItem fx:id="mnuPayrollReport" mnemonicParsing="false" onAction="#mnuPayrollReportClick" text="Payroll" />
                                                 <Menu fx:id="mnuAudit" mnemonicParsing="false" text="Audit">
                                                   <items>
-                                                    <MenuItem fx:id="mnuAuditIncentiveReport" mnemonicParsing="false" onAction="#mnuAuditIncentiveReportClicked" text="Incentives" />
+                                                    <MenuItem fx:id="mnuAuditIncentiveReport" mnemonicParsing="false" onAction="#mnuAuditIncentiveReportClicked" text="Branch Incetntives" />
+                                                      <MenuItem fx:id="mnuAuditDeptIncentiveReport" mnemonicParsing="false" onAction="#mnuAuditDeptIncentiveReportClicked" text="Department Incentives" />
                                                     <MenuItem fx:id="mnuAuditBankReport" mnemonicParsing="false" onAction="#mnuAuditBankReportClick" text="Bank Info" />
                                                   </items>
                                                 </Menu>
+                                                <MenuItem fx:id="mnuPayrollReport" mnemonicParsing="false" onAction="#mnuPayrollReportClick" text="Payroll" />
+                                                <MenuItem fx:id="mnuAuditReport" disable="true" mnemonicParsing="false" onAction="#mnuAuditReportClick" text="Audit" visible="false" />
                                              </items></Menu>
                                       </menus>
                                     </MenuBar>
