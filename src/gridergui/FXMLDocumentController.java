@@ -71,6 +71,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private MenuItem mnuAuditIncentiveReport;
     @FXML
+    private MenuItem mnuAuditDeptIncentiveReport;
+    @FXML
     private Pane view;
     @FXML
     private MenuItem mnuEmployeeIncentivesBank;
@@ -114,6 +116,12 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private MenuItem mnuExit;
     @FXML
     private MenuItem mnuCashCountRequest,mnuDepartmentIncentives,mnuDeptIncentivesApproval,mnuDeptIncentiveReleasing,mnuDeptIncentivesHistory;
+    @FXML
+    private MenuItem mnuAuditBankReport;
+    @FXML
+    private MenuItem mnuPayrollReport;
+    @FXML
+    private MenuItem mnuAuditReport;
     
     /**
      * Initializes the controller class.
@@ -237,6 +245,10 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 ReportsController reports = new ReportsController();
                 reports.setReportCategory(reportName);
                 return  reports;
+            case "DeptIncentiveReports.fxml":
+            DeptIncentiveReportsController inc_reports_Dept = new DeptIncentiveReportsController();
+            inc_reports_Dept.setReportCategory(reportName);
+            return  inc_reports_Dept;
 
             default:
                 return null;
@@ -314,8 +326,13 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     }
     @FXML
     private void mnuAuditIncentiveReportClicked(ActionEvent event) {
-        reportName = "AUDIT";
+        reportName = "AUDIT BRANCH INCENTIVES";
         setScene(loadAnimate("IncentiveReports.fxml"));
+    }
+    @FXML
+    private void mnuAuditDeptIncentiveReportClicked(ActionEvent event) {
+        reportName = "AUDIT DEPARTMENT INCENTIVES";
+        setScene(loadAnimate("DeptIncentiveReports.fxml"));
     }
     @FXML
     private void mnuAuditReportClick(ActionEvent event) {
@@ -394,4 +411,5 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         //compliance management;
         mnuIncentiveReleasing.setVisible("028;026;".contains(oApp.getDepartment()));
     }
+
 }

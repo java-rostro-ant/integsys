@@ -392,11 +392,11 @@ public class DeptIncentivesHistController implements Initializable, ScreenInterf
     
      private void getSelectedEmployee() {
          if(!deptincdata.isEmpty()){
-     txtField011.setText(deptincdata.get(pnEmp).getDetIndex03());
-    txtField021.setText(deptincdata.get(pnEmp).getDetIndex04());
-    txtField031.setText(deptincdata.get(pnEmp).getDetIndex07());
-    txtField041.setText(deptincdata.get(pnEmp).getDetIndex08());
-    txtField051.setText(deptincdata.get(pnEmp).getDetIndex06());
+        txtField011.setText(deptincdata.get(pnEmp).getDetIndex03());
+        txtField021.setText(deptincdata.get(pnEmp).getDetIndex04());
+        txtField031.setText(deptincdata.get(pnEmp).getDetIndex09());
+        txtField041.setText(deptincdata.get(pnEmp).getDetIndex10());
+        txtField051.setText(deptincdata.get(pnEmp).getDetIndex06());
         oldPnRow = pnEmp;
     
     }

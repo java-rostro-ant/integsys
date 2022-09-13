@@ -8,12 +8,12 @@ public class LetMeInn {
     public static void main(String [] args){                
         GRider oApp = new GRider();
         
-        if (!oApp.loadEnv("IntegSys")) {
+        if (!oApp.loadEnv("gRider")) {
             System.err.println(oApp.getErrMsg());
             System.exit(1);
         }
         
-        if (!oApp.logUser("IntegSys", "M001111122")) { //M001080006
+        if (!oApp.logUser("gRider", "M001111122")) {
             System.err.println(oApp.getErrMsg());
             System.exit(1);
         }   

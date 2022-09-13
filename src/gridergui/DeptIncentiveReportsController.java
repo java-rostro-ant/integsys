@@ -5,6 +5,7 @@
 package gridergui;
 
 import java.net.URL;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -43,9 +44,11 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.swing.JRViewer;
 import org.rmj.appdriver.GRider;
+import org.rmj.appdriver.SQLUtil;
+import org.rmj.appdriver.agent.MsgBox;
 import org.rmj.appdriver.agentfx.CommonUtils;
 import org.rmj.appdriver.agentfx.ShowMessageFX;
-import org.rmj.fund.manager.base.IncentiveReport;
+import org.rmj.fund.manager.base.DeptIncentiveReport;
 import org.rmj.fund.manager.base.LMasDetTrans;
 import reportmodel.IncentiveDetail;
 import reportmodel.IncentiveMaster;
@@ -55,10 +58,10 @@ import reportmodel.IncentiveMaster;
  *
  * @author User
  */
-public class IncentiveReportsController implements Initializable, ScreenInterface{
+public class DeptIncentiveReportsController implements Initializable, ScreenInterface{
     
     private GRider oApp;
-    private IncentiveReport oTrans;
+    private DeptIncentiveReport oTrans;
     private LMasDetTrans oListener;
     
     private final boolean pbLoaded = false;
@@ -88,7 +91,7 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
     @FXML
     private VBox vbContainer;
     
-    private ObservableList<IncentiveDetail> inc_detail = FXCollections.observableArrayList();
+     private ObservableList<IncentiveDetail> inc_detail = FXCollections.observableArrayList();
     private final ObservableList<IncentiveMaster> inc_data = FXCollections.observableArrayList();
     public void setReportCategory(String foValue){
         System.out.println(foValue);
@@ -135,9 +138,9 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
 //            Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
 //        }
         
-        oTrans  = new IncentiveReport(oApp, oApp.getBranchCode(), false);
+        oTrans  = new DeptIncentiveReport(oApp, oApp.getBranchCode(), false);
         oTrans.setListener(oListener);
-        oTrans.setTranStat(1023);
+        oTrans.setTranStat(12);
         oTrans.setWithUI(true);
         initToggleGroup();
         initDatePicker();
@@ -162,18 +165,17 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
                 getFormattedDateFromDatePicker(dpPeriod);
             }
         });
+        
     }
     private void showReport(){
         
         SwingNode swingNode = new SwingNode();
         JRViewer jrViewer =  new JRViewer(jasperPrint);
 //        JasperViewer.viewReport(jasperPrint, false);
-         
         jrViewer.setOpaque(true);
         jrViewer.setVisible(true);
         jrViewer.setFitPageZoomRatio();
        
-            
         swingNode.setContent(jrViewer);
         swingNode.setVisible(true);
 //        reportPane.getChildren().clear();
@@ -182,6 +184,7 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
         reportPane.setLeftAnchor(swingNode,0.0);
         reportPane.setRightAnchor(swingNode,0.0);
         reportPane.getChildren().add(swingNode);
+        hideProgress();
     }    
  
     @Override
@@ -200,11 +203,11 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
                 case ENTER:
                     switch (lnIndex){
                         case 1: /*search branch*/
-                            if(oTrans.searchBranch(lsValue, false)) {
-                                txtField.setText((String) oTrans.getBranch("sBranchNm"));
+                            if(oTrans.searchDepartment(lsValue, false)) {
+                                txtField.setText((String) oTrans.getDepartment("sDeptName"));
 //                                ShowMessageFX.Warning(getStage(), "Unable to search branch.", "Warning", null);
                             } else{
-                               ShowMessageFX.Warning(getStage(), "Unable to search branch.", "Warning", null);
+                               ShowMessageFX.Warning(getStage(), "Unable to search department.", "Warning", null);
                             }
                             break;
                     }
@@ -263,30 +266,27 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
         if(datePicker.getValue() != null){
             LocalDate selectedDate = datePicker.getValue();
         //Create DateTimeFormatter
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMM");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM");
             //Convert LocalDate to formatted String
             sPeriodxx = selectedDate.format(formatter);
-            
             return selectedDate.format(formatter);
         }else{
             return "";
         }
         
     }
-    
     private void cmdButton_Click(ActionEvent event) {
             String lsButton = ((Button)event.getSource()).getId();
             switch (lsButton){
                 case "btnGenerate":
+                    showProgress();
                     if(txtField01.getText().isEmpty()){
                         oTrans.setBranch();
                     }
                     if(dpPeriod.getValue() == null){
                        sPeriodxx = "";
                     }
-                    showProgress();
                     loadReport();
-                    
                 break;
             }
     } 
@@ -305,92 +305,84 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
         vbProgress.getChildren().clear();
     }
     private boolean loadReport(){
-        //Create the parameter
+         //Create the parameter
             Map<String, Object> params = new HashMap<>();
             params.put("sReportNm", "Branch Incentive Report");
             params.put("sPrintdBy", System.getProperty("user.name"));
-            params.put("sReportDt", CommonUtils.xsDateLong(oApp.getServerDate()));
+            params.put("sReportDt", CommonUtils.xsDateMedium(oApp.getServerDate()));
             params.put("sCompnyNm", "Guanzon Group of Companies");
             params.put("sBranchNm", oApp.getBranchName());
             params.put("sAddressx", oApp.getAddress());
+        
         try{
             if (rbDetailed.isSelected()){
         
                 if(oTrans.OpenTransaction(sPeriodxx)){ 
                     inc_detail.clear();
                     for (int x = 1; x <= oTrans.getItemCount(); x++){
-                        
                         inc_detail.add(new IncentiveDetail(
                             oTrans.getDetail(x, "nEntryNox").toString(),
                             oTrans.getDetail(x, "xEmployNm").toString(),
-                            oTrans.getDetail(x, "xEmpLevNm").toString(),
                             oTrans.getDetail(x, "xPositnNm").toString(),
-                            oTrans.getDetail(x, "xSrvcYear").toString(),
-                            oTrans.getDetail(x, "nTotalAmt").toString(),
-                            oTrans.getDetail(x, "xBranchNm").toString(),
-                            oTrans.getDetail(x, "sMonthxxx").toString(),
+                            oTrans.getDetail(x, "xBankName").toString(),
+                            oTrans.getDetail(x, "xBankAcct").toString(),
+                            oTrans.getDetail(x, "sOldAmtxx").toString(),
+                            oTrans.getDetail(x, "sNewAmtxx").toString(),
+                            oTrans.getDetail(x, "xDeptName").toString(),
+                            oTrans.getDetail(x, "dEffctive").toString(),
                             oTrans.getDetail(x, "sRemarksx").toString(),
                             oTrans.getDetail(x, "sTransNox").toString()));
                     }
                 }
             String sourceFileName = 
-            "D://GGC_Java_Systems/reports/Incentive_Detailed_Report.jasper";
+            "D://GGC_Java_Systems/reports/DeptIncentive_Detailed_Report.jasper";
             String printFileName = null;
             JRBeanCollectionDataSource beanColDataSource1 = new JRBeanCollectionDataSource(inc_detail);
-            
+           
             try {
                  jasperPrint =JasperFillManager.fillReport(
                         sourceFileName, params, beanColDataSource1);
 //               
                 printFileName = jasperPrint.toString();
                 if(printFileName != null){
-                    
                     showReport();
-                    
                  }
             } catch (JRException ex) {
                 Logger.getLogger(ReportsController.class.getName()).log(Level.SEVERE, null, ex);
             }
-       
         }
         else if(rbSummarized.isSelected()){
             if(oTrans.OpenTransactionMaster(sPeriodxx)){ 
             inc_data.clear();
             for (int x = 1; x <= oTrans.getItemMasterCount(); x++){
-                String total = oTrans.getMaster(x, "xTotalAmt").toString();
-              
+            
                 inc_data.add(new IncentiveMaster(
                     String.valueOf(x),
                     oTrans.getMaster(x, "sTransNox").toString(),
-                    oTrans.getMaster(x, "xBranchNm").toString(),
-                    oTrans.getMaster(x, "sMonthxxx").toString(),
+                    oTrans.getMaster(x, "xDeptName").toString(),
+                    oTrans.getMaster(x, "dEffctive").toString(),
                     String.valueOf(oTrans.OpenToTalMaster(x, oTrans.getMaster(x, "sTransNox").toString()))));
                 }
         }
             String sourceFileName = 
-            "D://GGC_Java_Systems/reports/Incentives_Summary.jasper";
+            "D://GGC_Java_Systems/reports/DeptIncentive_Report.jasper";
             String printFileName = null;
             JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(inc_data);
-            
             try {
                  jasperPrint =JasperFillManager.fillReport(
                         sourceFileName, params, beanColDataSource);
                
                 printFileName = jasperPrint.toString();
                 if(printFileName != null){
-                    
                     showReport();
-                    
                  }
             } catch (JRException ex) {
                 Logger.getLogger(ReportsController.class.getName()).log(Level.SEVERE, null, ex);
             }
         } 
-    
     }catch(SQLException e){}
         return true;
     }
 }
  
     
-
