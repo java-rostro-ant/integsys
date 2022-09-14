@@ -164,7 +164,6 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
         });
     }
     private void showReport(){
-        
         SwingNode swingNode = new SwingNode();
         JRViewer jrViewer =  new JRViewer(jasperPrint);
 //        JasperViewer.viewReport(jasperPrint, false);
@@ -281,11 +280,18 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
                     if(txtField01.getText().isEmpty()){
                         oTrans.setBranch();
                     }
-                    if(dpPeriod.getValue() == null){
-                       sPeriodxx = "";
+                   if (rbDetailed.isSelected()){
+                        if(dpPeriod.getValue() == null){
+                          sPeriodxx = "";
+                          ShowMessageFX.Warning(getStage(), "Incentive period must not be empty","Warning", null);
+                       } else {
+                           showProgress();
+                           loadReport();
+                       }
+                    } else {
+                        showProgress();
+                        loadReport();
                     }
-                    showProgress();
-                    loadReport();
                     
                 break;
             }
@@ -307,7 +313,11 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
     private boolean loadReport(){
         //Create the parameter
             Map<String, Object> params = new HashMap<>();
-            params.put("sReportNm", "Branch Incentive Report");
+//            if (rbDetailed.isSelected()){
+//                params.put("sReportNm", "Branch Incentive Detailed Report");
+//            }else {
+//                params.put("sReportNm", "Branch Incentive Summary Report");
+//            }
             params.put("sPrintdBy", System.getProperty("user.name"));
             params.put("sReportDt", CommonUtils.xsDateLong(oApp.getServerDate()));
             params.put("sCompnyNm", "Guanzon Group of Companies");
@@ -315,11 +325,10 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
             params.put("sAddressx", oApp.getAddress());
         try{
             if (rbDetailed.isSelected()){
-        
+                 params.put("sReportNm", "Branch Incentive Detailed Report");
                 if(oTrans.OpenTransaction(sPeriodxx)){ 
                     inc_detail.clear();
                     for (int x = 1; x <= oTrans.getItemCount(); x++){
-                        
                         inc_detail.add(new IncentiveDetail(
                             oTrans.getDetail(x, "nEntryNox").toString(),
                             oTrans.getDetail(x, "xEmployNm").toString(),
@@ -354,6 +363,7 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
        
         }
         else if(rbSummarized.isSelected()){
+            params.put("sReportNm", "Branch Incentive Summary Report");
             if(oTrans.OpenTransactionMaster(sPeriodxx)){ 
             inc_data.clear();
             for (int x = 1; x <= oTrans.getItemMasterCount(); x++){
