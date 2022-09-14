@@ -167,15 +167,17 @@ public class DeptIncentiveReportsController implements Initializable, ScreenInte
         });
         
     }
-    private void showReport(){
-        
+
+       private void showReport(){
         SwingNode swingNode = new SwingNode();
         JRViewer jrViewer =  new JRViewer(jasperPrint);
 //        JasperViewer.viewReport(jasperPrint, false);
+         
         jrViewer.setOpaque(true);
         jrViewer.setVisible(true);
         jrViewer.setFitPageZoomRatio();
        
+            
         swingNode.setContent(jrViewer);
         swingNode.setVisible(true);
 //        reportPane.getChildren().clear();
@@ -184,8 +186,7 @@ public class DeptIncentiveReportsController implements Initializable, ScreenInte
         reportPane.setLeftAnchor(swingNode,0.0);
         reportPane.setRightAnchor(swingNode,0.0);
         reportPane.getChildren().add(swingNode);
-        hideProgress();
-    }    
+    }  
  
     @Override
     public void setGRider(GRider foValue) {
@@ -279,14 +280,25 @@ public class DeptIncentiveReportsController implements Initializable, ScreenInte
             String lsButton = ((Button)event.getSource()).getId();
             switch (lsButton){
                 case "btnGenerate":
-                    showProgress();
                     if(txtField01.getText().isEmpty()){
                         oTrans.setBranch();
                     }
-                    if(dpPeriod.getValue() == null){
-                       sPeriodxx = "";
+                    if (rbDetailed.isSelected()){
+                        if(dpPeriod.getValue() == null){
+                          sPeriodxx = "";
+                          ShowMessageFX.Warning(getStage(), "Incentive period must not be empty","Warning", null);
+                       } else {
+                           showProgress();
+                           loadReport();
+                       }
+                    } else {
+                        showProgress();
+                        loadReport();
                     }
-                    loadReport();
+                        
+                   
+                    
+                    
                 break;
             }
     } 
@@ -307,22 +319,22 @@ public class DeptIncentiveReportsController implements Initializable, ScreenInte
     private boolean loadReport(){
          //Create the parameter
             Map<String, Object> params = new HashMap<>();
-            params.put("sReportNm", "Branch Incentive Report");
-            params.put("sPrintdBy", System.getProperty("user.name"));
-            params.put("sReportDt", CommonUtils.xsDateMedium(oApp.getServerDate()));
-            params.put("sCompnyNm", "Guanzon Group of Companies");
-            params.put("sBranchNm", oApp.getBranchName());
-            params.put("sAddressx", oApp.getAddress());
+//                params.put("sReportNm", "Department Incentive Report");
+                params.put("sPrintdBy", System.getProperty("user.name"));
+                params.put("sReportDt", CommonUtils.xsDateLong(oApp.getServerDate()));
+                params.put("sCompnyNm", "Guanzon Group of Companies");
+                params.put("sBranchNm", oApp.getBranchName());
+                params.put("sAddressx", oApp.getAddress());
         
         try{
             if (rbDetailed.isSelected()){
-        
+               params.put("sReportNm", "Department Incentive Detailed Report");
                 if(oTrans.OpenTransaction(sPeriodxx)){ 
                     inc_detail.clear();
                     for (int x = 1; x <= oTrans.getItemCount(); x++){
                         inc_detail.add(new IncentiveDetail(
                             oTrans.getDetail(x, "nEntryNox").toString(),
-                            oTrans.getDetail(x, "xEmployNm").toString(),
+                            oTrans.getDetail(x, "xEmployNm").toString(),    
                             oTrans.getDetail(x, "xPositnNm").toString(),
                             oTrans.getDetail(x, "xBankName").toString(),
                             oTrans.getDetail(x, "xBankAcct").toString(),
@@ -342,7 +354,7 @@ public class DeptIncentiveReportsController implements Initializable, ScreenInte
             try {
                  jasperPrint =JasperFillManager.fillReport(
                         sourceFileName, params, beanColDataSource1);
-//               
+                 
                 printFileName = jasperPrint.toString();
                 if(printFileName != null){
                     showReport();
@@ -352,6 +364,7 @@ public class DeptIncentiveReportsController implements Initializable, ScreenInte
             }
         }
         else if(rbSummarized.isSelected()){
+            params.put("sReportNm", "Department Incentive Summary Report");
             if(oTrans.OpenTransactionMaster(sPeriodxx)){ 
             inc_data.clear();
             for (int x = 1; x <= oTrans.getItemMasterCount(); x++){
