@@ -85,6 +85,8 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
     @FXML
     private Button btnAddIncentives;
     @FXML
+    private Button btnAddEmployee;
+    @FXML
     private Button btnAddDeductions;
     @FXML
     private AnchorPane AnchorMain;
@@ -201,6 +203,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         tblemployee_column();
         
         btnNew.setOnAction(this::cmdButton_Click);
+        btnAddEmployee.setOnAction(this::cmdButton_Click);
         btnAddIncentives.setOnAction(this::cmdButton_Click);
         btnAddDeductions.setOnAction(this::cmdButton_Click);
         btnClose.setOnAction(this::cmdButton_Click);
@@ -339,6 +342,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         btnDelEmp.setVisible(lbShow);
         btnActivate.setVisible(lbShow);
         btnDeactivate.setVisible(lbShow);
+        btnAddEmployee.setVisible(lbShow);
         btnAddIncentives.setVisible(lbShow);
         btnAddDeductions.setVisible(lbShow);
         
@@ -378,11 +382,13 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
             txtSeeks22.setDisable(lbShow);  
         }
         if (lbShow = (fnValue == EditMode.UPDATE)) {
-                btnAddIncentives.setDisable(true);
-                btnAddDeductions.setDisable(true);
+            btnAddEmployee.setDisable(true);
+            btnAddIncentives.setDisable(true);
+            btnAddDeductions.setDisable(true);
         } else {
-                btnAddIncentives.setDisable(false);
-                btnAddDeductions.setDisable(false);
+            btnAddEmployee.setDisable(false);
+            btnAddIncentives.setDisable(false);
+            btnAddDeductions.setDisable(false);
         }
     }
     @Override
@@ -670,6 +676,11 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                 case "btnAddIncentives":
                     if (oTrans.searchIncentive("", false)){
                         loadIncentives();
+                    }
+                    break;
+                 case "btnAddEmployee":
+                    if (oTrans.SearchEmployee("", false)){
+                        loadDetail();
                     }
                     break;
                 case "btnAddDeductions":
