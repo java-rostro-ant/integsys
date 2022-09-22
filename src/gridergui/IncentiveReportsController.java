@@ -339,7 +339,9 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
                             oTrans.getDetail(x, "xBranchNm").toString(),
                             oTrans.getDetail(x, "sMonthxxx").toString(),
                             oTrans.getDetail(x, "sRemarksx").toString(),
-                            oTrans.getDetail(x, "sTransNox").toString()));
+                            oTrans.getDetail(x, "sTransNox").toString(),
+                            oTrans.getDetail(x, "xBankName").toString(),
+                            oTrans.getDetail(x, "xBankAcct").toString()));
                     }
                 }
             String sourceFileName = 
