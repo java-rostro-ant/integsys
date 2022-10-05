@@ -104,6 +104,25 @@ public class IncentiveDetail {
         this.index12 = new SimpleStringProperty(index12);
 //        this.index13 = new SimpleStringProperty(index13);
     }
+    // Incentive Detail Category Report
+    public IncentiveDetail(String index01,
+               String index02,
+               String index03,
+               String index04,
+               String index05,
+               String index06,
+               String index07,
+               String index08){
+        
+        this.index01 = new SimpleStringProperty(index01);
+        this.index02 = new SimpleStringProperty(index02);
+        this.index03 = new SimpleStringProperty(index03);
+        this.index04 = new SimpleStringProperty(index04);
+        this.index05 = new SimpleStringProperty(index05);
+        this.index06 = new SimpleStringProperty(index06);
+        this.index07 = new SimpleStringProperty(index07);
+        this.index08 = new SimpleStringProperty(index08);
+    }
     
 
     
