@@ -168,7 +168,7 @@ public class DeptIncentiveReleasingController implements Initializable, ScreenIn
         
         oTrans = new DeptIncentiveRelease(oApp, oApp.getBranchCode(), false);
         oTrans.setListener(oListener);
-        oTrans.setTranStat(1);
+        oTrans.setTranStat(102);
         oTrans.setWithUI(true);
         btnNew.setOnAction(this::cmdButton_Click);
         btnSave.setOnAction(this::cmdButton_Click);
@@ -509,7 +509,7 @@ public class DeptIncentiveReleasingController implements Initializable, ScreenIn
     private void clearFields() {
         oTrans = new DeptIncentiveRelease(oApp, oApp.getBranchCode(), false);
         oTrans.setListener(oListener);
-        oTrans.setTranStat(1);
+        oTrans.setTranStat(102);
         oTrans.setWithUI(true);
         pnEditMode = EditMode.UNKNOWN;
         data.clear();
