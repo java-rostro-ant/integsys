@@ -5,8 +5,6 @@
 package gridergui;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
-import static gridergui.DeptIncentivesHistController.dateToWord;
-import static gridergui.DeptIncentivesHistController.priceWithDecimal;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -357,42 +355,39 @@ public class DeptIncentiveReleasingController implements Initializable, ScreenIn
         try {
             switch (lsButton){
                 case "btnBrowse": //browse transaction
-                       pbLoaded = true;
-                        if (oTrans.SearchTransaction(txtSeeks05.getText(), true)){
-                               loadRecord();
-                               txtSeeks05.setText((String)oTrans.getMaster("sTransNox"));
-                               pnEditMode = oTrans.getEditMode();
-                           } else 
-                               ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
-                    
+                    pbLoaded = true;
+                     if (oTrans.SearchTransaction(txtSeeks05.getText(), true)){
+                         loadRecord();
+                         txtSeeks05.setText((String)oTrans.getMaster("sTransNox"));
+                         pnEditMode = oTrans.getEditMode();
+                     } else 
+                         ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                     break;
                 case "btnNew": //create new transaction
-                        pbLoaded = true;
-                        if (oTrans.NewTransaction()){
-                            emp_data.clear();
-                            txtSeeks05.clear();
-                            loadRecord();
-                            pnEditMode = oTrans.getEditMode();
-                        } else 
-                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                    pbLoaded = true;
+                    if (oTrans.NewTransaction()){
+                        emp_data.clear();
+                        txtSeeks05.clear();
+                        loadRecord();
+                        pnEditMode = oTrans.getEditMode();
+                    } else 
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                     break;
                 case "btnRelease": //release transaction
-//                  if (oTrans.ReleaseTransaction()){
-//                            MsgBox.showOk("Transaction releasing success!");
-//                            clearFields();
-//                            pnEditMode = oTrans.getEditMode();
-//                        } else 
-//                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                  if (oTrans.ReleaseTransaction()){
+                        ShowMessageFX.Warning(getStage(), "Transaction releasing success!","Warning", null);
+                        clearFields();
+                        pnEditMode = oTrans.getEditMode();
+                    } else 
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                     break;
-                    
                  case "btnSave": //save transaction
-                        if (oTrans.SaveTransaction()){
-                            ShowMessageFX.Warning(getStage(), "Transaction Successfully Saved.","Warning", null);
-                            clearFields();
-                        } else {
-                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
-                        }
-                       
+                    if (oTrans.SaveTransaction()){
+                        ShowMessageFX.Warning(getStage(), "Transaction Successfully Saved.","Warning", null);
+                        clearFields();
+                    } else {
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                    }  
                     break;    
                 case "btnApproved": //approve transaction
                     if(!oTrans.getMaster("sTransNox").toString().trim().isEmpty()){
@@ -405,7 +400,6 @@ public class DeptIncentiveReleasingController implements Initializable, ScreenIn
                                ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                         } 
                     }
-                    
                     break;
                 case "btnDisapproved": //disapprove transaction
                     if(!oTrans.getMaster("sTransNox").toString().trim().isEmpty()){
@@ -449,27 +443,18 @@ public class DeptIncentiveReleasingController implements Initializable, ScreenIn
             emp_data.clear();
           
             if(oTrans.OpenDeptTransaction(oTrans.getDeptMaster(pnRow + 1, "sTransNox").toString())){
-                
-                for(int lnCtr  = 1; lnCtr  <= oTrans.getDetailItemCount(); lnCtr ++){
-                    
-//                  
-                    
+                for(int lnCtr  = 1; lnCtr  <= oTrans.getDetailItemCount(); lnCtr ++){       
                     emp_data.add(new Release(String.valueOf(lnCtr),
-                         (String)oTrans.getDeptDetail(lnCtr , "xEmployNm"),
-                         (String)oTrans.getDeptDetail(lnCtr , "xPositnNm"),
-                         (String)oTrans.getDeptDetail(lnCtr, 11),
-                         (String)oTrans.getDeptDetail(lnCtr , 10),
-                         priceWithDecimal((String)oTrans.getDeptDetail(lnCtr, 5)),
-                         priceWithDecimal((String)oTrans.getDeptDetail(lnCtr, 6))));
-//                
+                        (String)oTrans.getDeptDetail(lnCtr , "xEmployNm"),
+                        (String)oTrans.getDeptDetail(lnCtr , "xPositnNm"),
+                        (String)oTrans.getDeptDetail(lnCtr, 11),
+                        (String)oTrans.getDeptDetail(lnCtr , 10),
+                        CommonUtils.NumberFormat((double) oTrans.getDeptDetail(lnCtr, 5), "#,##0.00"),
+                        CommonUtils.NumberFormat((double) oTrans.getDeptDetail(lnCtr, 6), "#,##0.00")));
                 }
                 initEmployeeGrid();
             }
-        } catch (SQLException ex) {
-//            ShowMessageFX.Warning(getStage(),ex.getMessage(), "Warning", null);
-            ex.printStackTrace();
-        }catch (NullPointerException ex) {
-//            ShowMessageFX.Warning(getStage(),ex.getMessage(), "Warning", null);
+        } catch (SQLException | NullPointerException ex) {
             ex.printStackTrace();
         }
         
