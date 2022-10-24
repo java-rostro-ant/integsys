@@ -10,6 +10,8 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 import javafx.animation.FadeTransition;
+import javafx.beans.property.ReadOnlyBooleanPropertyBase;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -35,8 +37,11 @@ import org.rmj.appdriver.agentfx.CommonUtils;
 import org.rmj.appdriver.constants.EditMode;
 import static javafx.scene.input.KeyCode.F3;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
+import org.rmj.appdriver.StringUtil;
+import org.rmj.appdriver.agent.MsgBox;
 import org.rmj.appdriver.agentfx.ShowMessageFX;
 import org.rmj.fund.manager.base.DeptIncentive;
 import org.rmj.fund.manager.base.LMasDetTrans;
@@ -73,13 +78,15 @@ public class DeptIncentivesApprovalController implements Initializable, ScreenIn
     @FXML
     private TextArea txtField06;
     @FXML
-    private TextField txtField011,txtField021,txtField031,txtField041,txtField051,txtSearch01;
+    private TextField txtField011,txtField021,txtField031,txtField041,txtField051,txtSearch01,txtSearch02;
     @FXML
     private TableView tblemployee;
     @FXML
     private TableColumn index01,index02,index03,index04,index05,index06,index07;
     @FXML
     private Label lblStatus,lblTotal;
+    @FXML
+    private Pane paneStatus;
     
     public void setTransaction(String fsValue){
         oTransnox = fsValue;
@@ -129,6 +136,7 @@ public class DeptIncentivesApprovalController implements Initializable, ScreenIn
         oTrans.setWithUI(true);
      
         txtSearch01.setOnKeyPressed(this::txtField_KeyPressed);
+        txtSearch02.setOnKeyPressed(this::txtField_KeyPressed);
 
         initButton(EditMode.UNKNOWN);
         pbLoaded = true;
@@ -147,6 +155,85 @@ public class DeptIncentivesApprovalController implements Initializable, ScreenIn
             CommonUtils.SetPreviousFocus((TextArea)event.getSource());
         }
     }
+//    final ChangeListener<? super Boolean> txtField_Focus = (o,ov,nv)->{ 
+//        if (!pbLoaded) return;
+//        
+//        TextField txtField = (TextField)((ReadOnlyBooleanPropertyBase)o).getBean();
+//        int lnIndex = Integer.parseInt(txtField.getId().substring(8,10));
+//        
+//        String lsValue = txtField.getText();
+//        
+//        if (lsValue == null) return;
+//        if (lsValue.isEmpty()) return;    
+//        
+//        try {
+//            if(!nv){ /*Lost Focus*/
+//                switch (lnIndex){
+//                    case 03:
+//                        if (StringUtil.isNumeric(lsValue)) 
+//                            oTrans.setIncentiveInfo(tbl_row, "nQtyGoalx", Integer.parseInt(lsValue));
+//                        else    
+//                            oTrans.setIncentiveInfo(tbl_row, "nQtyGoalx", 0);
+//
+//                        txtField.setText(CommonUtils.NumberFormat((Number)oTrans.getIncentiveInfo(tbl_row, "nQtyGoalx"), "0"));
+//                        break;
+//                    case 04:
+//                        if (StringUtil.isNumeric(lsValue)) 
+//                            oTrans.setIncentiveInfo(tbl_row, "nQtyActlx", Integer.parseInt(lsValue));
+//                        else    
+//                            oTrans.setIncentiveInfo(tbl_row, "nQtyActlx", 0);
+//
+//                        txtField.setText(CommonUtils.NumberFormat((Number)oTrans.getIncentiveInfo(tbl_row, "nQtyActlx"), "0"));
+//                        break;
+//                    case 05:
+//                        if (StringUtil.isNumeric(lsValue)) 
+//                            oTrans.setIncentiveInfo(tbl_row, "nAmtGoalx", Double.parseDouble(lsValue));
+//                        else    
+//                            oTrans.setIncentiveInfo(tbl_row, "nAmtGoalx", 0.00);
+//
+//                        txtField.setText(CommonUtils.NumberFormat((Number)oTrans.getIncentiveInfo(tbl_row, "nAmtGoalx"), "#,##0.00"));    
+//                        break;
+//                    case 06:
+//                        if (StringUtil.isNumeric(lsValue)) 
+//                            oTrans.setIncentiveInfo(tbl_row, "nAmtActlx", Double.parseDouble(lsValue));
+//                        else    
+//                            oTrans.setIncentiveInfo(tbl_row, "nAmtActlx", 0.00);
+//
+//                        txtField.setText(CommonUtils.NumberFormat((Number)oTrans.getIncentiveInfo(tbl_row, "nAmtActlx"), "#,##0.00"));
+//                        break;
+//                    case 07:     
+//                        if (total_alloc > Double.parseDouble(lsValue)){
+//                            if (MsgBox.showOkCancel("Incentive amount is less than the total cash that is already allocated." +
+//                                    "\n\nDo you want to reset allocation and continue?") == MsgBox.RESP_YES_OK){
+//                                oTrans.resetIncentiveEmployeeAllocation(psCode);
+//                            } else break;
+//                        }
+//
+//                        oTrans.setIncentiveInfo(tbl_row, "nInctvAmt", Double.parseDouble(lsValue));
+//                        txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveInfo(tbl_row, "nInctvAmt"), "#,##0.00"));
+//                        break;
+//                }
+//            } else{ //Focus
+//                switch (lnIndex){
+//                    case 05:
+//                        txtField.setText(String.valueOf(oTrans.getIncentiveInfo(tbl_row, "nAmtGoalx"))); break;
+//                    case 06:
+//                        txtField.setText(String.valueOf(oTrans.getIncentiveInfo(tbl_row, "nAmtActlx"))); break;
+//                    case 07:
+//                        txtField.setText(String.valueOf(oTrans.getIncentiveInfo(tbl_row, "nInctvAmt"))); break;
+//                    case 11:
+//                        txtField.setText(String.valueOf((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID")))); break;
+//                    case 12:
+//                        txtField.setText(String.valueOf((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"))));
+//                }
+//                txtField.selectAll();
+//                pnIndex = lnIndex;
+//            } 
+//        } catch (SQLException e) {
+//            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
+//        }
+//    };
+    
     private void txtField_KeyPressed(KeyEvent event){
         TextField txtField = (TextField)event.getSource();
         int lnIndex = Integer.parseInt(((TextField)event.getSource()).getId().substring(9,11));
@@ -159,15 +246,25 @@ public class DeptIncentivesApprovalController implements Initializable, ScreenIn
  
                     switch (lnIndex){
                         case 01: /*search Transaction*/
-                         if (oTrans.SearchTransaction(txtSearch01.getText(), true)){
-                            loadMaster();
-                            loadDetail();
-                            getSelectedEmployee();
-                        } else {
-                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
-                        }
-                         pnEditMode = oTrans.getEditMode();
-                        break;
+                            if (oTrans.SearchTransaction(txtSearch01.getText(), true)){
+                                loadMaster();
+                                loadDetail();
+                                getSelectedEmployee();
+                            } else {
+                                ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                            }
+                             pnEditMode = oTrans.getEditMode();
+                            break;
+                        case 02: /*search Transaction*/
+                            if (oTrans.SearchTransaction(txtSearch02.getText(), false)){
+                                loadMaster();
+                                loadDetail();
+                                getSelectedEmployee();
+                            } else {
+                                ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                            }
+                             pnEditMode = oTrans.getEditMode();
+                            break;
                     }
                 break;
                 
@@ -189,22 +286,18 @@ public class DeptIncentivesApprovalController implements Initializable, ScreenIn
             CommonUtils.SetPreviousFocus(txtField);
         }
     } 
-    
     private void initButton(int fnValue){
-        boolean lbShow = (fnValue == EditMode.READY);
-        btnCancel.setVisible(lbShow);
-        btnDisappr.setVisible(lbShow);
-        btnApprove.setVisible(lbShow);
+        boolean lbShow = (fnValue == EditMode.UNKNOWN);
+        btnCancel.setVisible(!lbShow);
+        btnDisappr.setVisible(!lbShow);
+        btnApprove.setVisible(!lbShow);
 
-        btnBrowse.setManaged(!lbShow);
-        btnApprove.setManaged(lbShow);
-        btnCancel.setManaged(lbShow);
-        btnDisappr.setManaged(lbShow);
+        btnBrowse.setManaged(lbShow);
+        btnApprove.setManaged(!lbShow);
+        btnCancel.setManaged(!lbShow);
+        btnDisappr.setManaged(!lbShow);
 
-        btnBrowse.setVisible(!lbShow);
-
-
-        
+        btnBrowse.setVisible(lbShow);
        
     }
     @Override
@@ -217,6 +310,7 @@ public class DeptIncentivesApprovalController implements Initializable, ScreenIn
         txtSearch01.setText((String) oTrans.getMaster("sTransNox"));
        
         lblStatus.setVisible(true);
+        paneStatus.setVisible(true);
         if(oTrans.getMaster(7).toString().equalsIgnoreCase("0")){
             lblStatus.setText("OPEN");
         }else if(oTrans.getMaster(7).toString().equalsIgnoreCase("1")){
@@ -228,6 +322,7 @@ public class DeptIncentivesApprovalController implements Initializable, ScreenIn
         else if(oTrans.getMaster(7).toString().equalsIgnoreCase("3")){
             lblStatus.setText("CANCELLED");
         }else{
+            paneStatus.setVisible(false);
             lblStatus.setVisible(false);
         }
         txtField02.setText(dateToWord(oTrans.getMaster("dTransact").toString()));
@@ -309,16 +404,19 @@ public class DeptIncentivesApprovalController implements Initializable, ScreenIn
                 switch (lsButton){
                 
                 case "btnBrowse": 
-                            if (oTrans.SearchTransaction(txtSearch01.getText(), true)){
+                        if (oTrans.SearchTransaction(txtSearch01.getText(), true)){
                             loadMaster();
                             loadDetail();
                             getSelectedEmployee();
                             
-                            pnEditMode = oTrans.getEditMode();
-                        } else {
-                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
-                        }
-                            
+                        } else if(oTrans.SearchTransaction(txtSearch02.getText(), false)){
+                            loadMaster();
+                            loadDetail();
+                            getSelectedEmployee();
+                        } else 
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);   
+                        
+                        pnEditMode = oTrans.getEditMode();
                         break;
                 case "btnClose":
                         if(ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to close?") == true){
@@ -331,40 +429,46 @@ public class DeptIncentivesApprovalController implements Initializable, ScreenIn
                         } 
                             return;
                 case "btnApprove":
-                        if (oTrans.CloseTransaction()){
+                      if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to approve this transaction?") == true){  
+                            if (oTrans.CloseTransaction()){
                             
-                            ShowMessageFX.Warning(getStage(), "Transaction Approved successfully.", "Warning", null);
-                            if(state){
-                               onsuccessUpdate();
-                            }else{
-                                clearFields();
-                                oTrans = new DeptIncentive(oApp, oApp.getBranchCode(), false);
-                                oTrans.setListener(oListener);
-                                oTrans.setTranStat(0);
-                                oTrans.setWithUI(true);
-                                pnEditMode = EditMode.UNKNOWN;
+                                ShowMessageFX.Warning(getStage(), "Transaction Approved successfully.", "Warning", null);
+                                if(state){
+                                   onsuccessUpdate();
+                                }else{
+                                    clearFields();
+                                    oTrans = new DeptIncentive(oApp, oApp.getBranchCode(), false);
+                                    oTrans.setListener(oListener);
+                                    oTrans.setTranStat(0);
+                                    oTrans.setWithUI(true);
+                                    pnEditMode = EditMode.UNKNOWN;
+                                }
+                            } else {
+                                ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                             }
-                        } else {
-                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                         }
+                        
                     break;
                 case "btnDisappr":
-                        if (oTrans.CancelTransaction()){
+                        if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disapprove this transaction?") == true){  
+                            if (oTrans.CancelTransaction()){
                             
-                            ShowMessageFX.Warning(getStage(), "Transaction Disapproved successfully.", "Warning", null);
-                            if(state){
-                               onsuccessUpdate();
-                            }else{
-                                clearFields();
-                                oTrans = new DeptIncentive(oApp, oApp.getBranchCode(), false);
-                                oTrans.setListener(oListener);
-                                oTrans.setTranStat(0);
-                                oTrans.setWithUI(true);
-                                pnEditMode = EditMode.UNKNOWN;
+                                ShowMessageFX.Warning(getStage(), "Transaction Disapproved successfully.", "Warning", null);
+                                if(state){
+                                   onsuccessUpdate();
+                                }else{
+                                    clearFields();
+                                    oTrans = new DeptIncentive(oApp, oApp.getBranchCode(), false);
+                                    oTrans.setListener(oListener);
+                                    oTrans.setTranStat(0);
+                                    oTrans.setWithUI(true);
+                                    pnEditMode = EditMode.UNKNOWN;
+                                }
+                            } else {
+                                ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                             }
-                        } else {
-                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                         }
+                        
                     break;
 
                 case "btnCancel":
@@ -404,6 +508,8 @@ public class DeptIncentivesApprovalController implements Initializable, ScreenIn
         txtField051.setDisable(true);
         txtSearch01.setText("");
         lblTotal.setText("0.0");
+        lblStatus.setText("");
+        paneStatus.setVisible(false);
     }
 
     private void initGrid() {

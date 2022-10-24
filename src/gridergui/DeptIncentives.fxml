@@ -18,7 +18,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="AnchorMain" style="-fx-border-color: orange; -fx-border-radius: 5;" stylesheets="@/css/EmployeeIncentives.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
@@ -198,100 +197,97 @@
                                     </AnchorPane>
                                  </top>
                                  <center>
-                                    <AnchorPane prefHeight="478.0" prefWidth="1282.0" style="-fx-border-radius: 5; -fx-border-color: #F88222;" BorderPane.alignment="CENTER">
+                                    <AnchorPane prefWidth="1282.0" style="-fx-border-radius: 5; -fx-border-color: #F88222;" BorderPane.alignment="CENTER">
                                        <children>
-                                          <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                          <AnchorPane AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="0.0">
                                              <children>
-                                                <AnchorPane>
+                                                <GridPane>
+                                                   <columnConstraints>
+                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="30.0" minWidth="20.0" prefWidth="20.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="233.0" minWidth="10.0" prefWidth="113.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="269.0" minWidth="10.0" prefWidth="227.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="269.0" minWidth="10.0" prefWidth="70.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="269.0" minWidth="10.0" prefWidth="125.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="456.0" minWidth="10.0" prefWidth="256.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="30.0" minWidth="20.0" prefWidth="20.0" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints maxHeight="8.0" minHeight="5.0" prefHeight="5.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints maxHeight="40.0" minHeight="25.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints maxHeight="30.0" minHeight="25.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints maxHeight="85.0" minHeight="5.0" prefHeight="5.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints maxHeight="8.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
+                                                   </rowConstraints>
                                                    <children>
-                                                      <GridPane>
-                                                         <columnConstraints>
-                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="30.0" minWidth="20.0" prefWidth="20.0" />
-                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="233.0" minWidth="10.0" prefWidth="113.0" />
-                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="269.0" minWidth="10.0" prefWidth="227.0" />
-                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="269.0" minWidth="10.0" prefWidth="70.0" />
-                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="269.0" minWidth="10.0" prefWidth="125.0" />
-                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="456.0" minWidth="10.0" prefWidth="256.0" />
-                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="30.0" minWidth="20.0" prefWidth="20.0" />
-                                                         </columnConstraints>
-                                                         <rowConstraints>
-                                                            <RowConstraints maxHeight="8.0" minHeight="5.0" prefHeight="5.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints maxHeight="40.0" minHeight="25.0" prefHeight="40.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints maxHeight="30.0" minHeight="25.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints maxHeight="85.0" minHeight="5.0" prefHeight="5.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints maxHeight="8.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
-                                                         </rowConstraints>
-                                                         <children>
-                                                            <TextField fx:id="txtField011" editable="false" prefHeight="25.0" prefWidth="242.0" style="-fx-border-radius: 5;" GridPane.columnIndex="2" GridPane.rowIndex="2">
-                                                               <font>
-                                                                  <Font name="System Bold" size="12.0" />
-                                                               </font>
-                                                            </TextField>
-                                                            <Label prefHeight="17.0" prefWidth="108.0" text="Employee" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                                                               <font>
-                                                                  <Font name="System Bold" size="12.0" />
-                                                               </font>
-                                                            </Label>
-                                                            <Label text="Position" GridPane.columnIndex="1" GridPane.rowIndex="3">
-                                                               <font>
-                                                                  <Font name="MS Reference Sans Serif" size="12.0" />
-                                                               </font>
-                                                            </Label>
-                                                            <TextField fx:id="txtField021" editable="false" prefHeight="23.0" prefWidth="238.0" style="-fx-border-radius: 5;" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                                            <Label text="Old Amount" GridPane.columnIndex="4" GridPane.rowIndex="2">
-                                                               <font>
-                                                                  <Font name="MS Reference Sans Serif" size="12.0" />
-                                                               </font>
-                                                            </Label>
-                                                            <TextField fx:id="txtField031" editable="false" prefHeight="23.0" prefWidth="238.0" style="-fx-border-radius: 5;" GridPane.columnIndex="5" GridPane.rowIndex="2" />
-                                                            <Label text="New Amount" GridPane.columnIndex="4" GridPane.rowIndex="3">
-                                                               <font>
-                                                                  <Font name="MS Reference Sans Serif" size="12.0" />
-                                                               </font>
-                                                            </Label>
-                                                            <TextField fx:id="txtField041" prefHeight="23.0" prefWidth="238.0" promptText="Please Enter Amount" style="-fx-border-radius: 5;" GridPane.columnIndex="5" GridPane.rowIndex="3">
-                                                               <font>
-                                                                  <Font name="System Bold" size="12.0" />
-                                                               </font></TextField>
-                                                            <Label text="INCENTIVES DETAIL" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1">
-                                                               <font>
-                                                                  <Font name="Bookman Old Style Bold" size="18.0" />
-                                                               </font>
-                                                               <padding>
-                                                                  <Insets left="10.0" />
-                                                               </padding>
-                                                            </Label>
-                                                            <Label text="Remarks" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                                                            <TextField fx:id="txtField051" prefHeight="23.0" prefWidth="238.0" style="-fx-border-radius: 5;" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="4" />
-                                                         </children>
-                                                      </GridPane>
-                                                   </children>
-                                                </AnchorPane>
-                                                <AnchorPane>
-                                                   <children>
-                                                      <TableView fx:id="tblemployee" onMouseClicked="#tblemployee_Clicked" style="-fx-border-color: #F88222;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                         <columns>
-                                                            <TableColumn fx:id="index01" editable="false" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="35.0" sortable="false" text="No." />
-                                                            <TableColumn fx:id="index02" editable="false" maxWidth="-1.0" minWidth="215.0" prefWidth="-1.0" sortable="false" text="Employee" />
-                                                            <TableColumn fx:id="index03" editable="false" maxWidth="-1.0" minWidth="140.0" prefWidth="-1.0" sortable="false" text="Position" />
-                                                            <TableColumn fx:id="index04" maxWidth="-1.0" minWidth="150.0" prefWidth="-1.0" text="Bank Name" />
-                                                            <TableColumn fx:id="index05" maxWidth="-1.0" minWidth="120.0" prefWidth="-1.0" text="Account No." />
-                                                            <TableColumn fx:id="index06" editable="false" maxWidth="-1.0" minWidth="85.0" prefWidth="-1.0" sortable="false" text="Old Amount" />
-                                                            <TableColumn fx:id="index07" editable="false" maxWidth="-1.0" minWidth="85.0" prefWidth="-1.0" sortable="false" text="New Amount" />
-                                                         </columns>
-                                                         <effect>
-                                                            <Blend />
-                                                         </effect>
+                                                      <TextField fx:id="txtField011" editable="false" prefHeight="25.0" prefWidth="242.0" style="-fx-border-radius: 5;" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                                         <font>
+                                                            <Font name="System Bold" size="12.0" />
+                                                         </font>
+                                                      </TextField>
+                                                      <Label prefHeight="17.0" prefWidth="108.0" text="Employee" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                                         <font>
+                                                            <Font name="System Bold" size="12.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label text="Position" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                                         <font>
+                                                            <Font name="MS Reference Sans Serif" size="12.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField fx:id="txtField021" editable="false" prefHeight="23.0" prefWidth="238.0" style="-fx-border-radius: 5;" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                      <Label text="Old Amount" GridPane.columnIndex="4" GridPane.rowIndex="2">
+                                                         <font>
+                                                            <Font name="MS Reference Sans Serif" size="12.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField fx:id="txtField031" editable="false" prefHeight="23.0" prefWidth="238.0" style="-fx-border-radius: 5;" GridPane.columnIndex="5" GridPane.rowIndex="2" />
+                                                      <Label text="New Amount" GridPane.columnIndex="4" GridPane.rowIndex="3">
+                                                         <font>
+                                                            <Font name="MS Reference Sans Serif" size="12.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField fx:id="txtField041" prefHeight="23.0" prefWidth="238.0" promptText="Please Enter Amount" style="-fx-border-radius: 5;" GridPane.columnIndex="5" GridPane.rowIndex="3">
+                                                         <font>
+                                                            <Font name="System Bold" size="12.0" />
+                                                         </font>
+                                                      </TextField>
+                                                      <Label text="INCENTIVES DETAIL" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1">
+                                                         <font>
+                                                            <Font name="Bookman Old Style Bold" size="18.0" />
+                                                         </font>
                                                          <padding>
-                                                            <Insets bottom="5.0" left="15.0" right="15.0" top="5.0" />
+                                                            <Insets left="10.0" />
                                                          </padding>
-                                                      </TableView>
+                                                      </Label>
+                                                      <Label text="Remarks" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                      <TextField fx:id="txtField051" prefHeight="23.0" prefWidth="238.0" style="-fx-border-radius: 5;" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="4" />
                                                    </children>
-                                                </AnchorPane>
+                                                </GridPane>
                                              </children>
-                                          </VBox>
+                                          </AnchorPane>
+                                          <AnchorPane AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="150.0">
+                                             <children>
+                                                <TableView fx:id="tblemployee" onMouseClicked="#tblemployee_Clicked" style="-fx-border-color: #F88222;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <columns>
+                                                      <TableColumn fx:id="index01" editable="false" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="35.0" sortable="false" text="No." />
+                                                      <TableColumn fx:id="index02" editable="false" maxWidth="-1.0" minWidth="215.0" prefWidth="-1.0" sortable="false" text="Employee" />
+                                                      <TableColumn fx:id="index03" editable="false" maxWidth="-1.0" minWidth="140.0" prefWidth="-1.0" sortable="false" text="Position" />
+                                                      <TableColumn fx:id="index04" editable="false" maxWidth="-1.0" minWidth="150.0" prefWidth="-1.0" sortable="false" text="Bank Name" />
+                                                      <TableColumn fx:id="index05" editable="false" maxWidth="-1.0" minWidth="120.0" prefWidth="-1.0" sortable="false" text="Account No." />
+                                                      <TableColumn fx:id="index06" editable="false" maxWidth="-1.0" minWidth="85.0" prefWidth="-1.0" sortable="false" text="Old Amount" />
+                                                      <TableColumn fx:id="index07" editable="false" maxWidth="-1.0" minWidth="85.0" prefWidth="-1.0" sortable="false" text="New Amount" />
+                                                   </columns>
+                                                   <effect>
+                                                      <Blend />
+                                                   </effect>
+                                                   <padding>
+                                                      <Insets bottom="5.0" left="15.0" right="15.0" top="5.0" />
+                                                   </padding>
+                                                </TableView>
+                                             </children>
+                                          </AnchorPane>
                                        </children>
                                        <BorderPane.margin>
                                           <Insets left="5.0" />
