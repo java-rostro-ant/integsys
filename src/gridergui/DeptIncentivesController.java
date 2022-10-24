@@ -122,7 +122,7 @@ public void initialize(URL url, ResourceBundle rb) {
         @Override
         public void DetailRetreive(int fnRow, int fnIndex, Object foValue) {
                 loadDetail();
-                getSelectedEmployee();
+//                getSelectedEmployee();
 
         }
      };   
@@ -183,6 +183,8 @@ private void txtField_KeyPressed(KeyEvent event){
                             txtField.setText((String) oTrans.getMaster("xDeptName")); 
                             clearDetail();
                             loadDetail();
+                            
+                            initGrid();
 
 
 
@@ -235,45 +237,42 @@ private void txtFieldDetail_KeyPressed(KeyEvent event){
         case F3:
             break;
         case TAB:
+            
+            if (lnIndex == 41 || lnIndex == 51){
+                event.consume();
+                return;
+            }
         case ENTER:
         case DOWN:
             try {
 
                 switch (lnIndex){
                     case 41:
-                    if (txtField011.getText() != ""){
-                        if (StringUtil.isNumeric(lsValue)){ 
-                            if((Double.parseDouble(lsValue) <= 999999.99) &&(Double.parseDouble(lsValue) >= 0)){
-                               oTrans.setDetail(pnEmp, "sNewAmtxx", Double.parseDouble(lsValue));
-                        txtField041.setText(CommonUtils.NumberFormat((Double) Double.parseDouble(lsValue), "###0.00"));
-                        System.out.println("Set Row =" + pnEmp );
-                            }else{
-                            ShowMessageFX.Warning(null, pxeModuleName, "Max Amount for 'New Incentive Amount' exceeds the maximum limit.");
-                            txtField041.requestFocus();
-                            return;
+                        if (txtField011.getText() != ""){
+                            if (StringUtil.isNumeric(lsValue)){ 
+                                if((Double.parseDouble(lsValue) <= 999999.99) &&(Double.parseDouble(lsValue) >= 0)){
+                                   oTrans.setDetail(pnEmp, "sNewAmtxx", Double.parseDouble(lsValue));
+                                    txtField041.setText(CommonUtils.NumberFormat((Double) Double.parseDouble(lsValue), "###0.00"));
+                                 
+                                }else{
+                                    ShowMessageFX.Warning(null, pxeModuleName, "Max Amount for 'New Incentive Amount' exceeds the maximum limit.");
+                                
+                                }
+                            }else{    
+                                oTrans.setDetail(pnEmp, "sNewAmtxx", 0.00);
+                                txtField041.setText("0.00");
                             }
-                        }else{    
-                        oTrans.setDetail(pnEmp, "sNewAmtxx", 0.00);
-                         txtField041.setText("0.00");
+
                         }
-
-                    }
-
-                    break;
+                        
+                        break;
 
                     case 51:
-                        if (txtField011.getText() != ""){
-                          if (lsValue.length() > 64){
-                        ShowMessageFX.Warning(null, pxeModuleName, "Max length for 'Remarks' exceeds the maximum limit.");
-                        txtField051.requestFocus();
-                        return;
-                        }
-                       else{
-                       oTrans.setDetail(pnEmp,"sRemarksx", lsValue);
-                        }
-                        }
-
-                            if (pnEmp <= oTrans.getItemCount())
+                        if (lsValue.length() > 64){
+                            ShowMessageFX.Warning(null, pxeModuleName, "Max length for 'Remarks' exceeds the maximum limit.");
+                        } else{
+                            oTrans.setDetail(pnEmp,"sRemarksx", lsValue);
+                            if (pnRow <= oTrans.getItemCount())
                                 pnEmp++;
                             else
                                 pnEmp = 1;
@@ -285,8 +284,9 @@ private void txtFieldDetail_KeyPressed(KeyEvent event){
                             if((tblemployee.getSelectionModel().getSelectedIndex()) == max-1){
                                 pnEmp = 1;
                             }
+                            tblemployee.scrollTo(pnEmp-1);
 
-                            tblemployee.scrollTo(pnEmp -1);
+                        }
 
                         loadDetail();
                         getSelectedEmployee();
@@ -294,7 +294,9 @@ private void txtFieldDetail_KeyPressed(KeyEvent event){
                         txtField041.requestFocus();
                         event.consume();
                         return;
-                }
+                    }
+                
+                    event.consume();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -306,6 +308,40 @@ private void txtFieldDetail_KeyPressed(KeyEvent event){
             break;
         }
 }
+
+    private void initGrid() {
+        try{
+        
+            index01.setStyle("-fx-alignment: CENTER;");
+            index02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+            index03.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+            index04.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
+            index05.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
+            index06.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
+            index07.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
+
+
+            index01.setCellValueFactory(new PropertyValueFactory<>("DetIndex01"));
+            index02.setCellValueFactory(new PropertyValueFactory<>("DetIndex03"));
+            index03.setCellValueFactory(new PropertyValueFactory<>("DetIndex04"));
+            index04.setCellValueFactory(new PropertyValueFactory<>("DetIndex07"));
+            index05.setCellValueFactory(new PropertyValueFactory<>("DetIndex08"));
+            index06.setCellValueFactory(new PropertyValueFactory<>("DetIndex09"));
+            index07.setCellValueFactory(new PropertyValueFactory<>("DetIndex10"));
+
+            tblemployee.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+                TableHeaderRow header = (TableHeaderRow) tblemployee.lookup("TableHeaderRow");
+                header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                    header.setReordering(false);
+                });
+            });
+
+            tblemployee.setItems(deptincdata);
+            tblemployee.setDisable(false);
+        }catch(NullPointerException e){
+            
+        }
+    }
 
 private void initButton(int fnValue){
     boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
@@ -339,8 +375,7 @@ public void setGRider(GRider foValue) {
     txtField04.setText((String) oTrans.getMaster("sInctveCD"));
     txtField05.setValue(strToDate(CommonUtils.xsDateShort((Date) oTrans.getMaster(5))));
     txtField06.setText((String) oTrans.getMaster("sRemarksx"));
-    pnRow = 0;
-    pnEmp = 0;
+   
 //        loadDetail();
 
 }
@@ -366,6 +401,8 @@ private void loadDetail(){
 
             lblTotal.setText((CommonUtils.NumberFormat((Number)lnTotal, "₱ " +"#,##0.00")));
             initGrid();
+            
+            tblemployee.getSelectionModel().select(pnEmp-1);
 
         }
     } catch (SQLException e) {
@@ -388,61 +425,66 @@ final ChangeListener<? super Boolean> txtField_Focus = (o,ov,nv)->{
         TextField txtField = (TextField)((ReadOnlyBooleanPropertyBase)o).getBean();
         int lnIndex = Integer.parseInt(txtField.getId().substring(8, 11));
         String lsValue = txtField.getText();
-
     if (lsValue == null) return;
-        try {
-            if(!nv){ /*Lost Focus*/
-                switch (lnIndex){
-                    case 41:
+    try {
+        if(!nv){ /*Lost Focus*/
 
-                    if (txtField011.getText() != ""){
+            switch (lnIndex){
+                case 41:
+                    if (!txtField041.getText().toString().equalsIgnoreCase("0.0")
+                            || !txtField041.getText().toString().isEmpty()){
                         if (StringUtil.isNumeric(lsValue)){ 
                             if((Double.parseDouble(lsValue) <= 999999.99) &&(Double.parseDouble(lsValue) >= 0)){
-                        oTrans.setDetail(pnEmp , "sNewAmtxx", Double.parseDouble(lsValue));
-                        txtField041.setText(CommonUtils.NumberFormat((Double) Double.parseDouble(lsValue), "#,##0.00"));
-                        System.out.println("Set . =" + pnEmp );
+                                oTrans.setDetail(pnEmp , "sNewAmtxx", Double.parseDouble(lsValue));
+                                txtField041.setText(CommonUtils.NumberFormat((Double) Double.parseDouble(lsValue), "#,##0.00"));
+                                
 
                             }else{
-                            ShowMessageFX.Warning(null, pxeModuleName, "Max Amount for 'New Incentive Amount' exceeds the maximum limit.");
-                            txtField041.requestFocus();
-                            return;
+                                ShowMessageFX.Warning(null, pxeModuleName, "Max Amount for 'New Incentive Amount' exceeds the maximum limit."); 
+                                
+
                             }
                         }else{    
-                        oTrans.setDetail(pnEmp, "sNewAmtxx", 0.00);
-                         txtField041.setText("0.00");
+                            oTrans.setDetail(pnEmp, "sNewAmtxx", 0.00);
+                            txtField041.setText("0.00");
                         }
-                    }
+                    }else{    
+//                            oTrans.setDetail(pnEmp, "sNewAmtxx", 0.00);
+                            txtField041.setText((String)oTrans.getDetail(pnEmp, "sNewAmtxx"));
+                        }
 
                     break;
-                    case 51:
-                        if (txtField011.getText() != ""){
-                          if (lsValue.length() > 64){
-                        ShowMessageFX.Warning(null, pxeModuleName, "Max length for 'Remarks' exceeds the maximum limit.");
-                        txtField051.requestFocus();
-                        return;
+                case 51:
+                    if (!txtField051.getText().toString().isEmpty()){
+                        if (lsValue.length() > 64){
+                            ShowMessageFX.Warning(null, pxeModuleName, "Max length for 'Remarks' exceeds the maximum limit.");
                         }
                        else{
-                       oTrans.setDetail(pnEmp ,"sRemarksx", lsValue);
+                            oTrans.setDetail(pnEmp ,"sRemarksx", lsValue);
                         }
+                    }else{    
+//                            oTrans.setDetail(pnEmp, "sNewAmtxx", 0.00);
+                            txtField051.setText((String)oTrans.getDetail(pnEmp, "sRemarksx"));
                         }
                     break;
-                default:
-                    ShowMessageFX.Warning(null, pxeModuleName, "Text field with name " + txtField.getId() + " not registered.");
-                    return;
 
-                }
-
-               } 
-             else{
-                txtField.selectAll();
-
-}
-
-            pnIndex = lnIndex;
-        } catch (SQLException e) {
-            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
-
+            }
         }
+        else{ //Focus
+         switch (lnIndex){
+             case 41:
+                 txtField.setText(String.valueOf(oTrans.getDetail(pnEmp, "sNewAmtxx"))); break;
+             case 51:
+                 txtField.setText(String.valueOf(oTrans.getDetail(pnEmp, "sRemarksx"))); break;
+         }
+         txtField.selectAll();
+         pnIndex = lnIndex;
+     } 
+
+    } catch (SQLException e) {
+        ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
+
+    }
 };
 
 final ChangeListener<? super Boolean> txtArea_Focus = (o,ov,nv)->{ 
@@ -458,14 +500,14 @@ final ChangeListener<? super Boolean> txtArea_Focus = (o,ov,nv)->{
         if(!nv){ /*Lost Focus*/
             switch (lnIndex){
                 case 6:
-                    if (txtField01.getText() != ""){
+                    if (txtField06.getText() != ""){
                         if (lsValue.length() > 64){
-                        ShowMessageFX.Warning(null, pxeModuleName, "Max length for 'Remarks' exceeds the maximum limit.");
-                        txtField051.requestFocus();
+                            ShowMessageFX.Warning(null, pxeModuleName, "Max length for 'Remarks' exceeds the maximum limit.");
+//                            txtField051.requestFocus();
                         return;
                         }
                        else{
-                    oTrans.setMaster(6, txtField06.getText());
+                            oTrans.setMaster(6, txtField06.getText());
                         }
                     }
                     break;
@@ -542,21 +584,23 @@ private void cmdButton_Click(ActionEvent event) {
             case "btnSave":
 
                     if (lnTotal > 0){
-                    if (oTrans.SaveTransaction()){
+                        if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to approve this transaction?") == true){  
+                            if (oTrans.SaveTransaction()){
 
-                        ShowMessageFX.Warning(getStage(), "Transaction save successfully.", "Warning", null);
-                        if(state){
-                           onsuccessUpdate();
-                        }else{
-                            clearFields();
-                            oTrans = new DeptIncentive(oApp, oApp.getBranchCode(), false);
-                            oTrans.setListener(oListener);
-                            oTrans.setWithUI(true);
-                            pnEditMode = EditMode.UNKNOWN;
+                                ShowMessageFX.Warning(getStage(), "Transaction save successfully.", "Warning", null);
+                                if(state){
+                                   onsuccessUpdate();
+                                }else{
+                                    clearFields();
+                                    oTrans = new DeptIncentive(oApp, oApp.getBranchCode(), false);
+                                    oTrans.setListener(oListener);
+                                    oTrans.setWithUI(true);
+                                    pnEditMode = EditMode.UNKNOWN;
+                                }
+                            } else {
+                                ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                            }
                         }
-                    } else {
-                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
-                    }
                     }else {
                         ShowMessageFX.Warning(getStage(), "Please Edit Transaction First", "Warning", null);
                     }
@@ -624,70 +668,55 @@ private void clearFields(){
     lblTotal.setText("0.0");
 }
 
-private void initGrid() {
-    index01.setStyle("-fx-alignment: CENTER;");
-    index02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-    index03.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-    index04.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
-    index05.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
-    index06.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
-    index07.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
-
-
-    index01.setCellValueFactory(new PropertyValueFactory<>("DetIndex01"));
-    index02.setCellValueFactory(new PropertyValueFactory<>("DetIndex03"));
-    index03.setCellValueFactory(new PropertyValueFactory<>("DetIndex04"));
-    index04.setCellValueFactory(new PropertyValueFactory<>("DetIndex07"));
-    index05.setCellValueFactory(new PropertyValueFactory<>("DetIndex08"));
-    index06.setCellValueFactory(new PropertyValueFactory<>("DetIndex09"));
-    index07.setCellValueFactory(new PropertyValueFactory<>("DetIndex10"));
-
-    tblemployee.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
-        TableHeaderRow header = (TableHeaderRow) tblemployee.lookup("TableHeaderRow");
-        header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-            header.setReordering(false);
-        });
-    });
-    tblemployee.setItems(deptincdata);
-   tblemployee.setDisable(false);
-    tblemployee.getSelectionModel().select(pnEmp - 1);
-
-
-
-}
-
  private void getSelectedEmployee() {
-   try{
-      if(!deptincdata.isEmpty()){
-    txtField011.setText((String) oTrans.getDetail(pnEmp, "xEmployNm"));
-    txtField021.setText((String) oTrans.getDetail(pnEmp, "xPositnNm"));
-    txtField031.setText( oTrans.getDetail(pnEmp, "sOldAmtxx").toString());
-    txtField041.setText( oTrans.getDetail(pnEmp, "sNewAmtxx").toString());
-    txtField051.setText((String) oTrans.getDetail(pnEmp, "sRemarksx"));
-    txtField041.setDisable(false);
-    txtField051.setDisable(false);
-            oldPnEmp = pnEmp;
-    }
-    }catch (SQLException ex) {
-        ex.printStackTrace();
-
-    }
+     try {                                    
+            txtField011.setText((String) oTrans.getDetail(pnEmp, "xEmployNm"));
+            txtField021.setText((String) oTrans.getDetail(pnEmp, "xPositnNm"));
+            txtField031.setText( oTrans.getDetail(pnEmp, "sOldAmtxx").toString());
+            txtField041.setText( oTrans.getDetail(pnEmp, "sNewAmtxx").toString());
+            txtField051.setText((String) oTrans.getDetail(pnEmp, "sRemarksx"));
+            txtField041.setDisable(false);
+            txtField051.setDisable(false);
+//            txtField041.requestFocus();
+        } 
+        catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+//   try{
+//      if(!deptincdata.isEmpty()){
+//    txtField011.setText((String) oTrans.getDetail(pnEmp, "xEmployNm"));
+//    txtField021.setText((String) oTrans.getDetail(pnEmp, "xPositnNm"));
+//    txtField031.setText( oTrans.getDetail(pnEmp, "sOldAmtxx").toString());
+//    txtField041.setText( oTrans.getDetail(pnEmp, "sNewAmtxx").toString());
+//    txtField051.setText((String) oTrans.getDetail(pnEmp, "sRemarksx"));
+//    txtField041.setDisable(false);
+//    txtField051.setDisable(false);
+//            oldPnEmp = pnEmp;
+//    }
+//    }catch (SQLException ex) {
+//        ex.printStackTrace();
+//
+//    }
 
 
 } 
 @FXML
 private void tblemployee_Clicked(MouseEvent event) {
-    pnEmp = tblemployee.getSelectionModel().getSelectedIndex() +1;
-
-        if(event.getClickCount()>0){
-
-            if(!tblemployee.getItems().isEmpty()){
-            getSelectedEmployee();
-
-
-
+    if(txtField04.getText().toString().isEmpty()){
+        ShowMessageFX.Warning(null, pxeModuleName, "Please select incentive code first!!!");
+        txtField04.requestFocus();
+   }else{
+        pnEmp = tblemployee.getSelectionModel().getSelectedIndex() + 1;
+//        pnEmp = tblemployee.getFocusModel().getFocusedCell().getRow() + 1;
+        getSelectedEmployee();
     }
-}
+//        if(event.getClickCount()>0){
+//
+//            if(!tblemployee.getItems().isEmpty()){
+//            getSelectedEmployee();
+//          }
+//      }
+
 }
 public void getDate(ActionEvent event) { 
     try {

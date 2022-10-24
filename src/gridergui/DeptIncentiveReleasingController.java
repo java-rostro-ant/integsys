@@ -96,6 +96,8 @@ public class DeptIncentiveReleasingController implements Initializable, ScreenIn
     @FXML
     private HBox hbButtons;
     @FXML
+    private Label lblStatus;
+    @FXML
     private AnchorPane AnchorMainIncentiveRelease;
 //    EMPLOYEE TABLE
     @FXML
@@ -195,6 +197,21 @@ public class DeptIncentiveReleasingController implements Initializable, ScreenIn
         try { 
             txtField01.setText((String)oTrans.getMaster("sTransNox"));
             txtField02.setText(CommonUtils.xsDateMedium((Date) oTrans.getMaster("dTransact")));
+            
+            lblStatus.setVisible(true);
+            if(oTrans.getMaster(8).toString().equalsIgnoreCase("0")){
+                lblStatus.setText("OPEN");
+            }else if(oTrans.getMaster(8).toString().equalsIgnoreCase("1")){
+                lblStatus.setText("CLOSED");
+            }
+            else if(oTrans.getMaster(8).toString().equalsIgnoreCase("2")){
+                lblStatus.setText("POSTED");
+            }
+            else if(oTrans.getMaster(8).toString().equalsIgnoreCase("3")){
+                lblStatus.setText("CANCELLED");
+            }else{
+                lblStatus.setVisible(false);
+            }
             data.clear();
             for (int lnCtr = 1; lnCtr <= oTrans.getItemCount(); lnCtr++){
                 
