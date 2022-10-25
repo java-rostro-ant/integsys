@@ -391,12 +391,14 @@ public class DeptIncentiveReleasingController implements Initializable, ScreenIn
                         ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                     break;
                 case "btnRelease": //release transaction
-                  if (oTrans.ReleaseTransaction()){
-                        ShowMessageFX.Warning(getStage(), "Transaction releasing success!","Warning", null);
-                        clearFields();
-                        pnEditMode = oTrans.getEditMode();
-                    } else 
-                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                    if(oTrans.getEditMode() == EditMode.READY){
+                        if (oTrans.ReleaseTransaction()){
+                            ShowMessageFX.Warning(getStage(), "Transaction releasing success!","Warning", null);
+                            clearFields();
+                            pnEditMode = oTrans.getEditMode();
+                        } else 
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                    }
                     break;
                  case "btnSave": //save transaction
                     if (oTrans.SaveTransaction()){
@@ -407,7 +409,7 @@ public class DeptIncentiveReleasingController implements Initializable, ScreenIn
                     }  
                     break;    
                 case "btnApproved": //approve transaction
-                    if(!oTrans.getMaster("sTransNox").toString().trim().isEmpty()){
+                    if(oTrans.getEditMode() == EditMode.READY){
                         if(ShowMessageFX.OkayCancel(null, "Aprroved Incentive Releasing", "Are you sure, do you want to approve this transaction?") == true){
                            if (oTrans.ConfirmTransaction()){
                                ShowMessageFX.Warning(getStage(), "Transaction successfully approved.","Warning", null);
@@ -419,7 +421,7 @@ public class DeptIncentiveReleasingController implements Initializable, ScreenIn
                     }
                     break;
                 case "btnDisapproved": //disapprove transaction
-                    if(!oTrans.getMaster("sTransNox").toString().trim().isEmpty()){
+                    if(oTrans.getEditMode() == EditMode.READY){
                         if(ShowMessageFX.OkayCancel(null, "Cancel Incentive Releasing", "Are you sure, do you want to cancel this transaction?") == true){
                           if (oTrans.CancelTransaction()){
                                ShowMessageFX.Warning(getStage(),"Transaction successfully disapproved.", "Warning", null);

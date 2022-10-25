@@ -24,7 +24,7 @@ public class LetMeInn {
             System.exit(1);
         }
         
-        if (!oApp.logUser("gRider", "M001111122")) {
+        if (!oApp.logUser("gRider", "M001220006")) {
             System.err.println(oApp.getErrMsg());
             System.exit(1);
         }   

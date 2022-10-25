@@ -35,6 +35,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.rmj.appdriver.GRider;
+import org.rmj.appdriver.GSec;
 import org.rmj.appdriver.SQLUtil;
 
 /**
@@ -400,10 +401,17 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         
         //compliance management;
         mnuIncentiveParameter.setVisible("034;026;".contains(oApp.getDepartment())); 
+        mnuTransaction111.setVisible("034;026;".contains(oApp.getDepartment())); 
+        mnuInventory01.setVisible("034;026;".contains(oApp.getDepartment())); 
+        
         //finance management;
         mnuEmployeeIncentivesBank.setVisible("028;026;".contains(oApp.getDepartment()));
         
-        if (!mnuIncentiveParameter.isVisible() && !mnuEmployeeIncentivesBank.isVisible())
+        //sales
+        mnuTransaction11.setVisible("015;026;".contains(oApp.getDepartment()));
+        
+        if (!mnuIncentiveParameter.isVisible() && 
+            !mnuEmployeeIncentivesBank.isVisible())
             mnuFiles01.setVisible(false);
         else
             mnuFiles01.setVisible(true);
