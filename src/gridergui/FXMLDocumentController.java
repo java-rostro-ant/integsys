@@ -5,7 +5,6 @@
  */
 package gridergui;
 
-import static gridergui.GriderGui.oApp;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.ResultSet;
@@ -400,16 +399,18 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         
         //compliance management;
         mnuIncentiveParameter.setVisible("034;026;".contains(oApp.getDepartment())); 
+        
         //finance management;
-        mnuEmployeeIncentivesBank.setVisible("028;026;".contains(oApp.getDepartment()));
+        mnuEmployeeIncentivesBank.setVisible("021;028;026;".contains(oApp.getDepartment()));
+        mnuTransaction111.setVisible("028;026;".contains(oApp.getDepartment()));
+        mnuInventory01.setVisible("028;026;".contains(oApp.getDepartment()));
         
         if (!mnuIncentiveParameter.isVisible() && !mnuEmployeeIncentivesBank.isVisible())
             mnuFiles01.setVisible(false);
         else
             mnuFiles01.setVisible(true);
         
-        //compliance management;
-        mnuIncentiveReleasing.setVisible("028;026;".contains(oApp.getDepartment()));
+        mnuTransaction11.setVisible("015;034;022;028;026;".contains(oApp.getDepartment()));
+        mnuAuditIncentiveReport.setVisible("015;034;022;028;026;".contains(oApp.getDepartment()));
     }
-
 }
