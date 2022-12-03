@@ -42,6 +42,7 @@
                                                    <items>
                                                       <MenuItem fx:id="mnuIncentiveParameter" mnemonicParsing="false" onAction="#mnuIncentiveParameterClick" text="Incentive" />
                                                       <MenuItem fx:id="mnuEmployeeIncentivesBank" mnemonicParsing="false" onAction="#mnuEmployeeBankInfoClick" text="Employee Incentive Bank Info" />
+                                                      <MenuItem fx:id="mnuPanaloParameter" mnemonicParsing="false" onAction="#mnuPanaloParameterClick" text="Panalo" />
                                                    </items>
                                                 </Menu>
                                               <MenuItem fx:id="mnuExit" mnemonicParsing="false" text="Exit" />
@@ -77,6 +78,12 @@
                                                    <items>
                                                       <MenuItem fx:id="mnuInventoryReq" mnemonicParsing="false" text="Request Stock" visible="false" />
                                                       <MenuItem fx:id="mnuInventoryHistory" mnemonicParsing="false" onAction="#mnuInventoryHistoryClick" text="History" />
+                                                   </items>
+                                                </Menu>
+                                                <Menu fx:id="mnuTransaction1121" mnemonicParsing="false" text="Panalo">
+                                                   <items>
+                                                      <MenuItem fx:id="mnuPanaloEntry" mnemonicParsing="false" onAction="#mnuPanaloEntryClick" text="Entry                   " />
+                                                      <MenuItem fx:id="mnuPanaloHistory" mnemonicParsing="false" text="History" />
                                                    </items>
                                                 </Menu>
                                           </items>
