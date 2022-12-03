@@ -121,6 +121,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private MenuItem mnuPayrollReport;
     @FXML
     private MenuItem mnuAuditReport;
+    @FXML
+    private MenuItem mnuPanaloInfo;
     
     /**
      * Initializes the controller class.
@@ -248,7 +250,12 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             DeptIncentiveReportsController inc_reports_Dept = new DeptIncentiveReportsController();
             inc_reports_Dept.setReportCategory(reportName);
             return  inc_reports_Dept;
-
+            
+            case "PanaloParameter.fxml":
+                return new PanaloParameterController();
+            
+            case "PanaloInfo.fxml":
+                return new PanaloInfoController();
             default:
                 return null;
         }
@@ -364,6 +371,15 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuDeptIncentivesHistoryClick(ActionEvent event) {
         setScene(loadAnimate("DeptIncentivesHist.fxml"));
+    }
+    
+    @FXML
+    private void mnuPanaloParameterClick(ActionEvent event) {
+        setScene(loadAnimate("PanaloParameter.fxml"));
+    }
+    @FXML
+    private void mnuPanaloEntryClick(ActionEvent event) {
+        setScene(loadAnimate("PanaloInfo.fxml"));
     }
 
     private void getTime(){
