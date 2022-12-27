@@ -559,55 +559,34 @@ private AnchorPane getScene(String fsFormName){
 
 private void cmdButton_Click(ActionEvent event) {
     String lsButton = ((Button)event.getSource()).getId();
+    
     try {
-            switch (lsButton){
-
-            case "btnNew": 
-                    if (oTrans.NewTransaction() ){
-                        clearFields();
-                        loadMaster();
-                        pnEditMode = EditMode.ADDNEW;
-                    } else
-                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+        switch (lsButton){
+        case "btnNew": 
+            if (oTrans.NewTransaction() ){
+                clearFields();
+                loadMaster();
+                pnEditMode = EditMode.ADDNEW;
+            } else {
+                ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                return;
+            }
+            break;
+        case "btnClose":
+            if(ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to close?") == true){
+                if(state){
+                    onsuccessUpdate();
+                }else{ 
+                    unloadForm();
+                }
                 break;
-
-            case "btnClose":
-                    if(ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to close?") == true){
-                        if(state){
-                            onsuccessUpdate();
-                        }else{ 
-                            unloadForm();
-                        }
-                        break;
-                    } 
-                        return;
-            case "btnSave":
-
-                    if (lnTotal > 0){
-                        if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to approve this transaction?") == true){  
-                            if (oTrans.SaveTransaction()){
-
-                                ShowMessageFX.Warning(getStage(), "Transaction save successfully.", "Warning", null);
-                                if(state){
-                                   onsuccessUpdate();
-                                }else{
-                                    clearFields();
-                                    oTrans = new DeptIncentive(oApp, oApp.getBranchCode(), false);
-                                    oTrans.setListener(oListener);
-                                    oTrans.setWithUI(true);
-                                    pnEditMode = EditMode.UNKNOWN;
-                                }
-                            } else {
-                                ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
-                            }
-                        }
-                    }else {
-                        ShowMessageFX.Warning(getStage(), "Please Edit Transaction First", "Warning", null);
-                    }
-                break;
-
-            case "btnCancel":
-                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true){  
+            } 
+            return;
+        case "btnSave":
+            if (lnTotal > 0){
+                if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to approve this transaction?") == true){  
+                    if (oTrans.SaveTransaction()){
+                        ShowMessageFX.Warning(getStage(), "Transaction save successfully.", "Warning", null);
                         if(state){
                            onsuccessUpdate();
                         }else{
@@ -615,30 +594,44 @@ private void cmdButton_Click(ActionEvent event) {
                             oTrans = new DeptIncentive(oApp, oApp.getBranchCode(), false);
                             oTrans.setListener(oListener);
                             oTrans.setWithUI(true);
-                            pnEditMode = EditMode.READY;
+                            pnEditMode = EditMode.UNKNOWN;
                         }
+                    } else {
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                     }
-                break;
-            case "btnSearch":
-                    if (txtField01.getText() != ""){
-                        if(oTrans.searchDepartment(txtField03.getText(), false)) {
-                            txtField03.setText((String) oTrans.getMaster("xDeptName")); 
-                            clearDetail();
-                            loadDetail();
-
-
-
-                        }else{
-                            txtField03.setText((String) oTrans.getMaster("xDeptName")); 
-                            ShowMessageFX.Warning(getStage(), "Unable to update department.", "Warning", null);
-
-                        }
-}
-
-
-                    break;
+                }
+            }else {
+                ShowMessageFX.Warning(getStage(), "Please Edit Transaction First", "Warning", null);
+                return;
+            }
+            break;
+        case "btnCancel":
+            if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true){  
+                if(state){
+                   onsuccessUpdate();
+                }else{
+                    clearFields();
+                    oTrans = new DeptIncentive(oApp, oApp.getBranchCode(), false);
+                    oTrans.setListener(oListener);
+                    oTrans.setWithUI(true);
+                    pnEditMode = EditMode.READY;
+                }
+            }
+            break;
+        case "btnSearch":
+            if (!"".equals(txtField01.getText())){
+                if(oTrans.searchDepartment(txtField03.getText(), false)) {
+                    txtField03.setText((String) oTrans.getMaster("xDeptName")); 
+                    clearDetail();
+                    loadDetail();
+                }else{
+                    txtField03.setText((String) oTrans.getMaster("xDeptName")); 
+                    ShowMessageFX.Warning(getStage(), "Unable to update department.", "Warning", null);
+                }
+            }
+            break;
         }
-
+        
         initButton(pnEditMode);
     } catch (SQLException e) {
                 e.printStackTrace();
