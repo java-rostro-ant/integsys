@@ -18,6 +18,8 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingNode;
@@ -37,6 +39,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -68,10 +71,16 @@ public class DeptIncentiveReportsController implements Initializable, ScreenInte
     
     private JasperPrint jasperPrint;
     private JasperReport jasperReport;
+    private JRViewer jrViewer;
     public String reportCategory;
     private ToggleGroup rbGroup;
     private String sPeriodxx = "";
 //    private JasperPreview jasperPreview;
+    
+    private boolean running = false;
+    final static int interval = 100;
+    private Timeline timeline;
+    private Integer timeSeconds = 3;
     @FXML
     private Button btnGenerate;
     @FXML
@@ -167,16 +176,28 @@ public class DeptIncentiveReportsController implements Initializable, ScreenInte
         });
         
     }
-
-       private void showReport(){
-        SwingNode swingNode = new SwingNode();
-        JRViewer jrViewer =  new JRViewer(jasperPrint);
+    private void hideReport(){
+//        jasperPrint = null;
+        jrViewer =  new JRViewer(null);
+        reportPane.getChildren().clear();
 //        JasperViewer.viewReport(jasperPrint, false);
          
+        jrViewer.setVisible(false);
+        running = false;
+        reportPane.setVisible(false);
+        
+        timeline.stop();
+//        vbProgress.setVisible(true);
+    }    
+    private void showReport(){
+        vbProgress.setVisible(false);
+        jrViewer =  new JRViewer(jasperPrint);
+//        JasperViewer.viewReport(jasperPrint, false);
+         
+        SwingNode swingNode = new SwingNode();
         jrViewer.setOpaque(true);
         jrViewer.setVisible(true);
         jrViewer.setFitPageZoomRatio();
-       
             
         swingNode.setContent(jrViewer);
         swingNode.setVisible(true);
@@ -186,6 +207,9 @@ public class DeptIncentiveReportsController implements Initializable, ScreenInte
         reportPane.setLeftAnchor(swingNode,0.0);
         reportPane.setRightAnchor(swingNode,0.0);
         reportPane.getChildren().add(swingNode);
+        running = true;
+        reportPane.setVisible(true);
+        timeline.stop();
     }  
  
     @Override
@@ -281,19 +305,26 @@ public class DeptIncentiveReportsController implements Initializable, ScreenInte
             break;
         }
     } 
-    
-    private void showProgress(){
-        vbProgress.getChildren().clear();
-        vbProgress.setAlignment(Pos.CENTER);
-        ProgressIndicator pi = new ProgressIndicator();
-        pi.setOpacity(1.0);
-        pi.setStyle(" -fx-progress-color: #0086b3;");
-        VBox box = new VBox(pi);
-        box.setAlignment(Pos.CENTER);
-        vbProgress.getChildren().add(box);
-    }
-    private void hideProgress(){
-        vbProgress.getChildren().clear();
+    private void generateReport(){
+        hideReport();
+        if(!running){
+            timeline = new Timeline();
+            timeline.setCycleCount(Timeline.INDEFINITE);
+            timeline.getKeyFrames().add(
+                    new KeyFrame(Duration.seconds(1), (ActionEvent event1) -> {
+                        timeSeconds--;
+                        // update timerLabel
+                        if(timeSeconds <= 0){
+                           timeSeconds = 0 ; 
+                        }
+                        if (timeSeconds == 0) {
+
+                            loadReport();
+                        }
+                } // KeyFrame event handler
+            ));
+            timeline.playFromStart();
+        }
     }
     private boolean loadReport(){
          //Create the parameter
@@ -368,10 +399,15 @@ public class DeptIncentiveReportsController implements Initializable, ScreenInte
                     showReport();
                  }
             } catch (JRException ex) {
-                Logger.getLogger(ReportsController.class.getName()).log(Level.SEVERE, null, ex);
+                running = false;
+                vbProgress.setVisible(false);
+                timeline.stop();
             }
         } 
     }catch(SQLException e){}
+        running = false;
+        vbProgress.setVisible(false);
+        timeline.stop();
         return true;
     }
 }

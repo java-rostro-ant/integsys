@@ -23,8 +23,8 @@ public class LetMeInn {
             System.err.println(oApp.getErrMsg());
             System.exit(1);
         }
-        
-        if (!oApp.logUser("gRider", "M001220006")) {
+
+        if (!oApp.logUser("gRider", "M001111122")) {
             System.err.println(oApp.getErrMsg());
             System.exit(1);
         }   

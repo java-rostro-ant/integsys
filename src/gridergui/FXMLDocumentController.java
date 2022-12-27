@@ -5,7 +5,6 @@
  */
 package gridergui;
 
-import static gridergui.GriderGui.oApp;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.ResultSet;
@@ -123,6 +122,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private MenuItem mnuPayrollReport;
     @FXML
     private MenuItem mnuAuditReport;
+    @FXML
+    private MenuItem mnuPanaloInfo;
     
     /**
      * Initializes the controller class.
@@ -250,7 +251,12 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             DeptIncentiveReportsController inc_reports_Dept = new DeptIncentiveReportsController();
             inc_reports_Dept.setReportCategory(reportName);
             return  inc_reports_Dept;
-
+            
+            case "PanaloParameter.fxml":
+                return new PanaloParameterController();
+            
+            case "PanaloInfo.fxml":
+                return new PanaloInfoController();
             default:
                 return null;
         }
@@ -367,6 +373,15 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private void mnuDeptIncentivesHistoryClick(ActionEvent event) {
         setScene(loadAnimate("DeptIncentivesHist.fxml"));
     }
+    
+    @FXML
+    private void mnuPanaloParameterClick(ActionEvent event) {
+        setScene(loadAnimate("PanaloParameter.fxml"));
+    }
+    @FXML
+    private void mnuPanaloEntryClick(ActionEvent event) {
+        setScene(loadAnimate("PanaloInfo.fxml"));
+    }
 
     private void getTime(){
         Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {            
@@ -401,11 +416,14 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         
         //compliance management;
         mnuIncentiveParameter.setVisible("034;026;".contains(oApp.getDepartment())); 
+
         mnuTransaction111.setVisible("034;026;".contains(oApp.getDepartment())); 
         mnuInventory01.setVisible("034;026;".contains(oApp.getDepartment())); 
         
         //finance management;
-        mnuEmployeeIncentivesBank.setVisible("028;026;".contains(oApp.getDepartment()));
+        mnuEmployeeIncentivesBank.setVisible("021;028;026;".contains(oApp.getDepartment()));
+        mnuTransaction111.setVisible("028;026;".contains(oApp.getDepartment()));
+        mnuInventory01.setVisible("028;026;".contains(oApp.getDepartment()));
         
         //sales
         mnuTransaction11.setVisible("015;026;".contains(oApp.getDepartment()));
@@ -416,8 +434,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         else
             mnuFiles01.setVisible(true);
         
-        //compliance management;
-        mnuIncentiveReleasing.setVisible("028;026;".contains(oApp.getDepartment()));
+        mnuTransaction11.setVisible("015;034;022;028;026;".contains(oApp.getDepartment()));
+        mnuAuditIncentiveReport.setVisible("015;034;022;028;026;".contains(oApp.getDepartment()));
     }
-
 }
