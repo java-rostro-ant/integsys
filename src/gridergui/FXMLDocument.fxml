@@ -83,6 +83,7 @@
                                                 <Menu fx:id="mnuTransaction1121" mnemonicParsing="false" text="Panalo">
                                                    <items>
                                                       <MenuItem fx:id="mnuPanaloEntry" mnemonicParsing="false" onAction="#mnuPanaloEntryClick" text="Entry                   " />
+                                                      <MenuItem fx:id="mnuPanaloRedeem" mnemonicParsing="false" onAction="#mnuPanaloRedeemClick" text="Redemption" />
                                                    </items>
                                                 </Menu>
                                           </items>

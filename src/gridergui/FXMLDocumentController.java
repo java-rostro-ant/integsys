@@ -256,6 +256,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             
             case "PanaloInfo.fxml":
                 return new PanaloInfoController();
+            case "PanaloRedemption.fxml":
+                return new PanaloRedemptionController();
             default:
                 return null;
         }
@@ -380,6 +382,10 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuPanaloEntryClick(ActionEvent event) {
         setScene(loadAnimate("PanaloInfo.fxml"));
+    }
+    @FXML
+    private void mnuPanaloRedeemClick(ActionEvent event) {
+        setScene(loadAnimate("PanaloRedemption.fxml"));
     }
 
     private void getTime(){
