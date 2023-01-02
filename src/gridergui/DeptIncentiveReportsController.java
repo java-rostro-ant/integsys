@@ -295,11 +295,11 @@ public class DeptIncentiveReportsController implements Initializable, ScreenInte
                       sPeriodxx = "";
                       ShowMessageFX.Warning(getStage(), "Incentive period must not be empty","Warning", null);
                    } else {
-                       showProgress();
+                       //showProgress();
                        loadReport();
                    }
                 } else {
-                    showProgress();
+                    //showProgress();
                     loadReport();
                 }
             break;
