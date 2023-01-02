@@ -83,10 +83,11 @@
                                                    </items>
                                                 </Menu>
                                                 
-                                                <Menu fx:id="mnuTransaction112" mnemonicParsing="false" text="Incentives - Department">
+                                                <Menu fx:id="mnuTransaction112" mnemonicParsing="false" text="Incentives - Department" />
                                                 <Menu fx:id="mnuTransaction1121" mnemonicParsing="false" text="Panalo">
                                                    <items>
                                                       <MenuItem fx:id="mnuPanaloEntry" mnemonicParsing="false" onAction="#mnuPanaloEntryClick" text="Entry                   " />
+                                                      <MenuItem fx:id="mnuPanaloRedeem" mnemonicParsing="false" onAction="#mnuPanaloRedeemClick" text="Redeem" />
                                                    </items>
                                                 </Menu>
                                                 <Menu fx:id="mnuInventory01" mnemonicParsing="false" text="Inventory Count">
