@@ -442,6 +442,10 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             mnuFiles01.setVisible(true);
         
         mnuTransaction11.setVisible("015;034;022;028;026;".contains(oApp.getDepartment()));
+        
         mnuAuditIncentiveReport.setVisible("015;034;022;028;026;".contains(oApp.getDepartment()));
+        mnuAuditDeptIncentiveReport.setVisible("026;028;".contains(oApp.getDepartment()));
+        mnuAuditBankReport.setVisible("026;028;021;".contains(oApp.getDepartment()));
+        
     }
 }

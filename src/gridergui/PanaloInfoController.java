@@ -113,7 +113,9 @@ public class PanaloInfoController implements Initializable, ScreenInterface {
         oTrans.setListener(oListener);
         oTrans.setWithUI(true);
         pbLoaded = true;
+        
         loadClient();
+        
         pnEditMode = EditMode.UNKNOWN;
         btnPost.setOnAction(this::cmdButton_Click);
         btnVoid.setOnAction(this::cmdButton_Click);
@@ -137,7 +139,7 @@ public class PanaloInfoController implements Initializable, ScreenInterface {
         oApp = foValue;
     }
 
-        private void loadClient(){
+    private void loadClient(){
         int lnCtr;
         try {
             panaloinfo_data.clear();
