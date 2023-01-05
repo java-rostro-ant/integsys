@@ -135,16 +135,16 @@
                                                       <Insets left="10.0" />
                                                    </GridPane.margin>
                                                 </Label>
-                                                <TextField fx:id="txtField01" GridPane.columnIndex="2" GridPane.columnSpan="2">
+                                                <TextField fx:id="txtField01" editable="false" GridPane.columnIndex="2" GridPane.columnSpan="2">
                                                    <font>
                                                       <Font size="13.0" />
                                                    </font>
                                                 </TextField>
-                                                <TextField fx:id="txtField02" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-                                                <TextField fx:id="txtField03" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="3" />
-                                                <TextField fx:id="txtField04" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4" />
-                                                <TextField fx:id="txtField05" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="6" />
-                                                <TextField fx:id="txtField06" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="7" />
+                                                <TextField fx:id="txtField02" editable="false" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                                                <TextField fx:id="txtField03" editable="false" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="3" />
+                                                <TextField fx:id="txtField04" editable="false" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="4" />
+                                                <TextField fx:id="txtField05" editable="false" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="6" />
+                                                <TextField fx:id="txtField06" editable="false" GridPane.columnIndex="2" GridPane.columnSpan="3" GridPane.rowIndex="7" />
                                              </children>
                                           </GridPane>
                                        </children>
@@ -198,19 +198,22 @@
                                                       <Insets left="10.0" />
                                                    </GridPane.margin>
                                                 </Label>
-                                                <TextField fx:id="txtField07" GridPane.columnIndex="2" GridPane.columnSpan="2" />
-                                                <TextField fx:id="txtField08" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-                                                <TextField fx:id="txtField09" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-                                                <TextField fx:id="txtField10" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+                                                <TextField fx:id="txtField07" editable="false" GridPane.columnIndex="2" GridPane.columnSpan="2" />
+                                                <TextField fx:id="txtField08" editable="false" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                                                <TextField fx:id="txtField09" editable="false" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                                                <TextField fx:id="txtField10" editable="false" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="3" />
                                                 <Label text="Panalo Code">
                                                    <GridPane.margin>
                                                       <Insets left="10.0" />
                                                    </GridPane.margin>
                                                 </Label>
-                                                <TextField GridPane.columnIndex="4" GridPane.rowIndex="5" />
-                                                <Label text="Issue Qty" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
+                                                <TextField fx:id="txtField11" GridPane.columnIndex="4" GridPane.rowIndex="5">
                                                    <font>
-                                                      <Font name="System Bold" size="14.0" />
+                                                      <Font name="System Bold" size="15.0" />
+                                                   </font></TextField>
+                                                <Label fx:id="lblissueqty" text="Issue Qty" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
+                                                   <font>
+                                                      <Font name="System Bold" size="18.0" />
                                                    </font>
                                                 </Label>
                                              </children>
@@ -234,15 +237,15 @@
                      <children>
                         <Button fx:id="btnScan" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="SCAN">
                            <graphic>
-                              <FontAwesomeIconView glyphName="CAMERA" size="20" />
+                              <FontAwesomeIconView glyphName="QRCODE" size="20" />
                            </graphic>
                            <effect>
                               <Blend />
                            </effect>
                         </Button>
-                        <Button fx:id="btnVoid" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="SAVE">
+                        <Button fx:id="btnIssue" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="ISSUE">
                            <graphic>
-                              <FontAwesomeIconView glyphName="SAVE" size="20" />
+                              <FontAwesomeIconView glyphName="CHECK" size="20" />
                            </graphic>
                            <effect>
                               <Blend />
