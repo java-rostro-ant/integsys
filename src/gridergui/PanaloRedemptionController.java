@@ -19,13 +19,14 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.rmj.appdriver.GRider;
+import org.rmj.appdriver.agentfx.CommonUtils;
 import org.rmj.appdriver.agentfx.ShowMessageFX;
 import org.rmj.appdriver.constants.EditMode;
 import org.rmj.fund.manager.base.LMasDetTrans;
-import org.rmj.fund.manager.parameters.Panalo;
 import org.rmj.gcamera.app.Capture;
-import org.rmj.gcamera.view.APITrans;
 
 /**
  * FXML Controller class
@@ -34,44 +35,47 @@ import org.rmj.gcamera.view.APITrans;
  */
 public class PanaloRedemptionController implements Initializable, ScreenInterface{
     private GRider oApp;
-    private Panalo oTrans;
     private int pnEditMode;
     private boolean pbLoaded = false;
     private LMasDetTrans oListener;
+    
     @FXML
     private AnchorPane AnchorMainPanaloRedeem;
+    
     @FXML
-    private TextField txtField01,txtField02,txtField03,txtField04
-                    ,txtField05,txtField06,txtField07,txtField08,
-                    txtField09, txtField10,txtField11;
+    private TextField 
+              txtField01, txtField02, txtField03, txtField04
+            , txtField05, txtField06, txtField07, txtField08
+            , txtField09, txtField10, txtField11;
+    
     @FXML
-    private Button btnIssue ,btnClose, btnScan ,btnRefresh;
+    private Button btnIssue, btnClose, btnScan, btnRefresh;
+    
     @FXML
     private Label lblStatus,lblissueqty;
     private Stage getStage(){
 	return (Stage) txtField01.getScene().getWindow();
     }
-    /**
-     * Initializes the controller class.
-     */
+    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
         pnEditMode = EditMode.UNKNOWN;
         initButton(pnEditMode);
+        
         pbLoaded = true;
 //        initTxtField(pnEditMode);
-        
-        
+                
         btnScan.setOnAction(this::cmdButton_Click);
         btnIssue.setOnAction(this::cmdButton_Click);
         btnClose.setOnAction(this::cmdButton_Click);
         btnRefresh.setOnAction(this::cmdButton_Click);
     }    
-     @Override
+    
+    @Override
     public void setGRider(GRider foValue) {
          oApp = foValue;
     }
+    
     private void unloadForm(){
         StackPane myBox = (StackPane) AnchorMainPanaloRedeem.getParent();
         myBox.getChildren().clear();
@@ -109,23 +113,31 @@ public class PanaloRedemptionController implements Initializable, ScreenInterfac
         try {
             switch (lsButton){
                 case "btnScan": 
-                    pnEditMode = EditMode.UPDATE;
-                   initButton(pnEditMode);
-                   //capture code
+                    JSONObject loJSON = getQRValue();
+                    
+                    if (loJSON.get("result").equals("success")){
+                        ShowMessageFX.Warning(getStage(), String.valueOf(loJSON.get("payload")), "Warning", null);
+                        pnEditMode = EditMode.READY;
+                        initButton(pnEditMode);
+                    } else {
+                        loJSON = (JSONObject) loJSON.get("error");
+                        
+                        ShowMessageFX.Warning(getStage(), (String) loJSON.get("message"), "Warning", null);
+                    }
+                    
                     break;
                 case "btnIssue": //create new transaction
-                        if(txtField01.getText() != "" ){
-                            initButton(pnEditMode);
-                        }else{
-                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
-                        }
+                    if(!"".equals(txtField01.getText()) ){
+                        initButton(pnEditMode);
+                    }else{
+                        ShowMessageFX.Warning(getStage(), "No transaction was loaded.", "Warning", null);
+                    }
                     break;
                 case "btnClose":
                     if(ShowMessageFX.OkayCancel(null, "Panalo Redemption", "Are you sure, do you want to close?") == true){
                         unloadForm();
-                        break;
-                    } else {
-            }
+                    }
+                    break;
                 case "btnRefresh":
                     pnEditMode = EditMode.UNKNOWN;
                     clearFields();
@@ -133,22 +145,19 @@ public class PanaloRedemptionController implements Initializable, ScreenInterfac
 
                     break;
             }
-            
-//            initButton(pnEditMode);
         }catch (NullPointerException e) {
             ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
         }
     } 
     private void initButton(int fnValue){
-        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-//        btnScan.setVisible(!lbShow);
-//        btnIssue.setVisible(!lbShow);
-//        btnRefresh.setVisible(!lbShow);
+        boolean lbShow = (fnValue == EditMode.READY);
+        
+        btnScan.setVisible(true);
+        btnIssue.setVisible(true);
+        btnRefresh.setVisible(true);
         lblStatus.setVisible(lbShow);
         lblissueqty.setVisible(lbShow);
         txtField11.setVisible(lbShow);
-        
-       
     }
      public void clearFields(){
         txtField01.clear();
@@ -163,26 +172,43 @@ public class PanaloRedemptionController implements Initializable, ScreenInterfac
         txtField10.clear();
         txtField11.clear();
  
-        oTrans = new Panalo(oApp, oApp.getBranchCode(), false);
-        oTrans.setListener(oListener);
-        oTrans.setWithUI(true);
         pbLoaded = true;
     }
-    
+
+    private JSONObject getQRValue(){                
+        try {
+            Capture instance = new Capture();
+            CommonUtils.showModal(instance);
+        
+            String lsValue = instance.getQRResult();
+            
+            if (!lsValue.isEmpty()){
+                JSONParser loParse = new JSONParser();
+                
+                JSONObject loJSON = (JSONObject) loParse.parse(lsValue);
+                return loJSON;
+            }
+        } catch (Exception e) {
+            JSONObject err_detl = new JSONObject();
+            err_detl.put("code", "250");
+            err_detl.put("message", e.getMessage());
+
+            JSONObject err_mstr = new JSONObject();
+            err_mstr.put("result", "error");
+            err_mstr.put("error", err_detl);
+            return err_mstr;
+        }
+        
+        JSONObject err_detl = new JSONObject();
+        err_detl.put("code", "250");
+        err_detl.put("message", "No record to processed.");
+
+        JSONObject err_mstr = new JSONObject();
+        err_mstr.put("result", "error");
+        err_mstr.put("error", err_detl);
+        return err_mstr;
+    }
 }
-//    private void initTxtField(int fnValue){
-//        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-//        txtField01.setEditable (!lbShow);
-//        txtField02.setDisable(!lbShow);
-//        txtField03.setDisable(!lbShow);
-//        txtField04.setDisable (!lbShow);
-//        txtField05.setDisable(!lbShow);
-//        txtField06.setDisable(!lbShow);
-//        txtField07.setDisable (!lbShow);
-//        txtField08.setDisable(!lbShow);
-//        txtField09.setDisable(!lbShow);
-//        txtField10.setDisable(!lbShow);
-//    }
     
     
 
