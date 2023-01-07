@@ -19,14 +19,15 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.rmj.appdriver.GRider;
-import org.rmj.appdriver.agentfx.CommonUtils;
 import org.rmj.appdriver.agentfx.ShowMessageFX;
 import org.rmj.appdriver.constants.EditMode;
 import org.rmj.fund.manager.base.LMasDetTrans;
 import org.rmj.gcamera.app.Capture;
+import org.rmj.appdriver.agentfx.CommonUtils;
 
 /**
  * FXML Controller class
@@ -38,6 +39,7 @@ public class PanaloRedemptionController implements Initializable, ScreenInterfac
     private int pnEditMode;
     private boolean pbLoaded = false;
     private LMasDetTrans oListener;
+    private JSONArray QRArray;
     
     @FXML
     private AnchorPane AnchorMainPanaloRedeem;
@@ -116,9 +118,14 @@ public class PanaloRedemptionController implements Initializable, ScreenInterfac
                     JSONObject loJSON = getQRValue();
                     
                     if (loJSON.get("result").equals("success")){
+                        System.out.println(loJSON.get("payload"));
                         ShowMessageFX.Warning(getStage(), String.valueOf(loJSON.get("payload")), "Warning", null);
                         pnEditMode = EditMode.READY;
                         initButton(pnEditMode);
+                        
+                        QRArray = (JSONArray) loJSON.get("payload");
+                        loadField();
+                        
                     } else {
                         loJSON = (JSONObject) loJSON.get("error");
                         
@@ -150,14 +157,16 @@ public class PanaloRedemptionController implements Initializable, ScreenInterfac
         }
     } 
     private void initButton(int fnValue){
-        boolean lbShow = (fnValue == EditMode.READY);
+        boolean lbShow = (fnValue == EditMode.READY || fnValue == EditMode.UPDATE);
+            if (fnValue == EditMode.READY) {
+                btnScan.setVisible(true);
+                btnIssue.setVisible(true);
+                btnRefresh.setVisible(true);
+                lblStatus.setVisible(lbShow);
+                lblissueqty.setVisible(!lbShow);
+                txtField11.setVisible(lbShow);
+            }
         
-        btnScan.setVisible(true);
-        btnIssue.setVisible(true);
-        btnRefresh.setVisible(true);
-        lblStatus.setVisible(lbShow);
-        lblissueqty.setVisible(lbShow);
-        txtField11.setVisible(lbShow);
     }
      public void clearFields(){
         txtField01.clear();
@@ -184,7 +193,6 @@ public class PanaloRedemptionController implements Initializable, ScreenInterfac
             
             if (!lsValue.isEmpty()){
                 JSONParser loParse = new JSONParser();
-                
                 JSONObject loJSON = (JSONObject) loParse.parse(lsValue);
                 return loJSON;
             }
@@ -208,6 +216,27 @@ public class PanaloRedemptionController implements Initializable, ScreenInterfac
         err_mstr.put("error", err_detl);
         return err_mstr;
     }
+    
+    public void loadField(){
+           
+         JSONArray jsonArray =  QRArray;
+         JSONObject foJSON = (JSONObject)jsonArray.get(0);
+
+            txtField01.setText((String) foJSON.get("sPanaloQC"));
+            txtField02.setText((String) foJSON.get("dTransact"));
+            txtField03.setText((String) foJSON.get("sPanaloDs"));
+            txtField04.setText((String) foJSON.get("sSourceNm"));
+            txtField05.setText((String) foJSON.get("sAcctNmbr"));
+            txtField06.setText((String) foJSON.get("sPanaloQC"));            
+            txtField07.setText((String) foJSON.get("sPanaloCD"));
+            
+            txtField08.setText((String) foJSON.get("nItemQtyx"));
+            txtField09.setText((String) foJSON.get("nRedeemxx"));
+            txtField10.setText((String) foJSON.get("dRedeemxx"));            
+            txtField11.setText((String) foJSON.get("dRedeemxx"));
+    } 
+
+            
 }
     
     
