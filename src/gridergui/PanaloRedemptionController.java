@@ -6,6 +6,7 @@ package gridergui;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
@@ -28,6 +29,7 @@ import org.rmj.appdriver.constants.EditMode;
 import org.rmj.fund.manager.base.LMasDetTrans;
 import org.rmj.gcamera.app.Capture;
 import org.rmj.appdriver.agentfx.CommonUtils;
+import java.util.HashMap;
 
 /**
  * FXML Controller class
@@ -40,6 +42,7 @@ public class PanaloRedemptionController implements Initializable, ScreenInterfac
     private boolean pbLoaded = false;
     private LMasDetTrans oListener;
     private JSONArray QRArray;
+    public JSONObject jsonData;
     
     @FXML
     private AnchorPane AnchorMainPanaloRedeem;
@@ -118,8 +121,7 @@ public class PanaloRedemptionController implements Initializable, ScreenInterfac
                     JSONObject loJSON = getQRValue();
                     
                     if (loJSON.get("result").equals("success")){
-                        System.out.println(loJSON.get("payload"));
-                        ShowMessageFX.Warning(getStage(), String.valueOf(loJSON.get("payload")), "Warning", null);
+                        //ShowMessageFX.Warning(getStage(), String.valueOf(loJSON.get("payload")), "Warning", null);
                         pnEditMode = EditMode.READY;
                         initButton(pnEditMode);
                         
@@ -136,6 +138,9 @@ public class PanaloRedemptionController implements Initializable, ScreenInterfac
                 case "btnIssue": //create new transaction
                     if(!"".equals(txtField01.getText()) ){
                         initButton(pnEditMode);
+                        IssueQty();
+                        ShowMessageFX.Warning(getStage(), "Panalo Redemption Issued Successfully!", "Warning", null);
+                        clearFields();
                     }else{
                         ShowMessageFX.Warning(getStage(), "No transaction was loaded.", "Warning", null);
                     }
@@ -233,9 +238,30 @@ public class PanaloRedemptionController implements Initializable, ScreenInterfac
             txtField08.setText((String) foJSON.get("nItemQtyx"));
             txtField09.setText((String) foJSON.get("nRedeemxx"));
             txtField10.setText((String) foJSON.get("dRedeemxx"));            
-            txtField11.setText((String) foJSON.get("dRedeemxx"));
+            txtField11.setText((String) foJSON.get("nRedeemxx"));
     } 
 
+    public void IssueQty(){
+           String sURL = "https://restgk.guanzongroup.com.ph/gconnect/redeem_my_panalo.php";
+           Map<String, String> headers = APIParam.getHeader1();
+        
+        JSONObject param = new JSONObject();
+        
+        param.put("transnox", txtField01.getText());
+        param.put("quantity", txtField11.getText());
+       
+        String response;
+        try {
+            response = WebClient.sendHTTP(sURL, param.toJSONString(), (HashMap<String, String>) headers);
+            if(response == null){
+                System.out.println("No Response");
+                System.exit(1);
+            } 
+            System.out.println(response);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    } 
             
 }
     
