@@ -353,6 +353,10 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         btnBrowse.setVisible(!lbShow);
         btnNew.setVisible(!lbShow);
         
+        btnAddEmployee.setDisable(!lbShow);
+        btnAddIncentives.setDisable(!lbShow);
+        btnAddDeductions.setDisable(!lbShow);
+
         txtSeeks21.setDisable(!lbShow);
         txtSeeks22.setDisable(!lbShow);
         
@@ -381,15 +385,15 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
             txtSeeks21.requestFocus();
             txtSeeks22.setDisable(lbShow);  
         }
-        if (lbShow = (fnValue == EditMode.UPDATE)) {
-            btnAddEmployee.setDisable(true);
-            btnAddIncentives.setDisable(true);
-            btnAddDeductions.setDisable(true);
-        } else {
-            btnAddEmployee.setDisable(false);
-            btnAddIncentives.setDisable(false);
-            btnAddDeductions.setDisable(false);
-        }
+//        if (lbShow = (fnValue == EditMode.UPDATE)) {
+//            btnAddEmployee.setDisable(true);
+//            btnAddIncentives.setDisable(true);
+//            btnAddDeductions.setDisable(true);
+//        } else {
+//            btnAddEmployee.setDisable(false);
+//            btnAddIncentives.setDisable(false);
+//            btnAddDeductions.setDisable(false);
+//        }
     }
     @Override
     public void setGRider(GRider foValue) {
@@ -676,6 +680,8 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                 case "btnAddIncentives":
                     if (oTrans.searchIncentive("", false)){
                         loadIncentives();
+                    }else{
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                     }
                     break;
                  case "btnAddEmployee":
@@ -689,7 +695,8 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                         if (!lsValue.isEmpty()){
                             if (oTrans.addDeduction(lsValue))
                                 loadIncentives();
-                        }
+                        }else
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                     break;
                 case "btnClose":
                         if(ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to close?") == true){
@@ -864,14 +871,16 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         try {
             
             pnRow = tblIncentives.getSelectionModel().getSelectedIndex(); 
-            TableIncentives ti = (TableIncentives) tblIncentives.getItems().get(pnRow);
-            
-            if(ti.getIncindex02().contains("Deduction")){
-                AddDeductionController.setData(ti);
-                loadDeductionDetail(pnRow + 1 - (oTrans.getIncentiveCount())); 
-            } else{
-                loadIncentiveDetail((String) oTrans.getIncentiveInfo(pnRow + 1, "sInctveCD"), pnRow + 1); 
+            if(pnRow >= 0){
+                TableIncentives ti = (TableIncentives) tblIncentives.getItems().get(pnRow);
+                if(ti.getIncindex02().contains("Deduction")){
+                    AddDeductionController.setData(ti);
+                    loadDeductionDetail(pnRow + 1 - (oTrans.getIncentiveCount())); 
+                } else{
+                    loadIncentiveDetail((String) oTrans.getIncentiveInfo(pnRow + 1, "sInctveCD"), pnRow + 1); 
+                }
             }
+           
         } catch (SQLException ex) {
             ex.printStackTrace();
             ShowMessageFX.Warning(getStage(),ex.getMessage(), "Warning", null);
