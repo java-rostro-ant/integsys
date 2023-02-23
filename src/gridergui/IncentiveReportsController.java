@@ -4,6 +4,7 @@
  */
 package gridergui;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -22,6 +23,7 @@ import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -33,6 +35,7 @@ import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -47,6 +50,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -62,6 +66,7 @@ import org.rmj.appdriver.agentfx.CommonUtils;
 import org.rmj.appdriver.agentfx.ShowMessageFX;
 import org.rmj.appdriver.constants.EditMode;
 import org.rmj.fund.manager.base.IncentiveReports;
+import org.rmj.fund.manager.base.IncentiveReportss;
 import org.rmj.fund.manager.base.LMasDetTrans;
 import reportmodel.IncentiveDetail;
 import reportmodel.IncentiveMaster;
@@ -72,11 +77,13 @@ import reportmodel.IncentiveMaster;
  * @author User
  */
 public class IncentiveReportsController implements Initializable, ScreenInterface{
+    private final String pxeModuleName = "Employee Incentives Report";
     final static int interval = 100;
     private Timeline timeline;
     private Integer timeSeconds = 3;
     private GRider oApp;
-    private IncentiveReports oTrans;
+//    private IncentiveReports oTrans;
+    private IncentiveReportss oTrans;
     private LMasDetTrans oListener;
     private final boolean pbLoaded = false;    
     private boolean running = false;
@@ -88,9 +95,9 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
     private JRViewer jrViewer;
 //    private JasperPreview jasperPreview;
     @FXML
-    private Button btnGenerate;
+    private Button btnGenerate,btnCloseReport;
     @FXML
-    private AnchorPane reportPane;
+    private AnchorPane reportPane, AnchorMainIncentiveReport;
     @FXML
     private RadioButton rbDetailed;
     @FXML
@@ -126,6 +133,7 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         btnGenerate.setOnAction(this::cmdButton_Click);
+        btnCloseReport.setOnAction(this::cmdButton_Click);
        
         oListener = new LMasDetTrans() {
             @Override
@@ -141,7 +149,7 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
             }
          };
         
-        oTrans  = new IncentiveReports(oApp, oApp.getBranchCode(), false);
+        oTrans  = new IncentiveReportss(oApp, oApp.getBranchCode(), false);
         oTrans.setListener(oListener);
         oTrans.setTranStat(12);
         oTrans.setWithUI(true);
@@ -347,6 +355,12 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
                     }
                     
                 break;
+                 case "btnCloseReport":
+                        if(ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to close?") == true){
+                             unloadForm();
+                            break;
+                        } 
+                            return;
             }
     } 
     private void generateReport(){
@@ -370,6 +384,7 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
             timeline.playFromStart();
         }
     }
+    
     private void initGrid(){
          boolean lbShow = rbSummarized.isSelected();
      
@@ -438,30 +453,38 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
                         inc_detail.clear();
                         for (int x = 1; x <= oTrans.getCategoryCount(); x++){
                             inc_detail.add(new IncentiveDetail(
-                                String.valueOf(x),
-                                oTrans.getDetailCategory(x, "sTransNox").toString(),
-                                oTrans.getDetailCategory(x, "xEmployNm").toString(),
-                                oTrans.getDetailCategory(x, "xBranchNm").toString(),
-                                oTrans.getDetailCategory(x, "xPositnNm").toString(),
-                                oTrans.getDetailCategory(x, "sInctveDs").toString(),
-                                dateToWord(oTrans.getDetailCategory(x, "sMonthxxx").toString()),
-                                oTrans.getDetailCategory(x, "xIncentve").toString()));
-
+                            oTrans.getDetailCategory(x, "xBranchNm").toString(),
+                            dateToWord(oTrans.getDetailCategory(x, "sMonthxxx").toString()),
+                            oTrans.getDetailCategory(x, "xEmployNm").toString(),
+                            oTrans.getDetailCategory(x, "xPositnNm").toString(),
+                            oTrans.getDetailCategory(x, "nMcSalesx").toString(),
+                            oTrans.getDetailCategory(x, "nSpareprt").toString(),
+                            oTrans.getDetailCategory(x, "nServicex").toString(),
+                            oTrans.getDetailCategory(x, "nRegisTri").toString(),
+                            oTrans.getDetailCategory(x, "nDei2xxxx").toString(),
+                            "",
+                            oTrans.getDetailCategory(x, "sTransNox").toString(),
+                            String.valueOf(x),
+                            ""));
                         }
+                        System.out.println(oTrans.getCategoryCount());
                     }else{
                         running = false;
                         vbProgress.setVisible(false);
                         timeline.stop();
                     }
+//                    String sourceFileName = 
+//                    "D://GGC_Java_Systems/reports/Category_Incentive_Detailed_Report.jasper";
                     String sourceFileName = 
-                    "D://GGC_Java_Systems/reports/Category_Incentive_Detailed_Report.jasper";
+                    "D://report image/reports/Category_Incentive_Detailed_Report.jasper";
                     String printFileName = null;
                     JRBeanCollectionDataSource beanColDataSource1 = new JRBeanCollectionDataSource(inc_detail);
 
+//                    params.put("ItemDataSource", beanColDataSource1);
                     try {
                          jasperPrint =JasperFillManager.fillReport(
                                 sourceFileName, params, beanColDataSource1);
-        //               
+                       
                         printFileName = jasperPrint.toString();
                         if(printFileName != null){
 
@@ -519,6 +542,40 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
     
        
     }
+    
+    
+
+    private void unloadForm(){
+        StackPane myBox = (StackPane) AnchorMainIncentiveReport.getParent();
+        myBox.getChildren().clear();
+        myBox.getChildren().add(getScene("MainScreenBG.fxml"));
+    }
+    private AnchorPane getScene(String fsFormName){
+         ScreenInterface fxObj = new MainScreenBGController();
+         fxObj.setGRider(oApp);
+        
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(fxObj.getClass().getResource(fsFormName));
+        fxmlLoader.setController(fxObj);      
+   
+        AnchorPane root;
+        try {
+            root = (AnchorPane) fxmlLoader.load();
+            FadeTransition ft = new FadeTransition(Duration.millis(1500));
+            ft.setNode(root);
+            ft.setFromValue(1);
+            ft.setToValue(1);
+            ft.setCycleCount(1);
+            ft.setAutoReverse(false);
+            ft.play();
+
+            return root;
+        } catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        }
+        return null;
+    }
+    
 }
  
     
