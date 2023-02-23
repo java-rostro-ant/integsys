@@ -4,6 +4,7 @@
  */
 package gridergui;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,6 +19,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.collections.FXCollections;
@@ -25,6 +27,7 @@ import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -37,6 +40,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -62,6 +66,7 @@ import reportmodel.IncentiveMaster;
  * @author User
  */
 public class DeptIncentiveReportsController implements Initializable, ScreenInterface{
+    private final String pxeModuleName = "Department Incentives Report";
     
     private GRider oApp;
     private DeptIncentiveReport oTrans;
@@ -82,9 +87,9 @@ public class DeptIncentiveReportsController implements Initializable, ScreenInte
     private Timeline timeline;
     private Integer timeSeconds = 3;
     @FXML
-    private Button btnGenerate;
+    private Button btnGenerate,btnCloseReport;
     @FXML
-    private AnchorPane reportPane;
+    private AnchorPane reportPane,AnchorMainIncentiveReport;
     @FXML
     private RadioButton rbDetailed;
     @FXML
@@ -115,6 +120,7 @@ public class DeptIncentiveReportsController implements Initializable, ScreenInte
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         btnGenerate.setOnAction(this::cmdButton_Click);
+        btnCloseReport.setOnAction(this::cmdButton_Click);
        
        
         oListener = new LMasDetTrans() {
@@ -326,6 +332,12 @@ public class DeptIncentiveReportsController implements Initializable, ScreenInte
                     
                     
                 break;
+                 case "btnCloseReport":
+                        if(ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to close?") == true){
+                             unloadForm();
+                            break;
+                        } 
+                            return;
             }
     } 
     private void generateReport(){
@@ -434,6 +446,39 @@ public class DeptIncentiveReportsController implements Initializable, ScreenInte
         vbProgress.setVisible(false);
         timeline.stop();
         return true;
+    }
+    
+    
+
+    private void unloadForm(){
+        StackPane myBox = (StackPane) AnchorMainIncentiveReport.getParent();
+        myBox.getChildren().clear();
+        myBox.getChildren().add(getScene("MainScreenBG.fxml"));
+    }
+    private AnchorPane getScene(String fsFormName){
+         ScreenInterface fxObj = new MainScreenBGController();
+         fxObj.setGRider(oApp);
+        
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(fxObj.getClass().getResource(fsFormName));
+        fxmlLoader.setController(fxObj);      
+   
+        AnchorPane root;
+        try {
+            root = (AnchorPane) fxmlLoader.load();
+            FadeTransition ft = new FadeTransition(Duration.millis(1500));
+            ft.setNode(root);
+            ft.setFromValue(1);
+            ft.setToValue(1);
+            ft.setCycleCount(1);
+            ft.setAutoReverse(false);
+            ft.play();
+
+            return root;
+        } catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        }
+        return null;
     }
 }
  

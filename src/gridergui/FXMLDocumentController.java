@@ -107,7 +107,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private Menu mnuTransaction111;
     @FXML
-    private Menu mnuInventory01;
+    private Menu mnuInventory01,mnuPerformance;
     @FXML
     private MenuItem mnuInventoryReq;
     @FXML
@@ -388,6 +388,10 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuPanaloRedeemClick(ActionEvent event) {
         setScene(loadAnimate("PanaloRedemption.fxml"));
+    }
+    @FXML
+    private void mnuMCAreaClicked(ActionEvent event) {
+        setScene(loadAnimate("McAreaPerformance.fxml"));
     }
 
     private void getTime(){

@@ -181,3 +181,21 @@
     -fx-background-radius: 15px;
     -fx-padding: 4px;
 }
+
+#btnCloseReport{
+  -fx-background-color: #a6a6a6;
+  -fx-text-fill: black;
+}
+
+#report-icon{
+  -fx-fill: black;
+}
+#btnCloseReport:hover{
+  -fx-background-color: #ed1800;
+  -fx-text-fill: white;
+    
+}
+#btnCloseReport:hover .glyph-icon, #btnCloseReport:hover .glyph-icon
+{
+  -fx-fill: white;
+}

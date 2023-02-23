@@ -86,6 +86,11 @@
                                                       <MenuItem fx:id="mnuInventoryHistory" mnemonicParsing="false" onAction="#mnuInventoryHistoryClick" text="History" />
                                                    </items>
                                                 </Menu>
+                                                <Menu fx:id="mnuPerformance" mnemonicParsing="false" text="Performance">
+                                                   <items>
+                                                      <MenuItem fx:id="mnuMCArea" mnemonicParsing="false" onAction="#mnuMCAreaClicked" text="MC Area" />
+                                                   </items>
+                                                </Menu>
                                           </items>
                                         </Menu>
                                         <Menu mnemonicParsing="false" text="Reports">

@@ -4,7 +4,9 @@
  */
 package reportmodel;
 
+import java.text.DecimalFormat;
 import javafx.beans.property.SimpleStringProperty;
+import org.rmj.appdriver.agentfx.CommonUtils;
 
 /**
  *
@@ -24,6 +26,7 @@ public class IncentiveDetail {
     private SimpleStringProperty index11; 
     private SimpleStringProperty index12; 
     private SimpleStringProperty index13; 
+    private SimpleStringProperty index14; 
     
     
     public IncentiveDetail(String index01,
@@ -102,6 +105,7 @@ public class IncentiveDetail {
         this.index10 = new SimpleStringProperty(index10);
         this.index11 = new SimpleStringProperty(index11);
         this.index12 = new SimpleStringProperty(index12);
+        
 //        this.index13 = new SimpleStringProperty(index13);
     }
     // Incentive Detail Category Report
@@ -112,16 +116,29 @@ public class IncentiveDetail {
                String index05,
                String index06,
                String index07,
-               String index08){
+               String index08,
+               String index09,
+               String index10,
+               String index11,
+               String index12,
+               String index13
+               ){
         
         this.index01 = new SimpleStringProperty(index01);
         this.index02 = new SimpleStringProperty(index02);
         this.index03 = new SimpleStringProperty(index03);
         this.index04 = new SimpleStringProperty(index04);
+        
         this.index05 = new SimpleStringProperty(index05);
         this.index06 = new SimpleStringProperty(index06);
         this.index07 = new SimpleStringProperty(index07);
         this.index08 = new SimpleStringProperty(index08);
+        this.index09 = new SimpleStringProperty(index09);
+        this.index10 = new SimpleStringProperty(couputeTotal(index05, index06, index07, index08, index09));
+        this.index11 = new SimpleStringProperty(index11);
+        this.index12 = new SimpleStringProperty(index12);
+        this.index13 = new SimpleStringProperty(index13);
+//        this.index14 = new SimpleStringProperty(index14);
     }
     
 
@@ -165,4 +182,18 @@ public class IncentiveDetail {
     
     public String getIndex13(){return index13.get();}
     public void setIndex13(String index13){this.index13.set(index13);}
+    
+    public String getIndex14(){return index14.get();}
+    public void setIndex14(String index14){this.index14.set(index14);}
+    
+    private String couputeTotal(String index05,String index06,String index07,String index08,String index09){
+        double ntotalAmt = 0.0;
+        ntotalAmt = Double.parseDouble(index05) +Double.parseDouble(index06) +
+                Double.parseDouble(index07) + Double.parseDouble(index08) +
+                Double.parseDouble(index09);
+        DecimalFormat formatter = new DecimalFormat("###,###,##0.00");
+        
+    
+        return formatter.format(ntotalAmt);
+    }
 }
