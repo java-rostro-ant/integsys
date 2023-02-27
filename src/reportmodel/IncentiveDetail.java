@@ -134,7 +134,7 @@ public class IncentiveDetail {
         this.index07 = new SimpleStringProperty(index07);
         this.index08 = new SimpleStringProperty(index08);
         this.index09 = new SimpleStringProperty(index09);
-        this.index10 = new SimpleStringProperty(couputeTotal(index05, index06, index07, index08, index09));
+        this.index10 = new SimpleStringProperty(couputeTotal(index05, index06, index07, index08, index09, index13));
         this.index11 = new SimpleStringProperty(index11);
         this.index12 = new SimpleStringProperty(index12);
         this.index13 = new SimpleStringProperty(index13);
@@ -186,11 +186,11 @@ public class IncentiveDetail {
     public String getIndex14(){return index14.get();}
     public void setIndex14(String index14){this.index14.set(index14);}
     
-    private String couputeTotal(String index05,String index06,String index07,String index08,String index09){
+    private String couputeTotal(String index05,String index06,String index07,String index08,String index09,String index13){
         double ntotalAmt = 0.0;
-        ntotalAmt = Double.parseDouble(index05) +Double.parseDouble(index06) +
+        ntotalAmt = (Double.parseDouble(index05) +Double.parseDouble(index06) +
                 Double.parseDouble(index07) + Double.parseDouble(index08) +
-                Double.parseDouble(index09);
+                Double.parseDouble(index09)) - Double.parseDouble(index13);
         DecimalFormat formatter = new DecimalFormat("###,###,##0.00");
         
     

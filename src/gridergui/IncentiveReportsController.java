@@ -453,19 +453,19 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
                         inc_detail.clear();
                         for (int x = 1; x <= oTrans.getCategoryCount(); x++){
                             inc_detail.add(new IncentiveDetail(
-                            oTrans.getDetailCategory(x, "xBranchNm").toString(),
-                            dateToWord(oTrans.getDetailCategory(x, "sMonthxxx").toString()),
-                            oTrans.getDetailCategory(x, "xEmployNm").toString(),
-                            oTrans.getDetailCategory(x, "xPositnNm").toString(),
-                            oTrans.getDetailCategory(x, "nMcSalesx").toString(),
-                            oTrans.getDetailCategory(x, "nSpareprt").toString(),
-                            oTrans.getDetailCategory(x, "nServicex").toString(),
-                            oTrans.getDetailCategory(x, "nRegisTri").toString(),
-                            oTrans.getDetailCategory(x, "nDei2xxxx").toString(),
-                            "",
-                            oTrans.getDetailCategory(x, "sTransNox").toString(),
-                            String.valueOf(x),
-                            ""));
+                                oTrans.getDetailCategory(x, "xBranchNm").toString(),
+                                dateToWord(oTrans.getDetailCategory(x, "sMonthxxx").toString()),
+                                oTrans.getDetailCategory(x, "xEmployNm").toString(),
+                                oTrans.getDetailCategory(x, "xPositnNm").toString(),
+                                oTrans.getDetailCategory(x, "nMcSalesx").toString(),
+                                oTrans.getDetailCategory(x, "nSpareprt").toString(),
+                                oTrans.getDetailCategory(x, "nServicex").toString(),
+                                oTrans.getDetailCategory(x, "nRegisTri").toString(),
+                                oTrans.getDetailCategory(x, "nDei2xxxx").toString(),
+                                "",
+                                oTrans.getDetailCategory(x, "sTransNox").toString(),
+                                String.valueOf(x),
+                                 oTrans.getDetailCategory(x, "xDeductnx").toString()));
                         }
                         System.out.println(oTrans.getCategoryCount());
                     }else{
@@ -473,14 +473,14 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
                         vbProgress.setVisible(false);
                         timeline.stop();
                     }
-//                    String sourceFileName = 
-//                    "D://GGC_Java_Systems/reports/Category_Incentive_Detailed_Report.jasper";
                     String sourceFileName = 
-                    "D://report image/reports/Category_Incentive_Detailed_Report.jasper";
+                    "D://GGC_Java_Systems/reports/Category_Incentive_Detailed_Report.jasper";
+//                    String sourceFileName = 
+//                    "D://report image/reports/CategoyIncentiveDetailReport.jasper";
                     String printFileName = null;
                     JRBeanCollectionDataSource beanColDataSource1 = new JRBeanCollectionDataSource(inc_detail);
 
-//                    params.put("ItemDataSource", beanColDataSource1);
+                    params.put("ItemDataSource", beanColDataSource1);
                     try {
                          jasperPrint =JasperFillManager.fillReport(
                                 sourceFileName, params, beanColDataSource1);
@@ -511,11 +511,18 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
                         oTrans.getMaster(x, "sTransNox").toString(),
                         oTrans.getMaster(x, "xBranchNm").toString(),
                         dateToWord(oTrans.getMaster(x, "sMonthxxx").toString()),
+                        oTrans.getMaster(x, "nMcSalesx").toString(),
+                        oTrans.getMaster(x, "nSpareprt").toString(),
+                        oTrans.getMaster(x, "nServicex").toString(),
+                        oTrans.getMaster(x, "nRegisTri").toString(),
+                        oTrans.getMaster(x, "nDei2xxxx").toString(),
+                        oTrans.getMaster(x, "xDeductnx").toString(),
                         oTrans.getMaster(x, "xTotalAmt").toString()));
                     }
                 }
                 String sourceFileName = 
-                "D://GGC_Java_Systems/reports/Incentives_Summary.jasper";
+                        "D://report image/reports/Incentives_Summary.jasper";
+//                "D://GGC_Java_Systems/reports/Incentives_Summary.jasper";
                 String printFileName = null;
                 JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(inc_data);
 
@@ -531,6 +538,9 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
                      }
                 } catch (JRException ex) {
                     Logger.getLogger(ReportsController.class.getName()).log(Level.SEVERE, null, ex);
+                    running = false;
+                    vbProgress.setVisible(false);
+                    timeline.stop();
                 }
             } 
         }catch(SQLException e){
