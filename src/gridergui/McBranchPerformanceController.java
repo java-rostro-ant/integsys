@@ -22,6 +22,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -31,7 +33,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import org.rmj.appdriver.GRider;
 import org.rmj.appdriver.StringUtil;
@@ -46,6 +50,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 /**
  * FXML Controller class
  *
@@ -64,6 +69,14 @@ public class McBranchPerformanceController implements Initializable , ScreenInte
     private String psOldRec;
     private String psBarcode = "";
     private String psDescript = "";
+    private int SheetNo =0;
+    private int ColumnTo =0 ;
+    private int ColumnFrom =0;
+    private int RowTo =0;
+    private int RowFrom =0;
+    private LResult oListener1;
+    private String psFormType; 
+    private int pnEntryIndex ;
     @FXML
     private Label lblStatus;
     @FXML
@@ -147,6 +160,7 @@ public class McBranchPerformanceController implements Initializable , ScreenInte
         oTrans = new MCBranchPerformance(oApp, oApp.getBranchCode(), false);
         oTrans.setListener(oListener);
         oTrans.setWithUI(true);
+        psFormType = "MC";
         
         btnBrowse.setOnAction(this::cmdButton_Click);
         btnNew.setOnAction(this::cmdButton_Click);
@@ -195,8 +209,8 @@ public class McBranchPerformanceController implements Initializable , ScreenInte
          oApp = foValue;
     }
     private void cmdButton_Click(ActionEvent event) {
-        String lsButton = ((Button)event.getSource()).getId();
-//        try {
+       String lsButton = ((Button)event.getSource()).getId();
+        try {
             switch (lsButton){
                  case "btnBrowse":
                     {
@@ -257,13 +271,9 @@ public class McBranchPerformanceController implements Initializable , ScreenInte
                         }
                     }
                     break;
-                case "btnImport":
+                    case "btnImport":
                     {
-                        try {
-                            insertFile();
-                        } catch (IOException ex) {
-                            Logger.getLogger(McBranchPerformanceController.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                        loadExcelViewer() ;
                     }
                    break;
 
@@ -278,7 +288,7 @@ public class McBranchPerformanceController implements Initializable , ScreenInte
                     break;
                 
                 case "btnClose":
-                    if(ShowMessageFX.OkayCancel(null, "MC Branch Performance", "Are you sure, do you want to close?") == true){
+                    if(ShowMessageFX.OkayCancel(null, "MC Area Performance", "Are you sure, do you want to close?") == true){
                         unloadForm();
                         break;
                     } else
@@ -286,17 +296,18 @@ public class McBranchPerformanceController implements Initializable , ScreenInte
             }
             
             initButton(pnEditMode);
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
-//        }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
+        }
     } 
     private void initButton(int fnValue){
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         
         btnCancel.setVisible(lbShow);
         btnSave.setVisible(lbShow);
-        
+        btnImport.setVisible(lbShow);
+        btnImport.setManaged(lbShow);
         btnSave.setManaged(lbShow);
         btnCancel.setManaged(lbShow);
         btnUpdate.setVisible(!lbShow);
@@ -537,25 +548,51 @@ public class McBranchPerformanceController implements Initializable , ScreenInte
         File file = new File(selectedFile.getAbsolutePath());   //creating a new file instance  
         FileInputStream fis = new FileInputStream(file);  
         XSSFWorkbook wb = new XSSFWorkbook(fis);   
-        XSSFSheet sheet = wb.getSheetAt(0);
+        XSSFSheet sheet = wb.getSheetAt(12);
 
-        for(int rows = 1; rows < sheet.getPhysicalNumberOfRows(); rows++){
+         for(int rows = 7; rows < 9; rows++){
             Row currentRow = sheet.getRow(rows);
-            
-            System.out.print((currentRow.getCell(0) == null)? "" : currentRow.getCell(0).getStringCellValue()+ "\t");
-            System.out.print((currentRow.getCell(1) == null)? 0.0 + "\t" : currentRow.getCell(1).getNumericCellValue() + "\t");
-            System.out.print((currentRow.getCell(2) == null)? 0.0 + "\t" : currentRow.getCell(2).getNumericCellValue() + "\t");
-            System.out.print((currentRow.getCell(3) == null)? 0.0 + "\t" : currentRow.getCell(3).getNumericCellValue() + "\t");
-            System.out.print((currentRow.getCell(4) == null)? 0.0 + "\t" : currentRow.getCell(4).getNumericCellValue() + "\t");
-            System.out.print((currentRow.getCell(5) == null)? 0.0 + "\t" : currentRow.getCell(5).getNumericCellValue() + "\t");
-            System.out.print((currentRow.getCell(6) == null)? 0.0 + "\t" : currentRow.getCell(6).getNumericCellValue() + "\t");
-            System.out.print((currentRow.getCell(7) == null)? 0.0 + "\t" : currentRow.getCell(7).getNumericCellValue() + "\t");
-            System.out.print((currentRow.getCell(8) == null)? 0.0 + "\t" : currentRow.getCell(8).getNumericCellValue() + "\t");
-            System.out.print((currentRow.getCell(9) == null)? 0.0 + "\t" : currentRow.getCell(9).getNumericCellValue() + "\t");
-            System.out.print((currentRow.getCell(10) == null)? 0.0 + "\t" : currentRow.getCell(10).getNumericCellValue() + "\t");
-            System.out.print((currentRow.getCell(11) == null)? 0.0 + "\t" : currentRow.getCell(11).getNumericCellValue() + "\t");
-            System.out.print((currentRow.getCell(12) == null)? 0.0 + "\t" : currentRow.getCell(12).getNumericCellValue() + "\t");
+            try {
+               if (oTrans.searchBranch(currentRow.getCell(0).getStringCellValue(), false)){
+                    pnEditMode = oTrans.getEditMode();
+                    for (int column = 1; column <= 12; column++){
+                        
+                        if(column<10){
+                            oTrans.setMaster(2,"20230"+column);
+                        }else{
+                            oTrans.setMaster(2,"2023"+column);
+                        }
+                        oTrans.setMaster(3,(int) currentRow.getCell(column).getNumericCellValue());
+                        if (oTrans.SaveRecord()){
+                                clearFields();
+//                                ShowMessageFX.Warning(getStage(), "Record Save Successfully.","Warning", null);
+                                pnEditMode = EditMode.ADDNEW;
+                            }else{ 
+                                 ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                            }
+//            System.out.print((currentRow.getCell(0) == null)? "" : currentRow.getCell(0).getStringCellValue()+ "\t");
+//            System.out.print((currentRow.getCell(1) == null)? 0.0 + "\t" : currentRow.getCell(1).getNumericCellValue() + "\t");
+//            System.out.print((currentRow.getCell(2) == null)? 0.0 + "\t" : currentRow.getCell(2).getNumericCellValue() + "\t");
+//            System.out.print((currentRow.getCell(3) == null)? 0.0 + "\t" : currentRow.getCell(3).getNumericCellValue() + "\t");
+//            System.out.print((currentRow.getCell(4) == null)? 0.0 + "\t" : currentRow.getCell(4).getNumericCellValue() + "\t");
+//            System.out.print((currentRow.getCell(5) == null)? 0.0 + "\t" : currentRow.getCell(5).getNumericCellValue() + "\t");
+//            System.out.print((currentRow.getCell(6) == null)? 0.0 + "\t" : currentRow.getCell(6).getNumericCellValue() + "\t");
+//            System.out.print((currentRow.getCell(7) == null)? 0.0 + "\t" : currentRow.getCell(7).getNumericCellValue() + "\t");
+//            System.out.print((currentRow.getCell(8) == null)? 0.0 + "\t" : currentRow.getCell(8).getNumericCellValue() + "\t");
+//            System.out.print((currentRow.getCell(9) == null)? 0.0 + "\t" : currentRow.getCell(9).getNumericCellValue() + "\t");
+//            System.out.print((currentRow.getCell(10) == null)? 0.0 + "\t" : currentRow.getCell(10).getNumericCellValue() + "\t");
+//            System.out.print((currentRow.getCell(11) == null)? 0.0 + "\t" : currentRow.getCell(11).getNumericCellValue() + "\t");
+//            System.out.print((currentRow.getCell(12) == null)? 0.0 + "\t" : currentRow.getCell(12).getNumericCellValue() + "\t");
           System.out.println();
+   
+                    }
+                } else {
+                    ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(McAreaPerformanceController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
         }
     }
      public void xlsFile(File selectedFile) throws FileNotFoundException, IOException{
@@ -563,26 +600,132 @@ public class McBranchPerformanceController implements Initializable , ScreenInte
         HSSFWorkbook wb=new HSSFWorkbook(fis);   
     //creating a Sheet object to retrieve the object  
         HSSFSheet sheet=wb.getSheetAt(0); 
-        for(int rows = 1; rows < sheet.getPhysicalNumberOfRows(); rows++){
+       
+         for(int rows = 7; rows < 9; rows++){
             Row currentRow = sheet.getRow(rows);
-              
-            System.out.print((currentRow.getCell(0) == null)? "" : currentRow.getCell(0).getStringCellValue()+ "\t"); 
-            System.out.print((currentRow.getCell(1) == null)? 0.0 + "\t" : currentRow.getCell(1).getNumericCellValue() + "\t");
-            System.out.print((currentRow.getCell(2) == null)? 0.0 + "\t" : currentRow.getCell(2).getNumericCellValue() + "\t");
-            System.out.print((currentRow.getCell(3) == null)? 0.0 + "\t" : currentRow.getCell(3).getNumericCellValue() + "\t");
-            System.out.print((currentRow.getCell(4) == null)? 0.0 + "\t" : currentRow.getCell(4).getNumericCellValue() + "\t");
-            System.out.print((currentRow.getCell(5) == null)? 0.0 + "\t" : currentRow.getCell(5).getNumericCellValue() + "\t");
-            System.out.print((currentRow.getCell(6) == null)? 0.0 + "\t" : currentRow.getCell(6).getNumericCellValue() + "\t");
-            System.out.print((currentRow.getCell(7) == null)? 0.0 + "\t" : currentRow.getCell(7).getNumericCellValue() + "\t");
-            System.out.print((currentRow.getCell(8) == null)? 0.0 + "\t" : currentRow.getCell(8).getNumericCellValue() + "\t");
-            System.out.print((currentRow.getCell(9) == null)? 0.0 + "\t" : currentRow.getCell(9).getNumericCellValue() + "\t");
-            System.out.print((currentRow.getCell(10) == null)? 0.0 + "\t" : currentRow.getCell(10).getNumericCellValue() + "\t");
-            System.out.print((currentRow.getCell(11) == null)? 0.0 + "\t" : currentRow.getCell(11).getNumericCellValue() + "\t");
-            System.out.print((currentRow.getCell(12) == null)? 0.0 + "\t" : currentRow.getCell(12).getNumericCellValue() + "\t");
-
-
+            try {
+               if (oTrans.searchBranch(currentRow.getCell(0).getStringCellValue(), false)){
+                    pnEditMode = oTrans.getEditMode();
+                    for (int column = 1; column <= 12; column++){
+                        
+                        if(column<10){
+                            oTrans.setMaster(2,"20230"+column);
+                        }else{
+                            oTrans.setMaster(2,"2023"+column);
+                        }
+                        oTrans.setMaster(3,(int) currentRow.getCell(column).getNumericCellValue());
+                        if (oTrans.SaveRecord()){
+                                clearFields();
+//                                ShowMessageFX.Warning(getStage(), "Record Save Successfully.","Warning", null);
+                                pnEditMode = EditMode.ADDNEW;
+                            }else{ 
+                                 ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                            }
+//            System.out.print((currentRow.getCell(0) == null)? "" : currentRow.getCell(0).getStringCellValue()+ "\t");
+//            System.out.print((currentRow.getCell(1) == null)? 0.0 + "\t" : currentRow.getCell(1).getNumericCellValue() + "\t");
+//            System.out.print((currentRow.getCell(2) == null)? 0.0 + "\t" : currentRow.getCell(2).getNumericCellValue() + "\t");
+//            System.out.print((currentRow.getCell(3) == null)? 0.0 + "\t" : currentRow.getCell(3).getNumericCellValue() + "\t");
+//            System.out.print((currentRow.getCell(4) == null)? 0.0 + "\t" : currentRow.getCell(4).getNumericCellValue() + "\t");
+//            System.out.print((currentRow.getCell(5) == null)? 0.0 + "\t" : currentRow.getCell(5).getNumericCellValue() + "\t");
+//            System.out.print((currentRow.getCell(6) == null)? 0.0 + "\t" : currentRow.getCell(6).getNumericCellValue() + "\t");
+//            System.out.print((currentRow.getCell(7) == null)? 0.0 + "\t" : currentRow.getCell(7).getNumericCellValue() + "\t");
+//            System.out.print((currentRow.getCell(8) == null)? 0.0 + "\t" : currentRow.getCell(8).getNumericCellValue() + "\t");
+//            System.out.print((currentRow.getCell(9) == null)? 0.0 + "\t" : currentRow.getCell(9).getNumericCellValue() + "\t");
+//            System.out.print((currentRow.getCell(10) == null)? 0.0 + "\t" : currentRow.getCell(10).getNumericCellValue() + "\t");
+//            System.out.print((currentRow.getCell(11) == null)? 0.0 + "\t" : currentRow.getCell(11).getNumericCellValue() + "\t");
+//            System.out.print((currentRow.getCell(12) == null)? 0.0 + "\t" : currentRow.getCell(12).getNumericCellValue() + "\t");
           System.out.println();
+   
+                    }
+                } else {
+                    ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(McAreaPerformanceController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
         }
     }
-    
+            public void loadExcelViewer() throws SQLException{
+        try {
+                Stage stage = new Stage();
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("/gridergui/ExcelViewer.fxml"));
+                  
+                ExcelViewerController loControl = new ExcelViewerController();
+                loControl.setGRider(oApp);
+                loControl.setListener(oListener1);
+                loControl.setFormType(psFormType);
+                
+
+                fxmlLoader.setController(loControl);
+
+                //load the main interface
+                Parent parent = fxmlLoader.load();
+
+                //set the main interface as the scene
+                Scene scene = new Scene(parent);
+                stage.setScene(scene);
+                stage.initStyle(StageStyle.TRANSPARENT);
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.showAndWait();
+                
+                
+            if (loControl.getState() != false){
+                if (loControl.getSheetNo() != 0) {
+                        SheetNo = loControl.getSheetNo() -1;
+                }
+            
+            RowTo = loControl.getRowTo();
+            RowFrom = loControl.getRowFrom();
+            ColumnTo = loControl.getColumnTo() -1;
+            ColumnFrom = loControl.getColumnFrom() -1;
+            pnEntryIndex = loControl.getTransactionIndex()+ 3;
+            System.out.println("SheetNo : "+SheetNo);
+             System.out.println("Row To : " +RowTo);
+              System.out.println("Row From : " +RowFrom);
+               System.out.println("Column To : " +ColumnTo);
+                System.out.println("Column From : " +ColumnFrom);
+                 System.out.println("Entry Index : " +pnEntryIndex );
+                
+                insertFile();
+                }
+            
+           
+        } catch (IOException e) {
+            e.printStackTrace();
+        //    ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
+            System.exit(1);
+        }
+    }
+    private AnchorPane setScene(){
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("ExcelViewer.fxml"));
+
+            ExcelViewerController loControl = new ExcelViewerController();
+           // loControl.setGRider(oApp);
+           // loControl.setTransaction(oTransnox);
+            fxmlLoader.setController(loControl);
+            
+            //load the main interface
+                
+          AnchorPane root;
+        try {
+            root = (AnchorPane) fxmlLoader.load();
+            FadeTransition ft = new FadeTransition(Duration.millis(1500));
+            ft.setNode(root);
+            ft.setFromValue(1);
+            ft.setToValue(1);
+            ft.setCycleCount(1);
+            ft.setAutoReverse(false);
+            ft.play();
+
+            return root;
+        } catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        }
+
+        return null;
+    }
+
 }

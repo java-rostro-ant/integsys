@@ -5,6 +5,9 @@
  */
 package gridergui;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -18,28 +21,37 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.rmj.appdriver.GRider;
 import org.rmj.appdriver.StringUtil;
-import org.rmj.appdriver.agent.MsgBox;
 import org.rmj.appdriver.agentfx.CommonUtils;
 import org.rmj.appdriver.agentfx.ShowMessageFX;
 import org.rmj.appdriver.constants.EditMode;
-import org.rmj.fund.manager.base.Incentive;
 import org.rmj.fund.manager.base.LMasDetTrans;
 import org.rmj.fund.manager.parameters.MCAreaPerformance;
-import org.rmj.fund.manager.parameters.MCBranchPerformance;
 
 /**
  * FXML Controller class
@@ -50,7 +62,9 @@ public class McAreaPerformanceController implements Initializable , ScreenInterf
      private GRider oApp;
     private MCAreaPerformance oTrans;
     private LMasDetTrans oListener;
-    
+    private LResult oListener1;
+    private String psFormType; 
+    private int pnEntryIndex = +2;
     private int pnIndex = -1;
     private int pnEditMode;
     private int pnRow = 0;
@@ -59,6 +73,13 @@ public class McAreaPerformanceController implements Initializable , ScreenInterf
     private String psOldRec;
     private String psBarcode = "";
     private String psDescript = "";
+    double xOffset = 0;
+    double yOffset = 0;
+    private int SheetNo =0;
+    private int ColumnTo =0 ;
+    private int ColumnFrom =0;
+    private int RowTo =0;
+    private int RowFrom =0;
     @FXML
     private Label lblStatus;
     @FXML
@@ -79,7 +100,7 @@ public class McAreaPerformanceController implements Initializable , ScreenInterf
     private TextField txtField06;
    
     @FXML
-    private Button btnBrowse;
+    private Button btnBrowse,btnImport;
     @FXML
     private Button btnNew;
     @FXML
@@ -139,6 +160,8 @@ public class McAreaPerformanceController implements Initializable , ScreenInterf
         oTrans = new MCAreaPerformance(oApp, oApp.getBranchCode(), false);
         oTrans.setListener(oListener);
         oTrans.setWithUI(true);
+        psFormType = "MC";
+        
         
         btnBrowse.setOnAction(this::cmdButton_Click);
         btnNew.setOnAction(this::cmdButton_Click);
@@ -146,6 +169,7 @@ public class McAreaPerformanceController implements Initializable , ScreenInterf
         btnUpdate.setOnAction(this::cmdButton_Click);
         btnCancel.setOnAction(this::cmdButton_Click);
         btnClose.setOnAction(this::cmdButton_Click);
+        btnImport.setOnAction(this::cmdButton_Click);
 //      text field focus
         txtField01.focusedProperty().addListener(txtField_Focus);
         txtField02.focusedProperty().addListener(txtField_Focus);
@@ -189,7 +213,7 @@ public class McAreaPerformanceController implements Initializable , ScreenInterf
     }
     private void cmdButton_Click(ActionEvent event) {
         String lsButton = ((Button)event.getSource()).getId();
-//        try {
+        try {
             switch (lsButton){
                  case "btnBrowse":
                     {
@@ -250,6 +274,12 @@ public class McAreaPerformanceController implements Initializable , ScreenInterf
                         }
                     }
                     break;
+                    case "btnImport":
+                    {
+                        loadExcelViewer() ;
+                    }
+                   break;
+
                 case "btnCancel":
                     
                     clearFields();
@@ -269,17 +299,18 @@ public class McAreaPerformanceController implements Initializable , ScreenInterf
             }
             
             initButton(pnEditMode);
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
-//        }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
+        }
     } 
     private void initButton(int fnValue){
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         
         btnCancel.setVisible(lbShow);
         btnSave.setVisible(lbShow);
-        
+        btnImport.setVisible(lbShow);
+        btnImport.setManaged(lbShow);
         btnSave.setManaged(lbShow);
         btnCancel.setManaged(lbShow);
         btnUpdate.setVisible(!lbShow);
@@ -484,5 +515,240 @@ public class McAreaPerformanceController implements Initializable , ScreenInterf
             txtField.selectAll();
         }
     }; 
+    public void insertFile() throws IOException {
+       
+        FileChooser fileChooser = new FileChooser();
+
+        fileChooser.setInitialDirectory(new File("d:\\"));
+        fileChooser.setTitle("Open Resource File");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Excel Files", "*.xls", "*.xlsx"));
+        File selectedFile = fileChooser.showOpenDialog((Stage) AnchorMainMcAreaInfo.getScene().getWindow());
+
+        String fileName = selectedFile.getName();           
+        String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1, selectedFile.getName().length());
+
+        if(fileExtension.equalsIgnoreCase("xlsx")){
+            try {
+                xlsxFile(selectedFile);
+            } catch (IOException ex) {
+                Logger.getLogger(McBranchPerformanceController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }else{
+             try {
+                
+                xlsFile(selectedFile);
+            } catch (IOException ex) {
+                Logger.getLogger(McBranchPerformanceController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        
+        
+       
+    }  
     
-}
+    public void xlsxFile(File selectedFile) throws FileNotFoundException, IOException{
+        File file = new File(selectedFile.getAbsolutePath());   //creating a new file instance  
+        FileInputStream fis = new FileInputStream(file);  
+        XSSFWorkbook wb = new XSSFWorkbook(fis);   
+        XSSFSheet sheet = wb.getSheetAt(SheetNo);
+        
+        for(int rows = RowTo; rows < RowFrom; rows++){
+            Row currentRow = sheet.getRow(rows);
+            try {
+               if (oTrans.searchArea(currentRow.getCell(0).getStringCellValue().replace("-", " - "), false)){
+                    pnEditMode = oTrans.getEditMode();
+                    for (int column = ColumnTo; column <= ColumnFrom; column++){
+                        
+                        if(column<10){
+                            oTrans.setMaster(2,"20230"+column);
+                        }else{
+                            oTrans.setMaster(2,"2023"+column);
+                        }
+                        //mcsales gold
+                        oTrans.setMaster(pnEntryIndex,(int) currentRow.getCell(column).getNumericCellValue());
+
+
+                        
+                        if (oTrans.SaveRecord()){
+                                clearFields();
+                                ShowMessageFX.Warning(getStage(), "Record Save Successfully.","Warning", null);
+                                pnEditMode = EditMode.ADDNEW;
+                            }else{ 
+                                 ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                            }
+//            txtField03.setText((currentRow.getCell(1) == null)? "" : currentRow.getCell(1).getNumericCellValue()+ "\t");
+//                        if(column<10){
+//                        System.out.println("20230" + column);
+//                        }else{
+//                           System.out.println("2023" + column);
+//                        }
+//                        System.out.print((currentRow.getCell(0) == null)? "" : currentRow.getCell(0).getStringCellValue()+ "\t");
+//                        System.out.print((currentRow.getCell(column) == null)? 0.0 + "\t" : currentRow.getCell(column).getNumericCellValue() + "\t");
+//            //            System.out.print((currentRow.getCell(2) == null)? 0.0 + "\t" : currentRow.getCell(2).getNumericCellValue() + "\t");
+            //            System.out.print((currentRow.getCell(3) == null)? 0.0 + "\t" : currentRow.getCell(3).getNumericCellValue() + "\t");
+            //            System.out.print((currentRow.getCell(4) == null)? 0.0 + "\t" : currentRow.getCell(4).getNumericCellValue() + "\t");
+            //            System.out.print((currentRow.getCell(5) == null)? 0.0 + "\t" : currentRow.getCell(5).getNumericCellValue() + "\t");
+            //            System.out.print((currentRow.getCell(6) == null)? 0.0 + "\t" : currentRow.getCell(6).getNumericCellValue() + "\t");
+            //            System.out.print((currentRow.getCell(7) == null)? 0.0 + "\t" : currentRow.getCell(7).getNumericCellValue() + "\t");
+            //            System.out.print((currentRow.getCell(8) == null)? 0.0 + "\t" : currentRow.getCell(8).getNumericCellValue() + "\t");
+            //            System.out.print((currentRow.getCell(9) == null)? 0.0 + "\t" : currentRow.getCell(9).getNumericCellValue() + "\t");
+            //            System.out.print((currentRow.getCell(10) == null)? 0.0 + "\t" : currentRow.getCell(10).getNumericCellValue() + "\t");
+            //            System.out.print((currentRow.getCell(11) == null)? 0.0 + "\t" : currentRow.getCell(11).getNumericCellValue() + "\t");
+            //            System.out.print((currentRow.getCell(12) == null)? 0.0 + "\t" : currentRow.getCell(12).getNumericCellValue() + "\t");
+//                      System.out.println();
+
+                    }
+                } else {
+                    ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(McAreaPerformanceController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        }
+    }
+     public void xlsFile(File selectedFile) throws FileNotFoundException, IOException{
+        FileInputStream fis  = new FileInputStream(new File(selectedFile.getAbsolutePath()));
+        HSSFWorkbook wb=new HSSFWorkbook(fis);   
+    //creating a Sheet object to retrieve the object  
+        HSSFSheet sheet=wb.getSheetAt(0); 
+        for(int rows = RowTo; rows < RowFrom; rows++){
+            Row currentRow = sheet.getRow(rows);
+            try {
+               if (oTrans.searchArea(currentRow.getCell(0).getStringCellValue().replace("-", " - "), false)){
+                    pnEditMode = oTrans.getEditMode();
+                    for (int column = ColumnTo; column <= ColumnFrom; column++){
+                        
+                        if(column<10){
+                            oTrans.setMaster(2,"20230"+column);
+                        }else{
+                            oTrans.setMaster(2,"2023"+column);
+                        }
+                        //mcsales gold
+                        oTrans.setMaster(pnEntryIndex,(int) currentRow.getCell(column).getNumericCellValue());
+
+
+                        
+                        if (oTrans.SaveRecord()){
+                                clearFields();
+                                ShowMessageFX.Warning(getStage(), "Record Save Successfully.","Warning", null);
+                                pnEditMode = EditMode.ADDNEW;
+                            }else{ 
+                                 ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                            }
+//            txtField03.setText((currentRow.getCell(1) == null)? "" : currentRow.getCell(1).getNumericCellValue()+ "\t");
+//                        if(column<10){
+//                        System.out.println("20230" + column);
+//                        }else{
+//                           System.out.println("2023" + column);
+//                        }
+//                        System.out.print((currentRow.getCell(0) == null)? "" : currentRow.getCell(0).getStringCellValue()+ "\t");
+//                        System.out.print((currentRow.getCell(column) == null)? 0.0 + "\t" : currentRow.getCell(column).getNumericCellValue() + "\t");
+//            //            System.out.print((currentRow.getCell(2) == null)? 0.0 + "\t" : currentRow.getCell(2).getNumericCellValue() + "\t");
+            //            System.out.print((currentRow.getCell(3) == null)? 0.0 + "\t" : currentRow.getCell(3).getNumericCellValue() + "\t");
+            //            System.out.print((currentRow.getCell(4) == null)? 0.0 + "\t" : currentRow.getCell(4).getNumericCellValue() + "\t");
+            //            System.out.print((currentRow.getCell(5) == null)? 0.0 + "\t" : currentRow.getCell(5).getNumericCellValue() + "\t");
+            //            System.out.print((currentRow.getCell(6) == null)? 0.0 + "\t" : currentRow.getCell(6).getNumericCellValue() + "\t");
+            //            System.out.print((currentRow.getCell(7) == null)? 0.0 + "\t" : currentRow.getCell(7).getNumericCellValue() + "\t");
+            //            System.out.print((currentRow.getCell(8) == null)? 0.0 + "\t" : currentRow.getCell(8).getNumericCellValue() + "\t");
+            //            System.out.print((currentRow.getCell(9) == null)? 0.0 + "\t" : currentRow.getCell(9).getNumericCellValue() + "\t");
+            //            System.out.print((currentRow.getCell(10) == null)? 0.0 + "\t" : currentRow.getCell(10).getNumericCellValue() + "\t");
+            //            System.out.print((currentRow.getCell(11) == null)? 0.0 + "\t" : currentRow.getCell(11).getNumericCellValue() + "\t");
+            //            System.out.print((currentRow.getCell(12) == null)? 0.0 + "\t" : currentRow.getCell(12).getNumericCellValue() + "\t");
+//                      System.out.println();
+
+                    }
+                } else {
+                    ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(McAreaPerformanceController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        }
+     }
+        public void loadExcelViewer() throws SQLException{
+        try {
+                Stage stage = new Stage();
+                FXMLLoader fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("/gridergui/ExcelViewer.fxml"));
+                  
+                ExcelViewerController loControl = new ExcelViewerController();
+                loControl.setGRider(oApp);
+                loControl.setListener(oListener1);
+                loControl.setFormType(psFormType);
+                
+
+                fxmlLoader.setController(loControl);
+
+                //load the main interface
+                Parent parent = fxmlLoader.load();
+
+                //set the main interface as the scene
+                Scene scene = new Scene(parent);
+                stage.setScene(scene);
+                stage.initStyle(StageStyle.TRANSPARENT);
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.showAndWait();
+                
+                
+            if (loControl.getState() != false){
+                if (loControl.getSheetNo() != 0) {
+                        SheetNo = loControl.getSheetNo() -1;
+                }
+            
+            RowTo = loControl.getRowTo();
+            RowFrom = loControl.getRowFrom();
+            ColumnTo = loControl.getColumnTo() -1;
+            ColumnFrom = loControl.getColumnFrom() -1;
+            pnEntryIndex = loControl.getTransactionIndex()+ 3;
+            System.out.println("SheetNo : "+SheetNo);
+             System.out.println("Row To : " +RowTo);
+              System.out.println("Row From : " +RowFrom);
+               System.out.println("Column To : " +ColumnTo);
+                System.out.println("Column From : " +ColumnFrom);
+                 System.out.println("Entry Index : " +pnEntryIndex );
+                
+                insertFile();
+                }
+            
+           
+        } catch (IOException e) {
+            e.printStackTrace();
+        //    ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
+            System.exit(1);
+        }
+    }
+    private AnchorPane setScene(){
+            FXMLLoader fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("ExcelViewer.fxml"));
+
+            ExcelViewerController loControl = new ExcelViewerController();
+           // loControl.setGRider(oApp);
+           // loControl.setTransaction(oTransnox);
+            fxmlLoader.setController(loControl);
+            
+            //load the main interface
+                
+          AnchorPane root;
+        try {
+            root = (AnchorPane) fxmlLoader.load();
+            FadeTransition ft = new FadeTransition(Duration.millis(1500));
+            ft.setNode(root);
+            ft.setFromValue(1);
+            ft.setToValue(1);
+            ft.setCycleCount(1);
+            ft.setAutoReverse(false);
+            ft.play();
+
+            return root;
+        } catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        }
+
+        return null;
+    }
+
+    }
+    
