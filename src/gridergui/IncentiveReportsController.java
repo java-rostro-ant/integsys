@@ -210,6 +210,8 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
         jrViewer.setOpaque(true);
         jrViewer.setVisible(true);
         jrViewer.setFitPageZoomRatio();
+
+        
        
             
         swingNode.setContent(jrViewer);
@@ -221,9 +223,10 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
         reportPane.setRightAnchor(swingNode,0.0);
         reportPane.getChildren().add(swingNode);
         reportPane.setVisible(true);
-        running = true;
+        running = false;
         vbProgress.setVisible(false);
         timeline.stop();
+        
     }    
     
     private void hideReport(){
@@ -521,8 +524,8 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
                     }
                 }
                 String sourceFileName = 
-                        "D://report image/reports/Incentives_Summary.jasper";
-//                "D://GGC_Java_Systems/reports/Incentives_Summary.jasper";
+//                        "D://report image/reports/Incentives_Summary.jasper";
+                "D://GGC_Java_Systems/reports/Incentives_Summary.jasper";
                 String printFileName = null;
                 JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(inc_data);
 
