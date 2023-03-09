@@ -39,6 +39,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DateCell;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -113,6 +114,8 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
     @FXML
     private TextField txtField01;
     @FXML
+    private ComboBox cbStatus;
+    @FXML
     private VBox vbProgress;
     @FXML
     private GridPane grid01, grid02, grid03,grid04;
@@ -120,6 +123,7 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
     private ObservableList<IncentiveDetail> inc_detail = FXCollections.observableArrayList();
     private ObservableList<IncentiveDetail> inc_detail1 = FXCollections.observableArrayList();
     private final ObservableList<IncentiveMaster> inc_data = FXCollections.observableArrayList();
+    ObservableList<String> cStatus = FXCollections.observableArrayList( "FOR APPROVAL", "APPROVED", "CANCELLED", "ALL");
     public void setReportCategory(String foValue){
         System.out.println(foValue);
         reportCategory = foValue;
@@ -151,8 +155,9 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
         
         oTrans  = new IncentiveReportss(oApp, oApp.getBranchCode(), false);
         oTrans.setListener(oListener);
-        oTrans.setTranStat(12);
+//        oTrans.setTranStat(12);
         oTrans.setWithUI(true);
+        initStatus();
         initToggleGroup();
         initDatePicker();
         initFields();
@@ -200,6 +205,11 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
                 getFormattedDateFromDatePicker(dpPeriod);
             }
         });
+    }
+    private void initStatus(){
+        cbStatus.setItems(cStatus);
+        cbStatus.getSelectionModel().select(3);
+        
     }
     private void showReport(){
         
@@ -412,6 +422,15 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
             params.put("sBranchNm", oApp.getBranchName());
             params.put("sAddressx", oApp.getAddress());
         try{
+            if(cbStatus.getSelectionModel().getSelectedIndex() == 0){
+                oTrans.setTranStat(1);
+            }else if(cbStatus.getSelectionModel().getSelectedIndex() == 1){
+                oTrans.setTranStat(2);
+            }else if(cbStatus.getSelectionModel().getSelectedIndex() == 2){
+                oTrans.setTranStat(3);
+            }else if(cbStatus.getSelectionModel().getSelectedIndex() == 3){
+                oTrans.setTranStat(123);
+            }
             if (rbDetailed.isSelected()){
                  params.put("sReportNm", "Branch Incentive Detailed Report");
                 if(rbEmployee.isSelected()){
