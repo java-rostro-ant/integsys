@@ -469,7 +469,11 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
                          }
                     } catch (JRException ex) {
                         Logger.getLogger(ReportsController.class.getName()).log(Level.SEVERE, null, ex);
+                        running = false;
+                        vbProgress.setVisible(false);
+                        timeline.stop();
                     }
+                
                 }else if(rbCategory.isSelected()){
                     if(oTrans.OpenTransactionCategory(sPeriodxx)){ 
                         inc_detail.clear();
