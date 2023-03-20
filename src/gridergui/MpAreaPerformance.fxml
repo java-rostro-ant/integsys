@@ -78,6 +78,14 @@
                                     <Blend />
                                  </effect>
                               </Button>
+                              <Button fx:id="btnImport" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="50.0" text="Import Excel File">
+                                 <graphic>
+                                    <FontAwesomeIconView glyphName="UPLOAD" size="20" />
+                                 </graphic>
+                                 <effect>
+                                    <Blend />
+                                 </effect>
+                              </Button>
                            </children>
                         </HBox>
                         <Button fx:id="btnClose" contentDisplay="TOP" ellipsisString="" layoutX="138.0" layoutY="7.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="70.0" text="Close" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
@@ -109,45 +117,69 @@
                                           <Font name="System Bold" size="12.0" />
                                        </font>
                                     </Label>
-                                    <TextField fx:id="txtSeeks05" layoutX="116.0" layoutY="5.0" prefHeight="23.0" prefWidth="247.0" promptText="Search: F3" style="-fx-border-radius: 5;" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="5.0" />
+                                    <TextField fx:id="txtSeeks07" layoutX="116.0" layoutY="5.0" prefHeight="23.0" prefWidth="247.0" promptText="Search: F3" style="-fx-border-radius: 5;" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="80.0" AnchorPane.topAnchor="5.0" />
                                     <Label fx:id="lblStatus" alignment="CENTER" layoutX="854.0" layoutY="9.0" prefWidth="140.0" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="0.0">
                                        <font>
                                           <Font name="System Bold" size="12.0" />
                                        </font>
                                     </Label>
-                                    <Label layoutX="353.0" layoutY="10.0" text="BRANCH :" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="353.0" AnchorPane.topAnchor="5.0">
+                                    <Label layoutX="353.0" layoutY="10.0" text="AREA : " AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="370.0" AnchorPane.topAnchor="5.0">
                                        <font>
                                           <Font name="System Bold" size="12.0" />
                                        </font>
                                     </Label>
-                                    <TextField fx:id="txtSeeks06" layoutX="474.0" layoutY="9.0" prefHeight="23.0" prefWidth="247.0" promptText="Search: F3" style="-fx-border-radius: 5;" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="420.0" AnchorPane.topAnchor="5.0" />
+                                    <TextField fx:id="txtSeeks08" layoutX="474.0" layoutY="9.0" prefHeight="23.0" prefWidth="247.0" promptText="Search: F3" style="-fx-border-radius: 5;" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="420.0" AnchorPane.topAnchor="5.0" />
                                  </children>
                               </AnchorPane>
-                              <AnchorPane layoutY="58.0" prefHeight="102.0" prefWidth="403.0" style="-fx-border-radius: 5; -fx-border-color: #ff8822;" AnchorPane.topAnchor="67.0">
+                              <AnchorPane prefHeight="100.0" prefWidth="403.0" style="-fx-border-radius: 5; -fx-border-color: #ff8822;" AnchorPane.topAnchor="45.0">
                                  <children>
-                                    <Label layoutX="24.0" layoutY="21.0" text="UNITS :" AnchorPane.leftAnchor="24.0" AnchorPane.topAnchor="25.0">
+                                    <Label layoutX="24.0" layoutY="21.0" text="PERIOD : " AnchorPane.topAnchor="25.0">
                                        <font>
                                           <Font name="MS Reference Sans Serif" size="12.0" />
                                        </font>
                                     </Label>
-                                    <TextField fx:id="txtField01" layoutX="137.0" layoutY="14.0" prefHeight="23.0" prefWidth="238.0" style="-fx-border-radius: 5;" AnchorPane.rightAnchor="28.0" AnchorPane.topAnchor="14.0">
+                                    <TextField fx:id="txtField02" layoutX="137.0" layoutY="14.0" prefHeight="23.0" prefWidth="238.0" style="-fx-border-radius: 5;" AnchorPane.rightAnchor="28.0" AnchorPane.topAnchor="18.0">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
                                     </TextField>
-                                    <Label layoutX="25.0" layoutY="62.0" text="ACCESSORIES :" AnchorPane.leftAnchor="24.0" AnchorPane.topAnchor="62.0">
+                                    <Label layoutX="24.0" layoutY="57.0" text="AREA :" AnchorPane.topAnchor="62.0">
                                        <font>
                                           <Font name="MS Reference Sans Serif" size="12.0" />
                                        </font>
                                     </Label>
-                                    <TextField fx:id="txtField02" layoutX="131.0" layoutY="54.0" prefHeight="23.0" prefWidth="238.0" style="-fx-border-radius: 5;" AnchorPane.rightAnchor="28.0">
+                                    <TextField fx:id="txtField01" layoutX="137.0" layoutY="48.0" prefHeight="23.0" prefWidth="238.0" style="-fx-border-radius: 5;" AnchorPane.rightAnchor="28.0" AnchorPane.topAnchor="53.0">
                                        <font>
                                           <Font size="14.0" />
                                        </font>
                                     </TextField>
                                  </children>
                               </AnchorPane>
-                              <Label alignment="CENTER" contentDisplay="CENTER" layoutX="6.0" layoutY="41.0" style="-fx-background-color: orange;" text="GOALS" AnchorPane.topAnchor="50.0">
+                              <AnchorPane prefHeight="169.0" prefWidth="403.0" style="-fx-border-radius: 5; -fx-border-color: #ff8822;" AnchorPane.topAnchor="175.0">
+                                 <children>
+                                    <Label layoutX="24.0" layoutY="21.0" text="UNITS :" AnchorPane.topAnchor="25.0">
+                                       <font>
+                                          <Font name="MS Reference Sans Serif" size="12.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="txtField03" layoutX="137.0" layoutY="14.0" prefHeight="23.0" prefWidth="238.0" style="-fx-border-radius: 5;" AnchorPane.rightAnchor="28.0" AnchorPane.topAnchor="18.0">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </TextField>
+                                    <Label layoutX="24.0" layoutY="57.0" text="ACCESSORIES :" AnchorPane.topAnchor="62.0">
+                                       <font>
+                                          <Font name="MS Reference Sans Serif" size="12.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="txtField04" layoutX="137.0" layoutY="48.0" prefHeight="23.0" prefWidth="238.0" style="-fx-border-radius: 5;" AnchorPane.rightAnchor="28.0" AnchorPane.topAnchor="53.0">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </TextField>
+                                 </children>
+                              </AnchorPane>
+                              <Label alignment="CENTER" contentDisplay="CENTER" style="-fx-background-color: orange;" text="GOALS" AnchorPane.topAnchor="157.0">
                                  <font>
                                     <Font name="System Bold" size="12.0" />
                                  </font>

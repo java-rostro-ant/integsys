@@ -107,7 +107,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private Menu mnuTransaction111;
     @FXML
-    private Menu mnuInventory01,mnuPerformance;
+    private Menu mnuInventory01;
     @FXML
     private MenuItem mnuInventoryReq;
     @FXML
@@ -278,7 +278,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private void mnuEmployeeBankInfoClick(ActionEvent event) {
         setScene(loadAnimate("EmployeeBankInfo.fxml"));
     }
-    
+  
     @FXML
     private void mnuIncentiveParameterClick(ActionEvent event) {
         setScene(loadAnimate("IncentiveParameter.fxml"));
@@ -389,10 +389,23 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private void mnuPanaloRedeemClick(ActionEvent event) {
         setScene(loadAnimate("PanaloRedemption.fxml"));
     }
-    @FXML
-    private void mnuMCAreaClicked(ActionEvent event) {
+        @FXML
+    private void mnuMCBranchPerformanceClick(ActionEvent event) {
+        setScene(loadAnimate("McBranchPerformance.fxml"));
+    }
+        @FXML
+    private void mnuMPBranchPerformanceClick(ActionEvent event) {
+        setScene(loadAnimate("MpBranchPerformance.fxml"));
+    }
+        @FXML
+    private void mnuMCAreaPerformanceClick(ActionEvent event) {
         setScene(loadAnimate("McAreaPerformance.fxml"));
     }
+        @FXML
+    private void mnuMPAreaPerformanceClick(ActionEvent event) {
+        setScene(loadAnimate("MpAreaPerformance.fxml"));
+    }
+        
 
     private void getTime(){
         Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {            
