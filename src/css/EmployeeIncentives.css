@@ -181,7 +181,11 @@
     -fx-background-radius: 15px;
     -fx-padding: 4px;
 }
-
+.anchorpane{
+    -fx-background-image: url("file:D://GGC_Java_Systems/images/ilovemyjob2.jpg");
+    -fx-background-repeat: no-repeat;
+    -fx-background-size: cover, auto;
+}
 #btnCloseReport{
   -fx-background-color: #a6a6a6;
   -fx-text-fill: black;
