@@ -408,8 +408,8 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         empIndex04.setCellValueFactory(new PropertyValueFactory<IncentiveConfirmationModel,String>("empIndex04"));
         empIndex05.setCellValueFactory(new PropertyValueFactory<IncentiveConfirmationModel,String>("empIndex05"));
         empIndex06.setCellValueFactory(new PropertyValueFactory<IncentiveConfirmationModel,String>("empIndex06"));
-        empIndex07.setCellValueFactory(new PropertyValueFactory<IncentiveConfirmationModel,String>("empIndex06"));
-        empIndex08.setCellValueFactory(new PropertyValueFactory<IncentiveConfirmationModel,String>("empIndex06"));
+        empIndex07.setCellValueFactory(new PropertyValueFactory<IncentiveConfirmationModel,String>("empIndex07"));
+        empIndex08.setCellValueFactory(new PropertyValueFactory<IncentiveConfirmationModel,String>("empIndex08"));
          /*making column's position uninterchangebale*/
         tblemployee.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblemployee.lookup("TableHeaderRow");
