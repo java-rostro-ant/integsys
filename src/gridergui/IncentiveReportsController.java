@@ -454,15 +454,15 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
 
                         }
                     }
-                    String sourceFileName = 
-                    "D://GGC_Java_Systems/reports/Employee_Incentive_Detailed_Report.jasper";
+                    String sourceFileName = "D://GGC_Java_Systems/reports/Employee_Incentive_Detailed_Report.jasper";
+                    
                     String printFileName = null;
                     JRBeanCollectionDataSource beanColDataSource1 = new JRBeanCollectionDataSource(inc_detail);
 
                     try {
                          jasperPrint =JasperFillManager.fillReport(
                                 sourceFileName, params, beanColDataSource1);
-        //               
+                       
                         printFileName = jasperPrint.toString();
                         if(printFileName != null){
                              showReport();
@@ -477,32 +477,29 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
                 }else if(rbCategory.isSelected()){
                     if(oTrans.OpenTransactionCategory(sPeriodxx)){ 
                         inc_detail.clear();
-                        for (int x = 1; x <= oTrans.getCategoryCount(); x++){
+                        for (int x = 1; x <= oTrans.getIncByCategoryCount(); x++){
                             inc_detail.add(new IncentiveDetail(
-                                oTrans.getDetailCategory(x, "xBranchNm").toString(),
-                                dateToWord(oTrans.getDetailCategory(x, "sMonthxxx").toString()),
-                                oTrans.getDetailCategory(x, "xEmployNm").toString(),
-                                oTrans.getDetailCategory(x, "xPositnNm").toString(),
-                                oTrans.getDetailCategory(x, "nMcSalesx").toString(),
-                                oTrans.getDetailCategory(x, "nSpareprt").toString(),
-                                oTrans.getDetailCategory(x, "nServicex").toString(),
-                                oTrans.getDetailCategory(x, "nRegisTri").toString(),
-                                oTrans.getDetailCategory(x, "nDei2xxxx").toString(),
-                                "",
-                                oTrans.getDetailCategory(x, "sTransNox").toString(),
-                                String.valueOf(x),
-                                 oTrans.getDetailCategory(x, "xDeductnx").toString()));
+                                        oTrans.getIncByCategory(x, "xBranchNm").toString(),
+                                        dateToWord(oTrans.getIncByCategory(x, "sMonthxxx").toString()),
+                                        oTrans.getIncByCategory(x, "xEmployNm").toString(),
+                                        oTrans.getIncByCategory(x, "xPositnNm").toString(),
+                                        oTrans.getIncByCategory(x, "xMCSalesx").toString(),
+                                        oTrans.getIncByCategory(x, "xSPSalesx").toString(),
+                                        oTrans.getIncByCategory(x, "xServicex").toString(),
+                                        oTrans.getIncByCategory(x, "xLTOPoolx").toString(),
+                                        oTrans.getIncByCategory(x, "xDEI2xxxx").toString(),
+                                        "",
+                                        "",
+                                        String.valueOf(x),
+                                        oTrans.getIncByCategory(x, "xDeductnx").toString()));
                         }
-                        System.out.println(oTrans.getCategoryCount());
                     }else{
                         running = false;
                         vbProgress.setVisible(false);
                         timeline.stop();
                     }
-                    String sourceFileName = 
-                    "D://GGC_Java_Systems/reports/Category_Incentive_Detailed_Report.jasper";
-//                    String sourceFileName = 
-//                    "D://report image/reports/CategoyIncentiveDetailReport.jasper";
+                    String sourceFileName = "D://GGC_Java_Systems/reports/Category_Incentive_Detailed_Report.jasper";
+                    
                     String printFileName = null;
                     JRBeanCollectionDataSource beanColDataSource1 = new JRBeanCollectionDataSource(inc_detail);
 
@@ -575,11 +572,7 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
             timeline.stop();
         }
         return true;
-    
-       
     }
-    
-    
 
     private void unloadForm(){
         StackPane myBox = (StackPane) AnchorMainIncentiveReport.getParent();
