@@ -313,17 +313,25 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
     }
     private String getFormattedDateFromDatePicker(DatePicker datePicker) {
         //Get the selected date
-        if(datePicker.getValue() != null){
-            LocalDate selectedDate = datePicker.getValue();
-        //Create DateTimeFormatter
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMM");
-            //Convert LocalDate to formatted String
-            sPeriodxx = selectedDate.format(formatter);
-            
-            return selectedDate.format(formatter);
-        }else{
-            return "";
-        }
+//        if(datePicker.getValue() != null){
+//            LocalDate selectedDate = datePicker.getValue();
+//        //Create DateTimeFormatter
+//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMM");
+//            //Convert LocalDate to formatted String
+//            sPeriodxx = selectedDate.format(formatter);
+//            
+//            return selectedDate.format(formatter);
+//        }else{
+//            return "";
+//        }
+
+        LocalDate selectedDate = datePicker.getValue();
+    //Create DateTimeFormatter
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMM");
+        //Convert LocalDate to formatted String
+        sPeriodxx = selectedDate.format(formatter);
+
+        return selectedDate.format(formatter);
         
     }
     
@@ -335,10 +343,21 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
                     if(txtField01.getText().isEmpty()){
                         oTrans.setBranch();
                     }
+//                    if(dpPeriod.getValue() == null){
+//                        sPeriodxx = "";
+////                        ShowMessageFX.Warning(getStage(), "Incentive period must not be empty","Warning", null);
+////                        hideProgress();
+//                    }
+                    getFormattedDateFromDatePicker(dpPeriod);
                     if(dpPeriod.getValue() == null){
-                        sPeriodxx = "";
-//                        ShowMessageFX.Warning(getStage(), "Incentive period must not be empty","Warning", null);
-//                        hideProgress();
+                            sPeriodxx = "";
+                            ShowMessageFX.Warning(getStage(), "Incentive period must not be empty","Warning", null);
+                            
+                        vbProgress.setVisible(false);
+                    }else{
+                        System.out.println("sPeriodxx = " + sPeriodxx);
+                        System.out.println("dpPeriod = " + dpPeriod.getValue());
+                        generateReport();
                     }
 //                    else{
 //                        getFormattedDateFromDatePicker(dpPeriod);
@@ -354,18 +373,19 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
 ////                        System.out.println(timer.toString());
 ////                       timer.schedule(new MyTimer(),1500);
 //                    }
-                    if(rbDetailed.isSelected()){
-                        if(dpPeriod.getValue() == null){
-                            sPeriodxx = "";
-                            ShowMessageFX.Warning(getStage(), "Incentive period must not be empty","Warning", null);
-                            
-                            vbProgress.setVisible(false);
-                        }else{
-                            generateReport();
-                        }
-                    }else{
-                        generateReport();
-                    }
+//                    if(rbDetailed.isSelected()){
+//                        if(dpPeriod.getValue() == null){
+//                            sPeriodxx = "";
+//                            ShowMessageFX.Warning(getStage(), "Incentive period must not be empty","Warning", null);
+//                            
+//                            vbProgress.setVisible(false);
+//                        }else{
+//                            
+//                            generateReport();
+//                        }
+//                    }else{
+//                        generateReport();
+//                    }
                     
                 break;
                  case "btnCloseReport":
