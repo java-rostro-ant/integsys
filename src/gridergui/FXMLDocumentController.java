@@ -69,7 +69,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private MenuItem mnuCashCountEntry;
     @FXML
-    private MenuItem mnuAuditIncentiveReport;
+    private MenuItem mnuAuditIncentiveReport,mnuRaffleReport;
     @FXML
     private MenuItem mnuAuditDeptIncentiveReport;
     @FXML
@@ -260,6 +260,11 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return new PanaloInfoController();
             case "PanaloRedemption.fxml":
                 return new PanaloRedemptionController();
+            case "RaffleParameter.fxml":
+                return new RaffleParameterController();
+            case "RaffleReports.fxml":
+                return new RaffleReportsController();
+            
             default:
                 return null;
         }
@@ -404,6 +409,14 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         @FXML
     private void mnuMPAreaPerformanceClick(ActionEvent event) {
         setScene(loadAnimate("MpAreaPerformance.fxml"));
+    }
+    @FXML
+    private void mnuRaffleParameterClick(ActionEvent event) {
+        setScene(loadAnimate("RaffleParameter.fxml"));
+    }
+        @FXML
+    private void mnuRaffleReportClick(ActionEvent event) {
+        setScene(loadAnimate("RaffleReports.fxml"));
     }
         
 
