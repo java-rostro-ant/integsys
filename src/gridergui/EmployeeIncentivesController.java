@@ -687,6 +687,8 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                  case "btnAddEmployee":
                     if (oTrans.SearchEmployee("", false)){
                         loadDetail();
+                    }else{
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
                     }
                     break;
                 case "btnAddDeductions":
