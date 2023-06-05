@@ -313,25 +313,25 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
     }
     private String getFormattedDateFromDatePicker(DatePicker datePicker) {
         //Get the selected date
-//        if(datePicker.getValue() != null){
-//            LocalDate selectedDate = datePicker.getValue();
-//        //Create DateTimeFormatter
-//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMM");
-//            //Convert LocalDate to formatted String
-//            sPeriodxx = selectedDate.format(formatter);
-//            
-//            return selectedDate.format(formatter);
-//        }else{
-//            return "";
-//        }
+        if(datePicker.getValue() != null){
+            LocalDate selectedDate = datePicker.getValue();
+        //Create DateTimeFormatter
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMM");
+            //Convert LocalDate to formatted String
+            sPeriodxx = selectedDate.format(formatter);
+            
+            return selectedDate.format(formatter);
+        }else{
+            return "";
+        }
 
-        LocalDate selectedDate = datePicker.getValue();
-    //Create DateTimeFormatter
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMM");
-        //Convert LocalDate to formatted String
-        sPeriodxx = selectedDate.format(formatter);
-
-        return selectedDate.format(formatter);
+//        LocalDate selectedDate = datePicker.getValue();
+//    //Create DateTimeFormatter
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMM");
+//        //Convert LocalDate to formatted String
+//        sPeriodxx = selectedDate.format(formatter);
+//
+//        return selectedDate.format(formatter);
         
     }
     
