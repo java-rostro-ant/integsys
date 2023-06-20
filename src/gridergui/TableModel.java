@@ -20,8 +20,13 @@ public class TableModel {
     private SimpleStringProperty index06; 
     private SimpleStringProperty index07;
     private SimpleStringProperty index08; 
+    private Boolean isImagePriority;
     
-    
+    TableModel(String index01, String index02, String index03) {
+         this.index01 = new SimpleStringProperty(index01);
+         this.index02 = new SimpleStringProperty(index02);
+         this.index03 = new SimpleStringProperty(index03);
+        }
     TableModel(String index01,
                String index02,
                String index03,
@@ -40,6 +45,8 @@ public class TableModel {
         this.index07 = new SimpleStringProperty(index07);
         this.index08 = new SimpleStringProperty(index08);
     }
+
+   
 
     
 

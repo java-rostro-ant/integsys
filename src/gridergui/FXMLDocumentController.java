@@ -123,7 +123,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private MenuItem mnuAuditReport;
     @FXML
-    private MenuItem mnuPanaloInfo;
+    private MenuItem mnuPanaloInfo,mnuMCImage;
     @FXML
     private MenuItem mnuPanaloRedeem;
     /**
@@ -264,6 +264,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return new RaffleParameterController();
             case "RaffleReports.fxml":
                 return new RaffleReportsController();
+            case "MCImages.fxml":
+                return new MCImagesController();
             
             default:
                 return null;
@@ -417,6 +419,10 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         @FXML
     private void mnuRaffleReportClick(ActionEvent event) {
         setScene(loadAnimate("RaffleReports.fxml"));
+    }
+    @FXML
+    private void mnuMCImagesClick(ActionEvent event) {
+        setScene(loadAnimate("MCImages.fxml"));
     }
         
 
