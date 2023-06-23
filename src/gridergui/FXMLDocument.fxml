@@ -46,7 +46,11 @@
                                                       <MenuItem fx:id="mnuRaffleParameter" mnemonicParsing="false" onAction="#mnuRaffleParameterClick" text="Raffle" />
                                                    </items>
                                                 </Menu>
-                                              <MenuItem fx:id="mnuExit" mnemonicParsing="false" text="Exit" />
+                                                <Menu mnemonicParsing="false" text="MC Model">
+                                                   <items>
+                                                      <MenuItem fx:id="mnuMCImages" mnemonicParsing="false" onAction="#mnuMCImagesClick" text="Images" />
+                                                   </items>
+                                                </Menu>
                                           </items>
                                         </Menu>
                                         <Menu fx:id="mnuTransaction" mnemonicParsing="false" text="Transactions">
@@ -83,7 +87,7 @@
                                                       <MenuItem fx:id="mnuIncentiveHistory" mnemonicParsing="false" onAction="#mnuMPAreaPerformanceClick" text="MP Area Entry" />
                                                    </items>
                                                 </Menu>
-                                                <Menu fx:id="mnuTransaction1121" mnemonicParsing="false" text="Panalo" visible="false">
+                                                <Menu fx:id="mnuTransaction1121" mnemonicParsing="false" text="Panalo">
                                                    <items>
                                                       <MenuItem fx:id="mnuPanaloEntry" mnemonicParsing="false" onAction="#mnuPanaloEntryClick" text="Entry                   " />
                                                       <MenuItem fx:id="mnuPanaloRedeem" mnemonicParsing="false" onAction="#mnuPanaloRedeemClick" text="Redeem" />
