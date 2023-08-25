@@ -259,6 +259,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                             
                     switch (lnIndex){
                         case 11:
+                            if(lsValue.isEmpty()) lsValue = "0";
                             double lnOldpercent = Double.parseDouble(oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID")).toString());
                             if(lnIncAmt <= 0){
                                  ShowMessageFX.Warning(getStage(), "Please specify incentive amount value!", "Warning", null);
@@ -278,6 +279,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                             
                             break;
                         case 12:
+                            if(lsValue.isEmpty()) lsValue = "0";
                             double lnOldAmt = Double.valueOf(String.valueOf(oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"))));
 
                             if (total_alloc - lnOldAmt + Double.valueOf(lsValue) > lnIncAmt){
@@ -354,7 +356,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
         String lsValue = txtField.getText();
         
         if (lsValue == null) return;
-        if (lsValue.isEmpty()) return;    
+        if (lsValue.isEmpty()) lsValue = "0";    
         
         try {
             if(!nv){ /*Lost Focus*/
@@ -398,8 +400,13 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                                 oTrans.resetIncentiveEmployeeAllocation(psCode);
                             } else break;
                         }
+                        
+                        if (StringUtil.isNumeric(lsValue)) 
+                            oTrans.setIncentiveInfo(tbl_row, "nInctvAmt", Double.parseDouble(lsValue));
+                        else    
+                            oTrans.setIncentiveInfo(tbl_row, "nInctvAmt", 0.00);
 
-                        oTrans.setIncentiveInfo(tbl_row, "nInctvAmt", Double.parseDouble(lsValue));
+//                        oTrans.setIncentiveInfo(tbl_row, "nInctvAmt", Double.parseDouble(lsValue));
                         txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveInfo(tbl_row, "nInctvAmt"), "#,##0.00"));
                         break;
                 }
