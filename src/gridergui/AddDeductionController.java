@@ -236,6 +236,8 @@ public class AddDeductionController implements Initializable {
                             
                     switch (lnIndex){
                         case 04:
+                            
+                            if(lsValue.isEmpty()) lsValue = "0";
                             double lnOldAmt = Double.parseDouble(oTrans.getDeductionEmployeeAllocationInfo("nAllcAmtx", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID")).toString());
 
                             if (total_alloc - lnOldAmt + Double.valueOf(lsValue) > lnIncAmt){
@@ -250,6 +252,7 @@ public class AddDeductionController implements Initializable {
                              break;   
                         case 05:
                             
+                            if(lsValue.isEmpty()) lsValue = "0";
                            double lnOldpercent = Double.parseDouble(oTrans.getDeductionEmployeeAllocationInfo("nAllcPerc", tbl_row, (String) oTrans.getDetail(pnRow, "sEmployID")).toString());
 
                             if(lnIncAmt <= 0){
@@ -308,12 +311,14 @@ public class AddDeductionController implements Initializable {
         String lsValue = txtField.getText();
         
         if (lsValue == null) return;
-        if (lsValue.isEmpty()) return;    
+        if (lsValue.isEmpty()) lsValue = "0";    
         
         try {
             if(!nv){ /*Lost Focus*/
                 switch (lnIndex){
-                    case 06:     
+                    case 06: 
+                        
+//                        if(lsValue.isEmpty()) lsValue = "0";
                         if (total_alloc > Double.parseDouble(lsValue)){
                             if (MsgBox.showOkCancel("Incentive amount is less than the total cash that is already allocated." +
                                     "\n\nDo you want to reset allocation and continue?") == MsgBox.RESP_YES_OK){
