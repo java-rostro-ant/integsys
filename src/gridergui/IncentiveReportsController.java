@@ -457,6 +457,7 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
                     
                     if(oTrans.OpenTransactionEmployee(sPeriodxx)){ 
                         inc_detail.clear();
+                        double totals = 0.0;
                         for (int x = 1; x <= oTrans.getNewEmpCount(); x++){
                             inc_detail.add(new IncentiveDetail(
                                 String.valueOf(x),
@@ -471,8 +472,12 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
                                 oTrans.getNewDetailEmployee(x, "xBankName").toString(),
                                 oTrans.getNewDetailEmployee(x, "xBankAcct").toString(),
                                 oTrans.getNewDetailEmployee(x, "sEmployID").toString()));
-
+                        System.out.println(oTrans.getNewDetailEmployee(x, "nTotalAmt").toString());
+                        totals += Double.parseDouble(oTrans.getNewDetailEmployee(x, "nTotalAmt").toString());
+                            
                         }
+                        
+                        System.out.println(totals);
                     }
                     String sourceFileName = "D://GGC_Java_Systems/reports/Employee_Incentive_Detailed_Report.jasper";
                     
@@ -548,19 +553,19 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
                 inc_data.clear();
                 for (int x = 1; x <= oTrans.getItemMasterCount(); x++){
                     String total = oTrans.getMaster(x, "xTotalAmt").toString();
-
+                    System.out.println("xTotalAmt = " + total);
                     inc_data.add(new IncentiveMaster(
                         String.valueOf(x),
                         oTrans.getMaster(x, "sTransNox").toString(),
                         oTrans.getMaster(x, "xBranchNm").toString(),
                         dateToWord(oTrans.getMaster(x, "sMonthxxx").toString()),
+                        oTrans.getMaster(x, "xTotalAmt").toString(),
                         oTrans.getMaster(x, "nMcSalesx").toString(),
                         oTrans.getMaster(x, "nSpareprt").toString(),
                         oTrans.getMaster(x, "nServicex").toString(),
                         oTrans.getMaster(x, "nRegisTri").toString(),
                         oTrans.getMaster(x, "nDei2xxxx").toString(),
-                        oTrans.getMaster(x, "xDeductnx").toString(),
-                        oTrans.getMaster(x, "xTotalAmt").toString()));
+                        oTrans.getMaster(x, "xDeductnx").toString()));
                     }
                 }
                 String sourceFileName = 
