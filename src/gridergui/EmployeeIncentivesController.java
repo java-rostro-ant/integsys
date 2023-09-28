@@ -191,6 +191,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                         loadDetail();
                         break;
                     case 16:
+                        System.out.println(foValue);
                         txtField16.setText((String) foValue); break;
                 }
             }
@@ -313,6 +314,15 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                             if(!oTrans.searchDepartment(lsValue, false)) {
                                 txtField.setText((String) oTrans.getMaster("xDeptName"));
                                 ShowMessageFX.Warning(getStage(), "Unable to update department.", "Warning", null);
+                            } 
+                                
+                            break;
+                        case 16: /*search branch*/
+                            if(!oTrans.searchBranch(lsValue, false)) {
+                                
+//                                txtField16.setText((String) oTrans.getMaster("sBranchNm"));
+                                txtField.setText((String) oTrans.getMaster("xBranchNm"));
+                                ShowMessageFX.Warning(getStage(), "Unable to update branch. " + (String) oTrans.getMaster("xBranchNm"), "Warning", null);
                             } 
                                 
                             break;
@@ -779,6 +789,10 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         txtField03.setText((String) oTrans.getMaster(17));
         txtField04.setText((String) oTrans.getMaster(4));
         txtField05.setText((String) oTrans.getMaster(5));
+        if(oApp.getDepartment().equalsIgnoreCase("022") ||
+                oApp.getDepartment().equalsIgnoreCase("034")){
+            txtField16.setEditable(true);
+        }
         txtField16.setText((String) oTrans.getMaster(16));
         txtField04.setDisable(false);
             
