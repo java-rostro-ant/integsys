@@ -315,7 +315,9 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                                 txtField.setText((String) oTrans.getMaster("xDeptName"));
                                 ShowMessageFX.Warning(getStage(), "Unable to update department.", "Warning", null);
                             } 
-                                
+                            if(oTrans.getItemCount() == 0){
+                                ShowMessageFX.Warning(getStage(), "Please check branch for selected department.", "Warning", null);
+                            }   
                             break;
                         case 16: /*search branch*/
                             if(!oTrans.searchBranch(lsValue, false)) {
