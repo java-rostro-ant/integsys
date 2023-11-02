@@ -126,6 +126,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private MenuItem mnuPanaloInfo,mnuMCImage;
     @FXML
     private MenuItem mnuPanaloRedeem;
+    @FXML
+    private MenuItem mnuPacitaEvaluationHis; 
     /**
      * Initializes the controller class.
      */
@@ -266,7 +268,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return new RaffleReportsController();
             case "MCImages.fxml":
                 return new MCImagesController();
-            
+            case "PacitaEvaluationHis.fxml":
+                return new PacitaEvaluationHisController();
             default:
                 return null;
         }
@@ -423,6 +426,10 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuMCImagesClick(ActionEvent event) {
         setScene(loadAnimate("MCImages.fxml"));
+    }
+    @FXML
+    private void mnuPacitaEvaluationHisClick(ActionEvent event) {
+        setScene(loadAnimate("PacitaEvaluationHis.fxml"));
     }
         
 

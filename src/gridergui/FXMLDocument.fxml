@@ -115,6 +115,11 @@
                                                 <MenuItem fx:id="mnuAuditReport" disable="true" mnemonicParsing="false" onAction="#mnuAuditReportClick" text="Audit" visible="false" />
                                                 <MenuItem fx:id="mnuRaffleReport" mnemonicParsing="false" onAction="#mnuRaffleReportClick" text="Raffle" />
                                              </items></Menu>
+                                          <Menu mnemonicParsing="false" text="History">
+                                             <items>
+                                                <MenuItem fx:id="mnuPacitaEvaluationHis" mnemonicParsing="false" onAction="#mnuPacitaEvaluationHisClick" text="Pacita Evaluation" />
+                                             </items>
+                                          </Menu>
                                       </menus>
                                     </MenuBar>
                                  </children>
