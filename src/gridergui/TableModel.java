@@ -6,6 +6,7 @@
 package gridergui;
 
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 /**
  *
@@ -20,6 +21,8 @@ public class TableModel {
     private SimpleStringProperty index06; 
     private SimpleStringProperty index07;
     private SimpleStringProperty index08; 
+    private SimpleStringProperty index09;
+    private SimpleStringProperty index10; 
     private Boolean isImagePriority;
     
     TableModel(String index01, String index02, String index03) {
@@ -44,6 +47,41 @@ public class TableModel {
         this.index06 = new SimpleStringProperty(index06);
         this.index07 = new SimpleStringProperty(index07);
         this.index08 = new SimpleStringProperty(index08);
+    }
+    TableModel(String index01,
+               String index02,
+               String index03,
+               String index04,
+               String index05){
+        
+        this.index01 = new SimpleStringProperty(index01);
+        this.index02 = new SimpleStringProperty(index02);
+        this.index03 = new SimpleStringProperty(index03);
+        this.index04 = new SimpleStringProperty(index04);
+        this.index05 = new SimpleStringProperty(index05);
+    }
+    
+        TableModel(String index01,
+               String index02,
+               String index03,
+               String index04,
+               String index05,
+               String index06,
+               String index07,
+               String index08,
+               String index09,
+               String index10){
+        
+        this.index01 = new SimpleStringProperty(index01);
+        this.index02 = new SimpleStringProperty(index02);
+        this.index03 = new SimpleStringProperty(index03);
+        this.index04 = new SimpleStringProperty(index04);
+        this.index05 = new SimpleStringProperty(index05);
+        this.index06 = new SimpleStringProperty(index06);
+        this.index07 = new SimpleStringProperty(index07);
+        this.index08 = new SimpleStringProperty(index08);
+        this.index09 = new SimpleStringProperty(index09);
+        this.index10 = new SimpleStringProperty(index10);
     }
 
    
@@ -74,4 +112,33 @@ public class TableModel {
     public String getIndex08(){return index08.get();}
     public void setIndex08(String index08){this.index08.set(index08);}
     
+    public String getIndex09(){return index09.get();}
+    public void setIndex09(String index09){this.index09.set(index09);}
+    
+    public String getIndex10(){return index10.get();}
+    public void setIndex10(String index10){this.index10.set(index10);}
+    
+    
+        public StringProperty index01Property() {
+        return index01;
+    }
+    
+    public StringProperty index02Property() {
+        return index02;
+    }
+    
+    public StringProperty index03Property() {
+        return index03;
+    }
+    
+    public StringProperty index04Property() {
+        return index04;
+    }    
+    public StringProperty index05Property() {
+        return index05;
+    }
+    
+    public StringProperty index06Property() {
+        return index06;
+    }
 }

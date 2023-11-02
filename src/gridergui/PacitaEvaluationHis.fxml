@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Pagination?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TreeTableColumn?>
+<?import javafx.scene.control.TreeTableView?>
+<?import javafx.scene.effect.Blend?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane fx:id="AnchorMainPacita" prefHeight="661.0" prefWidth="1361.0" style="-fx-border-color: orange; -fx-border-radius: 5;" stylesheets="@/css/EmployeeIncentives.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <StackPane layoutX="9.0" layoutY="388.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <BorderPane prefHeight="551.0" prefWidth="1359.0">
+               <top>
+                  <AnchorPane prefHeight="25.0" style="-fx-background-color: #515151; -fx-background-radius: 5;" BorderPane.alignment="CENTER">
+                     <children>
+                        <Label alignment="CENTER" layoutX="375.0" layoutY="-8.0" prefHeight="20.0" prefWidth="896.0" text="PACITA EVALUATION HISTORY" textFill="WHITE" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                        </Label>
+                        <Separator layoutY="26.0" prefHeight="0.0" prefWidth="500.0" style="-fx-background-color: orange;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                     </children>
+                     <BorderPane.margin>
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                     </BorderPane.margin>
+                  </AnchorPane>
+               </top>
+               <bottom>
+                  <AnchorPane nodeOrientation="LEFT_TO_RIGHT" prefHeight="58.0" style="-fx-background-color: #4C4C4C; -fx-background-radius: 5;">
+                     <children>
+                        <HBox fx:id="hbButtons" layoutX="5.0" layoutY="4.0">
+                           <children>
+                              <Button fx:id="btnPrint" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Print">
+                                 <graphic>
+                                    <FontAwesomeIconView glyphName="PRINT" size="20" />
+                                 </graphic>
+                                 <effect>
+                                    <Blend />
+                                 </effect>
+                              </Button>
+                           </children></HBox>
+                        <Button fx:id="btnClose" contentDisplay="TOP" ellipsisString="" layoutX="138.0" layoutY="7.0" maxWidth="104.0" minHeight="50.0" minWidth="70.0" mnemonicParsing="false" prefHeight="47.0" prefWidth="70.0" text="Close" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                           <graphic>
+                              <FontAwesomeIconView glyphName="POWER_OFF" size="20" />
+                           </graphic>
+                           <effect>
+                              <Blend />
+                           </effect>
+                        </Button>
+                     </children>
+                     <BorderPane.margin>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </BorderPane.margin>
+                  </AnchorPane>
+               </bottom>
+               <center>
+                  <StackPane prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <BorderPane prefHeight="200.0" prefWidth="200.0">
+                           <left>
+                              <AnchorPane prefWidth="630.0" style="-fx-border-color: orange; -fx-border-radius: 5;" BorderPane.alignment="CENTER">
+                                 <children>
+                                    <Pagination fx:id="pagination" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
+                                    <TableView fx:id="tblMaster" layoutX="6.0" layoutY="52.0" onMouseClicked="#tblMaster_Clicked" stylesheets="@../css/Tables.css" AnchorPane.bottomAnchor="45.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                       <columns>
+                                          <TableColumn fx:id="masIndex01" editable="false" maxWidth="-1.0" minWidth="30.0" prefWidth="-1.0" sortable="false" text="NO" />
+                                          <TableColumn fx:id="masIndex02" editable="false" maxWidth="-1.0" minWidth="100.0" prefWidth="-1.0" sortable="false" text="DATE" />
+                                          <TableColumn fx:id="masIndex03" editable="false" maxWidth="-1.0" minWidth="200.0" prefWidth="-1.0" sortable="false" text="BRANCH NAME" />
+                                          <TableColumn fx:id="masIndex04" editable="false" maxWidth="195.0" minWidth="180.0" prefWidth="180.0" sortable="false" text="OFFICER" />
+                                          <TableColumn fx:id="masIndex05" editable="false" maxWidth="100.0" minWidth="80.0" prefWidth="100.0" sortable="false" text="TOTAL RATE" />
+                                       </columns>
+                                       <columnResizePolicy>
+                                          <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                       </columnResizePolicy>
+                                    </TableView>
+                                 </children>
+                                 <opaqueInsets>
+                                    <Insets bottom="5.0" right="5.0" top="5.0" />
+                                 </opaqueInsets>
+                                 <BorderPane.margin>
+                                    <Insets bottom="5.0" top="5.0" />
+                                 </BorderPane.margin>
+                              </AnchorPane>
+                           </left>
+                           <center>
+                              <StackPane BorderPane.alignment="CENTER">
+                                 <children>
+                                    <BorderPane>
+                                       <center>
+                                          <AnchorPane style="-fx-border-radius: 5; -fx-border-color: orange;" BorderPane.alignment="CENTER">
+                                             <opaqueInsets>
+                                                <Insets />
+                                             </opaqueInsets>
+                                             <BorderPane.margin>
+                                                <Insets />
+                                             </BorderPane.margin>
+                                             <children>
+                                                <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <children>
+                                                      <AnchorPane>
+                                                         <children>
+                                                            <GridPane AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                              <columnConstraints>
+                                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                              </columnConstraints>
+                                                              <rowConstraints>
+                                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                              </rowConstraints>
+                                                               <children>
+                                                                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="PACITA DETAIL" textAlignment="JUSTIFY">
+                                                                     <font>
+                                                                        <Font name="System Bold Italic" size="14.0" />
+                                                                     </font>
+                                                                  </Text>
+                                                               </children>
+                                                            </GridPane>
+                                                         </children>
+                                                      </AnchorPane>
+                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="561.0" prefWidth="628.0">
+                                                         <children>
+                                                            <TreeTableView fx:id="tblDetail" layoutX="32.0" layoutY="95.0" stylesheets="@../css/Tables.css" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+                                                               <columns>
+                                                                  <TreeTableColumn fx:id="pacitaindex01" editable="false" maxWidth="-1.0" minWidth="460.0" prefWidth="500.0" resizable="false" sortable="false" text="FIELD NAME" />
+                                                                  <TreeTableColumn fx:id="pacitaindex02" editable="false" maxWidth="-1.0" minWidth="110.0" prefWidth="150.0" resizable="false" sortable="false" text="RATING" />
+                                                                  <TreeTableColumn fx:id="pacitaindex03" editable="false" maxWidth="-1.0" minWidth="110.0" prefWidth="150.0" resizable="false" sortable="false" text="EVALUATION" />
+                                                               </columns>
+                                                               <columnResizePolicy>
+                                                                  <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                                               </columnResizePolicy>
+                                                            </TreeTableView>
+                                                         </children>
+                                                      </AnchorPane>
+                                                      <AnchorPane>
+                                                         <children>
+                                                            <GridPane styleClass="myrow" vgap="5.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                               <columnConstraints>
+                                                                  <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="150.0" />
+                                                                  <ColumnConstraints hgrow="NEVER" maxWidth="200.0" minWidth="10.0" prefWidth="150.0" />
+                                                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="10.0" prefWidth="100.0" />
+                                                               </columnConstraints>
+                                                               <rowConstraints>
+                                                                  <RowConstraints prefHeight="30.0" vgrow="SOMETIMES" />
+                                                               </rowConstraints>
+                                                               <opaqueInsets>
+                                                                  <Insets />
+                                                               </opaqueInsets>
+                                                               <padding>
+                                                                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                               </padding>
+                                                               <children>
+                                                                  <Label prefHeight="28.0" prefWidth="293.0" text="TOTAL RATE :" textFill="#ff6800" GridPane.columnIndex="1" GridPane.valignment="BOTTOM">
+                                                                     <font>
+                                                                        <Font name="Monospaced Bold" size="18.0" />
+                                                                     </font>
+                                                                  </Label>
+                                                                  <Label fx:id="lblTotalRte" alignment="TOP_RIGHT" contentDisplay="RIGHT" prefHeight="28.0" prefWidth="153.0" style="-fx-background-color: orange; -fx-border-color: black; -fx-border-radius: 5; -fx-background-radius: 6;" text="25%" textAlignment="RIGHT" GridPane.columnIndex="2" GridPane.halignment="RIGHT">
+                                                                     <font>
+                                                                        <Font name="Monospaced Bold Italic" size="18.0" />
+                                                                     </font>
+                                                                     <GridPane.margin>
+                                                                        <Insets right="5.0" />
+                                                                     </GridPane.margin>
+                                                                     <padding>
+                                                                        <Insets right="5.0" />
+                                                                     </padding>
+                                                                  </Label>
+                                                               </children>
+                                                            </GridPane>
+                                                         </children>
+                                                      </AnchorPane>
+                                                   </children>
+                                                   <padding>
+                                                      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                   </padding>
+                                                </VBox>
+                                             </children>
+                                          </AnchorPane>
+                                       </center>
+                                       <StackPane.margin>
+                                          <Insets bottom="5.0" left="5.0" top="5.0" />
+                                       </StackPane.margin>
+                                    </BorderPane>
+                                 </children>
+                              </StackPane>
+                           </center>
+                           <top>
+                              <AnchorPane fx:id="searchBar" prefWidth="896.0" style="-fx-border-color: #F88222; -fx-border-radius: 5; -fx-background-color: #F88222; -fx-background-radius-buttom: 5;" BorderPane.alignment="CENTER">
+                                 <children>
+                                    <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="111.0" AnchorPane.topAnchor="0.0">
+                                       <columnConstraints>
+                                          <ColumnConstraints hgrow="NEVER" maxWidth="100.0" minWidth="0.0" prefWidth="100.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="0.0" prefWidth="150.0" />
+                                          <ColumnConstraints fillWidth="false" hgrow="SOMETIMES" maxWidth="80.0" minWidth="0.0" prefWidth="80.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="120.0" minWidth="10.0" prefWidth="120.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" prefWidth="150.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="80.0" minWidth="10.0" prefWidth="80.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="120.0" minWidth="10.0" prefWidth="120.0" />
+                                          <ColumnConstraints hgrow="SOMETIMES" maxWidth="200.0" minWidth="10.0" prefWidth="150.0" />
+                                       </columnConstraints>
+                                       <rowConstraints>
+                                          <RowConstraints minHeight="10.0" prefHeight="23.0" vgrow="SOMETIMES" />
+                                       </rowConstraints>
+                                       <children>
+                                          <TextField fx:id="txtSeeks98" cacheShape="false" centerShape="false" disable="true" focusTraversable="false" prefHeight="25.0" prefWidth="259.0" scaleShape="false" style="-fx-border-radius: 5;" visible="false" GridPane.columnIndex="3" />
+                                          <Label text="NAME">
+                                             <font>
+                                                <Font name="System Bold" size="12.0" />
+                                             </font>
+                                          </Label>
+                                          <TextField fx:id="txtSeeks99" prefHeight="25.0" prefWidth="259.0" style="-fx-border-radius: 5;" GridPane.columnIndex="1" />
+                                          <Label fx:id="lblStatus" alignment="CENTER" prefWidth="140.0" textFill="WHITE" GridPane.columnIndex="5">
+                                             <font>
+                                                <Font name="System Bold" size="12.0" />
+                                             </font>
+                                          </Label>
+                                          <Label text="BRANCH NAME" GridPane.columnIndex="3">
+                                             <font>
+                                                <Font name="System Bold" size="12.0" />
+                                             </font>
+                                          </Label>
+                                          <TextField fx:id="txtSeeks98" prefHeight="25.0" prefWidth="259.0" style="-fx-border-radius: 5;" GridPane.columnIndex="4" />
+                                          <Label text="DATE" GridPane.columnIndex="6">
+                                             <font>
+                                                <Font name="System Bold" size="12.0" />
+                                             </font>
+                                          </Label>
+                                          <TextField fx:id="txtSeeks97" prefHeight="25.0" prefWidth="259.0" style="-fx-border-radius: 5;" GridPane.columnIndex="7" />
+                                       </children>
+                                    </GridPane>
+                                    <Button fx:id="btnRefresh" contentDisplay="CENTER" ellipsisString="" graphicTextGap="0.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="36.0" styleClass="button_process" stylesheets="@../css/StyleSheet.css" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                       <graphic>
+                                          <FontAwesomeIconView glyphName="REFRESH" size="25" textAlignment="CENTER" />
+                                       </graphic>
+                                       <effect>
+                                          <Blend opacity="0.12" />
+                                       </effect>
+                                    </Button>
+                                 </children>
+                              </AnchorPane>
+                           </top>
+                        </BorderPane>
+                     </children>
+                     <BorderPane.margin>
+                        <Insets left="10.0" right="10.0" />
+                     </BorderPane.margin>
+                  </StackPane>
+               </center>
+            </BorderPane>
+         </children>
+      </StackPane>
+   </children>
+</AnchorPane>
