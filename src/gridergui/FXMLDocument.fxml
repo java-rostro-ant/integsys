@@ -114,6 +114,13 @@
                                                 <MenuItem fx:id="mnuPayrollReport" mnemonicParsing="false" onAction="#mnuPayrollReportClick" text="Payroll" visible="false" />
                                                 <MenuItem fx:id="mnuAuditReport" disable="true" mnemonicParsing="false" onAction="#mnuAuditReportClick" text="Audit" visible="false" />
                                                 <MenuItem fx:id="mnuRaffleReport" mnemonicParsing="false" onAction="#mnuRaffleReportClick" text="Raffle" />
+                                                <Menu mnemonicParsing="false" text="Pacita">
+                                                  <items>
+                                                      <MenuItem fx:id="mnuPacitaSumReport" mnemonicParsing="false" onAction="#mnuPacitaSumReportClick" text="Pacita Summary" />
+                                                      <MenuItem fx:id="mnuPacitaDetReport" mnemonicParsing="false" onAction="#mnuPacitaDetReportClick" text="Pacita Detailed" />
+                                                      <MenuItem fx:id="mnuPacitaTop10Report" mnemonicParsing="false" onAction="#mnuPacitaTop10ReportClick" text="Pacita TOP 10" />
+                                                  </items>
+                                                </Menu>
                                              </items></Menu>
                                           <Menu mnemonicParsing="false" text="History">
                                              <items>

@@ -127,7 +127,10 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private MenuItem mnuPanaloRedeem;
     @FXML
-    private MenuItem mnuPacitaEvaluationHis; 
+    private MenuItem mnuPacitaEvaluationHis;
+    @FXML
+    private MenuItem mnuPacitaSumReport,mnuPacitaDetReport,
+                        mnuPacitaTop10Report; 
     /**
      * Initializes the controller class.
      */
@@ -270,6 +273,12 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return new MCImagesController();
             case "PacitaEvaluationHis.fxml":
                 return new PacitaEvaluationHisController();
+            case "PacitaEvalSummarizedReport.fxml":
+                return new PacitaEvalSummarizedReportController();                
+            case "PacitaEvalDetailedReport.fxml":
+                return new PacitaEvalDetailedReportController();
+            case "PacitaEvalTop10Report.fxml":
+                return new PacitaEvalTop10ReportController();
             default:
                 return null;
         }
@@ -430,6 +439,18 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuPacitaEvaluationHisClick(ActionEvent event) {
         setScene(loadAnimate("PacitaEvaluationHis.fxml"));
+    }
+    @FXML
+    private void mnuPacitaSumReportClick(ActionEvent event) {
+        setScene(loadAnimate("PacitaEvalSummarizedReport.fxml"));
+    }
+    @FXML
+    private void mnuPacitaDetReportClick(ActionEvent event) {
+        setScene(loadAnimate("PacitaEvalDetailedReport.fxml"));
+    }
+    @FXML
+    private void mnuPacitaTop10ReportClick(ActionEvent event) {
+        setScene(loadAnimate("PacitaEvalTop10Report.fxml"));
     }
         
 

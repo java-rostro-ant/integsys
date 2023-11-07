@@ -403,48 +403,21 @@
 .list-view > .virtual-flow > .corner {
     -fx-background-color: transparent;
 }
-/*
-.list-cell {
-    -fx-cell-size: 50 ;
-    -fx-animated: true;
-    -fx-padding: 1px;
-    -fx-opacity: 1;
-    -fx-text-fill: black;
-}
-.list-cell:filled:selected:focused:disabled, 
-.list-cell:filled:selected:disabled {
-    -fx-opacity: 1;
-}
-
-.list-cell:hover{
-    -fx-background-color: #dbdbdb;
-}
 
 
-#statusList {
-    -fx-box-border: transparent;
+
+.combo-box {
+    -fx-background-color: transparent;
+    -fx-border-width: .5px;
+    -fx-border-radius: 5px;
+    -fx-padding: 3px;
 }
 
-#userList {
-    -fx-box-border: transparent;
+.combo-box .arrow-button {
+    -fx-background-color: transparent; 
+    -fx-shape: ""; 
+    -fx-padding: 0; 
 }
-
-#listHbox {
-    -fx-background-color: #d5d5d5;
-    -fx-padding: 0.2;
-    -fx-spacing: -2;
+.combo-box:focused {
+    -fx-border-color: orange ; 
 }
-#listHbox:disabled {
-    -fx-background-color: #d5d5d5;
-    -fx-padding: 0.2;
-    -fx-spacing: -2;
-    -fx-opacity: 1;
-    
-}
-
-#onlineUsersHbox {
-    -fx-border-color: #d5d5d5;
-    -fx-border-width: 1px;
-    -fx-padding: 0.2;
-    -fx-spacing: -2;
-}*/
