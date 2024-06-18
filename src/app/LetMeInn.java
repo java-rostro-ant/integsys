@@ -19,12 +19,12 @@ public class LetMeInn {
         
         GRider oApp = new GRider();
         
-        if (!oApp.loadEnv("gRider")) {
+        if (!oApp.loadEnv("IntegSys")) {
             System.err.println(oApp.getErrMsg());
             System.exit(1);
         }
 
-        if (!oApp.logUser("gRider", "M001080006")) { //M001080006 //M001111122
+        if (!oApp.logUser("IntegSys", "M001240020")) { //M001080006 //M001111122
             System.err.println(oApp.getErrMsg());
             System.exit(1);
         }   

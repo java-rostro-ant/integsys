@@ -149,6 +149,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         try {
             if(name.next()){
                 AppUser.setText(name.getString("sCompnyNm") + " || " + oApp.getBranchName());
+                System.err.println(name.getString("sCompnyNm"));
                 System.setProperty("user.name", name.getString("sCompnyNm"));   
             }             
         } catch (SQLException ex) {
@@ -492,12 +493,12 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         mnuInventory01.setVisible("034;026;".contains(oApp.getDepartment())); 
         
         //finance management;
-        mnuEmployeeIncentivesBank.setVisible("021;028;026;".contains(oApp.getDepartment()));
+        mnuEmployeeIncentivesBank.setVisible("021;028;026".contains(oApp.getDepartment()));
         mnuTransaction111.setVisible("028;026;".contains(oApp.getDepartment()));
         mnuInventory01.setVisible("028;026;".contains(oApp.getDepartment()));
         
         //sales
-        mnuTransaction11.setVisible("015;026;".contains(oApp.getDepartment()));
+        mnuTransaction11.setVisible("015;026;036;038".contains(oApp.getDepartment()));
         
         if (!mnuIncentiveParameter.isVisible() && 
             !mnuEmployeeIncentivesBank.isVisible())
@@ -505,9 +506,9 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         else
             mnuFiles01.setVisible(true);
         
-        mnuTransaction11.setVisible("015;034;022;028;026;".contains(oApp.getDepartment()));
+        mnuTransaction11.setVisible("015;034;022;028;026;036;038".contains(oApp.getDepartment()));
         
-        mnuAuditIncentiveReport.setVisible("015;034;022;028;026;".contains(oApp.getDepartment()));
+        mnuAuditIncentiveReport.setVisible("015;034;022;028;026;036;038".contains(oApp.getDepartment()));
         mnuAuditDeptIncentiveReport.setVisible("026;028;".contains(oApp.getDepartment()));
         mnuAuditBankReport.setVisible("026;028;021;".contains(oApp.getDepartment()));
         
