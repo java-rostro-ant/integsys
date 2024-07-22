@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.Blend?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="AnchorMainIncentiveReport" prefHeight="644.0" prefWidth="1074.0" style="-fx-border-color: orange; -fx-border-radius: 5;" stylesheets="@/css/EmployeeIncentives.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <StackPane layoutX="9.0" layoutY="388.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <BorderPane>
+               <top>
+                  <AnchorPane prefHeight="25.0" style="-fx-background-color: #515151; -fx-background-radius: 5;" BorderPane.alignment="CENTER">
+                     <children>
+                        <Label fx:id="lblReportsTitle" alignment="CENTER" layoutX="375.0" layoutY="-8.0" prefWidth="896.0" textFill="WHITE" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                        </Label>
+                        <Separator layoutY="26.0" prefHeight="0.0" prefWidth="500.0" style="-fx-background-color: orange;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                     </children>
+                     <BorderPane.margin>
+                        <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                     </BorderPane.margin>
+                  </AnchorPane>
+               </top>
+               <left>
+                  <AnchorPane prefWidth="300.0" style="-fx-border-color: #F88222; -fx-border-radius: 5;" BorderPane.alignment="CENTER">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <BorderPane.margin>
+                        <Insets bottom="10.0" left="10.0" />
+                     </BorderPane.margin>
+                     <children>
+                        <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <BorderPane prefHeight="200.0" prefWidth="200.0">
+                                 <bottom>
+                                    <AnchorPane BorderPane.alignment="CENTER">
+                                       <BorderPane.margin>
+                                          <Insets />
+                                       </BorderPane.margin>
+                                       <children>
+                                          <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
+                                             <children>
+                                                <GridPane fx:id="frGridPane05" hgap="10.0" layoutX="10.0" layoutY="10.0">
+                                                   <columnConstraints>
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="5.0" vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <Button fx:id="btnGenerateExcel" maxWidth="1.7976931348623157E308" minHeight="-Infinity" mnemonicParsing="false" prefHeight="30.0" style="-fx-background-color: #006600;" text="EXPORT TO EXCEL" textFill="#fcfcfc">
+                                                         <font>
+                                                            <Font name="System Bold" size="12.0" />
+                                                         </font>
+                                                         <graphic>
+                                                            <FontAwesomeIconView fill="WHITE" glyphName="PRINT" size="18" />
+                                                         </graphic>
+                                                      </Button>
+                                                   </children>
+                                                </GridPane>
+                                                <GridPane fx:id="frGridPane06" hgap="10.0">
+                                                   <columnConstraints>
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <Button fx:id="btnGenerate" maxWidth="1.7976931348623157E308" minHeight="-Infinity" mnemonicParsing="false" prefHeight="30.0" style="-fx-background-color: #006600;" text="GENERATE" textFill="#fcfcfc" GridPane.columnIndex="1">
+                                                         <font>
+                                                            <Font name="System Bold" size="12.0" />
+                                                         </font>
+                                                         <graphic>
+                                                            <FontAwesomeIconView fill="WHITE" glyphName="PRINT" size="18" />
+                                                         </graphic>
+                                                      </Button>
+                                                      <Button fx:id="btnCloseReport" layoutX="154.0" layoutY="10.0" maxWidth="1.7976931348623157E308" minHeight="-Infinity" mnemonicParsing="false" prefHeight="30.0" styleClass="btnCloseReport" text="CLOSE">
+                                                         <font>
+                                                            <Font name="System Bold" size="12.0" />
+                                                         </font>
+                                                         <graphic>
+                                                            <FontAwesomeIconView id="report-icon" glyphName="POWER_OFF" size="18" />
+                                                         </graphic>
+                                                      </Button>
+                                                   </children>
+                                                </GridPane>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                    </AnchorPane>
+                                 </bottom>
+                                 <center>
+                                    <VBox BorderPane.alignment="CENTER">
+                                       <children>
+                                          <AnchorPane>
+                                             <children>
+                                                <VBox spacing="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <children>
+                                                      <GridPane fx:id="frGridPane04" layoutX="10.0" layoutY="10.0">
+                                                         <columnConstraints>
+                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="60.0" prefWidth="80.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="210.0" minWidth="120.0" prefWidth="175.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="5.0" prefWidth="5.0" />
+                                                            <ColumnConstraints />
+                                                            <ColumnConstraints />
+                                                         </columnConstraints>
+                                                         <rowConstraints>
+                                                            <RowConstraints minHeight="25.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="25.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="25.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="25.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                         </rowConstraints>
+                                                         <children>
+                                                            <Label layoutX="280.0" layoutY="77.0" maxWidth="1.7976931348623157E308" prefWidth="141.0" text="Branch" textAlignment="CENTER" GridPane.rowIndex="1">
+                                                               <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                               </font>
+                                                               <padding>
+                                                                  <Insets left="10.0" />
+                                                               </padding>
+                                                            </Label>
+                                                            <Label maxWidth="1.7976931348623157E308" prefWidth="141.0" text="Period " textAlignment="CENTER">
+                                                               <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                               </font>
+                                                               <padding>
+                                                                  <Insets left="10.0" />
+                                                               </padding>
+                                                            </Label>
+                                                            <TextField fx:id="txtField02" promptText="Press F3 to Search. " GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                            <Label maxWidth="1.7976931348623157E308" prefWidth="141.0" text="Division" textAlignment="CENTER" GridPane.rowIndex="2">
+                                                               <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                               </font>
+                                                               <padding>
+                                                                  <Insets left="10.0" />
+                                                               </padding>
+                                                            </Label>
+                                                            <TextField fx:id="txtField03" layoutX="116.0" layoutY="40.0" promptText="Press F3 to Search. " GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                            <Label maxWidth="1.7976931348623157E308" prefWidth="141.0" text="Category" textAlignment="CENTER" GridPane.rowIndex="3">
+                                                               <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                               </font>
+                                                               <padding>
+                                                                  <Insets left="10.0" />
+                                                               </padding>
+                                                            </Label>
+                                                            <TextField fx:id="txtField04" promptText="Press F3 to Search. " GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                            <TextField fx:id="txtField01" promptText="YYYY MM (ex. &quot;1985 01&quot; )" GridPane.columnIndex="1" />
+                                                         </children>
+                                                         <effect>
+                                                            <Blend />
+                                                         </effect>
+                                                      </GridPane>
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </AnchorPane>
+                                       </children>
+                                    </VBox>
+                                 </center>
+                                 <top>
+                                    <VBox BorderPane.alignment="CENTER">
+                                       <children>
+                                          <GridPane fx:id="frGridPane01">
+                                             <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints minHeight="5.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="5.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="5.0" vgrow="SOMETIMES" />
+                                             </rowConstraints>
+                                             <children>
+                                                <RadioButton fx:id="rbDetailed" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="DETAILED" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                <RadioButton fx:id="rbSummarized" layoutX="10.0" layoutY="17.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="SUMMARIZED" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                <Separator style="-fx-background-color: orange;" GridPane.columnSpan="4" GridPane.rowIndex="2" />
+                                             </children>
+                                          </GridPane>
+                                          <GridPane fx:id="frGridPane02" layoutX="10.0" layoutY="10.0">
+                                             <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="5.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="5.0" vgrow="SOMETIMES" />
+                                             </rowConstraints>
+                                             <children>
+                                                <RadioButton fx:id="rbEmployee" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="EMPLOYEE" GridPane.columnIndex="1" />
+                                                <RadioButton fx:id="rbCategory" layoutX="10.0" layoutY="17.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="INC. CATEGORY" GridPane.columnIndex="2" />
+                                                <Separator style="-fx-background-color: orange;" GridPane.columnSpan="4" GridPane.rowIndex="1" />
+                                             </children>
+                                          </GridPane>
+                                          <GridPane fx:id="frGridPane03" layoutX="10.0" layoutY="65.0">
+                                             <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="60.0" prefWidth="80.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="210.0" minWidth="120.0" prefWidth="175.0" />
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="5.0" prefWidth="5.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="5.0" vgrow="SOMETIMES" />
+                                             </rowConstraints>
+                                             <children>
+                                                <Separator style="-fx-background-color: orange;" GridPane.columnSpan="4" GridPane.rowIndex="1" />
+                                                <Label maxWidth="1.7976931348623157E308" prefWidth="141.0" text="Status" textAlignment="CENTER">
+                                                   <font>
+                                                      <Font name="System Bold" size="12.0" />
+                                                   </font>
+                                                   <padding>
+                                                      <Insets left="10.0" />
+                                                   </padding>
+                                                </Label>
+                                                <ComboBox maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" />
+                                             </children>
+                                          </GridPane>
+                                       </children>
+                                       <BorderPane.margin>
+                                          <Insets bottom="10.0" />
+                                       </BorderPane.margin>
+                                    </VBox>
+                                 </top>
+                              </BorderPane>
+                           </children>
+                        </StackPane>
+                     </children>
+                  </AnchorPane>
+               </left>
+               <center>
+                  <AnchorPane style="-fx-border-color: #F88222; -fx-border-radius: 5;" BorderPane.alignment="CENTER">
+                     <BorderPane.margin>
+                        <Insets bottom="10.0" left="5.0" right="10.0" />
+                     </BorderPane.margin>
+                     <children>
+                        <StackPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <BorderPane>
+                                 <center>
+                                    <AnchorPane BorderPane.alignment="CENTER">
+                                       <BorderPane.margin>
+                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                       </BorderPane.margin>
+                                       <children>
+                                          <VBox fx:id="vbProgress" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                             <children>
+                                                <Label text="Generating report please wait...">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label text="(Note: Please don't do anything while generating report!!!)" textFill="#d30909">
+                                                   <font>
+                                                      <Font size="14.0" />
+                                                   </font>
+                                                </Label>
+                                                <ProgressIndicator>
+                                                   <VBox.margin>
+                                                      <Insets top="10.0" />
+                                                   </VBox.margin>
+                                                </ProgressIndicator>
+                                             </children></VBox>
+                                          <AnchorPane fx:id="reportPane" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                       </children>
+                                    </AnchorPane>
+                                 </center>
+                              </BorderPane>
+                           </children>
+                        </StackPane>
+                     </children>
+                  </AnchorPane>
+               </center>
+            </BorderPane>
+         </children>
+      </StackPane>
+   </children>
+</AnchorPane>

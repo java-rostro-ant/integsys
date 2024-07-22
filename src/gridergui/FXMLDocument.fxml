@@ -107,6 +107,7 @@
                                                 <Menu fx:id="mnuAudit" mnemonicParsing="false" text="Standard">
                                                   <items>
                                                     <MenuItem fx:id="mnuAuditIncentiveReport" mnemonicParsing="false" onAction="#mnuAuditIncentiveReportClicked" text="Branch Incetntives" />
+                                                      <MenuItem fx:id="mnuAuditIncentiveReportNew" mnemonicParsing="false" onAction="#mnuAuditIncentiveReportNewClicked" text="Branch Incetntives New" />
                                                       <MenuItem fx:id="mnuAuditDeptIncentiveReport" mnemonicParsing="false" onAction="#mnuAuditDeptIncentiveReportClicked" text="Department Incentives" />
                                                     <MenuItem fx:id="mnuAuditBankReport" mnemonicParsing="false" onAction="#mnuAuditBankReportClick" text="Bank Info" visible="false" />
                                                   </items>
