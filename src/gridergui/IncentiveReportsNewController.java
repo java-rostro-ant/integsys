@@ -485,6 +485,8 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                         return false;
                     }
                     System.out.println("TotalData  = " + lnItemCount);
+                    
+                    System.err.println("System Adding Data to Jasper!");
                     double totals = 0.0;
                     for (int x = 1; x <= lnItemCount; x++) {
                         Date ldDatePeriod = SQLUtil.toDate(oTrans.getRecord(x, "sMonthxxx").toString().trim() + " 01", "yyyyMM dd");
@@ -504,6 +506,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                                 oTrans.getRecord(x, "sEmployID").toString()));
 
                     }
+                    System.err.println("System Finished Adding Data to Jasper!");
 
                     String sourceFileName = "D://GGC_Java_Systems/reports/IncentiveSummaryEmployeeNew.jasper";
 
@@ -568,6 +571,8 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                     }
                     System.out.println("TotalData  = " + lnItemCount);
                     double totals = 0.0;
+                    
+                    System.err.println("System Adding Data to Jasper!");
                     for (int x = 1; x <= lnItemCount; x++) {
                         Date ldDatePeriod = SQLUtil.toDate(oTrans.getRecord(x, "sMonthxxx").toString().trim() + " 01", "yyyyMM dd");
 
@@ -586,6 +591,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                                 ""));
 
                     }
+                    System.err.println("System Finished Adding Data to Jasper!");
 
                     String sourceFileName = "D://GGC_Java_Systems/reports/IncentiveSummaryBranchCategory.jasper";
 
@@ -653,7 +659,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                     System.out.println("TotalData  = " + lnItemCount);
                     double totals = 0.0;
 
-                    System.err.println("System Adding Data to Jasper! = ");
+                    System.err.println("System Adding Data to Jasper!");
                     for (int x = 1; x <= lnItemCount; x++) {
                         Date ldDatePeriod = SQLUtil.toDate(oTrans.getRecord(x, "sMonthxxx").toString().trim() + " 01", "yyyyMM dd");
 
@@ -672,7 +678,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                                 ""));
 
                     }
-                    System.err.println("System Finished Adding Data to Jasper .! = ");
+                    System.err.println("System Finished Adding Data to Jasper!");
 
                     String sourceFileName = "D://GGC_Java_Systems/reports/IncentiveSummaryEmployeeCategory.jasper";
 
@@ -739,7 +745,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                     }
                     System.out.println("TotalData  = " + lnItemCount);
 
-                    System.err.println("System Adding Data to Jasper! = ");
+                    System.err.println("System Adding Data to Jasper! ");
                     for (int x = 1; x <= lnItemCount; x++) {
 
                         Date ldDatePeriod = SQLUtil.toDate(oTrans.getRecord(x, "sMonthxxx").toString().trim() + " 01", "yyyyMM dd");
@@ -770,7 +776,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                                 lsEmployStatus));
 
                     }
-                    System.err.println("System Finished Adding Data to Jasper .! = ");
+                    System.err.println("System Finished Adding Data to Jasper!");
                     String sourceFileName = "D://GGC_Java_Systems/reports/IncentiveDetailed.jasper";
 
                     String printFileName = null;

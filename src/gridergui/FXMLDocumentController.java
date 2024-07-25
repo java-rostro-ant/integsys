@@ -43,9 +43,10 @@ import org.rmj.appdriver.SQLUtil;
  * @author user
  */
 public class FXMLDocumentController implements Initializable, ScreenInterface {
+
     private GRider oApp;
     private String reportName;
-    
+
     @FXML
     private Pane btnMin;
     @FXML
@@ -69,7 +70,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private MenuItem mnuCashCountEntry;
     @FXML
-    private MenuItem mnuAuditIncentiveReport,mnuRaffleReport;
+    private MenuItem mnuAuditIncentiveReport,mnuAuditIncentiveReportNew, mnuRaffleReport;
     @FXML
     private MenuItem mnuAuditDeptIncentiveReport;
     @FXML
@@ -82,7 +83,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private MenuItem mnuIncentiveConfirmation;
     @FXML
     private MenuItem mnuStandardReport;
-    
+
     @FXML
     private MenuItem mnuMCBranch;
     @FXML
@@ -91,7 +92,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private MenuItem mnuMPBranch;
     @FXML
     private MenuItem mnuMPArea;
-    
+
     @FXML
     private Label DateAndTime;
     @FXML
@@ -103,7 +104,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private Menu mnuFiles02;
     @FXML
-    private Menu mnuTransaction11,mnuTransaction112;
+    private Menu mnuTransaction11, mnuTransaction112;
     @FXML
     private Menu mnuTransaction111;
     @FXML
@@ -115,7 +116,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private MenuItem mnuExit;
     @FXML
-    private MenuItem mnuCashCountRequest,mnuDepartmentIncentives,mnuDeptIncentivesApproval,mnuDeptIncentiveReleasing,mnuDeptIncentivesHistory;
+    private MenuItem mnuCashCountRequest, mnuDepartmentIncentives, mnuDeptIncentivesApproval, mnuDeptIncentiveReleasing, mnuDeptIncentivesHistory;
     @FXML
     private MenuItem mnuAuditBankReport;
     @FXML
@@ -123,14 +124,15 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private MenuItem mnuAuditReport;
     @FXML
-    private MenuItem mnuPanaloInfo,mnuMCImage;
+    private MenuItem mnuPanaloInfo, mnuMCImage;
     @FXML
     private MenuItem mnuPanaloRedeem;
     @FXML
     private MenuItem mnuPacitaEvaluationHis;
     @FXML
-    private MenuItem mnuPacitaSumReport,mnuPacitaDetReport,
-                        mnuPacitaTop10Report; 
+    private MenuItem mnuPacitaSumReport, mnuPacitaDetReport,
+            mnuPacitaTop10Report;
+
     /**
      * Initializes the controller class.
      */
@@ -138,27 +140,27 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     public void initialize(URL url, ResourceBundle rb) {
         setScene(loadAnimate("MainScreenBG.fxml"));
         getTime();
-        
+
         ResultSet name;
-        String lsQuery = "SELECT b.sCompnyNm " +
-                            " FROM xxxSysUser a" +
-                            " LEFT JOIN Client_Master b" +  
-                                " ON a.sEmployNo  = b.sClientID" +
-                            " WHERE a.sUserIDxx = " + SQLUtil.toSQL(oApp.getUserID());
+        String lsQuery = "SELECT b.sCompnyNm "
+                + " FROM xxxSysUser a"
+                + " LEFT JOIN Client_Master b"
+                + " ON a.sEmployNo  = b.sClientID"
+                + " WHERE a.sUserIDxx = " + SQLUtil.toSQL(oApp.getUserID());
         name = oApp.executeQuery(lsQuery);
         try {
-            if(name.next()){
+            if (name.next()) {
                 AppUser.setText(name.getString("sCompnyNm") + " || " + oApp.getBranchName());
                 System.err.println(name.getString("sCompnyNm"));
-                System.setProperty("user.name", name.getString("sCompnyNm"));   
-            }             
+                System.setProperty("user.name", name.getString("sCompnyNm"));
+            }
         } catch (SQLException ex) {
             Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         initMenu();
-    }    
-    
+    }
+
     @Override
     public void setGRider(GRider foValue) {
         oApp = foValue;
@@ -175,15 +177,15 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         Stage stage = (Stage) btnMin.getScene().getWindow();
         stage.setIconified(true);
     }
-    
-    private AnchorPane loadAnimate(String fsFormName){
+
+    private AnchorPane loadAnimate(String fsFormName) {
         ScreenInterface fxObj = getController(fsFormName);
         fxObj.setGRider(oApp);
-       
+
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(fxObj.getClass().getResource(fsFormName));
-        fxmlLoader.setController(fxObj);    
-        
+        fxmlLoader.setController(fxObj);
+
         AnchorPane root;
         try {
             root = (AnchorPane) fxmlLoader.load();
@@ -201,9 +203,9 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         }
         return null;
     }
-    
-    private ScreenInterface getController(String fsValue){
-        switch (fsValue){
+
+    private ScreenInterface getController(String fsValue) {
+        switch (fsValue) {
             case "MainScreenBG.fxml":
                 return new MainScreenBGController();
             case "EmployeeIncentives.fxml":
@@ -249,19 +251,23 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             case "IncentiveReports.fxml":
                 IncentiveReportsController inc_reports = new IncentiveReportsController();
                 inc_reports.setReportCategory(reportName);
-                return  inc_reports;
+                return inc_reports;
+            case "IncentiveReportsNew.fxml":
+                IncentiveReportsNewController inc_reportsnew = new IncentiveReportsNewController();
+                inc_reportsnew.setReportCategory(reportName);
+                return inc_reportsnew;
             case "Reports.fxml":
                 ReportsController reports = new ReportsController();
                 reports.setReportCategory(reportName);
-                return  reports;
+                return reports;
             case "DeptIncentiveReports.fxml":
-            DeptIncentiveReportsController inc_reports_Dept = new DeptIncentiveReportsController();
-            inc_reports_Dept.setReportCategory(reportName);
-            return  inc_reports_Dept;
-            
+                DeptIncentiveReportsController inc_reports_Dept = new DeptIncentiveReportsController();
+                inc_reports_Dept.setReportCategory(reportName);
+                return inc_reports_Dept;
+
             case "PanaloParameter.fxml":
                 return new PanaloParameterController();
-            
+
             case "PanaloInfo.fxml":
                 return new PanaloInfoController();
             case "PanaloRedemption.fxml":
@@ -275,7 +281,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             case "PacitaEvaluationHis.fxml":
                 return new PacitaEvaluationHisController();
             case "PacitaEvalSummarizedReport.fxml":
-                return new PacitaEvalSummarizedReportController();                
+                return new PacitaEvalSummarizedReportController();
             case "PacitaEvalDetailedReport.fxml":
                 return new PacitaEvalDetailedReportController();
             case "PacitaEvalTop10Report.fxml":
@@ -284,8 +290,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return null;
         }
     }
- 
-    private void setScene(AnchorPane foPane){
+
+    private void setScene(AnchorPane foPane) {
         workingSpace.getChildren().clear();
         workingSpace.getChildren().add(foPane);
     }
@@ -294,223 +300,263 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private void mnuEmployeeIncentivesClick(ActionEvent event) {
         setScene(loadAnimate("EmployeeIncentives.fxml"));
     }
+
     @FXML
     private void mnuEmployeeBankInfoClick(ActionEvent event) {
         setScene(loadAnimate("EmployeeBankInfo.fxml"));
     }
-  
+
     @FXML
     private void mnuIncentiveParameterClick(ActionEvent event) {
         setScene(loadAnimate("IncentiveParameter.fxml"));
-    } 
+    }
+
     @FXML
     private void mnuIncentiveReleasingClick(ActionEvent event) {
         setScene(loadAnimate("IncentiveReleasing.fxml"));
-    } 
+    }
+
     @FXML
     private void mnuIncentiveConfirmationClick(ActionEvent event) {
         setScene(loadAnimate("IncentiveConfirmation.fxml"));
     }
+
     @FXML
     private void mnuMCBranchClick(ActionEvent event) {
         setScene(loadAnimate("McBranchPerformance.fxml"));
     }
+
     @FXML
     private void mnuMCAreaClick(ActionEvent event) {
         setScene(loadAnimate("McAreaPerformance.fxml"));
     }
+
     @FXML
     private void mnuMPBranchClick(ActionEvent event) {
         setScene(loadAnimate("MpBranchPerformance.fxml"));
     }
+
     @FXML
     private void mnuMPAreaClick(ActionEvent event) {
         setScene(loadAnimate("MpAreaPerformance.fxml"));
     }
-    
+
     @FXML
     private void mnuIncentiveHistoryClick(ActionEvent event) {
         setScene(loadAnimate("IncentiveHistory.fxml"));
     }
+
     @FXML
     private void mnuCashCountClick(ActionEvent event) {
         setScene(loadAnimate("CashCount.fxml"));
     }
+
     @FXML
     private void mnuCashCountEntryClick(ActionEvent event) {
         setScene(loadAnimate("CashCountEntry.fxml"));
     }
+
     @FXML
     private void mnuCashCountHistoryClick(ActionEvent event) {
         setScene(loadAnimate("CashCountHistory.fxml"));
     }
+
     @FXML
     private void mnuInventoryHistoryClick(ActionEvent event) {
         setScene(loadAnimate("InventoryHistory.fxml"));
 
     }
+
     @FXML
     private void mnuStandardReportClick(ActionEvent event) {
         reportName = "STANDARD";
         setScene(loadAnimate("Reports.fxml"));
     }
+
     @FXML
     private void mnuAuditIncentiveReportClicked(ActionEvent event) {
         reportName = "AUDIT BRANCH INCENTIVES";
         setScene(loadAnimate("IncentiveReports.fxml"));
     }
+
+    @FXML
+    private void mnuAuditIncentiveReportNewClicked(ActionEvent event) {
+        reportName = "AUDIT BRANCH INCENTIVES";
+        setScene(loadAnimate("IncentiveReportsNew.fxml"));
+    }
+
     @FXML
     private void mnuAuditDeptIncentiveReportClicked(ActionEvent event) {
         reportName = "AUDIT DEPARTMENT INCENTIVES";
         setScene(loadAnimate("DeptIncentiveReports.fxml"));
     }
+
     @FXML
     private void mnuAuditReportClick(ActionEvent event) {
         reportName = "AUDIT";
         setScene(loadAnimate("Reports.fxml"));
     }
+
     @FXML
     private void mnuAuditBankReportClick(ActionEvent event) {
         reportName = "AUDIT";
         setScene(loadAnimate("Reports.fxml"));
     }
-    
+
     @FXML
     private void mnuPayrollReportClick(ActionEvent event) {
         reportName = "PAYROLL";
         setScene(loadAnimate("Reports.fxml"));
     }
+
     @FXML
     private void mnuDepartmentIncentivesClick(ActionEvent event) {
         setScene(loadAnimate("DeptIncentives.fxml"));
     }
+
     @FXML
     private void mnuDeptIncentivesApprovalClick(ActionEvent event) {
         setScene(loadAnimate("DeptIncentivesApproval.fxml"));
     }
+
     @FXML
     private void mnuDeptIncentiveReleasingClick(ActionEvent event) {
         setScene(loadAnimate("DeptIncentiveReleasing.fxml"));
     }
+
     @FXML
     private void mnuDeptIncentivesHistoryClick(ActionEvent event) {
         setScene(loadAnimate("DeptIncentivesHist.fxml"));
     }
-    
+
     @FXML
     private void mnuPanaloParameterClick(ActionEvent event) {
         setScene(loadAnimate("PanaloParameter.fxml"));
     }
+
     @FXML
     private void mnuPanaloEntryClick(ActionEvent event) {
         setScene(loadAnimate("PanaloInfo.fxml"));
     }
+
     @FXML
     private void mnuPanaloRedeemClick(ActionEvent event) {
         setScene(loadAnimate("PanaloRedemption.fxml"));
     }
-        @FXML
+
+    @FXML
     private void mnuMCBranchPerformanceClick(ActionEvent event) {
         setScene(loadAnimate("McBranchPerformance.fxml"));
     }
-        @FXML
+
+    @FXML
     private void mnuMPBranchPerformanceClick(ActionEvent event) {
         setScene(loadAnimate("MpBranchPerformance.fxml"));
     }
-        @FXML
+
+    @FXML
     private void mnuMCAreaPerformanceClick(ActionEvent event) {
         setScene(loadAnimate("McAreaPerformance.fxml"));
     }
-        @FXML
+
+    @FXML
     private void mnuMPAreaPerformanceClick(ActionEvent event) {
         setScene(loadAnimate("MpAreaPerformance.fxml"));
     }
+
     @FXML
     private void mnuRaffleParameterClick(ActionEvent event) {
         setScene(loadAnimate("RaffleParameter.fxml"));
     }
-        @FXML
+
+    @FXML
     private void mnuRaffleReportClick(ActionEvent event) {
         setScene(loadAnimate("RaffleReports.fxml"));
     }
+
     @FXML
     private void mnuMCImagesClick(ActionEvent event) {
         setScene(loadAnimate("MCImages.fxml"));
     }
+
     @FXML
     private void mnuPacitaEvaluationHisClick(ActionEvent event) {
         setScene(loadAnimate("PacitaEvaluationHis.fxml"));
     }
+
     @FXML
     private void mnuPacitaSumReportClick(ActionEvent event) {
         setScene(loadAnimate("PacitaEvalSummarizedReport.fxml"));
     }
+
     @FXML
     private void mnuPacitaDetReportClick(ActionEvent event) {
         setScene(loadAnimate("PacitaEvalDetailedReport.fxml"));
     }
+
     @FXML
     private void mnuPacitaTop10ReportClick(ActionEvent event) {
         setScene(loadAnimate("PacitaEvalTop10Report.fxml"));
     }
-        
 
-    private void getTime(){
-        Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {            
-        Calendar cal = Calendar.getInstance();
-        int second = cal.get(Calendar.SECOND);        
-        String temp = "" + second;
-        
-        Date date = new Date();
-        String strTimeFormat = "hh:mm:";
-        String strDateFormat = "MMMM dd, yyyy";
-        String secondFormat = "ss";
-        
-        DateFormat timeFormat = new SimpleDateFormat(strTimeFormat + secondFormat);
-        DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
-        
-        String formattedTime= timeFormat.format(date);
-        String formattedDate= dateFormat.format(date);
-        
-        DateAndTime.setText(formattedDate+ " || " + formattedTime);
-        
+    private void getTime() {
+        Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {
+            Calendar cal = Calendar.getInstance();
+            int second = cal.get(Calendar.SECOND);
+            String temp = "" + second;
+
+            Date date = new Date();
+            String strTimeFormat = "hh:mm:";
+            String strDateFormat = "MMMM dd, yyyy";
+            String secondFormat = "ss";
+
+            DateFormat timeFormat = new SimpleDateFormat(strTimeFormat + secondFormat);
+            DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
+
+            String formattedTime = timeFormat.format(date);
+            String formattedDate = dateFormat.format(date);
+
+            DateAndTime.setText(formattedDate + " || " + formattedTime);
+
         }),
-         new KeyFrame(Duration.seconds(1))
+                new KeyFrame(Duration.seconds(1))
         );
-        
+
         clock.setCycleCount(Animation.INDEFINITE);
         clock.play();
     }
 
-    private void initMenu(){
+    private void initMenu() {
         //control menus to show based on user level or department
         mnuFiles02.setVisible(false);
-        
-        //compliance management;
-        mnuIncentiveParameter.setVisible("034;026;".contains(oApp.getDepartment())); 
 
-        mnuTransaction111.setVisible("034;026;".contains(oApp.getDepartment())); 
-        mnuInventory01.setVisible("034;026;".contains(oApp.getDepartment())); 
-        
+        //compliance management;
+        mnuIncentiveParameter.setVisible("034;026;".contains(oApp.getDepartment()));
+
+        mnuTransaction111.setVisible("034;026;".contains(oApp.getDepartment()));
+        mnuInventory01.setVisible("034;026;".contains(oApp.getDepartment()));
+
         //finance management;
         mnuEmployeeIncentivesBank.setVisible("021;028;026".contains(oApp.getDepartment()));
         mnuTransaction111.setVisible("028;026;".contains(oApp.getDepartment()));
         mnuInventory01.setVisible("028;026;".contains(oApp.getDepartment()));
-        
+
         //sales
         mnuTransaction11.setVisible("015;026;036;038".contains(oApp.getDepartment()));
-        
-        if (!mnuIncentiveParameter.isVisible() && 
-            !mnuEmployeeIncentivesBank.isVisible())
+
+        if (!mnuIncentiveParameter.isVisible()
+                && !mnuEmployeeIncentivesBank.isVisible()) {
             mnuFiles01.setVisible(false);
-        else
+        } else {
             mnuFiles01.setVisible(true);
-        
+        }
+
         mnuTransaction11.setVisible("015;034;022;028;026;036;038".contains(oApp.getDepartment()));
-        
-        mnuAuditIncentiveReport.setVisible("015;034;022;028;026;036;038".contains(oApp.getDepartment()));
+
+//      mnuAuditIncentiveReport.setVisible("015;034;022;028;026;036;038".contains(oApp.getDepartment()));
+        mnuAuditIncentiveReportNew.setVisible("015;034;022;028;026;036;038".contains(oApp.getDepartment()));
         mnuAuditDeptIncentiveReport.setVisible("026;028;".contains(oApp.getDepartment()));
         mnuAuditBankReport.setVisible("026;028;021;".contains(oApp.getDepartment()));
-        
+
     }
 }

@@ -119,8 +119,6 @@ public class IncentiveReportsController implements Initializable, ScreenInterfac
     private VBox vbProgress;
     @FXML
     private GridPane grid01, grid02, grid03,grid04;
-    @FXML
-    private ComboBox cmbStatus;
     
     private ObservableList<IncentiveDetail> inc_detail = FXCollections.observableArrayList();
     private ObservableList<IncentiveDetail> inc_detail1 = FXCollections.observableArrayList();
