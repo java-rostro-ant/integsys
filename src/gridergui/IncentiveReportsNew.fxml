@@ -40,7 +40,7 @@
                   </AnchorPane>
                </top>
                <left>
-                  <AnchorPane prefWidth="300.0" style="-fx-border-color: #F88222; -fx-border-radius: 5;" BorderPane.alignment="CENTER">
+                  <AnchorPane prefWidth="350.0" style="-fx-border-color: #F88222; -fx-border-radius: 5;" BorderPane.alignment="CENTER">
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets>
@@ -211,21 +211,29 @@
                                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
                                              </columnConstraints>
                                              <rowConstraints>
-                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                <RowConstraints minHeight="5.0" vgrow="SOMETIMES" />
-                                                <RowConstraints minHeight="5.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="5.0" prefHeight="5.0" vgrow="SOMETIMES" />
                                              </rowConstraints>
                                              <children>
-                                                <RadioButton fx:id="rbEmployee" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="EMPLOYEE" GridPane.columnIndex="1" />
-                                                <RadioButton fx:id="rbCategory" layoutX="10.0" layoutY="17.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="INC. CATEGORY" GridPane.columnIndex="2" />
-                                                <Separator style="-fx-background-color: orange;" GridPane.columnSpan="4" GridPane.rowIndex="1" />
+                                                <RadioButton fx:id="rbEmployee" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="EMPLOYEE" textAlignment="CENTER" GridPane.columnIndex="1">
+                                                   <GridPane.margin>
+                                                      <Insets />
+                                                   </GridPane.margin></RadioButton>
+                                                <RadioButton fx:id="rbEmployeeCategory" layoutX="10.0" layoutY="17.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="EMPLOYEE &amp; CATEGORY" GridPane.columnIndex="2" GridPane.columnSpan="2" />
+                                                <RadioButton fx:id="rbBranchCategory" layoutX="40.0" layoutY="17.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="BRANCH &amp; CATEGORY" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                                                <Separator style="-fx-background-color: orange;" GridPane.columnSpan="2147483647" GridPane.rowIndex="2" />
                                              </children>
+                                             <VBox.margin>
+                                                <Insets bottom="5.0" />
+                                             </VBox.margin>
                                           </GridPane>
                                           <GridPane fx:id="frGridPane03" layoutX="10.0" layoutY="65.0">
                                              <columnConstraints>
                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="100.0" minWidth="60.0" prefWidth="80.0" />
                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="210.0" minWidth="120.0" prefWidth="175.0" />
                                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="5.0" prefWidth="5.0" />
+                                                <ColumnConstraints />
                                              </columnConstraints>
                                              <rowConstraints>
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -242,7 +250,7 @@
                                                       <Insets left="10.0" />
                                                    </padding>
                                                 </Label>
-                                                <ComboBox maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" />
+                                                <ComboBox fx:id="cmbStatus" maxWidth="1.7976931348623157E308" onAction="#cmbStatus_Clicked" GridPane.columnIndex="1" />
                                              </children>
                                           </GridPane>
                                        </children>
