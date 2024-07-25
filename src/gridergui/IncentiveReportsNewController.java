@@ -549,7 +549,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
             params.put("sCompnyNm", "Guanzon Group of Companies");
             params.put("sBranchNm", oApp.getBranchName());
             params.put("sAddressx", oApp.getAddress());
-            params.put("sReportNm", "Branch & Category Summarized Report");
+            params.put("sReportNm", "Branch & Incentive Category Summarized Report");
 
             IncentiveData.clear();
             if (oTrans.OpenRecord(fsPeriod, true)) {
@@ -631,7 +631,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
             params.put("sCompnyNm", "Guanzon Group of Companies");
             params.put("sBranchNm", oApp.getBranchName());
             params.put("sAddressx", oApp.getAddress());
-            params.put("sReportNm", "Employee & Category Summarized Report");
+            params.put("sReportNm", "Employee & Incentive Category Summarized Report");
 
             IncentiveData.clear();
             if (oTrans.OpenRecord(fsPeriod, false)) {
