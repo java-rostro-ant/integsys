@@ -3,22 +3,12 @@ package gridergui;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -30,31 +20,23 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.DateCell;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import javax.management.timer.Timer;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -63,17 +45,10 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.swing.JRViewer;
 import org.rmj.appdriver.GRider;
 import org.rmj.appdriver.SQLUtil;
-import org.rmj.appdriver.StringUtil;
 import org.rmj.appdriver.agentfx.CommonUtils;
 import org.rmj.appdriver.agentfx.ShowMessageFX;
-import org.rmj.appdriver.constants.EditMode;
 import org.rmj.fund.manager.base.IncentiveReportNew;
-import org.rmj.fund.manager.base.IncentiveReports;
-import org.rmj.fund.manager.base.IncentiveReportss;
-import org.rmj.fund.manager.base.LMasDetTrans;
 import reportmodel.IncentiveDetail;
-import reportmodel.IncentiveMaster;
-import sun.security.util.Debug;
 
 /**
  * FXML Controller class
@@ -90,9 +65,6 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
     private GRider oApp;
     private IncentiveReportNew oTrans;
 
-    private String p_sTranStat = "";
-    private String plTranStatOpen = "";
-    private String plTranStatOthers = "";
     public String reportCategory;
     private Date pdPeriod = null;
 
@@ -109,9 +81,9 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
     @FXML
     private Label lblReportsTitle;
     @FXML
-    private Button btnGenerate, btnCloseReport, btnGenerateExcel;
+    private Button btnGenerate, btnCloseReport;
     @FXML
-    private TextField txtField01, txtField02, txtField03, txtField04;
+    private TextField txtField01, txtField02, txtField03, txtField04, txtField05;
     @FXML
     private RadioButton rbDetailed, rbSummarized;
     @FXML
@@ -134,14 +106,14 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
         int lnSelectIndex = cmbStatus.getSelectionModel().getSelectedIndex();
 
         switch (lnSelectIndex) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
+            case 0://open
+            case 1://for approval
+            case 2://approved
+            case 3://cancelled
+            case 4://released
                 oTrans.setTranStat(lnSelectIndex);
                 return;
-            case 5:
+            case 5://all status 
                 oTrans.setTranStat(-1);
                 break;
 
@@ -175,6 +147,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
         txtField02.focusedProperty().addListener(txtField_Focus);
         txtField03.focusedProperty().addListener(txtField_Focus);
         txtField04.focusedProperty().addListener(txtField_Focus);
+        txtField05.focusedProperty().addListener(txtField_Focus);
         initStatus();
         initToggleGroup();
         initGrid();
@@ -186,6 +159,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
         txtField02.setOnKeyPressed(this::txtField_KeyPressed);
         txtField03.setOnKeyPressed(this::txtField_KeyPressed);
         txtField04.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField05.setOnKeyPressed(this::txtField_KeyPressed);
         pbLoaded = true;
     }
 
@@ -234,6 +208,12 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                             txtField.setText("");
                         }
                         return;
+                    case 5:
+                        if (lsValue.isEmpty() || oTrans.getBranchArea() == null) {
+                            oTrans.setBranchArea();
+                            txtField.setText("");
+                        }
+                        return;
 
                 }
             } else { //Focus
@@ -246,6 +226,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                     case 2:
                     case 3:
                     case 4:
+                    case 5:
                         if (!lsValue.trim().isEmpty()) {
                             txtField.setText((String) oTrans.getFilter(lnIndex, "xxColName"));
                         }
@@ -322,6 +303,18 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
         switch (lsButton) {
 
             case "btnGenerate":
+                if (txtField02.getText().trim().isEmpty()) {
+                    oTrans.setBranch();
+                }
+                if (txtField03.getText().trim().isEmpty()) {
+                    oTrans.setDivision();
+                }
+                if (txtField04.getText().trim().isEmpty()) {
+                    oTrans.setCategory();
+                }
+                if (txtField05.getText().trim().isEmpty()) {
+                    oTrans.setBranchArea();
+                }
 
                 if (pdPeriod == null) {
                     ShowMessageFX.Warning(getStage(), "Incentive period must not be empty", "Warning", null);
@@ -358,7 +351,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                         }
                     } // KeyFrame event handler
                     ));
-            timeline.playFromStart();
+            timeline.play();
         }
     }
 
@@ -372,8 +365,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
         switch (lnRBMain) {
 
             case "rbDetailed":
-
-                break;
+                return loadIncentiveDetailed(lsPeriod);
 
             case "rbSummarized":
                 switch (lnRBDetail) {
@@ -387,9 +379,6 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                 }
                 break;
         }
-        running = false;
-        vbProgress.setVisible(false);
-        timeline.stop();
         return false;
     }
 
@@ -425,6 +414,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
         running = false;
         reportPane.setVisible(false);
         vbProgress.setVisible(true);
+
     }
 
     private void txtField_KeyPressed(KeyEvent event) {
@@ -438,9 +428,13 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                 case ENTER:
                     switch (lnIndex) {
                         case 2:
+                        /*search branch*/
                         case 3:
+                        /*search division*/
                         case 4:
-                            /*search employee*/
+                        /*search category*/
+                        case 5:
+                            /*search branch area*/
                             if (oTrans.searchFilter(lnIndex, lsValue, false)) {
                                 txtField.setText((String) oTrans.getFilter(lnIndex, "xxColName"));
                             } else {
@@ -641,6 +635,8 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
 
             IncentiveData.clear();
             if (oTrans.OpenRecord(fsPeriod, false)) {
+
+                System.err.println("System Processing Data! = ");
                 if (oTrans.procReportSummarizedEmployeeCategory()) {
                     int lnItemCount = oTrans.getItemCount();
 
@@ -656,6 +652,8 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                     }
                     System.out.println("TotalData  = " + lnItemCount);
                     double totals = 0.0;
+
+                    System.err.println("System Adding Data to Jasper! = ");
                     for (int x = 1; x <= lnItemCount; x++) {
                         Date ldDatePeriod = SQLUtil.toDate(oTrans.getRecord(x, "sMonthxxx").toString().trim() + " 01", "yyyyMM dd");
 
@@ -674,8 +672,106 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                                 ""));
 
                     }
+                    System.err.println("System Finished Adding Data to Jasper .! = ");
 
                     String sourceFileName = "D://GGC_Java_Systems/reports/IncentiveSummaryEmployeeCategory.jasper";
+
+                    String printFileName = null;
+                    JRBeanCollectionDataSource beanColDataSource1 = new JRBeanCollectionDataSource(IncentiveData);
+
+                    jasperPrint = JasperFillManager.fillReport(
+                            sourceFileName, params, beanColDataSource1);
+
+                    printFileName = jasperPrint.toString();
+                    if (printFileName != null) {
+                        showReport();
+                    }
+                } else {
+                    running = false;
+                    vbProgress.setVisible(false);
+                    timeline.stop();
+                    Platform.runLater(() -> {
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Error", null);
+                    });
+                    return false;
+                }
+            }
+
+        } catch (JRException | SQLException | ClassCastException ex) {
+            Logger.getLogger(ReportsController.class.getName()).log(Level.SEVERE, null, ex);
+            running = false;
+            vbProgress.setVisible(false);
+            timeline.stop();
+            Platform.runLater(() -> {
+                ShowMessageFX.Warning(getStage(), oTrans.getMessage() + " " + ex.getMessage(), "Error", null);
+            });
+            return false;
+        }
+        return true;
+    }
+
+    private boolean loadIncentiveDetailed(String fsPeriod) {
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("sPrintdBy", System.getProperty("user.name"));
+            params.put("sReportDt", CommonUtils.xsDateLong(oApp.getServerDate()));
+            params.put("sCompnyNm", "Guanzon Group of Companies");
+            params.put("sBranchNm", oApp.getBranchName());
+            params.put("sAddressx", oApp.getAddress());
+            params.put("sReportNm", "Incentive Detailed Report");
+
+            IncentiveData.clear();
+            if (oTrans.OpenRecord(fsPeriod, true)) {
+
+                System.err.println("System Processing Data! = ");
+                if (oTrans.procReportDetailedReport()) {
+                    int lnItemCount = oTrans.getItemCount();
+
+                    if (lnItemCount <= 0) {
+                        running = false;
+                        vbProgress.setVisible(false);
+                        timeline.stop();
+
+                        Platform.runLater(() -> {
+                            ShowMessageFX.Warning(getStage(), "No Record Found", "Error", null);
+                        });
+                        return false;
+                    }
+                    System.out.println("TotalData  = " + lnItemCount);
+
+                    System.err.println("System Adding Data to Jasper! = ");
+                    for (int x = 1; x <= lnItemCount; x++) {
+
+                        Date ldDatePeriod = SQLUtil.toDate(oTrans.getRecord(x, "sMonthxxx").toString().trim() + " 01", "yyyyMM dd");
+
+                        Object recdStat = oTrans.getRecord(x, "cRecdStat");
+                        String lsEmployStatus = (recdStat != null && recdStat.toString().equals("1")) ? "Active" : "Inactive";
+
+                        Integer tranStatIndex = Integer.parseInt(oTrans.getRecord(x, "cTranStat").toString());
+                        String lsTransactionStatus;
+                        if (tranStatIndex != null && tranStatIndex >= 0 && tranStatIndex < cStatus.size() - 1) {
+                            lsTransactionStatus = cStatus.get(tranStatIndex);
+                        } else {
+                            lsTransactionStatus = "UNKNOWN";
+                        }
+
+                        IncentiveData.add(new IncentiveDetail(
+                                oTrans.getRecord(x, "sDivsnDsc").toString(),
+                                oTrans.getRecord(x, "sAreaDesc").toString(),
+                                oTrans.getRecord(x, "sBranchCd").toString(),
+                                oTrans.getRecord(x, "sBranchNm").toString(),
+                                oTrans.getRecord(x, "sTransNox").toString(),
+                                oTrans.getRecord(x, "sCompnyNm").toString(),
+                                oTrans.getRecord(x, "sPositnNm").toString(),
+                                (String) CommonUtils.dateFormat(ldDatePeriod, "yyyy MMMM"),
+                                oTrans.getRecord(x, "sInctveDs").toString(),
+                                oTrans.getRecord(x, "nTotalAmt").toString(),
+                                lsTransactionStatus,
+                                lsEmployStatus));
+
+                    }
+                    System.err.println("System Finished Adding Data to Jasper .! = ");
+                    String sourceFileName = "D://GGC_Java_Systems/reports/IncentiveDetailed.jasper";
 
                     String printFileName = null;
                     JRBeanCollectionDataSource beanColDataSource1 = new JRBeanCollectionDataSource(IncentiveData);
