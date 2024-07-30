@@ -237,7 +237,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
             }
         } catch (SQLException ex) {
             Platform.runLater(() -> {
-                ShowMessageFX.Warning(getStage(), ex.getMessage(), "Error", null);
+                ShowMessageFX.Warning(getStage(), ex.getMessage(), "Catch Error", null);
             });
 
         }
@@ -467,7 +467,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
             params.put("sCompnyNm", "Guanzon Group of Companies");
             params.put("sBranchNm", oApp.getBranchName());
             params.put("sAddressx", oApp.getAddress());
-            params.put("sReportNm", "Branch Employee Incentive Summarized Report");
+            params.put("sReportNm", "Branch & Employee Incentive Summarized Report");
 
             IncentiveData.clear();
             if (oTrans.OpenRecord(fsPeriod, false)) {
@@ -480,7 +480,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                         timeline.stop();
 
                         Platform.runLater(() -> {
-                            ShowMessageFX.Warning(getStage(), "No Record Found", "Error", null);
+                            ShowMessageFX.Warning(getStage(), "No Record Found", "Information", null);
                         });
                         return false;
                     }
@@ -525,7 +525,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                     vbProgress.setVisible(false);
                     timeline.stop();
                     Platform.runLater(() -> {
-                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Error", null);
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
                     });
                     return false;
                 }
@@ -537,7 +537,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
             vbProgress.setVisible(false);
             timeline.stop();
             Platform.runLater(() -> {
-                ShowMessageFX.Warning(getStage(), oTrans.getMessage() + " " + ex.getMessage(), "Error", null);
+                ShowMessageFX.Warning(getStage(), oTrans.getMessage() + " " + ex.getMessage(), "Catch Error", null);
             });
             return false;
         }
@@ -565,12 +565,12 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                         timeline.stop();
 
                         Platform.runLater(() -> {
-                            ShowMessageFX.Warning(getStage(), "No Record Found", "Error", null);
+                            ShowMessageFX.Warning(getStage(), "No Record Found", "Information", null);
                         });
                         return false;
                     }
                     System.out.println("TotalData  = " + lnItemCount);
-                    double totals = 0.0;
+                    
                     
                     System.err.println("System Adding Data to Jasper!");
                     for (int x = 1; x <= lnItemCount; x++) {
@@ -610,7 +610,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                     vbProgress.setVisible(false);
                     timeline.stop();
                     Platform.runLater(() -> {
-                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Error", null);
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
                     });
                     return false;
                 }
@@ -622,7 +622,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
             vbProgress.setVisible(false);
             timeline.stop();
             Platform.runLater(() -> {
-                ShowMessageFX.Warning(getStage(), oTrans.getMessage() + " " + ex.getMessage(), "Error", null);
+                ShowMessageFX.Warning(getStage(), oTrans.getMessage() + " " + ex.getMessage(), "Catch Error", null);
             });
             return false;
         }
@@ -642,7 +642,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
             IncentiveData.clear();
             if (oTrans.OpenRecord(fsPeriod, false)) {
 
-                System.err.println("System Processing Data! = ");
+                System.err.println("System Processing Data!");
                 if (oTrans.procReportSummarizedEmployeeCategory()) {
                     int lnItemCount = oTrans.getItemCount();
 
@@ -652,7 +652,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                         timeline.stop();
 
                         Platform.runLater(() -> {
-                            ShowMessageFX.Warning(getStage(), "No Record Found", "Error", null);
+                            ShowMessageFX.Warning(getStage(), "No Record Found", "Information", null);
                         });
                         return false;
                     }
@@ -697,7 +697,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                     vbProgress.setVisible(false);
                     timeline.stop();
                     Platform.runLater(() -> {
-                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Error", null);
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
                     });
                     return false;
                 }
@@ -709,7 +709,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
             vbProgress.setVisible(false);
             timeline.stop();
             Platform.runLater(() -> {
-                ShowMessageFX.Warning(getStage(), oTrans.getMessage() + " " + ex.getMessage(), "Error", null);
+                ShowMessageFX.Warning(getStage(), oTrans.getMessage() + " " + ex.getMessage(), "Catch Error", null);
             });
             return false;
         }
@@ -729,7 +729,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
             IncentiveData.clear();
             if (oTrans.OpenRecord(fsPeriod, true)) {
 
-                System.err.println("System Processing Data! = ");
+                System.err.println("System Processing Data!");
                 if (oTrans.procReportDetailedReport()) {
                     int lnItemCount = oTrans.getItemCount();
 
@@ -739,7 +739,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                         timeline.stop();
 
                         Platform.runLater(() -> {
-                            ShowMessageFX.Warning(getStage(), "No Record Found", "Error", null);
+                            ShowMessageFX.Warning(getStage(), "No Record Found", "Information", null);
                         });
                         return false;
                     }
@@ -794,7 +794,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                     vbProgress.setVisible(false);
                     timeline.stop();
                     Platform.runLater(() -> {
-                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Error", null);
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
                     });
                     return false;
                 }
@@ -806,7 +806,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
             vbProgress.setVisible(false);
             timeline.stop();
             Platform.runLater(() -> {
-                ShowMessageFX.Warning(getStage(), oTrans.getMessage() + " " + ex.getMessage(), "Error", null);
+                ShowMessageFX.Warning(getStage(), oTrans.getMessage() + " " + ex.getMessage(), "Catch Error", null);
             });
             return false;
         }

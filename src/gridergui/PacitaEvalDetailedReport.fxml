@@ -3,7 +3,6 @@
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.Separator?>
@@ -88,11 +87,11 @@
                                     </AnchorPane>
                                  </bottom>
                                  <center>
-                                    <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+                                    <VBox BorderPane.alignment="CENTER">
                                        <children>
                                           <AnchorPane>
                                              <children>
-                                                <VBox fx:id="vbContainer" spacing="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                <VBox fx:id="vbContainer" spacing="3.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                    <children>
                                                       <GridPane fx:id="grid03" layoutX="10.0" layoutY="10.0">
                                                          <columnConstraints>
@@ -117,10 +116,9 @@
                                                          <rowConstraints>
                                                             <RowConstraints minHeight="25.0" vgrow="SOMETIMES" />
                                                             <RowConstraints minHeight="25.0" vgrow="SOMETIMES" />
-                                                            <RowConstraints minHeight="25.0" vgrow="SOMETIMES" />
                                                          </rowConstraints>
                                                          <children>
-                                                            <Label maxWidth="1.7976931348623157E308" prefWidth="141.0" text="Period : " textAlignment="CENTER" GridPane.rowIndex="2">
+                                                            <Label maxWidth="1.7976931348623157E308" prefWidth="141.0" text="Date From" textAlignment="CENTER">
                                                                <font>
                                                                   <Font name="System Bold" size="12.0" />
                                                                </font>
@@ -128,7 +126,7 @@
                                                                   <Insets left="10.0" />
                                                                </padding>
                                                             </Label>
-                                                            <Label maxWidth="1.7976931348623157E308" prefWidth="141.0" text="Branch :" textAlignment="CENTER">
+                                                            <Label maxWidth="1.7976931348623157E308" prefWidth="141.0" text="Date Thru" textAlignment="CENTER" GridPane.rowIndex="1">
                                                                <font>
                                                                   <Font name="System Bold" size="12.0" />
                                                                </font>
@@ -136,15 +134,7 @@
                                                                   <Insets left="10.0" />
                                                                </padding>
                                                             </Label>
-                                                            <Label maxWidth="1.7976931348623157E308" prefWidth="141.0" text="Evaluator Officer:" textAlignment="CENTER" GridPane.rowIndex="1">
-                                                               <font>
-                                                                  <Font name="System Bold" size="12.0" />
-                                                               </font>
-                                                               <padding>
-                                                                  <Insets left="10.0" />
-                                                               </padding>
-                                                            </Label>
-                                                            <TextField fx:id="txtField02" minHeight="25.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                            <TextField fx:id="txtField01" minHeight="25.0" promptText="YYYY-MM-DD(ex.1945-01-01)" GridPane.columnIndex="1">
                                                                <font>
                                                                   <Font size="10.0" />
                                                                </font>
@@ -152,7 +142,7 @@
                                                                   <Insets bottom="3.0" />
                                                                </GridPane.margin>
                                                             </TextField>
-                                                            <TextField fx:id="txtField01" minHeight="25.0" GridPane.columnIndex="1">
+                                                            <TextField fx:id="txtField02" minHeight="25.0" promptText="YYYY-MM-DD(ex.1945-01-01)" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                                <font>
                                                                   <Font size="10.0" />
                                                                </font>
@@ -160,13 +150,6 @@
                                                                   <Insets bottom="3.0" />
                                                                </GridPane.margin>
                                                             </TextField>
-                                                            <ComboBox fx:id="dpPeriod" minHeight="25.0" prefWidth="180.0" stylesheets="@../css/StyleSheet.css" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.vgrow="ALWAYS">
-                                                               <opaqueInsets>
-                                                                  <Insets />
-                                                               </opaqueInsets>
-                                                               <GridPane.margin>
-                                                                  <Insets />
-                                                               </GridPane.margin></ComboBox>
                                                          </children>
                                                          <effect>
                                                             <Blend />
@@ -180,6 +163,78 @@
                                                             <ColumnConstraints />
                                                             <ColumnConstraints />
                                                          </columnConstraints>
+                                                         <effect>
+                                                            <Blend />
+                                                         </effect>
+                                                      </GridPane>
+                                                      <Separator style="-fx-background-color: orange;">
+                                                         <padding>
+                                                            <Insets bottom="1.0" />
+                                                         </padding>
+                                                         <VBox.margin>
+                                                            <Insets bottom="5.0" />
+                                                         </VBox.margin>
+                                                      </Separator>
+                                                      <GridPane fx:id="grid041" layoutX="10.0" layoutY="15.0">
+                                                         <columnConstraints>
+                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="114.0" minWidth="100.0" prefWidth="114.0" />
+                                                            <ColumnConstraints hgrow="ALWAYS" maxWidth="207.0" minWidth="120.0" prefWidth="173.0" />
+                                                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="5.0" prefWidth="5.0" />
+                                                            <ColumnConstraints />
+                                                            <ColumnConstraints />
+                                                         </columnConstraints>
+                                                         <rowConstraints>
+                                                            <RowConstraints minHeight="25.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="25.0" vgrow="SOMETIMES" />
+                                                            <RowConstraints minHeight="25.0" vgrow="SOMETIMES" />
+                                                         </rowConstraints>
+                                                         <children>
+                                                            <Label maxWidth="1.7976931348623157E308" prefWidth="141.0" text="Evaluator Officer:" textAlignment="CENTER">
+                                                               <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                               </font>
+                                                               <padding>
+                                                                  <Insets left="10.0" />
+                                                               </padding>
+                                                            </Label>
+                                                            <Label maxWidth="1.7976931348623157E308" prefWidth="141.0" text="Area" textAlignment="CENTER" GridPane.rowIndex="1">
+                                                               <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                               </font>
+                                                               <padding>
+                                                                  <Insets left="10.0" />
+                                                               </padding>
+                                                            </Label>
+                                                            <Label maxWidth="1.7976931348623157E308" prefWidth="141.0" text="Branch :" textAlignment="CENTER" GridPane.rowIndex="2">
+                                                               <font>
+                                                                  <Font name="System Bold" size="12.0" />
+                                                               </font>
+                                                               <padding>
+                                                                  <Insets left="10.0" />
+                                                               </padding>
+                                                            </Label>
+                                                            <TextField fx:id="txtField03" minHeight="25.0" promptText="Press F3 to Search." GridPane.columnIndex="1">
+                                                               <font>
+                                                                  <Font size="10.0" />
+                                                               </font>
+                                                               <GridPane.margin>
+                                                                  <Insets bottom="3.0" />
+                                                               </GridPane.margin>
+                                                            </TextField>
+                                                            <TextField fx:id="txtField04" minHeight="25.0" promptText="Press F3 to Search." GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                               <font>
+                                                                  <Font size="10.0" />
+                                                               </font>
+                                                               <GridPane.margin>
+                                                                  <Insets bottom="3.0" />
+                                                               </GridPane.margin>
+                                                            </TextField>
+                                                            <TextField fx:id="txtField05" minHeight="25.0" promptText="Press F3 to Search." GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                                               <font>
+                                                                  <Font size="10.0" />
+                                                               </font>
+                                                            </TextField>
+                                                         </children>
                                                          <effect>
                                                             <Blend />
                                                          </effect>
@@ -230,9 +285,6 @@
                               <BorderPane prefHeight="200.0" prefWidth="200.0">
                                  <center>
                                     <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-                                       <BorderPane.margin>
-                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                                       </BorderPane.margin>
                                        <children>
                                           <VBox fx:id="vbProgress" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                              <children>
@@ -251,12 +303,12 @@
                                                       <Insets top="10.0" />
                                                    </VBox.margin>
                                                 </ProgressIndicator>
-                                             </children></VBox>
+                                             </children>
+                                          </VBox>
                                           <AnchorPane fx:id="reportPane" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                        </children>
                                     </AnchorPane>
-                                 </center>
-                              </BorderPane>
+                                 </center></BorderPane>
                            </children>
                         </StackPane>
                      </children>

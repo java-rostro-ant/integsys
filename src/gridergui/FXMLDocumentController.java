@@ -70,7 +70,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private MenuItem mnuCashCountEntry;
     @FXML
-    private MenuItem mnuAuditIncentiveReport,mnuAuditIncentiveReportNew, mnuRaffleReport;
+    private MenuItem mnuAuditIncentiveReport, mnuAuditIncentiveReportNew, mnuRaffleReport;
     @FXML
     private MenuItem mnuAuditDeptIncentiveReport;
     @FXML
@@ -284,6 +284,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return new PacitaEvalSummarizedReportController();
             case "PacitaEvalDetailedReport.fxml":
                 return new PacitaEvalDetailedReportController();
+            case "PacitaEvalDetailedRulesReport.fxml":
+                return new PacitaEvalDetailedRulesReportController();
             case "PacitaEvalTop10Report.fxml":
                 return new PacitaEvalTop10ReportController();
             default:
@@ -492,6 +494,11 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuPacitaDetReportClick(ActionEvent event) {
         setScene(loadAnimate("PacitaEvalDetailedReport.fxml"));
+    }
+
+    @FXML
+    private void mnuPacitaDetRuleReportClick(ActionEvent event) {
+        setScene(loadAnimate("PacitaEvalDetailedRulesReport.fxml"));
     }
 
     @FXML

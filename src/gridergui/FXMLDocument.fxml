@@ -106,8 +106,8 @@
                                                 <MenuItem fx:id="mnuStandardReport" mnemonicParsing="false" onAction="#mnuStandardReportClick" text="Standard" visible="false" />
                                                 <Menu fx:id="mnuAudit" mnemonicParsing="false" text="Standard">
                                                   <items>
-                                                    <MenuItem fx:id="mnuAuditIncentiveReport" mnemonicParsing="false" onAction="#mnuAuditIncentiveReportClicked" text="Branch Incetntives" visible="false" />
-                                                      <MenuItem fx:id="mnuAuditIncentiveReportNew" mnemonicParsing="false" onAction="#mnuAuditIncentiveReportNewClicked" text="Branch Incetntives" />
+                                                    <MenuItem fx:id="mnuAuditIncentiveReport" mnemonicParsing="false" onAction="#mnuAuditIncentiveReportClicked" text="Branch Incentives" visible="false" />
+                                                      <MenuItem fx:id="mnuAuditIncentiveReportNew" mnemonicParsing="false" onAction="#mnuAuditIncentiveReportNewClicked" text="Branch Incentives" />
                                                       <MenuItem fx:id="mnuAuditDeptIncentiveReport" mnemonicParsing="false" onAction="#mnuAuditDeptIncentiveReportClicked" text="Department Incentives" />
                                                     <MenuItem fx:id="mnuAuditBankReport" mnemonicParsing="false" onAction="#mnuAuditBankReportClick" text="Bank Info" visible="false" />
                                                   </items>
@@ -118,6 +118,7 @@
                                                 <Menu mnemonicParsing="false" text="Pacita">
                                                   <items>
                                                       <MenuItem fx:id="mnuPacitaSumReport" mnemonicParsing="false" onAction="#mnuPacitaSumReportClick" text="Pacita Summary" />
+                                                      <MenuItem fx:id="mnuPacitaDetRuleReport" mnemonicParsing="false" onAction="#mnuPacitaDetRuleReportClick" text="Pacita Detailed w/ Rules" />
                                                       <MenuItem fx:id="mnuPacitaDetReport" mnemonicParsing="false" onAction="#mnuPacitaDetReportClick" text="Pacita Detailed" />
                                                       <MenuItem fx:id="mnuPacitaTop10Report" mnemonicParsing="false" onAction="#mnuPacitaTop10ReportClick" text="Pacita TOP 10" />
                                                   </items>
