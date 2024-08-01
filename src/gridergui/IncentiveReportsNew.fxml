@@ -57,7 +57,7 @@
                                           <Insets />
                                        </BorderPane.margin>
                                        <children>
-                                          <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
+                                          <VBox spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
                                              <children>
                                                 <GridPane fx:id="frGridPane05" hgap="10.0" layoutX="10.0" layoutY="10.0">
                                                    <columnConstraints>
@@ -66,6 +66,16 @@
                                                    <rowConstraints>
                                                       <RowConstraints minHeight="5.0" vgrow="SOMETIMES" />
                                                    </rowConstraints>
+                                                   <children>
+                                                      <Button fx:id="btnExport" maxWidth="1.7976931348623157E308" minHeight="-Infinity" mnemonicParsing="false" prefHeight="30.0" style="-fx-background-color: #006600;" text="EXPORT TO EXCEL" textFill="#fcfcfc">
+                                                         <font>
+                                                            <Font name="System Bold" size="12.0" />
+                                                         </font>
+                                                         <graphic>
+                                                            <FontAwesomeIconView fill="WHITE" glyphName="DOWNLOAD" size="18" />
+                                                         </graphic>
+                                                      </Button>
+                                                   </children>
                                                 </GridPane>
                                                 <GridPane fx:id="frGridPane06" hgap="10.0">
                                                    <columnConstraints>

@@ -81,7 +81,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
     @FXML
     private Label lblReportsTitle;
     @FXML
-    private Button btnGenerate, btnCloseReport;
+    private Button btnGenerate, btnCloseReport, btnExport;
     @FXML
     private TextField txtField01, txtField02, txtField03, txtField04, txtField05;
     @FXML
@@ -154,6 +154,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
         initFields();
 
         btnGenerate.setOnAction(this::cmdButton_Click);
+        btnExport.setOnAction(this::cmdButton_Click);
         btnCloseReport.setOnAction(this::cmdButton_Click);
         txtField01.setOnKeyPressed(this::txtField_KeyPressed);
         txtField02.setOnKeyPressed(this::txtField_KeyPressed);
@@ -291,7 +292,12 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
 
         if (lbShow) {
             frGridPane05.setVisible(rbEmployeeCategory.isSelected() || rbBranchCategory.isSelected());
+
         }
+        if (reportPane.isVisible()) {
+            reportPane.setVisible(false);
+        }
+
     }
 
     private void initFields() {
@@ -323,6 +329,22 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                     generateReport();
                 }
 
+                break;
+            case "btnExport":
+                if (!reportPane.isVisible()) {
+                    return;
+                }
+                if (rbEmployeeCategory.isSelected()) {
+                    if (!oTrans.ExportData(getStage(), 1)) {
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
+
+                    }
+                } else if (rbBranchCategory.isSelected()) {
+                    if (!oTrans.ExportData(getStage(), 2)) {
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
+
+                    }
+                }
                 break;
             case "btnCloseReport":
                 if (ShowMessageFX.OkayCancel(getStage(), null, pxeModuleName, "Are you sure, do you want to close?") == true) {
@@ -485,7 +507,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                         return false;
                     }
                     System.out.println("TotalData  = " + lnItemCount);
-                    
+
                     System.err.println("System Adding Data to Jasper!");
                     double totals = 0.0;
                     for (int x = 1; x <= lnItemCount; x++) {
@@ -529,15 +551,15 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                     });
                     return false;
                 }
-            }else {
-                    running = false;
-                    vbProgress.setVisible(false);
-                    timeline.stop();
-                    Platform.runLater(() -> {
-                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
-                    });
-                    return false;
-                }
+            } else {
+                running = false;
+                vbProgress.setVisible(false);
+                timeline.stop();
+                Platform.runLater(() -> {
+                    ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
+                });
+                return false;
+            }
 
         } catch (JRException | SQLException | ClassCastException ex) {
             Logger.getLogger(ReportsController.class.getName()).log(Level.SEVERE, null, ex);
@@ -578,8 +600,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                         return false;
                     }
                     System.out.println("TotalData  = " + lnItemCount);
-                    
-                    
+
                     System.err.println("System Adding Data to Jasper!");
                     for (int x = 1; x <= lnItemCount; x++) {
                         Date ldDatePeriod = SQLUtil.toDate(oTrans.getRecord(x, "sMonthxxx").toString().trim() + " 01", "yyyyMM dd");
@@ -622,21 +643,21 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                     });
                     return false;
                 }
-            }else {
-                    running = false;
-                    vbProgress.setVisible(false);
-                    timeline.stop();
-                    Platform.runLater(() -> {
-                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
-                    });
-                    return false;
-                }
+            } else {
+                running = false;
+                vbProgress.setVisible(false);
+                timeline.stop();
+                Platform.runLater(() -> {
+                    ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
+                });
+                return false;
+            }
 
         } catch (JRException | SQLException | ClassCastException ex) {
             Logger.getLogger(ReportsController.class.getName()).log(Level.SEVERE, null, ex);
             running = false;
-            vbProgress.setVisible(false); 
-           timeline.stop();
+            vbProgress.setVisible(false);
+            timeline.stop();
             Platform.runLater(() -> {
                 ShowMessageFX.Warning(getStage(), oTrans.getMessage() + " " + ex.getMessage(), "Catch Error", null);
             });
@@ -717,15 +738,15 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                     });
                     return false;
                 }
-            }else {
-                    running = false;
-                    vbProgress.setVisible(false);
-                    timeline.stop();
-                    Platform.runLater(() -> {
-                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
-                    });
-                    return false;
-                }
+            } else {
+                running = false;
+                vbProgress.setVisible(false);
+                timeline.stop();
+                Platform.runLater(() -> {
+                    ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
+                });
+                return false;
+            }
 
         } catch (JRException | SQLException | ClassCastException ex) {
             Logger.getLogger(ReportsController.class.getName()).log(Level.SEVERE, null, ex);
@@ -823,14 +844,14 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                     return false;
                 }
             } else {
-                    running = false;
-                    vbProgress.setVisible(false);
-                    timeline.stop();
-                    Platform.runLater(() -> {
-                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
-                    });
-                    return false;
-                }
+                running = false;
+                vbProgress.setVisible(false);
+                timeline.stop();
+                Platform.runLater(() -> {
+                    ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
+                });
+                return false;
+            }
 
         } catch (JRException | SQLException | ClassCastException ex) {
             Logger.getLogger(ReportsController.class.getName()).log(Level.SEVERE, null, ex);
