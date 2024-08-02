@@ -340,10 +340,10 @@ public class PacitaEvalDetailedRulesReportController implements Initializable, S
             case "btnGenerate":
 
                 if (txtField03.getText().isEmpty()) {
-                    oTrans.setBranchArea();
+                    oTrans.setOfficer();
                 }
                 if (txtField04.getText().isEmpty()) {
-                    oTrans.setBranch();
+                    oTrans.setBranchArea();
                 }
                 if (txtField05.getText().isEmpty()) {
                     oTrans.setBranch();
@@ -406,6 +406,19 @@ public class PacitaEvalDetailedRulesReportController implements Initializable, S
             params.put("sReportNm", pxeModuleName);
 
             if (oTrans.OpenRecord(lsPeriodTo, lsPeriodFrom)) {
+                int lnItemCount = oTrans.getItemCount();
+
+                    if (lnItemCount <= 0) {
+                        running = false;
+                        vbProgress.setVisible(false);
+                        timeline.stop();
+
+                        Platform.runLater(() -> {
+                            ShowMessageFX.Warning(getStage(), "No Record Found", "Information", null);
+                        });
+                        return false;
+                    }
+                    System.out.println("TotalData  = " + lnItemCount);
                 // Clear existing data
                 combined_data.clear();
                 master_data.clear();
@@ -444,13 +457,21 @@ public class PacitaEvalDetailedRulesReportController implements Initializable, S
                 generateReport(params, CombineData);
 
             } else {
-                return false;
+                running = false;
+                vbProgress.setVisible(false);
+                timeline.stop();
+                Platform.runLater(() -> {
+                    ShowMessageFX.Warning(getStage(), oTrans.getMessage(), " Error", null);
+                });
 
             }
         } catch (SQLException | ParseException e) {
-            // Handle exceptions
-            Logger.getLogger(PacitaEvalDetailedRulesReportController.class
-                    .getName()).log(Level.SEVERE, null, e);
+            running = false;
+            vbProgress.setVisible(false);
+            timeline.stop();
+            Platform.runLater(() -> {
+                ShowMessageFX.Warning(getStage(), oTrans.getMessage() + " " + e.getMessage(), "Catch Error", null);
+            });
             return false;
         }
         return true;
@@ -481,7 +502,7 @@ public class PacitaEvalDetailedRulesReportController implements Initializable, S
                     }
 
                     detailpacita_data.add(new TableModel(
-                            String.valueOf(lnRow+1),
+                            String.valueOf(lnRow + 1),
                             jsonxRatingxx,
                             oTrans.getPacita(lnCtr, "sFieldNmx").toString(),
                             psMaxRating,
@@ -513,10 +534,20 @@ public class PacitaEvalDetailedRulesReportController implements Initializable, S
                         loadPacitaChildDetails(lnRow, cEvaltype, rowDataMaster, payloadArray);
                     }
                 }
+            } else {
+                running = false;
+                vbProgress.setVisible(false);
+                timeline.stop();
+                Platform.runLater(() -> {
+                    ShowMessageFX.Warning(getStage(), oTrans.getMessage(), " Error", null);
+                });
+
             }
 
         } catch (SQLException | ParseException ex) {
-            ShowMessageFX.Warning(getStage(), ex.getMessage(), "Warning", null);
+            Platform.runLater(() -> {
+                ShowMessageFX.Warning(getStage(), ex.getMessage(), "Warning", null);
+            });
         }
     }
 
@@ -533,7 +564,7 @@ public class PacitaEvalDetailedRulesReportController implements Initializable, S
                     }
 
                     detailpacitachild_data.add(new TableModel(
-                            String.valueOf(lnRow+1),
+                            String.valueOf(lnRow + 1),
                             jsonxRatingxx,
                             oTrans.getPacitaChild(lnCtr, "sFieldNmx").toString(),
                             oTrans.getPacitaChild(lnCtr, "nMaxValue").toString(),
@@ -555,7 +586,7 @@ public class PacitaEvalDetailedRulesReportController implements Initializable, S
                             master_data.get(lnRow).getIndex09(),
                             master_data.get(lnRow).getIndex10(),
                             detailpacitachild_data.get(y).getIndex02(),
-                            "\t"+detailpacitachild_data.get(y).getIndex03(),
+                            "\t" + detailpacitachild_data.get(y).getIndex03(),
                             "child", "", ""
                     ));
                 }

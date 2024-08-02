@@ -372,10 +372,10 @@ public class PacitaEvalTop10ReportController implements Initializable, ScreenInt
             case "btnGenerate":
 
                 if (txtField03.getText().isEmpty()) {
-                    oTrans.setBranchArea();
+                    oTrans.setOfficer();
                 }
                 if (txtField04.getText().isEmpty()) {
-                    oTrans.setBranch();
+                    oTrans.setBranchArea();
                 }
                 if (txtField05.getText().isEmpty()) {
                     oTrans.setBranch();
@@ -439,6 +439,19 @@ public class PacitaEvalTop10ReportController implements Initializable, ScreenInt
 
             params.put("sReportNm", pxeModuleName);
             if (oTrans.OpenRecord(lsPeriodTo, lsPeriodFrom)) {
+                int lnItemCount = oTrans.getItemCount();
+
+                    if (lnItemCount <= 0) {
+                        running = false;
+                        vbProgress.setVisible(false);
+                        timeline.stop();
+
+                        Platform.runLater(() -> {
+                            ShowMessageFX.Warning(getStage(), "No Record Found", "Information", null);
+                        });
+                        return false;
+                    }
+                    System.out.println("TotalData  = " + lnItemCount);
                 master_data.clear();
                 for (int x = 1; x <= oTrans.getItemCount(); x++) {
 
@@ -451,6 +464,14 @@ public class PacitaEvalTop10ReportController implements Initializable, ScreenInt
                     ));
 
                 }
+            }else {
+                 running = false;
+                vbProgress.setVisible(false);
+                timeline.stop();
+                Platform.runLater(() -> {
+                ShowMessageFX.Warning(getStage(), oTrans.getMessage() , " Error", null);
+            });
+            
             }
             String sourceFileName = "D://GGC_Java_Systems/reports/PacitaEvalSummarized.jasper";
 
@@ -470,12 +491,20 @@ public class PacitaEvalTop10ReportController implements Initializable, ScreenInt
                 running = false;
                 vbProgress.setVisible(false);
                 timeline.stop();
+                Platform.runLater(() -> {
+                ShowMessageFX.Warning(getStage(), oTrans.getMessage() + " " + ex.getMessage(), "Catch Error", null);
+            });
+                return false;
             }
 
         } catch (SQLException e) {
             running = false;
             vbProgress.setVisible(false);
             timeline.stop();
+            Platform.runLater(() -> {
+                ShowMessageFX.Warning(getStage(), oTrans.getMessage() + " " + e.getMessage(), "Catch Error", null);
+            });
+            return false;
         }
         return true;
 

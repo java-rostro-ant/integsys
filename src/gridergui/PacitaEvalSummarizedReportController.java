@@ -339,10 +339,10 @@ public class PacitaEvalSummarizedReportController implements Initializable, Scre
             case "btnGenerate":
 
                 if (txtField03.getText().isEmpty()) {
-                    oTrans.setBranchArea();
+                    oTrans.setOfficer();
                 }
                 if (txtField04.getText().isEmpty()) {
-                    oTrans.setBranch();
+                    oTrans.setBranchArea();
                 }
                 if (txtField05.getText().isEmpty()) {
                     oTrans.setBranch();
@@ -405,6 +405,19 @@ public class PacitaEvalSummarizedReportController implements Initializable, Scre
         try {
             params.put("sReportNm", pxeModuleName);
             if (oTrans.OpenRecord(lsPeriodTo, lsPeriodFrom)) {
+                int lnItemCount = oTrans.getItemCount();
+
+                    if (lnItemCount <= 0) {
+                        running = false;
+                        vbProgress.setVisible(false);
+                        timeline.stop();
+
+                        Platform.runLater(() -> {
+                            ShowMessageFX.Warning(getStage(), "No Record Found", "Information", null);
+                        });
+                        return false;
+                    }
+                    System.out.println("TotalData  = " + lnItemCount);
                 master_data.clear();
                 for (int x = 1; x <= oTrans.getItemCount(); x++) {
 
@@ -417,6 +430,15 @@ public class PacitaEvalSummarizedReportController implements Initializable, Scre
                     ));
 
                 }
+            }else{
+                running = false;
+                vbProgress.setVisible(false);
+                timeline.stop();
+                Platform.runLater(() -> {
+                    ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
+                });
+                return false;
+            
             }
             String sourceFileName = "D://GGC_Java_Systems/reports/PacitaEvalSummarized.jasper";
 
@@ -433,15 +455,24 @@ public class PacitaEvalSummarizedReportController implements Initializable, Scre
                 }
             } catch (JRException ex) {
                 Logger.getLogger(ReportsController.class.getName()).log(Level.SEVERE, null, ex);
-                running = false;
-                vbProgress.setVisible(false);
-                timeline.stop();
-            }
-
-        } catch (SQLException e) {
             running = false;
             vbProgress.setVisible(false);
             timeline.stop();
+            Platform.runLater(() -> {
+                ShowMessageFX.Warning(getStage(), oTrans.getMessage() + " " + ex.getMessage(), "Catch Error", null);
+            });
+            return false;
+            }
+
+        } catch (SQLException e) {
+            Logger.getLogger(ReportsController.class.getName()).log(Level.SEVERE, null, e);
+            running = false;
+            vbProgress.setVisible(false);
+            timeline.stop();
+            Platform.runLater(() -> {
+                ShowMessageFX.Warning(getStage(), oTrans.getMessage() + " " + e.getMessage(), "Catch Error", null);
+            });
+            return false;
         }
         return true;
     }
