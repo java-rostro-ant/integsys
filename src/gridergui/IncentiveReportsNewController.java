@@ -468,7 +468,8 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                     }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+             ShowMessageFX.Warning(getStage(), e.getMessage(), "Catch Error", null);
+                               
         }
 
         switch (event.getCode()) {
