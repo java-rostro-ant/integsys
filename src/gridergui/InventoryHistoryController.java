@@ -321,6 +321,7 @@ public class InventoryHistoryController  implements Initializable , ScreenInterf
     @FXML
     private void tblInvDetails_Clicked() {
         pnRow = tblInvDetails.getSelectionModel().getSelectedIndex() + 1;
+        if(pnRow >= 0){
         getSelectedItem();
        
         tblInvDetails.setOnKeyReleased((KeyEvent t)-> {
@@ -348,6 +349,7 @@ public class InventoryHistoryController  implements Initializable , ScreenInterf
                         return; 
                 }
             });
+        }
     }
     
     private void getSelectedItem(){

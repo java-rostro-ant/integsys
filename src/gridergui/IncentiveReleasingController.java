@@ -413,6 +413,7 @@ public class IncentiveReleasingController implements Initializable, ScreenInterf
        
         try {
             pnRow = tblincetives.getSelectionModel().getSelectedIndex();
+            if(pnRow >= 0){
             String lsBankName;
             String lsBankAcct;
             emp_data.clear();
@@ -440,6 +441,7 @@ public class IncentiveReleasingController implements Initializable, ScreenInterf
                
             }
             initEmployeeGrid();
+            }
            
         } catch (SQLException ex) {
             ShowMessageFX.Warning(getStage(),ex.getMessage(), "Warning", null);

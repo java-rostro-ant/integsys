@@ -467,6 +467,11 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
             int lnRow = oTrans.getItemCount(); 
             int lnCtr;
             
+            if (lnRow <= 0) {
+            return;
+            }
+               
+                    
             if (incEmp_data.isEmpty()){
                 for (lnCtr = 1; lnCtr <= lnRow; lnCtr++){
                     incEmp_data.add(new TableEmployeeIncentives(String.valueOf(lnCtr),
@@ -481,7 +486,8 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                     lastpercValue += allPer;
                 }  
             } else{
-                for (lnCtr = 1; lnCtr <= lnRow; lnCtr++){
+                for (lnCtr = 1; lnCtr <= incEmp_data.size(); lnCtr++){
+                    
                     incEmp_data.set(lnCtr -1 , new TableEmployeeIncentives(String.valueOf(lnCtr),
                                             (String) oTrans.getDetail(lnCtr, "xEmployNm"),
                                             (CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00")),
