@@ -562,7 +562,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                 return false;
             }
 
-        } catch (JRException | SQLException | ClassCastException ex) {
+        } catch (JRException | SQLException | ClassCastException | NullPointerException ex) {
             Logger.getLogger(ReportsController.class.getName()).log(Level.SEVERE, null, ex);
             running = false;
             vbProgress.setVisible(false);
@@ -654,7 +654,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                 return false;
             }
 
-        } catch (JRException | SQLException | ClassCastException ex) {
+        } catch (JRException | SQLException | ClassCastException | NullPointerException ex) {
             Logger.getLogger(ReportsController.class.getName()).log(Level.SEVERE, null, ex);
             running = false;
             vbProgress.setVisible(false);
@@ -749,7 +749,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                 return false;
             }
 
-        } catch (JRException | SQLException | ClassCastException ex) {
+        } catch (JRException | SQLException | ClassCastException | NullPointerException ex) {
             Logger.getLogger(ReportsController.class.getName()).log(Level.SEVERE, null, ex);
             running = false;
             vbProgress.setVisible(false);
@@ -854,7 +854,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                 return false;
             }
 
-        } catch (JRException | SQLException | ClassCastException ex) {
+        } catch (JRException | SQLException | ClassCastException | NullPointerException ex) {
             Logger.getLogger(ReportsController.class.getName()).log(Level.SEVERE, null, ex);
             running = false;
             vbProgress.setVisible(false);

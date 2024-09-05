@@ -704,7 +704,7 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         } catch (IOException e) {
             e.printStackTrace();
             ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
-            System.exit(1);
+//            System.exit(1);
         }
     }
     private void loadIncentiveDetail(String fsCode, int fnRow) throws SQLException{
@@ -753,7 +753,7 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         } catch (IOException e) {
             e.printStackTrace();
             ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
-            System.exit(1);
+            return;
         }
     }
     

@@ -38,32 +38,32 @@ import org.rmj.appdriver.constants.EditMode;
 import org.rmj.fund.manager.base.Incentive;
 import org.rmj.fund.manager.base.LMasDetTrans;
 
-public class AddIncentivesController implements Initializable, ScreenInterface {  
+public class AddIncentivesController implements Initializable, ScreenInterface {
+
     private final String pxeModuleName = "AddIncentivesController";
-    
+
     private GRider oApp;
     private int pnIndex = -1;
     private int pnRow = 0;
-    
+
     private boolean pbLoaded = false;
     private boolean state = false;
     private LMasDetTrans oListener;
-    
+
     private String psCode;
     private Incentive oTrans;
-    
+
     private int pnEditMode;
     public int tbl_row = 0;
-    
-    private double lastValue = (double)0;
+
+    private double lastValue = (double) 0;
     private double total_alloc = (double) 0;
-    private double lastpercValue = (double)0;
-    
+    private double lastpercValue = (double) 0;
+
     private ObservableList<TableModel> data = FXCollections.observableArrayList();
     private ObservableList<TableEmployeeIncentives> incEmp_data = FXCollections.observableArrayList();
-    
+
     public static TableModel empModel;
-    
 
     @FXML
     private VBox VBoxForm;
@@ -119,106 +119,113 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
     private Label txtField102;
     @FXML
     private Button btnDelEmp;
-  
+
     @Override
     public void setGRider(GRider foValue) {
         oApp = foValue;
     }
-    public void setIncentiveObject(Incentive foValue){
+
+    public void setIncentiveObject(Incentive foValue) {
         oTrans = foValue;
     }
-    
-    public void setIncentiveCode(String fsValue){
+
+    public void setIncentiveCode(String fsValue) {
         psCode = fsValue;
     }
-    public void setTableRow(int row){
+
+    public void setTableRow(int row) {
         tbl_row = row;
     }
-    
-    public void setState(boolean fsValue){
+
+    public void setState(boolean fsValue) {
         state = fsValue;
     }
 
-    private Stage getStage(){
-	return (Stage) txtField01.getScene().getWindow();
+    private Stage getStage() {
+        return (Stage) txtField01.getScene().getWindow();
     }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-            oListener = new LMasDetTrans() {
-                @Override
-                public void MasterRetreive(int fnIndex, Object foValue) {
-                }
-                @Override
-                public void DetailRetreive(int fnRow, int fnIndex, Object foValue) {
-                    loadEmployee();                    
-                }
-            };
-            
-            oTrans.setListener(oListener);
-            
-            btnOk.setOnAction(this::cmdButton_Click);
-            btnDelEmp.setOnAction(this::cmdButton_Click);
-            btnExit.setOnAction(this::cmdButton_Click);
-            btnReset.setOnAction(this::cmdButton_Click);
-            
-            txtField03.setOnKeyPressed(this::txtField_KeyPressed);
-            txtField04.setOnKeyPressed(this::txtField_KeyPressed);
-            txtField05.setOnKeyPressed(this::txtField_KeyPressed);
-            txtField06.setOnKeyPressed(this::txtField_KeyPressed);
-            txtField07.setOnKeyPressed(this::txtField_KeyPressed);
-            txtField08.setOnKeyPressed(this::txtArea_KeyPressed);
-            txtField10.setOnKeyPressed(this::txtField_KeyPressed);
-            txtField11.setOnKeyPressed(this::txtField_KeyPressed);
-            txtField12.setOnKeyPressed(this::txtField_KeyPressed);
-            
-            txtField11.focusedProperty().addListener(txtField_Focus);
-            txtField12.focusedProperty().addListener(txtField_Focus);
-            
-            txtField03.focusedProperty().addListener(txtField_Focus);
-            txtField04.focusedProperty().addListener(txtField_Focus);
-            txtField05.focusedProperty().addListener(txtField_Focus);
-            txtField06.focusedProperty().addListener(txtField_Focus);
-            txtField07.focusedProperty().addListener(txtField_Focus);
-            txtField08.focusedProperty().addListener(txtArea_Focus);
-            
-            pnEditMode = oTrans.getEditMode();
-            
-            try {
-                if (oTrans.getItemCount() > 0) pnRow = 1;
-            } catch (SQLException e) {
-                e.printStackTrace();
-                System.exit(1);
+        oListener = new LMasDetTrans() {
+            @Override
+            public void MasterRetreive(int fnIndex, Object foValue) {
             }
-            
-            initFields(pnEditMode);
-            initButton(pnEditMode);
-            
-            initGrid();
-            loadEmployee();
-            loadIncentives();     
-            getSelectedItem();
-            
-            pbLoaded = true;
+
+            @Override
+            public void DetailRetreive(int fnRow, int fnIndex, Object foValue) {
+                loadEmployee();
+            }
+        };
+
+        oTrans.setListener(oListener);
+
+        btnOk.setOnAction(this::cmdButton_Click);
+        btnDelEmp.setOnAction(this::cmdButton_Click);
+        btnExit.setOnAction(this::cmdButton_Click);
+        btnReset.setOnAction(this::cmdButton_Click);
+
+        txtField03.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField04.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField05.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField06.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField07.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField08.setOnKeyPressed(this::txtArea_KeyPressed);
+        txtField10.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField11.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField12.setOnKeyPressed(this::txtField_KeyPressed);
+
+        txtField11.focusedProperty().addListener(txtField_Focus);
+        txtField12.focusedProperty().addListener(txtField_Focus);
+
+        txtField03.focusedProperty().addListener(txtField_Focus);
+        txtField04.focusedProperty().addListener(txtField_Focus);
+        txtField05.focusedProperty().addListener(txtField_Focus);
+        txtField06.focusedProperty().addListener(txtField_Focus);
+        txtField07.focusedProperty().addListener(txtField_Focus);
+        txtField08.focusedProperty().addListener(txtArea_Focus);
+
+        pnEditMode = oTrans.getEditMode();
+
+        try {
+            if (oTrans.getItemCount() > 0) {
+                pnRow = 1;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+//                System.exit(1);
+        }
+
+        initFields(pnEditMode);
+        initButton(pnEditMode);
+
+        initGrid();
+        loadEmployee();
+        loadIncentives();
+        getSelectedItem();
+
+        pbLoaded = true;
     }
-    private void initButton(int fnValue){
+
+    private void initButton(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
         btnDelEmp.setVisible(lbShow);
         btnReset.setVisible(lbShow);
     }
-    
-    private void txtArea_KeyPressed(KeyEvent event){
-        if (event.getCode() == ENTER || event.getCode() == DOWN){ 
+
+    private void txtArea_KeyPressed(KeyEvent event) {
+        if (event.getCode() == ENTER || event.getCode() == DOWN) {
             event.consume();
-            CommonUtils.SetNextFocus((TextArea)event.getSource());
-        }else if (event.getCode() ==KeyCode.UP){
-        event.consume();
-            CommonUtils.SetPreviousFocus((TextArea)event.getSource());
+            CommonUtils.SetNextFocus((TextArea) event.getSource());
+        } else if (event.getCode() == KeyCode.UP) {
+            event.consume();
+            CommonUtils.SetPreviousFocus((TextArea) event.getSource());
         }
     }
 
-    private void initFields(int fnValue){
+    private void initFields(int fnValue) {
         boolean lbShow = (fnValue == EditMode.UPDATE || fnValue == EditMode.ADDNEW);
-        if(lbShow){
+        if (lbShow) {
             txtField03.setDisable(false);
             txtField04.setDisable(false);
             txtField05.setDisable(false);
@@ -227,7 +234,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
             txtField08.setDisable(false);
             txtField11.setDisable(false);
             txtField12.setDisable(false);
-        }else {
+        } else {
             txtField03.setDisable(true);
             txtField04.setDisable(true);
             txtField05.setDisable(true);
@@ -239,301 +246,355 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
         }
     }
 
-    private void txtField_KeyPressed(KeyEvent event){
-        TextField txtField = (TextField)event.getSource();
-        int lnIndex = Integer.parseInt(((TextField)event.getSource()).getId().substring(8,10));
+    private void txtField_KeyPressed(KeyEvent event) {
+        TextField txtField = (TextField) event.getSource();
+        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
         String lsValue = txtField.getText().replace(",", "");
-        
-        switch (event.getCode()){
+
+        switch (event.getCode()) {
             case F3:
                 break;
             case TAB:
-                if (lnIndex == 11 || lnIndex == 12){
+                if (lnIndex == 11 || lnIndex == 12) {
                     event.consume();
                     return;
                 }
             case ENTER:
             case DOWN:
                 try {
-                    double lnIncAmt = Double.valueOf(String.valueOf(oTrans.getIncentiveInfo(tbl_row, "nInctvAmt")));
-                            
-                    switch (lnIndex){
-                        case 11:
-                            if(lsValue.isEmpty()) lsValue = "0";
-                            double lnOldpercent = Double.parseDouble(oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID")).toString());
-                            if(lnIncAmt <= 0){
-                                 ShowMessageFX.Warning(getStage(), "Please specify incentive amount value!", "Warning", null);
-                                
+                double lnIncAmt = Double.valueOf(String.valueOf(oTrans.getIncentiveInfo(tbl_row, "nInctvAmt")));
+
+                switch (lnIndex) {
+                    case 11:
+                        if (lsValue.isEmpty()) {
+                            lsValue = "0";
+                        }
+                        double lnOldpercent = Double.parseDouble(oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID")).toString());
+                        if (lnIncAmt <= 0) {
+                            ShowMessageFX.Warning(getStage(), "Please specify incentive amount value!", "Warning", null);
+
+                            txtField.setText(String.valueOf(lastValue));
+                            txtField07.requestFocus();
+                        } else {
+                            if (lastpercValue - lnOldpercent + Double.valueOf(lsValue) > 100) {
+                                ShowMessageFX.Warning(getStage(), "The specified percentage will exceed the incentive allocation.", "Warning", null);
+
                                 txtField.setText(String.valueOf(lastValue));
-                                txtField07.requestFocus();
-                            }else{
-                                 if (lastpercValue - lnOldpercent + Double.valueOf(lsValue) > 100){
-                                    ShowMessageFX.Warning(getStage(),"The specified percentage will exceed the incentive allocation.", "Warning", null);
-                                
-                                    txtField.setText(String.valueOf(lastValue));
-                                    txtField.requestFocus();
-                                 }else{
-                                     oTrans.setIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"), Double.valueOf(lsValue));
-                                 }
+                                txtField.requestFocus();
+                            } else {
+                                oTrans.setIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"), Double.valueOf(lsValue));
                             }
-                            
-                            break;
-                        case 12:
-                            if(lsValue.isEmpty()) lsValue = "0";
-                            double lnOldAmt = Double.valueOf(String.valueOf(oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"))));
+                        }
 
-                            if (total_alloc - lnOldAmt + Double.valueOf(lsValue) > lnIncAmt){
-                                ShowMessageFX.Warning(getStage(),"The specified amount will exceed the incentive allocation.", "Warning", null);
-                            } else{
-                                oTrans.setIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"), Double.valueOf(lsValue));
+                        break;
+                    case 12:
+                        if (lsValue.isEmpty()) {
+                            lsValue = "0";
+                        }
+                        double lnOldAmt = Double.valueOf(String.valueOf(oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"))));
 
-                                if (pnRow <= oTrans.getItemCount())
-                                    pnRow++;
-                                else
-                                    pnRow = 1;
-                                
-                                
-                                tblemployee.getVisibleLeafColumns();
-                                int max = tblemployee.getItems().size();
-                                pnRow = Math.min(pnRow, max);
-                                if((tblemployee.getSelectionModel().getSelectedIndex()) == max-1){
-                                    pnRow = 1;
-                                }
-                                tblemployee.scrollTo(pnRow-1);
-                                
+                        if (total_alloc - lnOldAmt + Double.valueOf(lsValue) > lnIncAmt) {
+                            ShowMessageFX.Warning(getStage(), "The specified amount will exceed the incentive allocation.", "Warning", null);
+                        } else {
+                            oTrans.setIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"), Double.valueOf(lsValue));
+
+                            if (pnRow <= oTrans.getItemCount()) {
+                                pnRow++;
+                            } else {
+                                pnRow = 1;
                             }
 
-                            loadEmployee();
-                            getSelectedItem();
+                            tblemployee.getVisibleLeafColumns();
+                            int max = tblemployee.getItems().size();
+                            pnRow = Math.min(pnRow, max);
+                            if ((tblemployee.getSelectionModel().getSelectedIndex()) == max - 1) {
+                                pnRow = 1;
+                            }
+                            tblemployee.scrollTo(pnRow - 1);
 
-                            txtField11.requestFocus();
-                            event.consume();
-                            return;
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                        }
+
+                        loadEmployee();
+                        getSelectedItem();
+
+                        txtField11.requestFocus();
+                        event.consume();
+                        return;
                 }
-                
-                CommonUtils.SetNextFocus(txtField);
-                break;
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            CommonUtils.SetNextFocus(txtField);
+            break;
             case UP:
                 CommonUtils.SetPreviousFocus(txtField);
-            }
+        }
     }
-    
-    final ChangeListener<? super Boolean> txtArea_Focus = (o,ov,nv)->{ 
-        if (!pbLoaded) return;
-        
-        TextArea txtField = (TextArea)((ReadOnlyBooleanPropertyBase)o).getBean();
+
+    final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
+        if (!pbLoaded) {
+            return;
+        }
+
+        TextArea txtField = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
         int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
         String lsValue = txtField.getText();
-        
-        if (lsValue == null) return;
-            try {
-                if(!nv){ /*Lost Focus*/
-                    switch (lnIndex){
-                        case 8:
-                           oTrans.setIncentiveInfo(tbl_row, "sRemarksx", lsValue); 
-                           txtField.setText((String) oTrans.getIncentiveInfo(tbl_row, "sRemarksx"));
-                           break;
-                    }
-                } else
-                    txtField.selectAll();
 
-                pnIndex = lnIndex;
-            } catch (SQLException e) {
-                ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
-                System.exit(1);
+        if (lsValue == null) {
+            return;
+        }
+        try {
+            if (!nv) {
+                /*Lost Focus*/
+                switch (lnIndex) {
+                    case 8:
+                        oTrans.setIncentiveInfo(tbl_row, "sRemarksx", lsValue);
+                        txtField.setText((String) oTrans.getIncentiveInfo(tbl_row, "sRemarksx"));
+                        break;
+                }
+            } else {
+                txtField.selectAll();
             }
+
+            pnIndex = lnIndex;
+        } catch (SQLException e) {
+            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
+//                System.exit(1);
+        }
     };
 
-    final ChangeListener<? super Boolean> txtField_Focus = (o,ov,nv)->{ 
-        if (!pbLoaded) return;
-        
-        TextField txtField = (TextField)((ReadOnlyBooleanPropertyBase)o).getBean();
-        int lnIndex = Integer.parseInt(txtField.getId().substring(8,10));
-        
-        String lsValue = txtField.getText();
-        
-        if (lsValue == null) return;
-        if (lsValue.isEmpty()) lsValue = "0";    
-        
-        try {
-            if(!nv){ /*Lost Focus*/
-                switch (lnIndex){
-                    case 03:
-                        if (StringUtil.isNumeric(lsValue)) 
-                            oTrans.setIncentiveInfo(tbl_row, "nQtyGoalx", Integer.parseInt(lsValue));
-                        else    
-                            oTrans.setIncentiveInfo(tbl_row, "nQtyGoalx", 0);
+    final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
+        if (!pbLoaded) {
+            return;
+        }
 
-                        txtField.setText(CommonUtils.NumberFormat((Number)oTrans.getIncentiveInfo(tbl_row, "nQtyGoalx"), "0"));
+        TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
+        int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
+
+        String lsValue = txtField.getText();
+
+        if (lsValue == null) {
+            return;
+        }
+        if (lsValue.isEmpty()) {
+            lsValue = "0";
+        }
+
+        try {
+            if (!nv) {
+                /*Lost Focus*/
+                switch (lnIndex) {
+                    case 03:
+                        if (StringUtil.isNumeric(lsValue)) {
+                            oTrans.setIncentiveInfo(tbl_row, "nQtyGoalx", Integer.parseInt(lsValue));
+                        } else {
+                            oTrans.setIncentiveInfo(tbl_row, "nQtyGoalx", 0);
+                        }
+
+                        txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveInfo(tbl_row, "nQtyGoalx"), "0"));
                         break;
                     case 04:
-                        if (StringUtil.isNumeric(lsValue)) 
+                        if (StringUtil.isNumeric(lsValue)) {
                             oTrans.setIncentiveInfo(tbl_row, "nQtyActlx", Integer.parseInt(lsValue));
-                        else    
+                        } else {
                             oTrans.setIncentiveInfo(tbl_row, "nQtyActlx", 0);
+                        }
 
-                        txtField.setText(CommonUtils.NumberFormat((Number)oTrans.getIncentiveInfo(tbl_row, "nQtyActlx"), "0"));
+                        txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveInfo(tbl_row, "nQtyActlx"), "0"));
                         break;
                     case 05:
-                        if (StringUtil.isNumeric(lsValue)) 
+                        if (StringUtil.isNumeric(lsValue)) {
                             oTrans.setIncentiveInfo(tbl_row, "nAmtGoalx", Double.parseDouble(lsValue));
-                        else    
+                        } else {
                             oTrans.setIncentiveInfo(tbl_row, "nAmtGoalx", 0.00);
+                        }
 
-                        txtField.setText(CommonUtils.NumberFormat((Number)oTrans.getIncentiveInfo(tbl_row, "nAmtGoalx"), "#,##0.00"));    
+                        txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveInfo(tbl_row, "nAmtGoalx"), "#,##0.00"));
                         break;
                     case 06:
-                        if (StringUtil.isNumeric(lsValue)) 
+                        if (StringUtil.isNumeric(lsValue)) {
                             oTrans.setIncentiveInfo(tbl_row, "nAmtActlx", Double.parseDouble(lsValue));
-                        else    
+                        } else {
                             oTrans.setIncentiveInfo(tbl_row, "nAmtActlx", 0.00);
-
-                        txtField.setText(CommonUtils.NumberFormat((Number)oTrans.getIncentiveInfo(tbl_row, "nAmtActlx"), "#,##0.00"));
-                        break;
-                    case 07:     
-                        if (total_alloc > Double.parseDouble(lsValue)){
-                            if (MsgBox.showOkCancel("Incentive amount is less than the total cash that is already allocated." +
-                                    "\n\nDo you want to reset allocation and continue?") == MsgBox.RESP_YES_OK){
-                                oTrans.resetIncentiveEmployeeAllocation(psCode);
-                            } else break;
                         }
-                        
-                        if (StringUtil.isNumeric(lsValue)) 
+
+                        txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveInfo(tbl_row, "nAmtActlx"), "#,##0.00"));
+                        break;
+                    case 07:
+                        if (total_alloc > Double.parseDouble(lsValue)) {
+                            if (MsgBox.showOkCancel("Incentive amount is less than the total cash that is already allocated."
+                                    + "\n\nDo you want to reset allocation and continue?") == MsgBox.RESP_YES_OK) {
+                                oTrans.resetIncentiveEmployeeAllocation(psCode);
+                            } else {
+                                break;
+                            }
+                        }
+
+                        if (StringUtil.isNumeric(lsValue)) {
                             oTrans.setIncentiveInfo(tbl_row, "nInctvAmt", Double.parseDouble(lsValue));
-                        else    
+                        } else {
                             oTrans.setIncentiveInfo(tbl_row, "nInctvAmt", 0.00);
+                        }
 
 //                        oTrans.setIncentiveInfo(tbl_row, "nInctvAmt", Double.parseDouble(lsValue));
                         txtField.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveInfo(tbl_row, "nInctvAmt"), "#,##0.00"));
                         break;
                 }
-            } else{ //Focus
-                switch (lnIndex){
+            } else { //Focus
+                switch (lnIndex) {
                     case 05:
-                        txtField.setText(String.valueOf(oTrans.getIncentiveInfo(tbl_row, "nAmtGoalx"))); break;
+                        txtField.setText(String.valueOf(oTrans.getIncentiveInfo(tbl_row, "nAmtGoalx")));
+                        break;
                     case 06:
-                        txtField.setText(String.valueOf(oTrans.getIncentiveInfo(tbl_row, "nAmtActlx"))); break;
+                        txtField.setText(String.valueOf(oTrans.getIncentiveInfo(tbl_row, "nAmtActlx")));
+                        break;
                     case 07:
-                        txtField.setText(String.valueOf(oTrans.getIncentiveInfo(tbl_row, "nInctvAmt"))); break;
+                        txtField.setText(String.valueOf(oTrans.getIncentiveInfo(tbl_row, "nInctvAmt")));
+                        break;
                     case 11:
-                        txtField.setText(String.valueOf((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID")))); break;
+                        txtField.setText(String.valueOf((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"))));
+                        break;
                     case 12:
                         txtField.setText(String.valueOf((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"))));
                 }
                 txtField.selectAll();
                 pnIndex = lnIndex;
-            } 
+            }
         } catch (SQLException e) {
-            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
+            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
         }
     };
-    
-    public void loadIncentives(){
-        try { 
-                txtField01.setText((String) oTrans.getMaster(1));
-                
-                txtField02.setText((String) oTrans.getIncentiveInfo(tbl_row, "xInctvNme"));
-                txtField03.setText(String.valueOf(oTrans.getIncentiveInfo(tbl_row, "nQtyGoalx")));
-                txtField04.setText(String.valueOf(oTrans.getIncentiveInfo(tbl_row, "nQtyActlx")));
-                txtField05.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveInfo(tbl_row, "nAmtGoalx"), "#,##0.00"));
-                txtField06.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveInfo(tbl_row, "nAmtActlx"), "#,##0.00"));
-                txtField07.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveInfo(tbl_row, "nInctvAmt"), "#,##0.00"));
-                txtField08.setText((String) oTrans.getIncentiveInfo(tbl_row, "sRemarksx"));
 
-                txtField01.setDisable(pnEditMode != EditMode.ADDNEW && pnEditMode != EditMode.UPDATE);
-                txtField02.setDisable(pnEditMode != EditMode.ADDNEW && pnEditMode != EditMode.UPDATE);
-                txtField03.setDisable(pnEditMode != EditMode.ADDNEW && pnEditMode != EditMode.UPDATE);
-                txtField04.setDisable(pnEditMode != EditMode.ADDNEW && pnEditMode != EditMode.UPDATE);
-                txtField05.setDisable(pnEditMode != EditMode.ADDNEW && pnEditMode != EditMode.UPDATE);
-                txtField06.setDisable(pnEditMode != EditMode.ADDNEW && pnEditMode != EditMode.UPDATE);
-                txtField07.setDisable(pnEditMode != EditMode.ADDNEW && pnEditMode != EditMode.UPDATE);
-                txtField08.setDisable(pnEditMode != EditMode.ADDNEW && pnEditMode != EditMode.UPDATE);
-                txtField10.setDisable(pnEditMode != EditMode.ADDNEW && pnEditMode != EditMode.UPDATE);
-                txtField11.setDisable(pnEditMode != EditMode.ADDNEW && pnEditMode != EditMode.UPDATE);
-                txtField12.setDisable(pnEditMode != EditMode.ADDNEW && pnEditMode != EditMode.UPDATE);
-            } catch (SQLException ex) {
-                ex.printStackTrace();
+    public void loadIncentives() {
+        try {
+            txtField01.setText((String) oTrans.getMaster(1));
+
+            txtField02.setText((String) oTrans.getIncentiveInfo(tbl_row, "xInctvNme"));
+            txtField03.setText(String.valueOf(oTrans.getIncentiveInfo(tbl_row, "nQtyGoalx")));
+            txtField04.setText(String.valueOf(oTrans.getIncentiveInfo(tbl_row, "nQtyActlx")));
+            txtField05.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveInfo(tbl_row, "nAmtGoalx"), "#,##0.00"));
+            txtField06.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveInfo(tbl_row, "nAmtActlx"), "#,##0.00"));
+            Object incentiveAmtObj = oTrans.getIncentiveInfo(tbl_row, "nInctvAmt");
+            String formattedIncentiveAmt;
+
+            if (incentiveAmtObj instanceof Number) {
+                formattedIncentiveAmt = CommonUtils.NumberFormat((Number) incentiveAmtObj, "#,##0.00");
+            } else {
+                // Handle the case where incentiveAmtObj is not a Number (e.g., it might be null)
+                formattedIncentiveAmt = "0.00"; // or any default value or error message
             }
+
+            txtField07.setText(formattedIncentiveAmt);
+            txtField08.setText((String) oTrans.getIncentiveInfo(tbl_row, "sRemarksx"));
+
+            txtField01.setDisable(pnEditMode != EditMode.ADDNEW && pnEditMode != EditMode.UPDATE);
+            txtField02.setDisable(pnEditMode != EditMode.ADDNEW && pnEditMode != EditMode.UPDATE);
+            txtField03.setDisable(pnEditMode != EditMode.ADDNEW && pnEditMode != EditMode.UPDATE);
+            txtField04.setDisable(pnEditMode != EditMode.ADDNEW && pnEditMode != EditMode.UPDATE);
+            txtField05.setDisable(pnEditMode != EditMode.ADDNEW && pnEditMode != EditMode.UPDATE);
+            txtField06.setDisable(pnEditMode != EditMode.ADDNEW && pnEditMode != EditMode.UPDATE);
+            txtField07.setDisable(pnEditMode != EditMode.ADDNEW && pnEditMode != EditMode.UPDATE);
+            txtField08.setDisable(pnEditMode != EditMode.ADDNEW && pnEditMode != EditMode.UPDATE);
+            txtField10.setDisable(pnEditMode != EditMode.ADDNEW && pnEditMode != EditMode.UPDATE);
+            txtField11.setDisable(pnEditMode != EditMode.ADDNEW && pnEditMode != EditMode.UPDATE);
+            txtField12.setDisable(pnEditMode != EditMode.ADDNEW && pnEditMode != EditMode.UPDATE);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
- 
-    private void loadEmployee(){
+
+    private void loadEmployee() {
         System.out.println("loadEmployee");
         try {
             total_alloc = (double) 0;
             lastpercValue = (double) 0;
-            int lnRow = oTrans.getItemCount(); 
+            int lnRow = oTrans.getItemCount();
             int lnCtr;
-            
+
             if (lnRow <= 0) {
-            return;
+                return;
             }
-               
-                    
-            if (incEmp_data.isEmpty()){
-                for (lnCtr = 1; lnCtr <= lnRow; lnCtr++){
-                    incEmp_data.add(new TableEmployeeIncentives(String.valueOf(lnCtr),
-                                        (String) oTrans.getDetail(lnCtr, "xEmployNm"),
-                                        (CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00")),
-                                        (CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00")),
-                                        (CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nTotalAmt", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00"))));
+
+            if (incEmp_data.isEmpty()) {
+                for (lnCtr = 1; lnCtr <= lnRow; lnCtr++) {
+                    System.out.println("invalid data nallcperc = " + oTrans.getDetail(lnCtr, "xEmployNm"));
+
+                    Object nAllcPercObj = oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID"));
+                    Object nAllcAmtxObj = oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID"));
+                    Object nTotalAmtObj = oTrans.getIncentiveEmployeeAllocationInfo("nTotalAmt", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID"));
+
+                    String value1 = (nAllcPercObj instanceof Number) ? CommonUtils.NumberFormat((Number) nAllcPercObj, "#,##0.00") : "0.00";
+                    String value2 = (nAllcAmtxObj instanceof Number) ? CommonUtils.NumberFormat((Number) nAllcAmtxObj, "#,##0.00") : "0.00";
+                    String value3 = (nTotalAmtObj instanceof Number) ? CommonUtils.NumberFormat((Number) nTotalAmtObj, "#,##0.00") : "0.00";
+
+                    incEmp_data.add(new TableEmployeeIncentives(
+                            String.valueOf(lnCtr),
+                            (String) oTrans.getDetail(lnCtr, "xEmployNm"),
+                            value1,
+                            value2,
+                            value3
+                    ));
+
+                    if (nAllcAmtxObj instanceof Number) {
+                        double allAmt = ((Number) nAllcAmtxObj).doubleValue();
+                        total_alloc += allAmt;
+                    }
+
+                    if (nAllcPercObj instanceof Number) {
+                        double allPer = ((Number) nAllcPercObj).doubleValue();
+                        lastpercValue += allPer;
+                    }
+                }
+            } else {
+                for (lnCtr = 1; lnCtr <= incEmp_data.size(); lnCtr++) {
+
+                    incEmp_data.set(lnCtr - 1, new TableEmployeeIncentives(String.valueOf(lnCtr),
+                            (String) oTrans.getDetail(lnCtr, "xEmployNm"),
+                            (CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00")),
+                            (CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00")),
+                            (CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nTotalAmt", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00"))));
 
                     double allAmt = Double.parseDouble(oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")).toString());
                     total_alloc += allAmt;
-                    double allPer= Double.parseDouble(oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")).toString());
-                    lastpercValue += allPer;
-                }  
-            } else{
-                for (lnCtr = 1; lnCtr <= incEmp_data.size(); lnCtr++){
-                    
-                    incEmp_data.set(lnCtr -1 , new TableEmployeeIncentives(String.valueOf(lnCtr),
-                                            (String) oTrans.getDetail(lnCtr, "xEmployNm"),
-                                            (CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00")),
-                                            (CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00")),
-                                            (CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nTotalAmt", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")), "#,##0.00"))));
-
-                    double allAmt = Double.parseDouble(oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")).toString());
-                    total_alloc += allAmt;
-                    double allPer= Double.parseDouble(oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")).toString());
+                    double allPer = Double.parseDouble(oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(lnCtr, "sEmployID")).toString());
                     lastpercValue += allPer;
                 }
             }
-            
-            if (oTrans.getIncentiveInfo(tbl_row, 101).toString().equals("NaN")){
+
+            if (oTrans.getIncentiveInfo(tbl_row, 101).toString().equals("NaN")) {
                 txtField101.setText("0.00%");
-                txtField102.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveInfo(tbl_row, 102),"#,##0.00"));
-            }else{
-                txtField101.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveInfo(tbl_row, 101), "#,##0.00" ) + "%");
-                txtField102.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveInfo(tbl_row, 102),"#,##0.00"));
-            }           
-            
+                txtField102.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveInfo(tbl_row, 102), "#,##0.00"));
+            } else {
+                txtField101.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveInfo(tbl_row, 101), "#,##0.00") + "%");
+                txtField102.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveInfo(tbl_row, 102), "#,##0.00"));
+            }
+
             tblemployee.getSelectionModel().select(pnRow - 1);
         } catch (SQLException ex) {
             ex.printStackTrace();
-            ShowMessageFX.Warning(getStage(),ex.getMessage(), "Warning", null); 
-            System.exit(1);
-        }   
+            ShowMessageFX.Warning(getStage(), ex.getMessage(), "Warning", null);
+//            System.exit(1);
+        }
     }
-    
+
     private void cmdButton_Click(ActionEvent event) {
         try {
-            String lsButton = ((Button)event.getSource()).getId();
-            switch (lsButton){
+            String lsButton = ((Button) event.getSource()).getId();
+            switch (lsButton) {
                 case "btnDelEmp":
-                    if (oTrans.removeIncentive(psCode)){
+                    if (oTrans.removeIncentive(psCode)) {
                         CommonUtils.closeStage(btnDelEmp);
                         ShowMessageFX.Warning(getStage(), "Incentives removed succesfully.", "Warning", null);
-                    }else{
-                        ShowMessageFX.Warning(oTrans.getMessage(),"Warning", null);
+                    } else {
+                        ShowMessageFX.Warning(oTrans.getMessage(), "Warning", null);
                     }
                     break;
-                    
+
                 case "btnReset":
-                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Reset incentive allocation?") == true){  
+                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Reset incentive allocation?") == true) {
                         oTrans.resetIncentiveEmployeeAllocation(psCode);
-                        ShowMessageFX.Warning(getStage(),"Allocation reset successful.","Warning", null);
+                        ShowMessageFX.Warning(getStage(), "Allocation reset successful.", "Warning", null);
                         loadEmployee();
                         getSelectedItem();
                     }
@@ -544,7 +605,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                 case "btnExit":
                     CommonUtils.closeStage(btnExit);
                     break;
-                    
+
                 default:
                     ShowMessageFX.Warning(null, pxeModuleName, "Button with name " + lsButton + " not registered.");
                     return;
@@ -552,21 +613,21 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
         } catch (SQLException ex) {
             Logger.getLogger(AddIncentivesController.class.getName()).log(Level.SEVERE, null, ex);
         }
-    } 
-    
-    public void initGrid() {   
+    }
+
+    public void initGrid() {
         empIncindex01.setStyle("-fx-alignment: CENTER;");
         empIncindex02.setStyle("-fx-alignment: CENTER-LEFT;");
         empIncindex03.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
         empIncindex04.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
         empIncindex05.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
-        
+
         empIncindex01.setCellValueFactory(new PropertyValueFactory<>("empIncindex01"));
-        empIncindex02.setCellValueFactory(new PropertyValueFactory<>("empIncindex02")); 
+        empIncindex02.setCellValueFactory(new PropertyValueFactory<>("empIncindex02"));
         empIncindex03.setCellValueFactory(new PropertyValueFactory<>("empIncindex03"));
-        empIncindex04.setCellValueFactory(new PropertyValueFactory<>("empIncindex04")); 
-        empIncindex05.setCellValueFactory(new PropertyValueFactory<>("empIncindex05")); 
-        
+        empIncindex04.setCellValueFactory(new PropertyValueFactory<>("empIncindex04"));
+        empIncindex05.setCellValueFactory(new PropertyValueFactory<>("empIncindex05"));
+
         tblemployee.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblemployee.lookup("TableHeaderRow");
             header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
@@ -575,25 +636,26 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
         });
 
         incEmp_data.clear();
-        tblemployee.setItems(incEmp_data);  
+        tblemployee.setItems(incEmp_data);
     }
 //    
+
     @FXML
     private void tblemployee_Clicked(MouseEvent event) {
-        pnRow = tblemployee.getSelectionModel().getSelectedIndex() + 1;  
-        
+        pnRow = tblemployee.getSelectionModel().getSelectedIndex() + 1;
+
         getSelectedItem();
         txtField11.requestFocus();
     }
-    private void getSelectedItem(){
-        try {                                    
+
+    private void getSelectedItem() {
+        try {
             txtField10.setText((String) oTrans.getDetail(pnRow, "xEmployNm"));
             txtField11.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID")), "##0.00"));
             txtField12.setText(CommonUtils.NumberFormat((Number) oTrans.getIncentiveEmployeeAllocationInfo("nAllcAmtx", psCode, (String) oTrans.getDetail(pnRow, "sEmployID")), "#,##0.00"));
             lastValue = Double.parseDouble(oTrans.getIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID")).toString());
-       
-        } 
-        catch (SQLException ex) {
+
+        } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
