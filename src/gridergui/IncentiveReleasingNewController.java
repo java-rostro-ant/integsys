@@ -1,0 +1,601 @@
+package gridergui;
+
+import com.sun.javafx.scene.control.skin.TableHeaderRow;
+import java.io.IOException;
+import java.net.URL;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.util.Date;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.rmj.fund.manager.base.IncentiveReleaseNew;
+import javafx.animation.FadeTransition;
+import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyBooleanPropertyBase;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+import org.rmj.appdriver.GRider;
+import org.rmj.appdriver.SQLUtil;
+import org.rmj.appdriver.agentfx.CommonUtils;
+import org.rmj.appdriver.agentfx.ShowMessageFX;
+import org.rmj.appdriver.constants.EditMode;
+import org.rmj.fund.manager.base.LMasDetTrans;
+import org.rmj.fund.manager.parameters.IncentiveBankInfo;
+
+/**
+ * FXML Controller class
+ *
+ * @author Valencia, Maynard
+ */
+public class IncentiveReleasingNewController implements Initializable, ScreenInterface {
+
+    private GRider oApp;
+    private IncentiveReleaseNew oTrans;
+    private IncentiveBankInfo trans;
+
+    private LMasDetTrans oListener;
+
+    private int pnEditMode;
+    private int pnRow = 0;
+    private boolean pbLoaded = false;
+    private Date pdPeriod = null;
+
+    @FXML
+    private AnchorPane AnchorMainIncentiveRelease;
+    @FXML
+    private TextField txtField01;
+    @FXML
+    private TextField txtField02;
+    @FXML
+    private TextField txtField99;
+    @FXML
+    private TextField txtField98;
+    @FXML
+    private TextField txtSeeks05;
+    @FXML
+    private Button btnRetrieve;
+    @FXML
+    private Button btnSave;
+    @FXML
+    private Button btnBrowse;
+    @FXML
+    private Button btnRelease;
+    @FXML
+    private Button btnCancel;
+    @FXML
+    private Button btnApproved;
+    @FXML
+    private Button btnClose;
+    @FXML
+    private HBox hbButtons;
+    @FXML
+    private TableView tblemployee;
+    @FXML
+    private TableColumn empIndex01, empIndex02, empIndex03, empIndex04, empIndex05, empIndex06, empIndex07, empIndex08;
+    @FXML
+    private TableView tblincetives;
+    @FXML
+    private TableColumn incIndex01, incIndex02, incIndex03;
+    @FXML
+    private Label lblTotal;
+
+    private final ObservableList<Release> Incentive_Directory = FXCollections.observableArrayList();
+    private final ObservableList<Release> Employee_Data = FXCollections.observableArrayList();
+
+    private Stage getStage() {
+        return (Stage) AnchorMainIncentiveRelease.getScene().getWindow();
+    }
+
+    /**
+     * Initializes the controller class.
+     *
+     * @param url
+     * @param rb
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        oListener = new LMasDetTrans() {
+            @Override
+            public void MasterRetreive(int i, Object o) {
+                loadRecord();
+                switch (i) {
+                    case 3: //sBackAcct
+                        txtField01.setText((String) o);
+                        break;
+                    case 7: //xEmployNm
+                        txtField02.setText((String) o);
+                        break;
+
+                }
+            }
+
+            @Override
+            public void DetailRetreive(int i, int i1, Object o) {
+            }
+        };
+
+        oTrans = new IncentiveReleaseNew(oApp, oApp.getBranchCode(), false);
+        oTrans.setListener(oListener);
+        oTrans.setWithUI(true);
+
+        initButtonClick();
+        intTextField();
+        pnEditMode = EditMode.UNKNOWN;
+
+        txtField01.setDisable(true);
+        txtField02.setDisable(true);
+        initButton(pnEditMode);
+        pbLoaded = true;
+    }
+
+    @Override
+    public void setGRider(GRider foValue) {
+        oApp = foValue;
+    }
+
+    private void initButtonClick() {
+        btnRetrieve.setOnAction(this::cmdButton_Click);
+        btnSave.setOnAction(this::cmdButton_Click);
+        btnBrowse.setOnAction(this::cmdButton_Click);
+        btnCancel.setOnAction(this::cmdButton_Click);
+        btnClose.setOnAction(this::cmdButton_Click);
+        btnApproved.setOnAction(this::cmdButton_Click);
+        btnRelease.setOnAction(this::cmdButton_Click);
+
+    }
+
+    private void intTextField() {
+        txtSeeks05.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField99.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField98.setOnKeyPressed(this::txtField_KeyPressed);
+
+        txtField98.focusedProperty().addListener(txtField_Focus);
+        txtField99.focusedProperty().addListener(txtField_Focus);
+    }
+
+    private void initButton(int fnValue) {
+        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
+
+        btnRetrieve.setVisible(true);
+        btnBrowse.setVisible(!lbShow);
+        btnApproved.setVisible(!lbShow);
+        btnRelease.setVisible(!lbShow);
+        btnSave.setVisible(lbShow);
+        btnCancel.setVisible(lbShow);
+
+        btnBrowse.setManaged(!lbShow);
+        btnApproved.setManaged(!lbShow);
+        btnRelease.setManaged(!lbShow);
+        btnRetrieve.setManaged(true);
+        btnSave.setManaged(lbShow);
+        btnCancel.setManaged(lbShow);
+
+    }
+
+    public void initGrid() {
+        incIndex01.setCellValueFactory(new PropertyValueFactory<Release, String>("incIndex01"));
+        incIndex02.setCellValueFactory(new PropertyValueFactory<Release, String>("incIndex02"));
+        incIndex03.setCellValueFactory(new PropertyValueFactory<Release, String>("incIndex03"));
+        /*making column's position uninterchangebale*/
+        tblincetives.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblincetives.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+        });
+
+        /*Assigning data to table*/
+        tblincetives.setItems(Incentive_Directory);
+
+    }
+
+    public void initEmployeeGrid() {
+        empIndex01.setStyle("-fx-alignment: CENTER-LEFT;");
+        empIndex02.setStyle("-fx-alignment: CENTER-LEFT;");
+        empIndex03.setStyle("-fx-alignment: CENTER-LEFT;");
+        empIndex06.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
+        empIndex07.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
+        empIndex08.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
+        empIndex01.setCellValueFactory(new PropertyValueFactory<Release, String>("empIndex01"));
+        empIndex02.setCellValueFactory(new PropertyValueFactory<Release, String>("empIndex02"));
+        empIndex03.setCellValueFactory(new PropertyValueFactory<Release, String>("empIndex03"));
+        empIndex04.setCellValueFactory(new PropertyValueFactory<Release, String>("empIndex04"));
+        empIndex05.setCellValueFactory(new PropertyValueFactory<Release, String>("empIndex05"));
+        empIndex06.setCellValueFactory(new PropertyValueFactory<Release, String>("empIndex06"));
+        empIndex07.setCellValueFactory(new PropertyValueFactory<Release, String>("empIndex07"));
+        empIndex08.setCellValueFactory(new PropertyValueFactory<Release, String>("empIndex08"));
+
+        /*making column's position uninterchangebale*/
+        tblemployee.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
+            TableHeaderRow header = (TableHeaderRow) tblemployee.lookup("TableHeaderRow");
+            header.reorderingProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                header.setReordering(false);
+            });
+            header.prefWidthProperty().bind(tblemployee.widthProperty().divide(7));
+        });
+
+        tblemployee.setItems(Employee_Data);
+
+    }
+
+    final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
+        if (!pbLoaded) {
+            return;
+        }
+
+        try {
+            TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
+            int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
+            String lsValue = txtField.getText();
+
+            if (!nv) {
+                /*Lost Focus*/
+                switch (lnIndex) {
+                    case 99:
+                        if (lsValue == null || lsValue == "") {
+                            return;
+                        }
+                        if (lsValue.trim().length() > 4 && lsValue.trim().length() <= 7) {
+                            pdPeriod = SQLUtil.toDate(lsValue.trim() + " 01", "yyyyMM dd");
+                            txtField.setText(CommonUtils.dateFormat(pdPeriod, "yyyy MMMM"));
+                        } else {
+                            pdPeriod = null;
+                            txtField.setText("");
+                        }
+                        return;
+                    case 98:
+                        if (lsValue.isEmpty() || oTrans.getDivision() == null) {
+                            oTrans.setDivision();
+                            txtField.setText("");
+                        }
+                        return;
+
+                }
+            } else { //Focus
+                switch (lnIndex) {
+                    case 99:
+                        if (pdPeriod != null) {
+                            txtField.setText(CommonUtils.dateFormat(pdPeriod, "YYYY MM"));
+                        }
+                        return;
+                    case 98:
+                        if (!lsValue.trim().isEmpty()) {
+                            txtField.setText((String) oTrans.getDivision("sDivsnDsc"));
+                        }
+                        return;
+
+                }
+                txtField.selectAll();
+            }
+        } catch (SQLException ex) {
+            Platform.runLater(() -> {
+                ShowMessageFX.Warning(getStage(), ex.getMessage(), "Catch Error", null);
+            });
+
+        }
+    };
+
+    private void loadRecord() {
+        try {
+            txtField01.setText((String) oTrans.getMaster("sTransNox"));
+            txtField02.setText(CommonUtils.xsDateLong((Date) oTrans.getMaster("dTransact")));
+
+            Incentive_Directory.clear();
+
+            Employee_Data.clear();
+            int lnDetail = 0;
+            double lnTotalAmount = 0;
+            double byBranchTotal = 0;
+            System.err.println("Start Adding Transaction Details");
+            System.err.println("Loop count = " + oTrans.getItemCount());
+
+            for (int lnRow = 0; lnRow <= oTrans.getItemCount() - 1; lnRow++) {
+                String lsOldBranch = "";
+                String lsBranch = oTrans.getDetail(lnRow).getMaster("xBranchNm").toString();
+
+                //fetch the first record
+                if (lnRow == 0) {
+                    lsOldBranch = lsBranch;
+
+                }
+                for (int lnCtr = 1; lnCtr <= oTrans.getDetail(lnRow).getItemCount(); lnCtr++) {
+                    lnDetail++;
+                    String EmployeeStat = "";
+                    if (oTrans.getDetail(lnRow).getDetail(lnCtr, "cRecdStat").toString().equals("1")) {
+
+                        EmployeeStat = "ACTIVE";
+                    } else {
+                        EmployeeStat = "INACTIVE";
+                    }
+                    double lnTotalEmpIncenctive = Double.valueOf(oTrans.getDetail(lnRow).getDetail(lnCtr, "xDeductnx").toString())
+                            + Double.valueOf(oTrans.getDetail(lnRow).getDetail(lnCtr, "xIncentve").toString());
+                    Employee_Data.add(new Release(String.valueOf(lnDetail),
+                            lsBranch,
+                            oTrans.getDetail(lnRow).getDetail(lnCtr, "xEmployNm").toString(),
+                            oTrans.getDetail(lnRow).getDetail(lnCtr, "xPositnNm").toString(),
+                            EmployeeStat,
+                            oTrans.getDetail(lnRow).getDetail(lnCtr, "xIncentve").toString(),
+                            oTrans.getDetail(lnRow).getDetail(lnCtr, "xDeductnx").toString(),
+                            CommonUtils.NumberFormat(lnTotalEmpIncenctive, "###,###,##0.00")));
+
+                    lnTotalAmount += lnTotalEmpIncenctive;
+                    byBranchTotal += lnTotalEmpIncenctive;
+
+                }
+                //directory
+                //check if last 
+                if (oTrans.getItemCount() - 1 != lnRow) {
+
+                    String lsPeriod = oTrans.getDetail(lnRow + 1).getMaster("sMonthxxx").toString();
+                    Date pdDate = SQLUtil.toDate(lsPeriod.trim() + " 01", "yyyyMM dd");
+                    String lsNextBranch = oTrans.getDetail(lnRow + 1).getMaster("xBranchNm").toString();
+                    if (!lsOldBranch.equals(lsNextBranch)) {
+                        Incentive_Directory.add(new Release(
+                                oTrans.getDetail(lnRow).getMaster("xBranchNm").toString(),
+                                CommonUtils.dateFormat(pdDate, "MMMM YYYY"),
+                                CommonUtils.NumberFormat(byBranchTotal, "###,###,##0.00")));
+
+                        //reset
+                        byBranchTotal = 0;
+                        lsOldBranch = lsBranch;
+
+                    } else {
+                        lsOldBranch = lsBranch;
+
+                    }
+                } else {
+                    //insert the last detail
+                    String lsPeriod = oTrans.getDetail(lnRow).getMaster("sMonthxxx").toString();
+                    Date pdDate = SQLUtil.toDate(lsPeriod.trim() + " 01", "yyyyMM dd");
+                    Incentive_Directory.add(new Release(
+                            oTrans.getDetail(lnRow).getMaster("xBranchNm").toString(),
+                            CommonUtils.dateFormat(pdDate, "MMMM YYYY"),
+                            String.valueOf(byBranchTotal)));
+
+                }
+
+            }
+
+            lblTotal.setText(CommonUtils.NumberFormat(lnTotalAmount, "###,###,##0.00"));
+
+            System.err.println("Finish Adding Transaction Details");
+            initEmployeeGrid();
+            initGrid();
+        } catch (NullPointerException | SQLException e) {
+            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
+            Logger.getLogger(IncentiveReleasingNewController.class.getName()).log(Level.SEVERE, null, e);
+        }
+    }
+
+    private void unloadForm() {
+        StackPane myBox = (StackPane) AnchorMainIncentiveRelease.getParent();
+        myBox.getChildren().clear();
+        myBox.getChildren().add(getScene("MainScreenBG.fxml"));
+    }
+
+    private AnchorPane getScene(String fsFormName) {
+        ScreenInterface fxObj = new MainScreenBGController();
+        fxObj.setGRider(oApp);
+
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(fxObj.getClass().getResource(fsFormName));
+        fxmlLoader.setController(fxObj);
+
+        AnchorPane root;
+        try {
+            root = (AnchorPane) fxmlLoader.load();
+            FadeTransition ft = new FadeTransition(Duration.millis(1500));
+            ft.setNode(root);
+            ft.setFromValue(1);
+            ft.setToValue(1);
+            ft.setCycleCount(1);
+            ft.setAutoReverse(false);
+            ft.play();
+
+            return root;
+        } catch (IOException ex) {
+            System.err.println(ex.getMessage());
+        }
+        return null;
+    }
+
+    private void cmdButton_Click(ActionEvent event) {
+        String lsButton = ((Button) event.getSource()).getId();
+        try {
+            switch (lsButton) {
+                case "btnBrowse": //browse transaction
+                    if (oTrans.SearchTransaction(txtSeeks05.getText(), true)) {
+                        txtSeeks05.setText(txtField99.getText());
+                        loadRecord();
+                        pnEditMode = oTrans.getEditMode();
+                    } else {
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
+                    }
+                    break;
+                case "btnRetrieve": //create new transaction
+
+                    if (txtField98.getText().trim().isEmpty()) {
+                        oTrans.setDivision();
+                    }
+                    if (pdPeriod == null) {
+                        ShowMessageFX.Warning(getStage(), "Incentive period must not be empty", "Warning", null);
+
+                    } else {
+                        String lsPeriod = CommonUtils.dateFormat(pdPeriod, "YYYYMM");
+                        System.out.println("nMonthxx = " + lsPeriod);
+                        if (oTrans.NewTransaction(lsPeriod)) {
+                            loadRecord();
+                            pnEditMode = oTrans.getEditMode();
+                        } else {
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
+                        }
+                    }
+                    break;
+
+                case "btnRelease": //release transaction
+//                  if (oTrans.ReleaseTransaction()){
+//                            MsgBox.showOk("Transaction releasing success!");
+//                            clearFields();
+//                            pnEditMode = oTrans.getEditMode();
+//                        } else 
+//                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                    break;
+                case "btnSave": //save transaction
+                    if (oTrans.SaveTransaction()) {
+                        ShowMessageFX.Warning(getStage(), "Transaction Successfully Saved.", "Warning", null);
+                        clearFields();
+                    } else {
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
+                    }
+
+                    break;
+                case "btnApproved": //approve transaction
+                    if (oTrans.ConfirmTransaction()) {
+                        ShowMessageFX.Warning(getStage(), "Transaction successfully approved.", "Warning", null);
+                        clearFields();
+                        pnEditMode = oTrans.getEditMode();
+                    } else {
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
+                    }
+                    break;
+//                case "btnDisapproved": //disapprove transaction
+//                    if (oTrans.CancelTransaction()) {
+//                        ShowMessageFX.Warning(getStage(), "Transaction successfully disapproved.", "Warning", null);
+//                        clearFields();
+//                        pnEditMode = oTrans.getEditMode();
+//                    } else {
+//                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
+//                    }
+//                    break;
+                case "btnCancel": //cancel transaction
+                    clearFields();
+                    //reload detail
+                    break;
+
+                case "btnClose": //close releasing form
+                    if (ShowMessageFX.OkayCancel(null, "Incentive Releasing", "Are you sure, do you want to close?") == true) {
+                        unloadForm();
+                        break;
+                    } else {
+                        return;
+                    }
+            }
+
+            initButton(pnEditMode);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
+        }
+    }
+
+    @FXML
+    private void tblincetives_Click(MouseEvent event
+    ) {
+
+//        try {
+        pnRow = tblincetives.getSelectionModel().getSelectedIndex();
+        if (pnRow >= 0) {
+
+            if (Employee_Data.size() > 0) {
+                String tblbranch = Incentive_Directory.get(pnRow).getIncIndex01();
+                for (int lnCtr = 0; lnCtr <= Employee_Data.size() - 1; lnCtr++) {
+                    String listBranch = Employee_Data.get(lnCtr).getEmpIndex02();
+
+                    if (listBranch.equals(tblbranch)) {
+                        // Branch found, select the row
+                        tblemployee.getSelectionModel().select(lnCtr);
+                        tblemployee.scrollTo(lnCtr);
+
+                        break;
+                    }
+                }
+            }
+        }
+
+//        } catch (SQLException ex) {
+//            ShowMessageFX.Warning(getStage(), ex.getMessage(), "Warning", null);
+//        }
+    }
+
+    private void txtField_KeyPressed(KeyEvent event) {
+        TextField txtField = (TextField) event.getSource();
+        int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
+        String lsValue = txtField.getText();
+        try {
+            switch (event.getCode()) {
+                case F3:
+                    switch (lnIndex) {
+
+                        case 5:
+                            /*Search*/
+                            pbLoaded = true;
+                            if (oTrans.SearchTransaction(lsValue, true)) {
+                                txtSeeks05.setText(txtField99.getText());
+                                loadRecord();
+                                pnEditMode = oTrans.getEditMode();
+                            } else {
+                                ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
+                            }
+                            break;
+
+                        case 98:
+                            /*Search*/
+                            pbLoaded = true;
+                            if (oTrans.searchDivision(lsValue, false)) {
+//                                loadRecord();
+                                txtField.setText((String) oTrans.getDivision("sDivsnDsc"));
+                                pnEditMode = oTrans.getEditMode();
+                            } else {
+                                txtField.setText("");
+                                ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
+                            }
+                            break;
+                    }
+                case ENTER:
+                case DOWN:
+                    CommonUtils.SetNextFocus(txtField);
+                    break;
+                case UP:
+                    CommonUtils.SetPreviousFocus(txtField);
+            }
+        } catch (SQLException e) {
+            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
+        }
+
+    }
+
+    private void clearFields() {
+        oTrans = new IncentiveReleaseNew(oApp, oApp.getBranchCode(), false);
+        oTrans.setListener(oListener);
+        oTrans.setWithUI(true);
+        pnEditMode = EditMode.UNKNOWN;
+        trans = new IncentiveBankInfo(oApp, oApp.getBranchCode(), false);
+        Incentive_Directory.clear();
+        Employee_Data.clear();
+        txtField01.clear();
+        txtField02.clear();
+        txtField99.clear();
+        txtField98.clear();
+    }
+}

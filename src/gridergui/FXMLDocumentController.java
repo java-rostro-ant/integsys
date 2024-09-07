@@ -216,8 +216,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return new IncentiveParameterController();
             case "AddIncentives.fxml":
                 return new AddIncentivesController();
-            case "IncentiveReleasing.fxml":
-                return new IncentiveReleasingController();
+            case "IncentiveReleasingNew.fxml":
+                return new IncentiveReleasingNewController();
             case "IncentiveConfirmation.fxml":
                 return new IncentiveConfirmationController();
             case "McBranchPerformance.fxml":
@@ -315,7 +315,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
 
     @FXML
     private void mnuIncentiveReleasingClick(ActionEvent event) {
-        setScene(loadAnimate("IncentiveReleasing.fxml"));
+        setScene(loadAnimate("IncentiveReleasingNew.fxml"));
     }
 
     @FXML
