@@ -309,8 +309,13 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
             double byBranchTotal = 0;
             System.err.println("Start Adding Transaction Details");
             System.err.println("Loop count = " + oTrans.getItemCount());
+            
+            
 
             for (int lnRow = 0; lnRow <= oTrans.getItemCount() - 1; lnRow++) {
+                
+                    String lsPeriod = oTrans.getDetail(lnRow).getMaster("sMonthxxx").toString();
+                    Date ldDate = SQLUtil.toDate(lsPeriod.trim() + " 01", "yyyyMM dd");
                 String lsOldBranch = "";
                 String lsBranch = oTrans.getDetail(lnRow).getMaster("xBranchNm").toString();
 
@@ -347,13 +352,11 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
                 //check if last 
                 if (oTrans.getItemCount() - 1 != lnRow) {
 
-                    String lsPeriod = oTrans.getDetail(lnRow + 1).getMaster("sMonthxxx").toString();
-                    Date pdDate = SQLUtil.toDate(lsPeriod.trim() + " 01", "yyyyMM dd");
                     String lsNextBranch = oTrans.getDetail(lnRow + 1).getMaster("xBranchNm").toString();
                     if (!lsOldBranch.equals(lsNextBranch)) {
                         Incentive_Directory.add(new Release(
                                 oTrans.getDetail(lnRow).getMaster("xBranchNm").toString(),
-                                CommonUtils.dateFormat(pdDate, "MMMM YYYY"),
+                                CommonUtils.dateFormat(ldDate, "MMMM YYYY"),
                                 CommonUtils.NumberFormat(byBranchTotal, "###,###,##0.00")));
 
                         //reset
@@ -366,11 +369,9 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
                     }
                 } else {
                     //insert the last detail
-                    String lsPeriod = oTrans.getDetail(lnRow).getMaster("sMonthxxx").toString();
-                    Date pdDate = SQLUtil.toDate(lsPeriod.trim() + " 01", "yyyyMM dd");
                     Incentive_Directory.add(new Release(
                             oTrans.getDetail(lnRow).getMaster("xBranchNm").toString(),
-                            CommonUtils.dateFormat(pdDate, "MMMM YYYY"),
+                            CommonUtils.dateFormat(ldDate, "MMMM YYYY"),
                             String.valueOf(byBranchTotal)));
 
                 }
