@@ -98,7 +98,7 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
     @FXML
     private TableColumn incIndex01, incIndex02, incIndex03;
     @FXML
-    private Label lblTotal;
+    private Label lblTotal, lblStatus;
 
     private final ObservableList<Release> Incentive_Directory = FXCollections.observableArrayList();
     private final ObservableList<Release> Employee_Data = FXCollections.observableArrayList();
@@ -382,6 +382,7 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
             System.err.println("Finish Adding Transaction Details");
             initEmployeeGrid();
             initGrid();
+            getTransactionStatus();
         } catch (NullPointerException | SQLException e) {
             ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
             Logger.getLogger(IncentiveReleasingNewController.class.getName()).log(Level.SEVERE, null, e);
@@ -454,17 +455,19 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
                     break;
 
                 case "btnRelease": //release transaction
-//                  if (oTrans.ReleaseTransaction()){
-//                            MsgBox.showOk("Transaction releasing success!");
-//                            clearFields();
-//                            pnEditMode = oTrans.getEditMode();
-//                        } else 
-//                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                    if (oTrans.ReleaseTransaction()) {
+                        ShowMessageFX.Information(getStage(), "Incentive's Release Successfully.", "Warning", null);
+                        clearFields();
+                        pnEditMode = oTrans.getEditMode();
+                    } else {
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
+                    }
                     break;
                 case "btnSave": //save transaction
                     if (oTrans.SaveTransaction()) {
                         ShowMessageFX.Warning(getStage(), "Transaction Successfully Saved.", "Warning", null);
                         clearFields();
+
                     } else {
                         ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
                     }
@@ -597,5 +600,30 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
         txtField02.clear();
         txtField99.clear();
         txtField98.clear();
+        pdPeriod = null;
+
+        lblStatus.setVisible(false);
+    }
+
+    private void getTransactionStatus() {
+        try {
+            if (oTrans.getMaster("cTranStat").toString().equalsIgnoreCase("0")) {
+                lblStatus.setVisible(true);
+                lblStatus.setText("OPEN");
+            } else if (oTrans.getMaster("cTranStat").toString().equalsIgnoreCase("1")) {
+                lblStatus.setVisible(true);
+                lblStatus.setText("CLOSED");
+            } else if (oTrans.getMaster("cTranStat").toString().equalsIgnoreCase("2")) {
+                lblStatus.setVisible(true);
+                lblStatus.setText("RELEASED");
+            } else if (oTrans.getMaster("cTranStat").toString().equalsIgnoreCase("3")) {
+                lblStatus.setVisible(true);
+                lblStatus.setText("CANCELLED");
+            } else {
+                lblStatus.setVisible(false);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(IncentiveReleasingNewController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
