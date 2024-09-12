@@ -36,6 +36,7 @@ import javafx.util.Duration;
 import org.rmj.appdriver.GRider;
 import org.rmj.appdriver.GSec;
 import org.rmj.appdriver.SQLUtil;
+import org.rmj.appdriver.constants.UserRight;
 
 /**
  * FXML Controller class
@@ -70,15 +71,13 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private MenuItem mnuCashCountEntry;
     @FXML
-    private MenuItem mnuAuditIncentiveReport, mnuAuditIncentiveReportNew, mnuRaffleReport;
+    private MenuItem mnuAuditIncentiveReport,  mnuAuditIncentiveReportNew, mnuRaffleReport;
     @FXML
     private MenuItem mnuAuditDeptIncentiveReport;
     @FXML
     private Pane view;
     @FXML
     private MenuItem mnuEmployeeIncentivesBank;
-    @FXML
-    private MenuItem mnuIncentiveReleasing;
     @FXML
     private MenuItem mnuIncentiveConfirmation;
     @FXML
@@ -92,6 +91,10 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     private MenuItem mnuMPBranch;
     @FXML
     private MenuItem mnuMPArea;
+    @FXML
+    private MenuItem mnuIncentiveReleaseHistory; 
+    @FXML
+    private MenuItem mnuIncentiveReleasing;
 
     @FXML
     private Label DateAndTime;
@@ -104,9 +107,9 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private Menu mnuFiles02;
     @FXML
-    private Menu mnuTransaction11, mnuTransaction112;
+    private Menu mnuTransactionIncentives, mnuTransactionIncDptmnt;
     @FXML
-    private Menu mnuTransaction111;
+    private Menu mnuTransactionCashCount;
     @FXML
     private Menu mnuInventory01;
     @FXML
@@ -218,6 +221,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return new AddIncentivesController();
             case "IncentiveReleasingNew.fxml":
                 return new IncentiveReleasingNewController();
+            case "IncentiveReleasingHistory.fxml":
+                return new IncentiveReleasingHistoryController();
             case "IncentiveConfirmation.fxml":
                 return new IncentiveConfirmationController();
             case "McBranchPerformance.fxml":
@@ -346,6 +351,11 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuIncentiveHistoryClick(ActionEvent event) {
         setScene(loadAnimate("IncentiveHistory.fxml"));
+    }
+
+    @FXML
+    private void mnuIncentiveReleaseHistoryClick(ActionEvent event) {
+        setScene(loadAnimate("IncentiveReleasingHistory.fxml"));
     }
 
     @FXML
@@ -540,16 +550,13 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
         //compliance management;
         mnuIncentiveParameter.setVisible("034;026;".contains(oApp.getDepartment()));
 
-        mnuTransaction111.setVisible("034;026;".contains(oApp.getDepartment()));
+        mnuTransactionCashCount.setVisible("034;026;".contains(oApp.getDepartment()));
         mnuInventory01.setVisible("034;026;".contains(oApp.getDepartment()));
 
         //finance management;
         mnuEmployeeIncentivesBank.setVisible("021;028;026".contains(oApp.getDepartment()));
-        mnuTransaction111.setVisible("028;026;".contains(oApp.getDepartment()));
+        mnuTransactionCashCount.setVisible("028;026;".contains(oApp.getDepartment()));
         mnuInventory01.setVisible("028;026;".contains(oApp.getDepartment()));
-
-        //sales
-        mnuTransaction11.setVisible("015;026;036;038".contains(oApp.getDepartment()));
 
         if (!mnuIncentiveParameter.isVisible()
                 && !mnuEmployeeIncentivesBank.isVisible()) {
@@ -558,12 +565,18 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
             mnuFiles01.setVisible(true);
         }
 
-        mnuTransaction11.setVisible("015;034;022;028;026;036;038".contains(oApp.getDepartment()));
-
 //      mnuAuditIncentiveReport.setVisible("015;034;022;028;026;036;038".contains(oApp.getDepartment()));
         mnuAuditIncentiveReportNew.setVisible("015;034;022;028;026;036;038".contains(oApp.getDepartment()));
         mnuAuditDeptIncentiveReport.setVisible("026;028;".contains(oApp.getDepartment()));
         mnuAuditBankReport.setVisible("026;028;021;".contains(oApp.getDepartment()));
+
+        mnuTransactionIncentives.setVisible("015;022;026;028;034;036;038".contains(oApp.getDepartment()));;
+
+        System.out.println(oApp.getDepartment() + oApp.getUserLevel());
+        mnuIncentiveReleasing.setVisible("028;026".contains(oApp.getDepartment())
+                && oApp.getUserLevel() > UserRight.ENCODER);
+        mnuIncentiveReleaseHistory.setVisible("028;026".contains(oApp.getDepartment())
+                && oApp.getUserLevel() > UserRight.ENCODER);
 
     }
 }

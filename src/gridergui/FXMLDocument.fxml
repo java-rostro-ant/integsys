@@ -55,7 +55,7 @@
                                         </Menu>
                                         <Menu fx:id="mnuTransaction" mnemonicParsing="false" text="Transactions">
                                           <items>
-                                                <Menu fx:id="mnuTransaction111" mnemonicParsing="false" text="Cash Count">
+                                                <Menu fx:id="mnuTransactionCashCount" mnemonicParsing="false" text="Cash Count">
                                                    <items>
                                                       <MenuItem fx:id="mnuCashCountRequest" mnemonicParsing="false" text="Request" visible="false" />
                                                       <MenuItem fx:id="mnuCashCountEntry" mnemonicParsing="false" onAction="#mnuCashCountEntryClick" text="Entry" visible="false" />
@@ -63,15 +63,16 @@
                                                       <MenuItem fx:id="mnuCashCountHistory" mnemonicParsing="false" onAction="#mnuCashCountHistoryClick" text="History" />
                                                    </items>
                                                 </Menu>
-                                                <Menu fx:id="mnuTransaction11" mnemonicParsing="false" text="Incentives - Branch">
+                                                <Menu fx:id="mnuTransactionIncentives" mnemonicParsing="false" text="Incentives - Branch">
                                                    <items>
                                                       <MenuItem fx:id="mnuEmployeeIncentives" mnemonicParsing="false" onAction="#mnuEmployeeIncentivesClick" text="Entry" />
                                                       <MenuItem fx:id="mnuIncentiveConfirmation" mnemonicParsing="false" onAction="#mnuIncentiveConfirmationClick" text="Confirmation" />
                                                       <MenuItem fx:id="mnuIncentiveReleasing" mnemonicParsing="false" onAction="#mnuIncentiveReleasingClick" text="Releasing" />
                                                       <MenuItem fx:id="mnuIncentiveHistory" mnemonicParsing="false" onAction="#mnuIncentiveHistoryClick" text="History" />
+                                                      <MenuItem fx:id="mnuIncentiveReleaseHistory" mnemonicParsing="false" onAction="#mnuIncentiveReleaseHistoryClick" text="Releasing History" />
                                                    </items>
                                                 </Menu>
-                                                <Menu fx:id="mnuTransaction112" mnemonicParsing="false" text="Incentives - Department" visible="false">
+                                                <Menu fx:id="mnuTransactionIncDptmnt" mnemonicParsing="false" text="Incentives - Department" visible="false">
                                                    <items>
                                                       <MenuItem fx:id="mnuDepartmentIncentives" mnemonicParsing="false" onAction="#mnuDepartmentIncentivesClick" text="Entry" />
                                                       <MenuItem fx:id="mnuDeptIncentivesApproval" mnemonicParsing="false" onAction="#mnuDeptIncentivesApprovalClick" text="Confirmation" />
@@ -81,10 +82,10 @@
                                                 </Menu>
                                                 <Menu fx:id="mnuTransaction99" mnemonicParsing="false" text="Performance" visible="false">
                                                    <items>
-                                                      <MenuItem fx:id="mnuEmployeeIncentives" mnemonicParsing="false" onAction="#mnuMCBranchPerformanceClick" text="MC Branch Entry" />
-                                                      <MenuItem fx:id="mnuIncentiveConfirmation" mnemonicParsing="false" onAction="#mnuMPBranchPerformanceClick" text="MP Branch Entry" />
-                                                      <MenuItem fx:id="mnuIncentiveReleasing" mnemonicParsing="false" onAction="#mnuMCAreaPerformanceClick" text="MC Area Entry" />
-                                                      <MenuItem fx:id="mnuIncentiveHistory" mnemonicParsing="false" onAction="#mnuMPAreaPerformanceClick" text="MP Area Entry" />
+                                                      <MenuItem mnemonicParsing="false" onAction="#mnuMCBranchPerformanceClick" text="MC Branch Entry" />
+                                                      <MenuItem mnemonicParsing="false" onAction="#mnuMPBranchPerformanceClick" text="MP Branch Entry" />
+                                                      <MenuItem mnemonicParsing="false" onAction="#mnuMCAreaPerformanceClick" text="MC Area Entry" />
+                                                      <MenuItem mnemonicParsing="false" onAction="#mnuMPAreaPerformanceClick" text="MP Area Entry" />
                                                    </items>
                                                 </Menu>
                                                 <Menu fx:id="mnuTransaction1121" mnemonicParsing="false" text="Panalo">

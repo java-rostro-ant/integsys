@@ -1,8 +1,11 @@
 package gridergui;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -12,7 +15,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.rmj.fund.manager.base.IncentiveReleaseNew;
 import javafx.animation.FadeTransition;
-import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -34,8 +36,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.rmj.appdriver.GRider;
 import org.rmj.appdriver.SQLUtil;
 import org.rmj.appdriver.agentfx.CommonUtils;
@@ -49,7 +56,7 @@ import org.rmj.fund.manager.parameters.IncentiveBankInfo;
  *
  * @author Valencia, Maynard
  */
-public class IncentiveReleasingNewController implements Initializable, ScreenInterface {
+public class IncentiveReleasingHistoryController implements Initializable, ScreenInterface {
 
     private GRider oApp;
     private IncentiveReleaseNew oTrans;
@@ -60,7 +67,6 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
     private int pnEditMode;
     private int pnRow = 0;
     private boolean pbLoaded = false;
-    private Date pdPeriod = null;
 
     @FXML
     private AnchorPane AnchorMainIncentiveRelease;
@@ -75,15 +81,9 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
     @FXML
     private TextField txtSeeks05;
     @FXML
-    private Button btnRetrieve;
-    @FXML
-    private Button btnSave;
+    private Button btnNoBank, btnBDO, btnSB, btnMTB, btnCB;
     @FXML
     private Button btnBrowse;
-    @FXML
-    private Button btnCancel;
-    @FXML
-    private Button btnApproved;
     @FXML
     private Button btnClose;
     @FXML
@@ -119,7 +119,6 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
             public void MasterRetreive(int i, Object o) {
                 loadRecord();
                 switch (i) {
-
                 }
             }
 
@@ -136,9 +135,6 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
         intTextField();
         pnEditMode = EditMode.UNKNOWN;
 
-        txtField01.setDisable(true);
-        txtField02.setDisable(true);
-        initButton(pnEditMode);
         pbLoaded = true;
     }
 
@@ -148,12 +144,13 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
     }
 
     private void initButtonClick() {
-        btnRetrieve.setOnAction(this::cmdButton_Click);
-        btnSave.setOnAction(this::cmdButton_Click);
+        btnNoBank.setOnAction(this::cmdButton_Click);
+        btnBDO.setOnAction(this::cmdButton_Click);
+        btnMTB.setOnAction(this::cmdButton_Click);
+        btnSB.setOnAction(this::cmdButton_Click);
+        btnCB.setOnAction(this::cmdButton_Click);
         btnBrowse.setOnAction(this::cmdButton_Click);
-        btnCancel.setOnAction(this::cmdButton_Click);
         btnClose.setOnAction(this::cmdButton_Click);
-        btnApproved.setOnAction(this::cmdButton_Click);
 
     }
 
@@ -164,23 +161,6 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
 
         txtField98.focusedProperty().addListener(txtField_Focus);
         txtField99.focusedProperty().addListener(txtField_Focus);
-    }
-
-    private void initButton(int fnValue) {
-        boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-
-        btnRetrieve.setVisible(true);
-        btnBrowse.setVisible(!lbShow);
-        btnApproved.setVisible(!lbShow);
-        btnSave.setVisible(lbShow);
-        btnCancel.setVisible(lbShow);
-
-        btnBrowse.setManaged(!lbShow);
-        btnApproved.setManaged(!lbShow);
-        btnRetrieve.setManaged(true);
-        btnSave.setManaged(lbShow);
-        btnCancel.setManaged(lbShow);
-
     }
 
     public void initGrid() {
@@ -236,6 +216,7 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
                 }
             };
         });
+
         /*making column's position uninterchangebale*/
         tblemployee.widthProperty().addListener((ObservableValue<? extends Number> source, Number oldWidth, Number newWidth) -> {
             TableHeaderRow header = (TableHeaderRow) tblemployee.lookup("TableHeaderRow");
@@ -254,55 +235,29 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
             return;
         }
 
-        try {
-            TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
-            int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
-            String lsValue = txtField.getText();
+        TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
+        int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
+        String lsValue = txtField.getText();
+        if (!nv) {
+            /*Lost Focus*/
+            switch (lnIndex) {
+//                case 99:
+//                    if (lsValue == null || lsValue == "") {
+//                        return;
+//                    }
+//                    if (lsValue.trim().length() > 4 && lsValue.trim().length() <= 7) {
+//                        pdPeriod = SQLUtil.toDate(lsValue.trim() + " 01", "yyyyMM dd");
+//                        txtField.setText(CommonUtils.dateFormat(pdPeriod, "yyyy MMMM"));
+//                    } else {
+//                        pdPeriod = null;
+//                        txtField.setText("");
+//                    }
+//                    return;
 
-            if (!nv) {
-                /*Lost Focus*/
-                switch (lnIndex) {
-                    case 99:
-                        if (lsValue == null || lsValue == "") {
-                            return;
-                        }
-                        if (lsValue.trim().length() > 4 && lsValue.trim().length() <= 7) {
-                            pdPeriod = SQLUtil.toDate(lsValue.trim() + " 01", "yyyyMM dd");
-                            txtField.setText(CommonUtils.dateFormat(pdPeriod, "yyyy MMMM"));
-                        } else {
-                            pdPeriod = null;
-                            txtField.setText("");
-                        }
-                        return;
-                    case 98:
-                        if (lsValue.isEmpty() || oTrans.getDivision() == null) {
-                            oTrans.setDivision();
-                            txtField.setText("");
-                        }
-                        return;
-
-                }
-            } else { //Focus
-                switch (lnIndex) {
-                    case 99:
-                        if (pdPeriod != null) {
-                            txtField.setText(CommonUtils.dateFormat(pdPeriod, "YYYY MM"));
-                        }
-                        return;
-                    case 98:
-                        if (!lsValue.trim().isEmpty()) {
-                            txtField.setText((String) oTrans.getDivision("sDivsnDsc"));
-                        }
-                        return;
-
-                }
-                txtField.selectAll();
             }
-        } catch (SQLException ex) {
-            Platform.runLater(() -> {
-                ShowMessageFX.Warning(getStage(), ex.getMessage(), "Catch Error", null);
-            });
+        } else { //Focus
 
+            txtField.selectAll();
         }
     };
 
@@ -315,15 +270,18 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
 
             Employee_Data.clear();
             int lnDetail = 0;
+            Date ldDate = null;
             double lnTotalAmount = 0;
             double byBranchTotal = 0;
             System.err.println("Start Adding Transaction Details");
             System.err.println("Loop count = " + oTrans.getItemCount());
 
+            String lsBankName;
+            String lsBankAcct;
             for (int lnRow = 0; lnRow <= oTrans.getItemCount() - 1; lnRow++) {
 
                 String lsPeriod = oTrans.getDetail(lnRow).getMaster("sMonthxxx").toString();
-                Date ldDate = SQLUtil.toDate(lsPeriod.trim() + " 01", "yyyyMM dd");
+                ldDate = SQLUtil.toDate(lsPeriod.trim() + " 01", "yyyyMM dd");
                 String lsOldBranch = "";
                 String lsBranch = oTrans.getDetail(lnRow).getMaster("xBranchNm").toString();
 
@@ -332,7 +290,6 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
                     lsOldBranch = lsBranch;
 
                 }
-
                 // A map to store the grouped totals by employee and branch
                 Map<String, Release> groupedData = new LinkedHashMap<>();
 
@@ -346,10 +303,20 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
                         EmployeeStat = "INACTIVE";
                     }
 
+                    trans = oTrans.getBankInfo((String) oTrans.getDetail(lnRow).getDetail(lnCtr, "sEmployID"));
+
+                    if (trans != null) {
+                        lsBankName = trans.getMaster(2).toString();
+                        lsBankAcct = trans.getMaster(3).toString();
+                    } else {
+                        lsBankName = "";
+                        lsBankAcct = "";
+                    }
+
                     double xIncentive = Double.parseDouble(oTrans.getDetail(lnRow).getDetail(lnCtr, "xIncentve").toString());
                     double xDeduction = Double.parseDouble(oTrans.getDetail(lnRow).getDetail(lnCtr, "xDeductnx").toString());
                     double lnTotalEmpIncentive = xIncentive + xDeduction;
-                       //grouping the employee with branch
+
                     // Create a unique key using branch and employee name
                     String key = lsBranch + "-" + oTrans.getDetail(lnRow).getDetail(lnCtr, "xEmployNm").toString();
 
@@ -376,7 +343,11 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
                                 EmployeeStat,
                                 CommonUtils.NumberFormat(xIncentive, "###,###,##0.00"),
                                 CommonUtils.NumberFormat(xDeduction, "###,###,##0.00"),
-                                CommonUtils.NumberFormat(lnTotalEmpIncentive, "###,###,##0.00"));
+                                CommonUtils.NumberFormat(lnTotalEmpIncentive, "###,###,##0.00"),
+                                lsBankName,
+                                lsBankAcct,
+                                oTrans.getDetail(lnRow).getDetail(lnCtr, "sEmployID").toString()
+                        );
 
                         groupedData.put(key, newRelease);
                     }
@@ -416,15 +387,20 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
 
             }
 
+            txtField99.setText(CommonUtils.dateFormat(ldDate, "MMMM YYYY"));
             lblTotal.setText(CommonUtils.NumberFormat(lnTotalAmount, "###,###,##0.00"));
+            if (oTrans.getDivisionbyBranch((String) oTrans.getDetail(1).getMaster("sBranchCd"))) {
+                txtField98.setText((String) oTrans.getDivision("sDivsnDsc"));
+            }
 
             System.err.println("Finish Adding Transaction Details");
             initEmployeeGrid();
             initGrid();
+
             getTransactionStatus();
         } catch (NullPointerException | SQLException e) {
             ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
-            Logger.getLogger(IncentiveReleasingNewController.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(IncentiveReleasingHistoryController.class.getName()).log(Level.SEVERE, null, e);
         }
     }
 
@@ -466,14 +442,22 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
             switch (lsButton) {
                 case "btnBrowse": //browse transaction
                     if (oTrans.SearchTransaction(txtSeeks05.getText(), true)) {
-                        
                         loadRecord();
+
                         txtSeeks05.setText(txtField01.getText());
                         pnEditMode = oTrans.getEditMode();
                     } else {
                         ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
                     }
                     break;
+                case "btnNoBank":
+                case "btnBDO":
+                case "btnMTB":
+                case "btnSB":
+                case "btnCB":
+                    ExportbyBank(lsButton);
+                    break;
+
                 case "btnClose": //close releasing form
                     if (ShowMessageFX.OkayCancel(null, "Incentive Releasing", "Are you sure, do you want to close?") == true) {
                         unloadForm();
@@ -483,7 +467,6 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
                     }
             }
 
-            initButton(pnEditMode);
         } catch (SQLException e) {
             e.printStackTrace();
             ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
@@ -529,26 +512,14 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
                     switch (lnIndex) {
 
                         case 5:
-                            /*Browse*/
+                            /*Search*/
                             pbLoaded = true;
                             if (oTrans.SearchTransaction(lsValue, true)) {
                                 loadRecord();
+
                                 txtSeeks05.setText(txtField01.getText());
                                 pnEditMode = oTrans.getEditMode();
                             } else {
-                                ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
-                            }
-                            break;
-
-                        case 98:
-                            /*Search*/
-                            pbLoaded = true;
-                            if (oTrans.searchDivision(lsValue, false)) {
-//                                loadRecord();
-                                txtField.setText((String) oTrans.getDivision("sDivsnDsc"));
-                                pnEditMode = oTrans.getEditMode();
-                            } else {
-                                txtField.setText("");
                                 ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
                             }
                             break;
@@ -578,7 +549,6 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
         txtField02.clear();
         txtField99.clear();
         txtField98.clear();
-        pdPeriod = null;
 
         lblStatus.setVisible(false);
     }
@@ -601,7 +571,209 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
                 lblStatus.setVisible(false);
             }
         } catch (SQLException ex) {
-            Logger.getLogger(IncentiveReleasingNewController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(IncentiveReleasingHistoryController.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private void ExportbyBank(String fsBankType) {
+        // Create the Excel file
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("Incentive Data");
+            Row headerRow = null;
+            int rowNum;
+            int exportDetail = 0;
+            switch (fsBankType) {
+                // Define a header row
+                case "btnNoBank":
+                    headerRow = sheet.createRow(0);
+                    headerRow.createCell(0).setCellValue("No");
+                    headerRow.createCell(1).setCellValue("Branch");
+                    headerRow.createCell(2).setCellValue("Employee Name");
+                    headerRow.createCell(3).setCellValue("Amount");
+
+                    rowNum = 1;
+                    for (Release release : Employee_Data) {
+                        if (release.getEmpIndex09().trim().isEmpty() || release.getEmpIndex09() == null) {
+                            if (Double.valueOf(release.getEmpIndex08().replaceAll(",", "")) > 0) {
+                                Row row = sheet.createRow(rowNum);
+                                row.createCell(0).setCellValue(rowNum);
+                                row.createCell(1).setCellValue(release.getEmpIndex02());
+                                row.createCell(2).setCellValue(release.getEmpIndex03());
+                                row.createCell(3).setCellValue(release.getEmpIndex08());
+
+                                rowNum++;
+                                exportDetail++;
+                            }
+                        }
+                    }
+                    break;
+
+                case "btnBDO":
+                    headerRow = sheet.createRow(0);
+                    headerRow.createCell(0).setCellValue("Account #");
+                    headerRow.createCell(1).setCellValue("Amount");
+                    headerRow.createCell(2).setCellValue("Employee Name");
+                    headerRow.createCell(3).setCellValue("Remarks");
+
+                    rowNum = 1;
+                    for (Release release : Employee_Data) {
+                        if (release.getEmpIndex09().equalsIgnoreCase("00XX024")) {
+                            if (Double.valueOf(release.getEmpIndex08().replaceAll(",", "")) > 0) {
+                                Row row = sheet.createRow(rowNum++);
+                                row.createCell(0).setCellValue(release.getEmpIndex10());
+                                row.createCell(1).setCellValue(release.getEmpIndex08());
+                                row.createCell(2).setCellValue(release.getEmpIndex03());
+                                row.createCell(3).setCellValue("");
+
+                                exportDetail++;
+                            }
+                        }
+                    }
+                    break;
+
+                case "btnMTB":
+
+                    headerRow = sheet.createRow(0);
+                    headerRow.createCell(0).setCellValue("Last Name");
+                    headerRow.createCell(1).setCellValue("First Name");
+                    headerRow.createCell(2).setCellValue("Middle Name");
+                    headerRow.createCell(3).setCellValue("Employee Account Number");
+                    headerRow.createCell(4).setCellValue("Amount");
+
+                    rowNum = 1;
+                    for (Release release : Employee_Data) {
+
+                        if (release.getEmpIndex09().equalsIgnoreCase("00XX006")) {
+                            if (Double.valueOf(release.getEmpIndex08().replaceAll(",", "")) > 0) {
+                                String LastName = "";
+                                String FirstName = "";
+                                String MiddleName = "";
+                                ResultSet loRS = oTrans.getEmployeeDetail(release.getEmpIndex11());
+                                if (loRS != null) {
+                                    LastName = loRS.getString("sLastName");
+                                    FirstName = loRS.getString("sFrstName");
+                                    MiddleName = loRS.getString("sMiddName");
+                                    loRS.close();
+
+                                }
+                                Row row = sheet.createRow(rowNum++);
+                                row.createCell(0).setCellValue(LastName);
+                                row.createCell(1).setCellValue(FirstName);
+                                row.createCell(2).setCellValue(MiddleName);
+                                row.createCell(3).setCellValue(release.getEmpIndex10());
+                                row.createCell(4).setCellValue(release.getEmpIndex08());
+
+                                exportDetail++;
+                            }
+                        }
+                    }
+                    break;
+
+                case "btnSB":
+                    headerRow = sheet.createRow(0);
+                    headerRow.createCell(0).setCellValue("Employee Name");
+                    headerRow.createCell(1).setCellValue("Account Number");
+                    headerRow.createCell(2).setCellValue("Amount");
+
+                    rowNum = 1;
+                    for (Release release : Employee_Data) {
+                        if (release.getEmpIndex09().equalsIgnoreCase("00XX022")) {
+                            if (Double.valueOf(release.getEmpIndex08().replaceAll(",", "")) > 0) {
+                                Row row = sheet.createRow(rowNum++);
+                                row.createCell(0).setCellValue(release.getEmpIndex03());
+                                row.createCell(1).setCellValue(release.getEmpIndex10());
+                                row.createCell(2).setCellValue(release.getEmpIndex08());
+
+                                exportDetail++;
+                            }
+                        }
+                    }
+                    break;
+
+                case "btnCB":
+
+                    headerRow = sheet.createRow(0);
+                    headerRow.createCell(0).setCellValue("Last Name");
+                    headerRow.createCell(1).setCellValue("First Name");
+                    headerRow.createCell(2).setCellValue("Middle Name");
+                    headerRow.createCell(3).setCellValue("Mobile No");
+                    headerRow.createCell(4).setCellValue("E-Mail");
+                    headerRow.createCell(5).setCellValue("Employee Account Number");
+                    headerRow.createCell(6).setCellValue("Amount");
+
+                    rowNum = 1;
+                    for (Release release : Employee_Data) {
+                        if (release.getEmpIndex09().equalsIgnoreCase("00XX006")) {
+                            if (Double.valueOf(release.getEmpIndex08().replaceAll(",", "")) > 0) {
+                                String LastName = "";
+                                String FirstName = "";
+                                String MiddleName = "";
+                                String MobileNo = "";
+                                String Email = "";
+                                ResultSet loRS = oTrans.getEmployeeDetail(release.getEmpIndex11());
+
+                                if (loRS != null) {
+                                    LastName = loRS.getString("sLastName");
+                                    FirstName = loRS.getString("sFrstName");
+                                    MiddleName = loRS.getString("sMiddName");
+                                    MobileNo = loRS.getString("sEmailAdd");
+                                    Email = loRS.getString("sMobileNo");
+                                    loRS.close();
+
+                                }
+                                Row row = sheet.createRow(rowNum++);
+                                row.createCell(0).setCellValue(LastName);
+                                row.createCell(1).setCellValue(FirstName);
+                                row.createCell(2).setCellValue(MiddleName);
+                                row.createCell(3).setCellValue(MobileNo);
+                                row.createCell(4).setCellValue(Email);
+                                row.createCell(5).setCellValue(release.getEmpIndex10());
+                                row.createCell(6).setCellValue(release.getEmpIndex08());
+
+                                exportDetail++;
+                            }
+                        }
+                    }
+                    break;
+            }
+
+            if (exportDetail == 0) {
+                ShowMessageFX.Information(getStage(), " No Detail's to Export for Selected Bank ", "Information", null);
+
+                return;
+            }
+            for (int i = 0; i <= 8; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            // Initialize FileChooser
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setInitialDirectory(new File("d:\\"));
+            fileChooser.setTitle("Save Incentive File");
+
+            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Excel files (*.xlsx)", "*.xlsx");
+            fileChooser.getExtensionFilters().add(extFilter);
+
+            // Show the save dialog
+            File file = fileChooser.showSaveDialog(getStage());
+            if (file != null) {
+                if (!file.getPath().endsWith(".xlsx")) {
+                    file = new File(file.getPath() + ".xlsx");
+                }
+                // Write the output to the selected file
+                try (FileOutputStream fileOut = new FileOutputStream(file)) {
+                    workbook.write(fileOut);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
+                }
+            }
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+            Logger.getLogger(IncentiveReleasingHistoryController.class.getName()).log(Level.SEVERE, null, e);
+            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
+
+        }
+
     }
 }

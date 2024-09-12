@@ -22,6 +22,9 @@ public class Release {
     private SimpleStringProperty empIndex06;
     private SimpleStringProperty empIndex07;
     private SimpleStringProperty empIndex08;
+    private SimpleStringProperty empIndex09;
+    private SimpleStringProperty empIndex10;
+    private SimpleStringProperty empIndex11;
 
     private SimpleStringProperty incIndex01;
     private SimpleStringProperty incIndex02;
@@ -61,6 +64,22 @@ public class Release {
         this.empIndex06 = new SimpleStringProperty(empIndex06);
         this.empIndex07 = new SimpleStringProperty(empIndex07);
         this.empIndex08 = new SimpleStringProperty(empIndex08);
+    }
+    
+        public Release(String empIndex01, String empIndex02, String empIndex03,
+            String empIndex04, String empIndex05, String empIndex06,
+            String empIndex07, String empIndex08,String empIndex09,String empIndex10,String empIndex11) {
+        this.empIndex01 = new SimpleStringProperty(empIndex01);
+        this.empIndex02 = new SimpleStringProperty(empIndex02);
+        this.empIndex03 = new SimpleStringProperty(empIndex03);
+        this.empIndex04 = new SimpleStringProperty(empIndex04);
+        this.empIndex05 = new SimpleStringProperty(empIndex05);
+        this.empIndex06 = new SimpleStringProperty(empIndex06);
+        this.empIndex07 = new SimpleStringProperty(empIndex07);
+        this.empIndex08 = new SimpleStringProperty(empIndex08);
+        this.empIndex09 = new SimpleStringProperty(empIndex09);
+        this.empIndex10 = new SimpleStringProperty(empIndex10);
+        this.empIndex11 = new SimpleStringProperty(empIndex11);
     }
 
     public Release(String empIndex01, String empIndex02, String empIndex03,
@@ -198,5 +217,29 @@ public class Release {
 
     public void setEmpIndex08(String empIndex08) {
         this.empIndex08.set(empIndex08);
+    }
+    
+        public String getEmpIndex09() {
+        return empIndex09.get();
+    }
+
+    public void setEmpIndex09(String empIndex09) {
+        this.empIndex09.set(empIndex09);
+    }
+    
+        public String getEmpIndex10() {
+        return empIndex10.get();
+    }
+
+    public void setEmpIndex10(String empIndex10) {
+        this.empIndex10.set(empIndex10);
+    }
+    
+          public String getEmpIndex11() {
+        return empIndex11.get();
+    }
+
+    public void setEmpIndex11(String empIndex11) {
+        this.empIndex11.set(empIndex11);
     }
 }
