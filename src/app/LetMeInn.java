@@ -23,8 +23,9 @@ public class LetMeInn {
             System.err.println(oApp.getErrMsg());
             System.exit(1);
         }
-
-        if (!oApp.logUser("IntegSys", "M001240020")) { //M001080006 //M001111122
+        // Buclares, Loraine Lim M001240020
+        //Cuison, Michael Torres M001111122
+        if (!oApp.logUser("IntegSys", "M001111122")) { //M001080006
             System.err.println(oApp.getErrMsg());
             System.exit(1);
         }   

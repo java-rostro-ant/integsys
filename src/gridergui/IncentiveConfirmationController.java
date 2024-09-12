@@ -642,6 +642,7 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         try {
             
             pnRow = tblincetives.getSelectionModel().getSelectedIndex(); 
+            if(pnRow >= 0){
             TableIncentives ti = (TableIncentives) tblincetives.getItems().get(pnRow);
             
             if(ti.getIncindex02().contains("Deduction")){
@@ -652,7 +653,7 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
             } else{
                 loadIncentiveDetail((String) oTrans.getIncentiveInfo(pnRow + 1, "sInctveCD"), pnRow + 1); 
             }
-            
+            }
         } catch (SQLException ex) {
             ex.printStackTrace();
             ShowMessageFX.Warning(getStage(),ex.getMessage(), "Warning", null);
@@ -703,7 +704,7 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         } catch (IOException e) {
             e.printStackTrace();
             ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
-            System.exit(1);
+//            System.exit(1);
         }
     }
     private void loadIncentiveDetail(String fsCode, int fnRow) throws SQLException{
@@ -752,7 +753,7 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         } catch (IOException e) {
             e.printStackTrace();
             ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
-            System.exit(1);
+            return;
         }
     }
     

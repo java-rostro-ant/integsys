@@ -1,13 +1,16 @@
 package gridergui;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.time.Year;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -26,10 +29,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.DateCell;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TreeItem;
 import static javafx.scene.input.KeyCode.DOWN;
 import static javafx.scene.input.KeyCode.ENTER;
 import static javafx.scene.input.KeyCode.F3;
@@ -45,39 +47,43 @@ import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.data.JsonDataSource;
 import net.sf.jasperreports.swing.JRViewer;
+import net.sf.jasperreports.view.JasperViewer;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.rmj.appdriver.GRider;
+import org.rmj.appdriver.MiscUtil;
 import org.rmj.appdriver.SQLUtil;
 import org.rmj.appdriver.agentfx.CommonUtils;
 import org.rmj.appdriver.agentfx.ShowMessageFX;
-import org.rmj.grewards.base.LMasDetTrans;
-import org.rmj.grewards.report.EvaluationTop10;
+import org.rmj.grewards.report.EvaluationDetailedRules;
 
 /**
  * FXML Controller class
  *
  * @author User
  */
-public class PacitaEvalTop10ReportController implements Initializable, ScreenInterface {
+public class PacitaEvalDetailedRulesReportController implements Initializable, ScreenInterface {
 
-    private final String pxeModuleName = "Pacita's TOP 10 Report";
+    private final String pxeModuleName = "Pacita's Detailed w/ Rules Report";
     final static int interval = 100;
     private Timeline timeline;
     private Integer timeSeconds = 3;
     private GRider oApp;
 
-    private EvaluationTop10 oTrans;
-    private LMasDetTrans oListener;
+    private String EvalType = "";
+    private EvaluationDetailedRules oTrans;
     private boolean pbLoaded = false;
     private boolean running = false;
     private JasperPrint jasperPrint;
     private JasperReport jasperReport;
     public String reportCategory;
-
     private Date pdPeriodTo = null;
     private Date pdPeriodFrom = null;
 
-//    private String sPeriodxx = "";
     private JRViewer jrViewer;
 //    private JasperPreview jasperPreview;
     @FXML
@@ -86,23 +92,22 @@ public class PacitaEvalTop10ReportController implements Initializable, ScreenInt
     private AnchorPane reportPane, AnchorMainRaffleReport;
     @FXML
     private Label lblReportsTitle;
-//    @FXML
-//    private ComboBox dpPeriodYear,dpPeriodMonth;
     @FXML
     private TextField txtField01, txtField02, txtField03, txtField04, txtField05;
     @FXML
     private VBox vbProgress;
-//    @FXML
-//    private DatePicker dpDateFrom,dpDateTo;
 
     private ObservableList<TableModel> master_data = FXCollections.observableArrayList();
+    private final ObservableList<TableModel> detailpacita_data = FXCollections.observableArrayList();
+    private final ObservableList<TableModel> detailpacitachild_data = FXCollections.observableArrayList();
+    private ObservableList<TableModel> combined_data = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         btnGenerate.setOnAction(this::cmdButton_Click);
         btnCloseReport.setOnAction(this::cmdButton_Click);
 
-        oTrans = new EvaluationTop10(oApp, oApp.getBranchCode(), false);
+        oTrans = new EvaluationDetailedRules(oApp, oApp.getBranchCode(), false);
         oTrans.setWithUI(true);
 
         initFields();
@@ -116,59 +121,22 @@ public class PacitaEvalTop10ReportController implements Initializable, ScreenInt
         txtField03.setOnKeyPressed(this::txtField_KeyPressed);
         txtField04.setOnKeyPressed(this::txtField_KeyPressed);
         txtField05.setOnKeyPressed(this::txtField_KeyPressed);
-
-//        dpPeriodMonth.getItems().addAll(getMonthList());
-//        dpPeriodYear.getItems().addAll(getYearList());
-//        
-//        dpPeriodYear.valueProperty().addListener((observable, oldValue, newValue) -> {
-//            if (newValue != null) {
-//                sPeriodYearxx = (String) dpPeriodYear.getValue();
-//                System.out.println("Selected year: " + sPeriodYearxx);
-//                sPeriodxx = sPeriodYearxx + "-" + sPeriodMonthxx;
-//            }
-//        });
-//        
-//        dpPeriodMonth.valueProperty().addListener((observable, oldValue, newValue) -> {
-//            int nPeriodMonthxx;
-//            if (newValue != null) {
-//                if (dpPeriodMonth.getSelectionModel().getSelectedIndex() != 0){
-//                    
-//                    nPeriodMonthxx =  dpPeriodMonth.getSelectionModel().getSelectedIndex();
-//                    System.out.println("Selected month: " + nPeriodMonthxx);
-//                    sPeriodMonthxx = "0" + String.valueOf(nPeriodMonthxx);
-//                    sPeriodxx = sPeriodYearxx + "-" + sPeriodMonthxx;
-//                }else {
-//                    sPeriodMonthxx = "" ;
-//                    sPeriodxx = sPeriodYearxx + "-" + sPeriodMonthxx;
-//                        }
-//            }
-//        });
-   pbLoaded = true;
+        pbLoaded = true;
     }
 
     private Stage getStage() {
-        return (Stage) txtField01.getScene().getWindow();
+        return (Stage) AnchorMainRaffleReport.getScene().getWindow();
     }
 
-//    private List<String> getYearList() {
-//        List<String> years = new ArrayList<>();
-//        years.add(0, ""); 
-//        int currentYear = Year.now().getValue();
-//        for (int year = currentYear; year >= 1945; year--) {
-//            years.add(Integer.toString(year));
-//        }
-//        return years;
-//    }
-//    
-//    private List<String> getMonthList() {
-//        List<String> monthNames = new ArrayList<>();
-//        monthNames.add(0, ""); 
-//        
-//        for (Month month : Month.values()) {
-//        monthNames.add(month.toString());
-//        }
-//        return monthNames;
-//    }
+    private List<String> getYearList() {
+        List<String> years = new ArrayList<>();
+        int currentYear = Year.now().getValue();
+        for (int year = currentYear; year >= 1945; year--) {
+            years.add(Integer.toString(year));
+        }
+        return years;
+    }
+
     private void showReport() {
 
         jrViewer = new JRViewer(jasperPrint);
@@ -381,8 +349,6 @@ public class PacitaEvalTop10ReportController implements Initializable, ScreenInt
                     oTrans.setBranch();
                 }
 
-//                    if(dpPeriod.getValue() == null){
-//                        sPeriodxx = "";
                 if (pdPeriodTo == null || pdPeriodFrom == null) {
                     ShowMessageFX.Warning(getStage(), "Date Criteria must not be empty", "Warning", null);
 
@@ -432,12 +398,13 @@ public class PacitaEvalTop10ReportController implements Initializable, ScreenInt
         params.put("sCompnyNm", "Guanzon Group of Companies");
         params.put("sBranchNm", oApp.getBranchName());
         params.put("sAddressx", oApp.getAddress());
+
+        String lsPeriodTo = CommonUtils.dateFormat(pdPeriodTo, "yyyy-MM-dd");
+        String lsPeriodFrom = CommonUtils.dateFormat(pdPeriodFrom, "yyyy-MM-dd");
+
         try {
             params.put("sReportNm", pxeModuleName);
-            String lsPeriodTo = CommonUtils.dateFormat(pdPeriodTo, "yyyy-MM-dd");
-            String lsPeriodFrom = CommonUtils.dateFormat(pdPeriodFrom, "yyyy-MM-dd");
 
-            params.put("sReportNm", pxeModuleName);
             if (oTrans.OpenRecord(lsPeriodTo, lsPeriodFrom)) {
                 int lnItemCount = oTrans.getItemCount();
 
@@ -452,52 +419,53 @@ public class PacitaEvalTop10ReportController implements Initializable, ScreenInt
                         return false;
                     }
                     System.out.println("TotalData  = " + lnItemCount);
+                // Clear existing data
+                combined_data.clear();
                 master_data.clear();
-                for (int x = 1; x <= oTrans.getItemCount(); x++) {
+                detailpacita_data.clear();
+                detailpacitachild_data.clear();
 
+                // Load master data
+                for (int lnCtr = 1; lnCtr <= oTrans.getItemCount(); lnCtr++) {
                     master_data.add(new TableModel(
-                            oTrans.getRecord(x, "AreaDesc").toString(),
-                            oTrans.getRecord(x, "sBranchNm").toString(),
-                            oTrans.getRecord(x, "xBranchCount").toString(),
-                            CommonUtils.NumberFormat((BigDecimal) oTrans.getRecord(x, "xRating"), "##0.00"),
-                            String.valueOf(x)
+                            String.valueOf(lnCtr),
+                            (String) oTrans.getRecord(lnCtr, "sTransNox"),
+                            CommonUtils.xsDateLong((Date) oTrans.getRecord(lnCtr, "dTransact")),
+                            oTrans.getRecord(lnCtr, "sCompnyNm").toString(),
+                            oTrans.getRecord(lnCtr, "sBranchNm").toString(),
+                            oTrans.getRecord(lnCtr, "sPayloadx").toString(),
+                            oTrans.getRecord(lnCtr, "nRatingxx").toString(),
+                            oTrans.getRecord(lnCtr, "cTranStat").toString(),
+                            oTrans.getRecord(lnCtr, "AreaDesc").toString(),
+                            oTrans.getRecord(lnCtr, "sDeptName").toString()
                     ));
+                }
+
+                // Load detail data for each master record
+                for (int lnCtr = 1; lnCtr <= oTrans.getItemCount(); lnCtr++) {
+                    JSONParser parser = new JSONParser();
+                    JSONObject jsonObject = (JSONObject) parser.parse(master_data.get(lnCtr - 1).getIndex06());
+                    String sEvalType = (String) jsonObject.get("sEvalType");
+                    EvalType = sEvalType;
+                    loadPacitaDetail(lnCtr - 1, sEvalType);
 
                 }
-            }else {
-                 running = false;
-                vbProgress.setVisible(false);
-                timeline.stop();
-                Platform.runLater(() -> {
-                ShowMessageFX.Warning(getStage(), oTrans.getMessage() , " Error", null);
-            });
-            
-            }
-            String sourceFileName = "D://GGC_Java_Systems/reports/PacitaEvalSummarized.jasper";
 
-            String printFileName = null;
-            JRBeanCollectionDataSource beanColDataSource1 = new JRBeanCollectionDataSource(master_data);
+                JRBeanCollectionDataSource CombineData = new JRBeanCollectionDataSource(combined_data);
 
-            try {
-                jasperPrint = JasperFillManager.fillReport(
-                        sourceFileName, params, beanColDataSource1);
+                // Generate and show the report
+                generateReport(params, CombineData);
 
-                printFileName = jasperPrint.toString();
-                if (printFileName != null) {
-                    showReport();
-                }
-            } catch (JRException ex) {
-                Logger.getLogger(ReportsController.class.getName()).log(Level.SEVERE, null, ex);
+            } else {
                 running = false;
                 vbProgress.setVisible(false);
                 timeline.stop();
                 Platform.runLater(() -> {
-                ShowMessageFX.Warning(getStage(), oTrans.getMessage() + " " + ex.getMessage(), "Catch Error", null);
-            });
-                return false;
-            }
+                    ShowMessageFX.Warning(getStage(), oTrans.getMessage(), " Error", null);
+                });
 
-        } catch (SQLException e) {
+            }
+        } catch (SQLException | ParseException e) {
             running = false;
             vbProgress.setVisible(false);
             timeline.stop();
@@ -507,7 +475,149 @@ public class PacitaEvalTop10ReportController implements Initializable, ScreenInt
             return false;
         }
         return true;
+    }
 
+    public void loadPacitaDetail(int lnRow, String cEvaltype) {
+        try {
+            if ("015".equals(cEvaltype)) {
+                cEvaltype = "4";
+            }
+
+            JSONParser parser = new JSONParser();
+            JSONObject jsonObject = (JSONObject) parser.parse(master_data.get(lnRow).getIndex06());
+            JSONArray payloadArray = (JSONArray) jsonObject.get("sPayloadx");
+            detailpacita_data.clear();
+
+            if (oTrans.LoadPacita(cEvaltype)) {
+                for (int lnCtr = 1; lnCtr <= oTrans.getPacitaItemCount(); lnCtr++) {
+                    String jsonxRatingxx = "";
+                    String psMaxRating = "";
+
+                    if (!"0.00".equals(oTrans.getPacita(lnCtr, "nMaxValue").toString())) {
+                        psMaxRating = oTrans.getPacita(lnCtr, "nMaxValue").toString();
+                        JSONObject payloadObject = (JSONObject) payloadArray.get((Integer) oTrans.getPacita(lnCtr, "nEntryNox") - 1);
+                        if (payloadObject.get("nEntryNox").toString().equals(oTrans.getPacita(lnCtr, "nEntryNox").toString())) {
+                            jsonxRatingxx = "1".equals(payloadObject.get("xRatingxx").toString()) ? "PASSED" : "FAILED";
+                        }
+                    }
+
+                    detailpacita_data.add(new TableModel(
+                            String.valueOf(lnRow + 1),
+                            jsonxRatingxx,
+                            oTrans.getPacita(lnCtr, "sFieldNmx").toString(),
+                            psMaxRating,
+                            oTrans.getPacita(lnCtr, "cParentxx").toString()
+                    ));
+                }
+
+                for (int x = 0; x <= detailpacita_data.size() - 1; x++) {
+                    combined_data.add(new TableModel(
+                            master_data.get(lnRow).getIndex01(),
+                            master_data.get(lnRow).getIndex02(),
+                            master_data.get(lnRow).getIndex03(),
+                            master_data.get(lnRow).getIndex04(),
+                            master_data.get(lnRow).getIndex05(),
+                            master_data.get(lnRow).getIndex06(),
+                            master_data.get(lnRow).getIndex07(),
+                            master_data.get(lnRow).getIndex08(),
+                            master_data.get(lnRow).getIndex09(),
+                            master_data.get(lnRow).getIndex10(),
+                            detailpacita_data.get(x).getIndex02(),
+                            detailpacita_data.get(x).getIndex03(),
+                            "parent", "", ""
+                    ));
+                }
+
+                // Load child details if present
+                for (TableModel rowDataMaster : detailpacita_data) {
+                    if (!"0".equals(rowDataMaster.getIndex05())) {
+                        loadPacitaChildDetails(lnRow, cEvaltype, rowDataMaster, payloadArray);
+                    }
+                }
+            } else {
+                running = false;
+                vbProgress.setVisible(false);
+                timeline.stop();
+                Platform.runLater(() -> {
+                    ShowMessageFX.Warning(getStage(), oTrans.getMessage(), " Error", null);
+                });
+
+            }
+
+        } catch (SQLException | ParseException ex) {
+            Platform.runLater(() -> {
+                ShowMessageFX.Warning(getStage(), ex.getMessage(), "Warning", null);
+            });
+        }
+    }
+
+    private void loadPacitaChildDetails(int lnRow, String cEvaltype, TableModel rowDataMaster, JSONArray payloadArray) {
+        detailpacitachild_data.clear();
+        try {
+            if (oTrans.LoadPacitaChild(cEvaltype, rowDataMaster.getIndex05())) {
+                for (int lnCtr = 2; lnCtr <= oTrans.getPacitaChildItemCount(); lnCtr++) {
+                    String jsonxRatingxx = "";
+
+                    JSONObject payloadObject = (JSONObject) payloadArray.get((Integer) oTrans.getPacitaChild(lnCtr, "nEntryNox") - 1);
+                    if (payloadObject.get("nEntryNox").toString().equals(oTrans.getPacitaChild(lnCtr, "nEntryNox").toString())) {
+                        jsonxRatingxx = "1".equals(payloadObject.get("xRatingxx").toString()) ? "PASSED" : "FAILED";
+                    }
+
+                    detailpacitachild_data.add(new TableModel(
+                            String.valueOf(lnRow + 1),
+                            jsonxRatingxx,
+                            oTrans.getPacitaChild(lnCtr, "sFieldNmx").toString(),
+                            oTrans.getPacitaChild(lnCtr, "nMaxValue").toString(),
+                            oTrans.getPacitaChild(lnCtr, "cParentxx").toString()
+                    ));
+
+                }
+
+                for (int y = 0; y <= detailpacitachild_data.size() - 1; y++) {
+                    combined_data.add(new TableModel(
+                            master_data.get(lnRow).getIndex01(),
+                            master_data.get(lnRow).getIndex02(),
+                            master_data.get(lnRow).getIndex03(),
+                            master_data.get(lnRow).getIndex04(),
+                            master_data.get(lnRow).getIndex05(),
+                            master_data.get(lnRow).getIndex06(),
+                            master_data.get(lnRow).getIndex07(),
+                            master_data.get(lnRow).getIndex08(),
+                            master_data.get(lnRow).getIndex09(),
+                            master_data.get(lnRow).getIndex10(),
+                            detailpacitachild_data.get(y).getIndex02(),
+                            "\t" + detailpacitachild_data.get(y).getIndex03(),
+                            "child", "", ""
+                    ));
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PacitaEvalDetailedRulesReportController.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void generateReport(Map<String, Object> params, JRBeanCollectionDataSource JSMainData) {
+        try {
+            String sourceFileName = "D://GGC_Java_Systems/reports/PacitaEvaluationNew.jasper";
+
+            String printFileName = null;
+
+            jasperPrint = JasperFillManager.fillReport(
+                    sourceFileName, params, JSMainData);
+
+            printFileName = jasperPrint.toString();
+            if (printFileName != null) {
+                showReport();
+
+            }
+        } catch (JRException ex) {
+            Logger.getLogger(ReportsController.class
+                    .getName()).log(Level.SEVERE, null, ex);
+            running = false;
+            vbProgress.setVisible(false);
+            timeline.stop();
+        }
     }
 
     private void unloadForm() {
