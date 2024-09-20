@@ -389,7 +389,8 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
 
             txtField99.setText(CommonUtils.dateFormat(ldDate, "MMMM YYYY"));
             lblTotal.setText(CommonUtils.NumberFormat(lnTotalAmount, "###,###,##0.00"));
-            if (oTrans.getDivisionbyBranch((String) oTrans.getDetail(1).getMaster("sBranchCd"))) {
+            int lnCount = oTrans.getItemCount() -1;
+            if (oTrans.getDivisionbyBranch((String) oTrans.getDetail(lnCount).getMaster("sBranchCd"))) {
                 txtField98.setText((String) oTrans.getDivision("sDivsnDsc"));
             }
 
