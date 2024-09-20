@@ -104,14 +104,23 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
     @FXML
     void cmbStatus_Clicked(ActionEvent event) {
         int lnSelectIndex = cmbStatus.getSelectionModel().getSelectedIndex();
-
+        oTrans.setAuditApproval(false);
         switch (lnSelectIndex) {
+
             case 0://open
             case 1://for approval
-            case 2://approved
-            case 3://cancelled
-            case 4://released
                 oTrans.setTranStat(lnSelectIndex);
+                return;
+
+            case 2:
+                oTrans.setTranStat(1);
+                oTrans.setAuditApproval(true);
+                return;
+            case 3://cancelled
+                oTrans.setTranStat(3);
+                return;
+            case 4://released
+                oTrans.setTranStat(7);
                 return;
             case 5://all status 
                 oTrans.setTranStat(-1);
@@ -468,8 +477,8 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                     }
             }
         } catch (SQLException e) {
-             ShowMessageFX.Warning(getStage(), e.getMessage(), "Catch Error", null);
-                               
+            ShowMessageFX.Warning(getStage(), e.getMessage(), "Catch Error", null);
+
         }
 
         switch (event.getCode()) {
@@ -806,7 +815,6 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                         } else {
                             lsTransactionStatus = "UNKNOWN";
                         }
-
                         IncentiveData.add(new IncentiveDetail(
                                 oTrans.getRecord(x, "sDivsnDsc").toString(),
                                 oTrans.getRecord(x, "sAreaDesc").toString(),
@@ -860,7 +868,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
             vbProgress.setVisible(false);
             timeline.stop();
             Platform.runLater(() -> {
-                ShowMessageFX.Warning(getStage(), oTrans.getMessage() + " " + ex.getMessage(), "Catch Error", null);
+                ShowMessageFX.Warning(getStage(), oTrans.getMessage() + " " + ex.getMessage() + " ", "Catch Error", null);
             });
             return false;
         }

@@ -349,7 +349,7 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
                     double xIncentive = Double.parseDouble(oTrans.getDetail(lnRow).getDetail(lnCtr, "xIncentve").toString());
                     double xDeduction = Double.parseDouble(oTrans.getDetail(lnRow).getDetail(lnCtr, "xDeductnx").toString());
                     double lnTotalEmpIncentive = xIncentive + xDeduction;
-                       //grouping the employee with branch
+                    //grouping the employee with branch
                     // Create a unique key using branch and employee name
                     String key = lsBranch + "-" + oTrans.getDetail(lnRow).getDetail(lnCtr, "xEmployNm").toString();
 
@@ -466,10 +466,25 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
             switch (lsButton) {
                 case "btnBrowse": //browse transaction
                     if (oTrans.SearchTransaction(txtSeeks05.getText(), true)) {
-                        
+
                         loadRecord();
                         txtSeeks05.setText(txtField01.getText());
                         pnEditMode = oTrans.getEditMode();
+                    } else {
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
+                    }
+                    break;
+
+                case "btnApproved": //approve transaction
+                    if (oTrans.ConfirmTransaction()) {
+                        if (ShowMessageFX.OkayCancel(null, "Incentive Releasing", "Are you sure, do you want to Release?") == true) {
+                            if (oTrans.ReleaseTransaction()) {
+                                ShowMessageFX.Warning(getStage(), "Transaction successfully Release.", "Warning", null);
+                                clearFields();
+                                pnEditMode = oTrans.getEditMode();
+                            }
+                        }
+
                     } else {
                         ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
                     }
