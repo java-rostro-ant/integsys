@@ -564,7 +564,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                             pdPeriod = null;
                             txtField.setText("");
                         }
-                        
+
                         return;
                 }
             } else {
@@ -572,13 +572,13 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                     case 4:
                         if (pdPeriod != null) {
                             txtField.setText(CommonUtils.dateFormat(pdPeriod, "YYYY MM"));
-                            
+
                         }
                         return;
                 }
                 txtField.selectAll();
             }
-            
+
             pnIndex = lnIndex;
         } catch (SQLException e) {
             ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
@@ -845,7 +845,10 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         txtField01.setText((String) oTrans.getMaster(1));
         txtField02.setText(CommonUtils.xsDateMedium((Date) oTrans.getMaster(2)));
         txtField03.setText((String) oTrans.getMaster(17));
-        txtField04.setText((String) oTrans.getMaster(4));
+//        txtField04.setText((String) oTrans.getMaster(4));
+
+        pdPeriod = SQLUtil.toDate(oTrans.getMaster(4).toString().trim() + " 01", "yyyyMM dd");
+        txtField04.setText(CommonUtils.dateFormat(pdPeriod, "yyyy MMMM"));
         txtField05.setText((String) oTrans.getMaster(5));
         if (oApp.getDepartment().equalsIgnoreCase("022")
                 || oApp.getDepartment().equalsIgnoreCase("034")) {

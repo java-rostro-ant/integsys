@@ -276,7 +276,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                             txtField.setText(String.valueOf(lastValue));
                             txtField07.requestFocus();
                         } else {
-                            if (lastpercValue - lnOldpercent + Double.valueOf(lsValue) >= 100.00) {
+                            if (lastpercValue - lnOldpercent + Double.valueOf(lsValue) > 100.00) {
                                 ShowMessageFX.Warning(getStage(), "The specified percentage will exceed the incentive allocation.", "Warning", null);
 
                                 txtField.setText(String.valueOf(lastValue));
@@ -338,7 +338,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                         loadEmployee();
                         getSelectedItem();
 
-                        txtField12.requestFocus();
+                        txtField11.requestFocus();
                         event.consume();
                         return;
                 }
@@ -520,6 +520,25 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
             txtField10.setDisable(pnEditMode != EditMode.ADDNEW && pnEditMode != EditMode.UPDATE);
             txtField11.setDisable(pnEditMode != EditMode.ADDNEW && pnEditMode != EditMode.UPDATE);
             txtField12.setDisable(pnEditMode != EditMode.ADDNEW && pnEditMode != EditMode.UPDATE);
+
+            String lnPercentage = oTrans.getIncentiveInfo(tbl_row, "xByPercnt").toString();
+
+            switch (lnPercentage) {
+                case "0"://amount only
+                    txtField11.setDisable(true);
+                    txtField12.setDisable(false);
+                    break;
+                case "1"://percentage only
+                    txtField11.setDisable(false);
+                    txtField12.setDisable(true);
+                    break;
+                case "2"://combination
+                    txtField11.setDisable(false);
+                    txtField12.setDisable(false);
+                    break;
+
+            }
+
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
