@@ -194,13 +194,13 @@
                                              </font>
                                           </Label>
                                           <TextField fx:id="txtField16" editable="false" layoutX="135.0" layoutY="61.0" prefHeight="23.0" prefWidth="238.0" promptText="GMC Dagupan - Honda" style="-fx-border-radius: 5;" AnchorPane.rightAnchor="4.0" />
-                                          <TextField fx:id="txtField03" layoutX="135.0" layoutY="87.0" prefHeight="23.0" prefWidth="238.0" promptText="Press F3" style="-fx-border-radius: 5;" AnchorPane.rightAnchor="4.0" />
+                                          <TextField fx:id="txtField03" layoutX="135.0" layoutY="87.0" prefHeight="23.0" prefWidth="238.0" promptText="Press F3 to Search. Filter " style="-fx-border-radius: 5;" AnchorPane.rightAnchor="4.0" />
                                           <Label layoutX="9.0" layoutY="95.0" text="Department">
                                              <font>
                                                 <Font name="MS Reference Sans Serif" size="12.0" />
                                              </font>
                                           </Label>
-                                          <TextField fx:id="txtField04" layoutX="134.0" layoutY="114.0" prefHeight="23.0" prefWidth="238.0" promptText="YYYYMM" style="-fx-border-radius: 5;" AnchorPane.rightAnchor="4.0" />
+                                          <TextField fx:id="txtField04" layoutX="134.0" layoutY="114.0" prefHeight="23.0" prefWidth="238.0" promptText="YYYY MM (ex. &quot;1985 01&quot; )" style="-fx-border-radius: 5;" AnchorPane.rightAnchor="4.0" />
                                           <Label layoutX="9.0" layoutY="122.0" text="Month">
                                              <font>
                                                 <Font name="MS Reference Sans Serif" size="12.0" />
