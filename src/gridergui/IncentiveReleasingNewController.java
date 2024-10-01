@@ -489,6 +489,40 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
                         ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
                     }
                     break;
+                case "btnRetrieve": //create new transaction
+
+                    if (txtField98.getText().trim().isEmpty()) {
+                        oTrans.setDivision();
+                    }
+                    if (pdPeriod == null) {
+                        ShowMessageFX.Warning(getStage(), "Incentive period must not be empty", "Warning", null);
+
+                    } else {
+                        String lsPeriod = CommonUtils.dateFormat(pdPeriod, "YYYYMM");
+                        System.out.println("nMonthxx = " + lsPeriod);
+                        if (oTrans.NewTransaction(lsPeriod)) {
+                            loadRecord();
+                            pnEditMode = oTrans.getEditMode();
+                        } else {
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
+                        }
+                    }
+                    break;
+                case "btnSave": //save transaction
+                    if (oTrans.SaveTransaction()) {
+                        ShowMessageFX.Warning(getStage(), "Transaction Successfully Saved.", "Warning", null);
+                        clearFields();
+
+                    } else {
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
+                    }
+
+                    break;
+                case "btnCancel": //cancel transaction
+                    clearFields();
+                    //reload detail
+                    break;
+
                 case "btnClose": //close releasing form
                     if (ShowMessageFX.OkayCancel(null, "Incentive Releasing", "Are you sure, do you want to close?") == true) {
                         unloadForm();
