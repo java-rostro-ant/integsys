@@ -1,5 +1,3 @@
-
-
 package gridergui;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
@@ -42,36 +40,40 @@ import org.rmj.appdriver.GRider;
 import org.rmj.appdriver.agent.MsgBox;
 import org.rmj.appdriver.agentfx.CommonUtils;
 import org.rmj.appdriver.constants.EditMode;
-import org.rmj.fund.manager.base.Incentive; 
+import org.rmj.fund.manager.base.Incentive;
 import static javafx.scene.input.KeyCode.F3;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
+import org.rmj.appdriver.SQLUtil;
 import org.rmj.appdriver.StringUtil;
 import org.rmj.appdriver.agentfx.ShowMessageFX;
 import org.rmj.fund.manager.base.LMasDetTrans;
 
 public class EmployeeIncentivesController implements Initializable, ScreenInterface {
+
     private final String pxeModuleName = "Employee Incentives";
     private double xOffset = 0;
     private double yOffset = 0;
-    
+
     private GRider oApp;
     private Incentive oTrans;
     private LMasDetTrans oListener;
-    
+
     private String oTransnox = "";
     private boolean state = false;
-    
-    private int pnIndex = -1;    
+
+    private int pnIndex = -1;
     private int pnRow = -1;
     private int pnEmp = -1;
     private int pnEditMode;
     private int lnCtr;
 
+    private Date pdPeriod = null;
+
     private boolean pbLoaded = false;
-    
+
     private ObservableList<TableModel> data = FXCollections.observableArrayList();
     private ObservableList<TableIncentives> inc_data = FXCollections.observableArrayList();
     @FXML
@@ -91,8 +93,8 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
     @FXML
     private AnchorPane AnchorMain;
     @FXML
-    private Label lblHeader; 
-    
+    private Label lblHeader;
+
     @FXML
     private TableView tblemployee;
     @FXML
@@ -159,50 +161,59 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
     private Button btnDeactivate;
     @FXML
     private Button btnDelEmp;
-    
-    public void setTransaction(String fsValue){
+
+    public void setTransaction(String fsValue) {
         oTransnox = fsValue;
     }
-    public void setState(boolean fsValue){
+
+    public void setState(boolean fsValue) {
         state = fsValue;
     }
-    private Stage getStage(){
-	return (Stage) txtField01.getScene().getWindow();
+
+    private Stage getStage() {
+        return (Stage) txtField01.getScene().getWindow();
     }
-    
+
     @Override
-    public void initialize(URL url, ResourceBundle rb) {  
+    public void initialize(URL url, ResourceBundle rb) {
 
         oListener = new LMasDetTrans() {
             @Override
             public void MasterRetreive(int fnIndex, Object foValue) {
-                switch(fnIndex){
+                switch (fnIndex) {
                     case 1:
-                        txtField01.setText((String) foValue); break;
+                        txtField01.setText((String) foValue);
+                        break;
                     case 2:
-                        txtField02.setText((String) foValue); break;
+                        txtField02.setText((String) foValue);
+                        break;
                     case 4:
-                        txtField04.setText((String) foValue); break;
+                        pdPeriod = SQLUtil.toDate(foValue.toString().trim() + " 01", "yyyyMM dd");
+                        txtField04.setText(CommonUtils.dateFormat(pdPeriod, "yyyy MMMM"));
+                        break;
                     case 5:
-                        txtField05.setText((String) foValue); break;
+                        txtField05.setText((String) foValue);
+                        break;
                     case 17:
-                        txtField03.setText((String) foValue); 
+                        txtField03.setText((String) foValue);
                         loadIncentives();
                         loadDetail();
                         break;
                     case 16:
                         System.out.println(foValue);
-                        txtField16.setText((String) foValue); break;
+                        txtField16.setText((String) foValue);
+                        break;
                 }
             }
+
             @Override
             public void DetailRetreive(int fnRow, int fnIndex, Object foValue) {
             }
-         };
-        
+        };
+
         tblIncentives_column();
         tblemployee_column();
-        
+
         btnNew.setOnAction(this::cmdButton_Click);
         btnAddEmployee.setOnAction(this::cmdButton_Click);
         btnAddIncentives.setOnAction(this::cmdButton_Click);
@@ -213,18 +224,18 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         btnUpdate.setOnAction(this::cmdButton_Click);
         btnCancel.setOnAction(this::cmdButton_Click);
         btnDelEmp.setOnAction(this::cmdButton_Click);
-        
+
         //initialize class
-        oTrans  = new Incentive(oApp, oApp.getBranchCode(), false);
+        oTrans = new Incentive(oApp, oApp.getBranchCode(), false);
         oTrans.setListener(oListener);
-      
-        if(!oTransnox.isEmpty()){
+
+        if (!oTransnox.isEmpty()) {
             oTrans.setTranStat(10);
-        }else{
+        } else {
             oTrans.setTranStat(0);
         }
         oTrans.setWithUI(true);
-        
+
         /*Add listener to text fields*/
         txtSeeks21.focusedProperty().addListener(txtField_Focus);
         txtSeeks22.focusedProperty().addListener(txtField_Focus);
@@ -233,9 +244,9 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         txtField03.focusedProperty().addListener(txtField_Focus);
         txtField04.focusedProperty().addListener(txtField_Focus);
         txtField16.focusedProperty().addListener(txtField_Focus);
-        
+
         txtField05.focusedProperty().addListener(txtArea_Focus);
-        
+
         txtSeeks21.setOnKeyPressed(this::txtField_KeyPressed);
         txtSeeks22.setOnKeyPressed(this::txtField_KeyPressed);
         txtField01.setOnKeyPressed(this::txtField_KeyPressed);
@@ -245,109 +256,116 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         txtField16.setOnKeyPressed(this::txtField_KeyPressed);
         txtField05.setOnKeyPressed(this::txtArea_KeyPressed);
 
-        CommonUtils.addTextLimiter(txtField04, 6);
         CommonUtils.addTextLimiter(txtField05, 128);
-        
+
         initGrid();
         initGrid1();
-        
-        try { 
-            if(oTransnox.isEmpty()){
+
+        try {
+            if (oTransnox.isEmpty()) {
                 pnEditMode = EditMode.UNKNOWN;
                 initButton(pnEditMode);
             } else {
-                if (oTrans.SearchTransaction(oTransnox, true)){
+                if (oTrans.SearchTransaction(oTransnox, true)) {
                     loadMaster();
                     loadIncentives();
-                    
-                    if (oTrans.UpdateTransaction()){
-                        pnEditMode = oTrans.getEditMode(); 
+
+                    if (oTrans.UpdateTransaction()) {
+                        pnEditMode = oTrans.getEditMode();
                         initButton(pnEditMode);
-                      } else 
-                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
-                } else
-                    ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                    } else {
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
+                    }
+                } else {
+                    ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
+                }
             }
         } catch (SQLException ex) {
             Logger.getLogger(EmployeeIncentivesController.class.getName()).log(Level.SEVERE, null, ex);
-        }  
+        }
 
         pbLoaded = true;
-    } 
-    
-    private void txtArea_KeyPressed(KeyEvent event){
-        if (event.getCode() == ENTER || event.getCode() == DOWN){ 
+    }
+
+    private void txtArea_KeyPressed(KeyEvent event) {
+        if (event.getCode() == ENTER || event.getCode() == DOWN) {
             event.consume();
-            CommonUtils.SetNextFocus((TextArea)event.getSource());
-        }else if (event.getCode() ==KeyCode.UP){
-        event.consume();
-            CommonUtils.SetPreviousFocus((TextArea)event.getSource());
+            CommonUtils.SetNextFocus((TextArea) event.getSource());
+        } else if (event.getCode() == KeyCode.UP) {
+            event.consume();
+            CommonUtils.SetPreviousFocus((TextArea) event.getSource());
         }
     }
-    private void txtField_KeyPressed(KeyEvent event){
-        TextField txtField = (TextField)event.getSource();
-        int lnIndex = Integer.parseInt(((TextField)event.getSource()).getId().substring(8,10));
+
+    private void txtField_KeyPressed(KeyEvent event) {
+        TextField txtField = (TextField) event.getSource();
+        int lnIndex = Integer.parseInt(((TextField) event.getSource()).getId().substring(8, 10));
         String lsValue = txtField.getText();
-        
+
         try {
             switch (event.getCode()) {
                 case F3:
                 case ENTER:
-                    switch (lnIndex){
-                        case 21: /*search oTransaction*/
-                            if (oTrans.SearchTransaction(txtSeeks21.getText(), true)){
+                    switch (lnIndex) {
+                        case 21:
+                            /*search oTransaction*/
+                            if (oTrans.SearchTransaction(txtSeeks21.getText(), true)) {
                                 loadMaster();
                                 loadIncentives();
                                 pnEditMode = EditMode.READY;
-                            }else
-                                ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                            } else {
+                                ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
+                            }
                             break;
                         case 22:/*search branch*/
-                            if (oTrans.SearchTransaction(txtSeeks22.getText(), false)){
+                            if (oTrans.SearchTransaction(txtSeeks22.getText(), false)) {
                                 loadMaster();
                                 loadIncentives();
                                 pnEditMode = EditMode.READY;
-                            }else
-                                ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                            } else {
+                                ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
+                            }
                             break;
-                        case 3: /*search department*/
-                            if(!oTrans.searchDepartment(lsValue, false)) {
+                        case 3:
+                            /*search department*/
+                            if (!oTrans.searchDepartment(lsValue, false)) {
                                 txtField.setText((String) oTrans.getMaster("xDeptName"));
                                 ShowMessageFX.Warning(getStage(), "Unable to update department.", "Warning", null);
-                            } 
-                            if(oTrans.getItemCount() == 0){
+                            }
+                            if (oTrans.getItemCount() == 0) {
                                 ShowMessageFX.Warning(getStage(), "Please check branch for selected department.", "Warning", null);
-                            }   
+                            }
                             break;
-                        case 16: /*search branch*/
-                            if(!oTrans.searchBranch(lsValue, false)) {
-                                
+                        case 16:
+                            /*search branch*/
+                            if (!oTrans.searchBranch(lsValue, false)) {
+
 //                                txtField16.setText((String) oTrans.getMaster("sBranchNm"));
                                 txtField.setText((String) oTrans.getMaster("xBranchNm"));
                                 ShowMessageFX.Warning(getStage(), "Unable to update branch. " + (String) oTrans.getMaster("xBranchNm"), "Warning", null);
-                            } 
-                                
+                            }
+
                             break;
                     }
-            }      
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
+            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
         }
-        
-        switch (event.getCode()){
-        case ENTER:
-        case DOWN:
-            CommonUtils.SetNextFocus(txtField);
-            break;
-        case UP:
-            CommonUtils.SetPreviousFocus(txtField);
+
+        switch (event.getCode()) {
+            case ENTER:
+            case DOWN:
+                CommonUtils.SetNextFocus(txtField);
+                break;
+            case UP:
+                CommonUtils.SetPreviousFocus(txtField);
         }
-    } 
-    
-    private void initButton(int fnValue){
+    }
+
+    private void initButton(int fnValue) {
         boolean lbShow = (fnValue == EditMode.ADDNEW || fnValue == EditMode.UPDATE);
-     
+
         btnCancel.setVisible(lbShow);
         btnSearch.setVisible(lbShow);
         btnSave.setVisible(lbShow);
@@ -357,27 +375,27 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         btnAddEmployee.setVisible(lbShow);
         btnAddIncentives.setVisible(lbShow);
         btnAddDeductions.setVisible(lbShow);
-        
+
         btnSave.setManaged(lbShow);
         btnCancel.setManaged(lbShow);
         btnSearch.setManaged(lbShow);
         btnUpdate.setVisible(!lbShow);
         btnBrowse.setVisible(!lbShow);
         btnNew.setVisible(!lbShow);
-        
+
         btnAddEmployee.setDisable(!lbShow);
         btnAddIncentives.setDisable(!lbShow);
         btnAddDeductions.setDisable(!lbShow);
 
         txtSeeks21.setDisable(!lbShow);
         txtSeeks22.setDisable(!lbShow);
-        
-        if (lbShow){
+
+        if (lbShow) {
             txtSeeks21.setDisable(lbShow);
             txtSeeks21.clear();
             txtSeeks22.setDisable(lbShow);
             txtSeeks22.clear();
-            
+
             btnCancel.setVisible(lbShow);
             btnSearch.setVisible(lbShow);
             btnSave.setVisible(lbShow);
@@ -389,13 +407,11 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
             btnUpdate.setManaged(false);
             btnActivate.setVisible(!lbShow);
             btnDeactivate.setVisible(!lbShow);
-            
-              
-        }
-        else{
+
+        } else {
             txtSeeks21.setDisable(lbShow);
             txtSeeks21.requestFocus();
-            txtSeeks22.setDisable(lbShow);  
+            txtSeeks22.setDisable(lbShow);
         }
 //        if (lbShow = (fnValue == EditMode.UPDATE)) {
 //            btnAddEmployee.setDisable(true);
@@ -407,151 +423,183 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
 //            btnAddDeductions.setDisable(false);
 //        }
     }
+
     @Override
     public void setGRider(GRider foValue) {
         oApp = foValue;
-    }    
-    
-    private void loadIncentives(){
+    }
+
+    private void loadIncentives() {
         try {
             inc_data.clear();
-            for (lnCtr = 1; lnCtr <= oTrans.getIncentiveCount(); lnCtr++){
+            for (lnCtr = 1; lnCtr <= oTrans.getIncentiveCount(); lnCtr++) {
                 inc_data.add(new TableIncentives(String.valueOf(lnCtr),
-                    oTrans.getIncentiveInfo(lnCtr, "xInctvNme").toString(),
-                    oTrans.getIncentiveInfo(lnCtr, "nQtyGoalx").toString(),
-                    oTrans.getIncentiveInfo(lnCtr, "nQtyActlx").toString(),
-                    oTrans.getIncentiveInfo(lnCtr, "nAmtGoalx").toString(),
-                    oTrans.getIncentiveInfo(lnCtr, "nAmtActlx").toString(),
-                    oTrans.getIncentiveInfo(lnCtr, "nInctvAmt").toString(),
-                    oTrans.getIncentiveInfo(lnCtr, "sRemarksx").toString(),
-                    oTrans.getIncentiveInfo(lnCtr, "sInctveCD").toString()));
+                        oTrans.getIncentiveInfo(lnCtr, "xInctvNme").toString(),
+                        oTrans.getIncentiveInfo(lnCtr, "nQtyGoalx").toString(),
+                        oTrans.getIncentiveInfo(lnCtr, "nQtyActlx").toString(),
+                        oTrans.getIncentiveInfo(lnCtr, "nAmtGoalx").toString(),
+                        oTrans.getIncentiveInfo(lnCtr, "nAmtActlx").toString(),
+                        oTrans.getIncentiveInfo(lnCtr, "nInctvAmt").toString(),
+                        oTrans.getIncentiveInfo(lnCtr, "sRemarksx").toString(),
+                        oTrans.getIncentiveInfo(lnCtr, "sInctveCD").toString()));
             }
 
-            for (lnCtr = 1; lnCtr <= oTrans.getDeductionCount(); lnCtr++){
-                inc_data.add(new TableIncentives(String.valueOf(inc_data.size() + 1), 
-                    oTrans.getDeductionInfo(lnCtr, "sRemarksx").toString() + "(Deduction)",
-                    "",
-                    "",
-                    "",
-                    "",
-                    oTrans.getDeductionInfo(lnCtr, "nDedctAmt").toString(),
-                    "",
-                    ""));          
+            for (lnCtr = 1; lnCtr <= oTrans.getDeductionCount(); lnCtr++) {
+                inc_data.add(new TableIncentives(String.valueOf(inc_data.size() + 1),
+                        oTrans.getDeductionInfo(lnCtr, "sRemarksx").toString() + "(Deduction)",
+                        "",
+                        "",
+                        "",
+                        "",
+                        oTrans.getDeductionInfo(lnCtr, "nDedctAmt").toString(),
+                        "",
+                        ""));
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
-        }
-    }
-    private void loadDetail(){
-        try {
-            data.clear();
-            for (int lnCtr = 1; lnCtr <= oTrans.getItemCount(); lnCtr++){
-                data.add(new TableModel(String.valueOf(lnCtr),
-                    oTrans.getDetail(lnCtr, "xEmployNm").toString(),
-                    oTrans.getDetail(lnCtr, "xEmpLevNm").toString(),
-                    oTrans.getDetail(lnCtr, "xPositnNm").toString(),
-                    oTrans.getDetail(lnCtr, "xSrvcYear").toString(),
-                    (CommonUtils.NumberFormat((Number)oTrans.getDetail(lnCtr, "xIncentve"), "#,##0.00")),
-                    (CommonUtils.NumberFormat((Number)oTrans.getDetail(lnCtr, "xDeductnx"), "#,##0.00")),
-                    (CommonUtils.NumberFormat((Number)oTrans.getDetail(lnCtr, "nTotalAmt"), "#,##0.00"))));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
-        }
-    }
-    
-    private void loadMasters(){
-        try {
-            data.clear();
-            for (int lnCtr = 1; lnCtr <= oTrans.getItemCount(); lnCtr++){
-                data.add(new TableModel(String.valueOf(lnCtr),
-                    oTrans.getDetail(lnCtr, "xEmployNm").toString(),
-                    oTrans.getDetail(lnCtr, "xEmpLevNm").toString(),
-                    oTrans.getDetail(lnCtr, "xPositnNm").toString(),
-                    oTrans.getDetail(lnCtr, "xSrvcYear").toString(),
-                    (CommonUtils.NumberFormat((Number)oTrans.getDetail(lnCtr, "nTotalAmt"), "#,##0.00")),
-                    (CommonUtils.NumberFormat((Number)oTrans.getDetail(lnCtr, "nTotalAmt"), "#,##0.00")),
-                    (CommonUtils.NumberFormat((Number)oTrans.getDetail(lnCtr, "nTotalAmt"), "#,##0.00"))));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
+            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
         }
     }
 
-    final ChangeListener<? super Boolean> txtArea_Focus = (o,ov,nv)->{ 
-        if (!pbLoaded) return;
-        
-        TextArea txtField = (TextArea)((ReadOnlyBooleanPropertyBase)o).getBean();
+    private void loadDetail() {
+        try {
+            data.clear();
+            for (int lnCtr = 1; lnCtr <= oTrans.getItemCount(); lnCtr++) {
+                data.add(new TableModel(String.valueOf(lnCtr),
+                        oTrans.getDetail(lnCtr, "xEmployNm").toString(),
+                        oTrans.getDetail(lnCtr, "xEmpLevNm").toString(),
+                        oTrans.getDetail(lnCtr, "xPositnNm").toString(),
+                        oTrans.getDetail(lnCtr, "xSrvcYear").toString(),
+                        (CommonUtils.NumberFormat((Number) oTrans.getDetail(lnCtr, "xIncentve"), "#,##0.00")),
+                        (CommonUtils.NumberFormat((Number) oTrans.getDetail(lnCtr, "xDeductnx"), "#,##0.00")),
+                        (CommonUtils.NumberFormat((Number) oTrans.getDetail(lnCtr, "nTotalAmt"), "#,##0.00"))));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
+        }
+    }
+
+//    private void loadMasters() {
+//        try {
+//            data.clear();
+//            for (int lnCtr = 1; lnCtr <= oTrans.getItemCount(); lnCtr++) {
+//                data.add(new TableModel(String.valueOf(lnCtr),
+//                        oTrans.getDetail(lnCtr, "xEmployNm").toString(),
+//                        oTrans.getDetail(lnCtr, "xEmpLevNm").toString(),
+//                        oTrans.getDetail(lnCtr, "xPositnNm").toString(),
+//                        oTrans.getDetail(lnCtr, "xSrvcYear").toString(),
+//                        (CommonUtils.NumberFormat((Number) oTrans.getDetail(lnCtr, "nTotalAmt"), "#,##0.00")),
+//                        (CommonUtils.NumberFormat((Number) oTrans.getDetail(lnCtr, "nTotalAmt"), "#,##0.00")),
+//                        (CommonUtils.NumberFormat((Number) oTrans.getDetail(lnCtr, "nTotalAmt"), "#,##0.00"))));
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
+//        }
+//    }
+    final ChangeListener<? super Boolean> txtArea_Focus = (o, ov, nv) -> {
+        if (!pbLoaded) {
+            return;
+        }
+
+        TextArea txtField = (TextArea) ((ReadOnlyBooleanPropertyBase) o).getBean();
         int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
         String lsValue = txtField.getText();
-        
-        if (lsValue == null) return;
-            try {
-                if(!nv){ /*Lost Focus*/
-                    switch (lnIndex){
-                        case 05:
-                           oTrans.setMaster(lnIndex, lsValue); break;
-                    }
-                } else
-                    txtField.selectAll();
 
-                pnIndex = lnIndex;
-            } catch (SQLException e) {
-                ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
-                System.exit(1);
+        if (lsValue == null) {
+            return;
+        }
+        try {
+            if (!nv) {
+                /*Lost Focus*/
+                switch (lnIndex) {
+                    case 05:
+                        oTrans.setMaster(lnIndex, lsValue);
+                        break;
+                }
+            } else {
+                txtField.selectAll();
             }
+
+            pnIndex = lnIndex;
+        } catch (SQLException e) {
+            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
+            System.exit(1);
+        }
     };
- 
-    final ChangeListener<? super Boolean> txtField_Focus = (o,ov,nv)->{ 
-        if (!pbLoaded) return;
-        
-        TextField txtField = (TextField)((ReadOnlyBooleanPropertyBase)o).getBean();
+
+    final ChangeListener<? super Boolean> txtField_Focus = (o, ov, nv) -> {
+        if (!pbLoaded) {
+            return;
+        }
+
+        TextField txtField = (TextField) ((ReadOnlyBooleanPropertyBase) o).getBean();
         int lnIndex = Integer.parseInt(txtField.getId().substring(8, 10));
         String lsValue = txtField.getText();
-        
-        if (lsValue == null) return;
-            
-        try {   
-            if(!nv){ /*Lost Focus*/
-                switch (lnIndex){
+
+        if (lsValue == null) {
+            return;
+        }
+
+        try {
+            if (!nv) {
+                /*Lost Focus*/
+                switch (lnIndex) {
                     case 1:
                     case 2:
                     case 3:
                     case 16:
                         break;
                     case 04:
-                        if (!StringUtil.isNumeric(lsValue))
-                            oTrans.setMaster(lnIndex, "");
-                       else
-                            oTrans.setMaster(lnIndex, lsValue);
-                }
-            } else
-                txtField.selectAll();
+                        if (lsValue == null || lsValue == "") {
+                            return;
+                        }
+                        if (lsValue.trim().length() > 4 && lsValue.trim().length() <= 7) {
+                            pdPeriod = SQLUtil.toDate(lsValue.trim() + " 01", "yyyyMM dd");
 
+                            String lsPeriod = CommonUtils.dateFormat(pdPeriod, "YYYYMM");
+                            oTrans.setMaster(lnIndex, lsPeriod);
+                        } else {
+                            pdPeriod = null;
+                            txtField.setText("");
+                        }
+                        
+                        return;
+                }
+            } else {
+                switch (lnIndex) {
+                    case 4:
+                        if (pdPeriod != null) {
+                            txtField.setText(CommonUtils.dateFormat(pdPeriod, "YYYY MM"));
+                            
+                        }
+                        return;
+                }
+                txtField.selectAll();
+            }
+            
             pnIndex = lnIndex;
         } catch (SQLException e) {
-            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
+            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
             System.exit(1);
         }
     };
 
-    private void unloadForm(){
+    private void unloadForm() {
         StackPane myBox = (StackPane) AnchorMain.getParent();
         myBox.getChildren().clear();
         myBox.getChildren().add(getScene("MainScreenBG.fxml"));
     }
-    
-    private AnchorPane getScene(String fsFormName){
-         ScreenInterface fxObj = new MainScreenBGController();
-         fxObj.setGRider(oApp);
-        
+
+    private AnchorPane getScene(String fsFormName) {
+        ScreenInterface fxObj = new MainScreenBGController();
+        fxObj.setGRider(oApp);
+
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(fxObj.getClass().getResource(fsFormName));
-        fxmlLoader.setController(fxObj);      
-   
+        fxmlLoader.setController(fxObj);
+
         AnchorPane root;
         try {
             root = (AnchorPane) fxmlLoader.load();
@@ -569,11 +617,11 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         }
         return null;
     }
-    
-    private void loadIncentiveDetail(String fsCode, int fnRow) throws SQLException{
+
+    private void loadIncentiveDetail(String fsCode, int fnRow) throws SQLException {
         try {
             Stage stage = new Stage();
-            
+
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("AddIncentives.fxml"));
 
@@ -582,12 +630,12 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
             loControl.setIncentiveObject(oTrans);
             loControl.setIncentiveCode(fsCode);
             loControl.setTableRow(fnRow);
-            
+
             fxmlLoader.setController(loControl);
-            
+
             //load the main interface
             Parent parent = fxmlLoader.load();
-                
+
             parent.setOnMousePressed(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
@@ -602,7 +650,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                     stage.setY(event.getScreenY() - yOffset);
                 }
             });
-            
+
             //set the main interface as the scene
             Scene scene = new Scene(parent);
             stage.setScene(scene);
@@ -610,19 +658,20 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("");
             stage.showAndWait();
-            
+
             loadDetail();
             loadIncentives();
         } catch (IOException e) {
             e.printStackTrace();
-            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
+            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
             System.exit(1);
         }
     }
-    private void loadDeductionDetail(int fnRow) throws SQLException{
+
+    private void loadDeductionDetail(int fnRow) throws SQLException {
         try {
             Stage stage = new Stage();
-            
+
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("AddDeduction.fxml"));
 
@@ -630,12 +679,12 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
             loControl1.setGRider(oApp);
             loControl1.setDeductionObject(oTrans);
             loControl1.setTableRows(fnRow);
-            
+
             fxmlLoader.setController(loControl1);
-            
+
             //load the main interface
             Parent parent = fxmlLoader.load();
-                
+
             parent.setOnMousePressed(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
@@ -650,7 +699,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                     stage.setY(event.getScreenY() - yOffset);
                 }
             });
-            
+
             //set the main interface as the scene
             Scene scene = new Scene(parent);
             stage.setScene(scene);
@@ -658,147 +707,154 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("");
             stage.showAndWait();
-            
+
             loadDetail();
             loadIncentives();
         } catch (IOException e) {
             e.printStackTrace();
-            ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
+            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
             System.exit(1);
         }
     }
-    
+
     private void cmdButton_Click(ActionEvent event) {
-        String lsButton = ((Button)event.getSource()).getId();
+        String lsButton = ((Button) event.getSource()).getId();
         try {
-                switch (lsButton){
+            switch (lsButton) {
                 case "btnDelEmp":
-                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Remove this employee?") == true){  
-                        if (oTrans.removeDetail(pnEmp+ 1))
+                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Remove this employee?") == true) {
+                        if (oTrans.removeDetail(pnEmp + 1)) {
                             loadDetail();
-                        else
-                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                        } else {
+                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
+                        }
                     }
-                  
+
                     break;
-                case "btnNew": 
-                        if (oTrans.NewTransaction() ){
-                            clearFields();
-                            loadMaster();
-                            pnEditMode = EditMode.ADDNEW;
-                        } else
-                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                case "btnNew":
+                    if (oTrans.NewTransaction()) {
+                        clearFields();
+                        loadMaster();
+                        pnEditMode = EditMode.ADDNEW;
+                    } else {
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
+                    }
                     break;
                 case "btnAddIncentives":
-                    if (oTrans.searchIncentive("", false)){
+                    if (oTrans.searchIncentive("", false)) {
                         loadIncentives();
-                    }else{
-                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                    } else {
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
                     }
                     break;
-                 case "btnAddEmployee":
-                    if (oTrans.SearchEmployee("", false)){
+                case "btnAddEmployee":
+                    if (oTrans.SearchEmployee("", false)) {
                         loadDetail();
-                    }else{
-                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                    } else {
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
                     }
                     break;
                 case "btnAddDeductions":
                     String lsValue = ShowMessageFX.InputText("Please input deduction description.", "Add Deduction", "Add Deduction");
 
-                        if (!lsValue.isEmpty()){
-                            if (oTrans.addDeduction(lsValue))
-                                loadIncentives();
-                        }else
-                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                    if (!lsValue.isEmpty()) {
+                        if (oTrans.addDeduction(lsValue)) {
+                            loadIncentives();
+                        }
+                    } else {
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
+                    }
                     break;
                 case "btnClose":
-                        if(ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to close?") == true){
-                            if(state){
-                                onsuccessUpdate();
-                            }else{ 
-                                unloadForm();
-                            }
-                            break;
-                        } 
-                            return;
-                case "btnSave":
-                        if (oTrans.SaveTransaction()){
-                            
-                            ShowMessageFX.Warning(getStage(), "Transaction save successfully.", "Warning", null);
-                            if(state){
-                               onsuccessUpdate();
-                            }else{
-                                clearFields();
-                                oTrans = new Incentive(oApp, oApp.getBranchCode(), false);
-                                oTrans.setListener(oListener);
-                                oTrans.setWithUI(true);
-                                pnEditMode = EditMode.UNKNOWN;
-                            }
+                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Are you sure, do you want to close?") == true) {
+                        if (state) {
+                            onsuccessUpdate();
                         } else {
-                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                            unloadForm();
                         }
+                        break;
+                    }
+                    return;
+                case "btnSave":
+                    if (oTrans.SaveTransaction()) {
+
+                        ShowMessageFX.Warning(getStage(), "Transaction save successfully.", "Warning", null);
+                        if (state) {
+                            onsuccessUpdate();
+                        } else {
+                            clearFields();
+                            oTrans = new Incentive(oApp, oApp.getBranchCode(), false);
+                            oTrans.setListener(oListener);
+                            oTrans.setWithUI(true);
+                            pnEditMode = EditMode.UNKNOWN;
+                        }
+                    } else {
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
+                    }
                     break;
-                 case "btnBrowse":
-                        
-                        if (oTrans.SearchTransaction(txtSeeks21.getText(), true)){
-                            loadMaster();
-                            loadIncentives();
-                        } else if(oTrans.SearchTransaction(txtSeeks22.getText(), false)){
-                            loadMaster();
-                            loadIncentives();
-                        }else 
-                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                case "btnBrowse":
+
+                    if (oTrans.SearchTransaction(txtSeeks21.getText(), true)) {
+                        loadMaster();
+                        loadIncentives();
+                    } else if (oTrans.SearchTransaction(txtSeeks22.getText(), false)) {
+                        loadMaster();
+                        loadIncentives();
+                    } else {
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
+                    }
 //                         if (oTrans.SearchTransaction(txtSeeks21.getText(), false)){
 //                            loadMaster();
 //                            loadIncentives();
 //                            pnEditMode = EditMode.READY;
 //                        }else
 //                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
-                        break;
-                 case "btnUpdate":  
-                        if (oTrans.UpdateTransaction()){
-                            pnEditMode = oTrans.getEditMode(); 
-                          } else 
-                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
+                    break;
+                case "btnUpdate":
+                    if (oTrans.UpdateTransaction()) {
+                        pnEditMode = oTrans.getEditMode();
+                    } else {
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
+                    }
                     break;
                 case "btnCancel":
-                        if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true){  
-                            if(state){
-                               onsuccessUpdate();
-                            }else{
-                                clearFields();
-                                oTrans = new Incentive(oApp, oApp.getBranchCode(), false);
-                                oTrans.setListener(oListener);
-                                oTrans.setWithUI(true);
-                                pnEditMode = EditMode.UNKNOWN;
-                            }
+                    if (ShowMessageFX.OkayCancel(null, pxeModuleName, "Do you want to disregard changes?") == true) {
+                        if (state) {
+                            onsuccessUpdate();
+                        } else {
+                            clearFields();
+                            oTrans = new Incentive(oApp, oApp.getBranchCode(), false);
+                            oTrans.setListener(oListener);
+                            oTrans.setWithUI(true);
+                            pnEditMode = EditMode.UNKNOWN;
                         }
+                    }
                     break;
             }
             initButton(pnEditMode);
         } catch (SQLException e) {
-                    e.printStackTrace();
-                    ShowMessageFX.Warning(getStage(),e.getMessage(), "Warning", null);
-                } 
+            e.printStackTrace();
+            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
+        }
     }
+
     private void loadMaster() throws SQLException {
         txtSeeks21.setText((String) oTrans.getMaster(1));
         txtSeeks22.setText((String) oTrans.getMaster(16));
-        
+
         txtField01.setText((String) oTrans.getMaster(1));
         txtField02.setText(CommonUtils.xsDateMedium((Date) oTrans.getMaster(2)));
         txtField03.setText((String) oTrans.getMaster(17));
         txtField04.setText((String) oTrans.getMaster(4));
         txtField05.setText((String) oTrans.getMaster(5));
-        if(oApp.getDepartment().equalsIgnoreCase("022") ||
-                oApp.getDepartment().equalsIgnoreCase("034")){
+        if (oApp.getDepartment().equalsIgnoreCase("022")
+                || oApp.getDepartment().equalsIgnoreCase("034")) {
             txtField16.setEditable(true);
         }
         txtField16.setText((String) oTrans.getMaster(16));
         txtField04.setDisable(false);
-            
-        for (int lnCtr = 1; lnCtr <= oTrans.getItemCount(); lnCtr++){
+
+        for (int lnCtr = 1; lnCtr <= oTrans.getItemCount(); lnCtr++) {
             data.add(new TableModel(String.valueOf(lnCtr),
                     oTrans.getDetail(lnCtr, "xEmployNm").toString(),
                     oTrans.getDetail(lnCtr, "xEmpLevNm").toString(),
@@ -807,11 +863,12 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
                     oTrans.getDetail(lnCtr, "xIncentve").toString(),
                     oTrans.getDetail(lnCtr, "xDeductnx").toString(),
                     oTrans.getDetail(lnCtr, "nTotalAmt").toString()));
-        }       
+        }
         pnRow = 0;
         pnEmp = 0;
-    } 
-    private void clearFields(){
+    }
+
+    private void clearFields() {
         txtField01.setText("");
         txtField02.setText("");
         txtField03.setText("");
@@ -823,7 +880,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         data.clear();
         inc_data.clear();
     }
-        
+
     private void initGrid() {
         index01.setStyle("-fx-alignment: CENTER;");
         index02.setStyle("-fx-alignment: CENTER-LEFT;-fx-padding: 0 0 0 5;");
@@ -833,7 +890,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         index06.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
         index07.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
         index08.setStyle("-fx-alignment: CENTER-RIGHT;-fx-padding: 0 5 0 0;");
-        
+
         index01.setCellValueFactory(new PropertyValueFactory<>("index01"));
         index02.setCellValueFactory(new PropertyValueFactory<>("index02"));
         index03.setCellValueFactory(new PropertyValueFactory<>("index03"));
@@ -852,7 +909,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         tblemployee.getSelectionModel().select(pnEmp + 1);
         tblemployee.autosize();
     }
-    
+
     private void initGrid1() {
         incindex01.setStyle("-fx-alignment: CENTER;");
         incindex02.setStyle("-fx-alignment: CENTER-LEFT;");
@@ -861,7 +918,7 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         incindex05.setStyle("-fx-alignment: CENTER-LEFT;");
         incindex06.setStyle("-fx-alignment: CENTER-LEFT;");
         incindex07.setStyle("-fx-alignment: CENTER-LEFT;");
-        
+
         incindex01.setCellValueFactory(new PropertyValueFactory<>("incindex01"));
         incindex02.setCellValueFactory(new PropertyValueFactory<>("incindex02"));
         incindex03.setCellValueFactory(new PropertyValueFactory<>("incindex03"));
@@ -878,80 +935,81 @@ public class EmployeeIncentivesController implements Initializable, ScreenInterf
         tblIncentives.setItems(inc_data);
         tblIncentives.autosize();
     }
-    
+
     @FXML
     private void tblemployee_Clicked(MouseEvent event) {
         pnEmp = tblemployee.getSelectionModel().getSelectedIndex();
     }
-    
+
     @FXML
     private void tblIncentives_Clicked(MouseEvent event) {
         try {
-            
-            pnRow = tblIncentives.getSelectionModel().getSelectedIndex(); 
-            if(pnRow >= 0){
+
+            pnRow = tblIncentives.getSelectionModel().getSelectedIndex();
+            if (pnRow >= 0) {
                 TableIncentives ti = (TableIncentives) tblIncentives.getItems().get(pnRow);
-                if(ti.getIncindex02().contains("Deduction")){
+                if (ti.getIncindex02().contains("Deduction")) {
                     AddDeductionController.setData(ti);
-                    loadDeductionDetail(pnRow + 1 - (oTrans.getIncentiveCount())); 
-                } else{
-                    loadIncentiveDetail((String) oTrans.getIncentiveInfo(pnRow + 1, "sInctveCD"), pnRow + 1); 
+                    loadDeductionDetail(pnRow + 1 - (oTrans.getIncentiveCount()));
+                } else {
+                    loadIncentiveDetail((String) oTrans.getIncentiveInfo(pnRow + 1, "sInctveCD"), pnRow + 1);
                 }
             }
-           
+
         } catch (SQLException ex) {
             ex.printStackTrace();
-            ShowMessageFX.Warning(getStage(),ex.getMessage(), "Warning", null);
+            ShowMessageFX.Warning(getStage(), ex.getMessage(), "Warning", null);
         }
     }
-    
-    public void tblIncentives_column(){
-         incindex01.prefWidthProperty().bind(tblIncentives.widthProperty().multiply(0.04));
-         incindex02.prefWidthProperty().bind(tblIncentives.widthProperty().multiply(0.250));
-         incindex03.prefWidthProperty().bind(tblIncentives.widthProperty().multiply(0.14));
-         incindex04.prefWidthProperty().bind(tblIncentives.widthProperty().multiply(0.14));
-         incindex05.prefWidthProperty().bind(tblIncentives.widthProperty().multiply(0.14));
-         incindex06.prefWidthProperty().bind(tblIncentives.widthProperty().multiply(0.14));
-         incindex07.prefWidthProperty().bind(tblIncentives.widthProperty().multiply(0.14));
-         
-         incindex01.setResizable(false);  
-         incindex02.setResizable(false);  
-         incindex03.setResizable(false);  
-         incindex04.setResizable(false);  
-         incindex05.setResizable(false);  
-         incindex06.setResizable(false);
-         incindex07.setResizable(false);   
+
+    public void tblIncentives_column() {
+        incindex01.prefWidthProperty().bind(tblIncentives.widthProperty().multiply(0.04));
+        incindex02.prefWidthProperty().bind(tblIncentives.widthProperty().multiply(0.250));
+        incindex03.prefWidthProperty().bind(tblIncentives.widthProperty().multiply(0.14));
+        incindex04.prefWidthProperty().bind(tblIncentives.widthProperty().multiply(0.14));
+        incindex05.prefWidthProperty().bind(tblIncentives.widthProperty().multiply(0.14));
+        incindex06.prefWidthProperty().bind(tblIncentives.widthProperty().multiply(0.14));
+        incindex07.prefWidthProperty().bind(tblIncentives.widthProperty().multiply(0.14));
+
+        incindex01.setResizable(false);
+        incindex02.setResizable(false);
+        incindex03.setResizable(false);
+        incindex04.setResizable(false);
+        incindex05.setResizable(false);
+        incindex06.setResizable(false);
+        incindex07.setResizable(false);
     }
-    
-    public void tblemployee_column(){
-         index01.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.035));
-         index02.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.210));
-         index03.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.195));
-         index04.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.195));
-         index05.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.08));
-         index06.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.09));
-         index07.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.09));
-         index08.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.09));
-          
+
+    public void tblemployee_column() {
+        index01.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.035));
+        index02.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.210));
+        index03.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.195));
+        index04.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.195));
+        index05.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.08));
+        index06.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.09));
+        index07.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.09));
+        index08.prefWidthProperty().bind(tblemployee.widthProperty().multiply(0.09));
+
     }
-    
-    private void onsuccessUpdate(){
+
+    private void onsuccessUpdate() {
         StackPane myBox = (StackPane) AnchorMain.getParent();
         myBox.getChildren().clear();
         myBox.getChildren().add(setScene());
-          
-    }
-    private AnchorPane setScene(){
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("IncentiveConfirmation.fxml"));
 
-            IncentiveConfirmationController loControl = new IncentiveConfirmationController();
-            loControl.setGRider(oApp);
-            loControl.setTransaction(oTransnox);
-            fxmlLoader.setController(loControl);
-            //load the main interface
-                
-          AnchorPane root;
+    }
+
+    private AnchorPane setScene() {
+        FXMLLoader fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(getClass().getResource("IncentiveConfirmation.fxml"));
+
+        IncentiveConfirmationController loControl = new IncentiveConfirmationController();
+        loControl.setGRider(oApp);
+        loControl.setTransaction(oTransnox);
+        fxmlLoader.setController(loControl);
+        //load the main interface
+
+        AnchorPane root;
         try {
             root = (AnchorPane) fxmlLoader.load();
             FadeTransition ft = new FadeTransition(Duration.millis(1500));
