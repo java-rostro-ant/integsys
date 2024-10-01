@@ -764,9 +764,15 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                 if (!file.getPath().endsWith(".xlsx")) {
                     file = new File(file.getPath() + ".xlsx");
                 }
+                
+                if (file == null) {
+                    ShowMessageFX.Information(getStage(), "Unable to save File. Failed to write Excel", "Information", null);
+                    return;
+                }
                 // Write the output to the selected file
                 try (FileOutputStream fileOut = new FileOutputStream(file)) {
                     workbook.write(fileOut);
+                    fileOut.flush();  //flush the output stream
                 } catch (IOException e) {
                     e.printStackTrace();
                     ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
