@@ -276,14 +276,35 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                             txtField.setText(String.valueOf(lastValue));
                             txtField07.requestFocus();
                         } else {
-                            if (lastpercValue - lnOldpercent + Double.valueOf(lsValue) > 100) {
+                            if (lastpercValue - lnOldpercent + Double.valueOf(lsValue) >= 100.00) {
                                 ShowMessageFX.Warning(getStage(), "The specified percentage will exceed the incentive allocation.", "Warning", null);
 
                                 txtField.setText(String.valueOf(lastValue));
                                 txtField.requestFocus();
                             } else {
                                 oTrans.setIncentiveEmployeeAllocationInfo("nAllcPerc", psCode, (String) oTrans.getDetail(pnRow, "sEmployID"), Double.valueOf(lsValue));
+
+                                if (pnRow <= oTrans.getItemCount()) {
+                                    pnRow++;
+                                } else {
+                                    pnRow = 1;
+                                }
+
+                                tblemployee.getVisibleLeafColumns();
+                                int max = tblemployee.getItems().size();
+                                pnRow = Math.min(pnRow, max);
+                                if ((tblemployee.getSelectionModel().getSelectedIndex()) == max - 1) {
+                                    pnRow = 1;
+                                }
+                                tblemployee.scrollTo(pnRow - 1);
+
                             }
+                            loadEmployee();
+                            getSelectedItem();
+
+                            txtField11.requestFocus();
+                            event.consume();
+                            return;
                         }
 
                         break;
@@ -317,7 +338,7 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
                         loadEmployee();
                         getSelectedItem();
 
-                        txtField11.requestFocus();
+                        txtField12.requestFocus();
                         event.consume();
                         return;
                 }
