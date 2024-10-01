@@ -508,6 +508,20 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
                         }
                     }
                     break;
+                case "btnSave": //save transaction
+                    if (oTrans.SaveTransaction()) {
+                        ShowMessageFX.Warning(getStage(), "Transaction Successfully Saved.", "Warning", null);
+                        clearFields();
+
+                    } else {
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
+                    }
+
+                    break;
+                case "btnCancel": //cancel transaction
+                    clearFields();
+                    //reload detail
+                    break;
 
                 case "btnClose": //close releasing form
                     if (ShowMessageFX.OkayCancel(null, "Incentive Releasing", "Are you sure, do you want to close?") == true) {
