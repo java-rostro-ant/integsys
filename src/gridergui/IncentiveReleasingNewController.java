@@ -4,6 +4,8 @@ import com.sun.javafx.scene.control.skin.TableHeaderRow;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -312,44 +314,34 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
             txtField02.setText(CommonUtils.xsDateLong((Date) oTrans.getMaster("dTransact")));
 
             Incentive_Directory.clear();
-
             Employee_Data.clear();
             int lnDetail = 0;
             double lnTotalAmount = 0;
-            double byBranchTotal = 0;
+
             System.err.println("Start Adding Transaction Details");
             System.err.println("Loop count = " + oTrans.getItemCount());
 
-            for (int lnRow = 0; lnRow <= oTrans.getItemCount() - 1; lnRow++) {
+            // A map to store the grouped totals by branch for directory
+            Map<String, Release> groupedDirectoryData = new LinkedHashMap<>();
 
+            // A map to store the grouped totals by employee and branch
+            Map<String, Release> groupedData = new LinkedHashMap<>();
+            for (int lnRow = 0; lnRow <= oTrans.getItemCount() - 1; lnRow++) {
                 String lsPeriod = oTrans.getDetail(lnRow).getMaster("sMonthxxx").toString();
                 Date ldDate = SQLUtil.toDate(lsPeriod.trim() + " 01", "yyyyMM dd");
-                String lsOldBranch = "";
+
                 String lsBranch = oTrans.getDetail(lnRow).getMaster("xBranchNm").toString();
 
-                //fetch the first record
-                if (lnRow == 0) {
-                    lsOldBranch = lsBranch;
-
-                }
-
-                // A map to store the grouped totals by employee and branch
-                Map<String, Release> groupedData = new LinkedHashMap<>();
+                // Reset branch total for each branch
+                double byBranchTotal = 0;
 
                 for (int lnCtr = 1; lnCtr <= oTrans.getDetail(lnRow).getItemCount(); lnCtr++) {
-
-                    String EmployeeStat = "";
-
-                    if (oTrans.getDetail(lnRow).getDetail(lnCtr, "cRecdStat").toString().equals("1")) {
-                        EmployeeStat = "ACTIVE";
-                    } else {
-                        EmployeeStat = "INACTIVE";
-                    }
+                    String EmployeeStat = oTrans.getDetail(lnRow).getDetail(lnCtr, "cRecdStat").toString().equals("1") ? "ACTIVE" : "INACTIVE";
 
                     double xIncentive = Double.parseDouble(oTrans.getDetail(lnRow).getDetail(lnCtr, "xIncentve").toString());
                     double xDeduction = Double.parseDouble(oTrans.getDetail(lnRow).getDetail(lnCtr, "xDeductnx").toString());
-                    double lnTotalEmpIncentive = xIncentive + xDeduction;
-                    //grouping the employee with branch
+                    double lnTotalEmpIncentive = xIncentive - xDeduction;
+
                     // Create a unique key using branch and employee name
                     String key = lsBranch + "-" + oTrans.getDetail(lnRow).getDetail(lnCtr, "xEmployNm").toString();
 
@@ -357,9 +349,13 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
                         // If this branch-employee combination already exists, sum the values
                         Release existingRelease = groupedData.get(key);
 
-                        double newIncentive = Double.parseDouble(existingRelease.getEmpIndex06()) + xIncentive;
-                        double newDeduction = Double.parseDouble(existingRelease.getEmpIndex07()) + xDeduction;
-                        double newTotalIncentive = newIncentive + newDeduction;
+                        // Parse the existing total, removing commas first
+                        double existingnewIncentive = Double.parseDouble(existingRelease.getEmpIndex06().replace(",", ""));
+                        double existingnewDeduction = Double.parseDouble(existingRelease.getEmpIndex07().replace(",", ""));
+
+                        double newIncentive = existingnewIncentive + xIncentive;
+                        double newDeduction = existingnewDeduction + xDeduction;
+                        double newTotalIncentive = newIncentive - newDeduction;
 
                         // Update the Release object
                         existingRelease.setEmpIndex06(CommonUtils.NumberFormat(newIncentive, "###,###,##0.00"));
@@ -367,7 +363,7 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
                         existingRelease.setEmpIndex08(CommonUtils.NumberFormat(newTotalIncentive, "###,###,##0.00"));
                     } else {
                         lnDetail++;
-                        // If not exists, create a new entry 
+                        // If not exists, create a new entry
                         Release newRelease = new Release(
                                 String.valueOf(lnDetail),
                                 lsBranch,
@@ -376,7 +372,8 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
                                 EmployeeStat,
                                 CommonUtils.NumberFormat(xIncentive, "###,###,##0.00"),
                                 CommonUtils.NumberFormat(xDeduction, "###,###,##0.00"),
-                                CommonUtils.NumberFormat(lnTotalEmpIncentive, "###,###,##0.00"));
+                                CommonUtils.NumberFormat(lnTotalEmpIncentive, "###,###,##0.00")
+                        );
 
                         groupedData.put(key, newRelease);
                     }
@@ -385,47 +382,60 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
                     byBranchTotal += lnTotalEmpIncentive;
                 }
 
-                Employee_Data.addAll(groupedData.values());
-                //directory
-                //check if last 
-                if (oTrans.getItemCount() - 1 != lnRow) {
+                // Add or update the branch data in groupedDirectoryData
+                String keyDirectory = lsBranch;
+                if (groupedDirectoryData.containsKey(keyDirectory)) {
+                    // Update existing branch total
+                    Release existingDirectoryRelease = groupedDirectoryData.get(keyDirectory);
 
-                    String lsNextBranch = oTrans.getDetail(lnRow + 1).getMaster("xBranchNm").toString();
-                    if (!lsOldBranch.equals(lsNextBranch)) {
-                        Incentive_Directory.add(new Release(
-                                oTrans.getDetail(lnRow).getMaster("xBranchNm").toString(),
-                                CommonUtils.dateFormat(ldDate, "MMMM YYYY"),
-                                CommonUtils.NumberFormat(byBranchTotal, "###,###,##0.00")));
+                    // Parse the existing total, removing commas first
+                    double existingTotal = Double.parseDouble(existingDirectoryRelease.getIncIndex03().replace(",", ""));
 
-                        //reset
-                        byBranchTotal = 0;
-                        lsOldBranch = lsBranch;
-
-                    } else {
-                        lsOldBranch = lsBranch;
-
-                    }
+                    // Calculate the new total by adding the branch total
+                    double newBranchTotal = existingTotal + byBranchTotal;
+                    existingDirectoryRelease.setIncIndex03(CommonUtils.NumberFormat(newBranchTotal, "###,###,##0.00"));
                 } else {
-                    //insert the last detail
-                    Incentive_Directory.add(new Release(
-                            oTrans.getDetail(lnRow).getMaster("xBranchNm").toString(),
+                    // Create a new entry for the branch
+                    Release newDirectoryRelease = new Release(
+                            lsBranch,
                             CommonUtils.dateFormat(ldDate, "MMMM YYYY"),
-                            String.valueOf(byBranchTotal)));
-
+                            CommonUtils.NumberFormat(byBranchTotal, "###,###,##0.00")
+                    );
+                    groupedDirectoryData.put(keyDirectory, newDirectoryRelease);
                 }
-
             }
 
+            // Add the grouped branch data to Incentive_Directory
+            Incentive_Directory.addAll(groupedDirectoryData.values());
+            // Add the grouped branch and employee data to Employee_Data
+            Employee_Data.addAll(groupedData.values());
             lblTotal.setText(CommonUtils.NumberFormat(lnTotalAmount, "###,###,##0.00"));
 
             System.err.println("Finish Adding Transaction Details");
             initEmployeeGrid();
             initGrid();
             getTransactionStatus();
+            reorderIncentiveDirectory();
+
         } catch (NullPointerException | SQLException e) {
             ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
             Logger.getLogger(IncentiveReleasingNewController.class.getName()).log(Level.SEVERE, null, e);
         }
+    }
+
+    public void reorderIncentiveDirectory() {
+        // Reorder based on branch name (alphabetical order) and by date (descending order)
+        Collections.sort(Incentive_Directory, new Comparator<Release>() {
+            @Override
+            public int compare(Release incDirectory1, Release incDirectory2) {
+                // Compare by branch name first
+                int branchComparison = incDirectory1.getIncIndex01().compareTo(incDirectory2.getIncIndex01());
+                if (branchComparison != 0) {
+                    return branchComparison;
+                }
+                return 1;
+            }
+        });
     }
 
     private void unloadForm() {
