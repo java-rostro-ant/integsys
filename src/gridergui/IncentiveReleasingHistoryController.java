@@ -264,6 +264,8 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
     };
 
     private void loadRecord() {
+        String lsBankName;
+        String lsBankAcct;
         try {
             txtField01.setText((String) oTrans.getMaster("sTransNox"));
             txtField02.setText(CommonUtils.xsDateLong((Date) oTrans.getMaster("dTransact")));
@@ -317,6 +319,16 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                         existingRelease.setEmpIndex07(CommonUtils.NumberFormat(newDeduction, "###,###,##0.00"));
                         existingRelease.setEmpIndex08(CommonUtils.NumberFormat(newTotalIncentive, "###,###,##0.00"));
                     } else {
+
+                        trans = oTrans.getBankInfo((String) oTrans.getDetail(lnRow).getDetail(lnCtr, "sEmployID"));
+
+                        if (trans != null) {
+                            lsBankName = trans.getMaster(2).toString();
+                            lsBankAcct = trans.getMaster(3).toString();
+                        } else {
+                            lsBankName = "";
+                            lsBankAcct = "";
+                        }
                         lnDetail++;
                         // If not exists, create a new entry
                         Release newRelease = new Release(
@@ -327,7 +339,10 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                                 EmployeeStat,
                                 CommonUtils.NumberFormat(xIncentive, "###,###,##0.00"),
                                 CommonUtils.NumberFormat(xDeduction, "###,###,##0.00"),
-                                CommonUtils.NumberFormat(lnTotalEmpIncentive, "###,###,##0.00")
+                                CommonUtils.NumberFormat(lnTotalEmpIncentive, "###,###,##0.00"),
+                                lsBankName,
+                                lsBankAcct,
+                                oTrans.getDetail(lnRow).getDetail(lnCtr, "sEmployID").toString()
                         );
 
                         groupedData.put(key, newRelease);
@@ -377,8 +392,8 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
             Logger.getLogger(IncentiveReleasingNewController.class.getName()).log(Level.SEVERE, null, e);
         }
     }
-    
-        public void reorderIncentiveDirectory() {
+
+    public void reorderIncentiveDirectory() {
         // Reorder based on branch name (alphabetical order) and by date (descending order)
         Collections.sort(Incentive_Directory, new Comparator<Release>() {
             @Override
@@ -392,7 +407,6 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
             }
         });
     }
-
 
     private void unloadForm() {
         StackPane myBox = (StackPane) AnchorMainIncentiveRelease.getParent();

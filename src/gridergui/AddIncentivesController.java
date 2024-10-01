@@ -520,6 +520,25 @@ public class AddIncentivesController implements Initializable, ScreenInterface {
             txtField10.setDisable(pnEditMode != EditMode.ADDNEW && pnEditMode != EditMode.UPDATE);
             txtField11.setDisable(pnEditMode != EditMode.ADDNEW && pnEditMode != EditMode.UPDATE);
             txtField12.setDisable(pnEditMode != EditMode.ADDNEW && pnEditMode != EditMode.UPDATE);
+
+            String lnPercentage = oTrans.getIncentiveInfo(tbl_row, "xByPercnt").toString();
+
+            switch (lnPercentage) {
+                case "0"://amount only
+                    txtField11.setDisable(true);
+                    txtField12.setDisable(false);
+                    break;
+                case "1"://percentage only
+                    txtField11.setDisable(false);
+                    txtField12.setDisable(true);
+                    break;
+                case "2"://combination
+                    txtField11.setDisable(false);
+                    txtField12.setDisable(false);
+                    break;
+
+            }
+
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
