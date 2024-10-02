@@ -61,7 +61,7 @@
                                                    <rowConstraints>
                                                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="0.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                    </rowConstraints>
                                                    <children>
                                                       <Label maxWidth="1.7976931348623157E308" text="Date" GridPane.columnIndex="2">
@@ -79,22 +79,22 @@
                                                             <Font name="System Bold" size="12.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField fx:id="txtField98" editable="false" prefHeight="23.0" prefWidth="247.0" style="-fx-border-radius: 5;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                      <TextField fx:id="txtField98" disable="true" editable="false" prefHeight="23.0" prefWidth="247.0" style="-fx-border-radius: 5;" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                                          <font>
                                                             <Font size="11.0" />
                                                          </font>
                                                       </TextField>
-                                                      <Label maxWidth="1.7976931348623157E308" text="Division" GridPane.rowIndex="1">
+                                                      <Label maxWidth="1.7976931348623157E308" text="Division" visible="false" GridPane.rowIndex="2">
                                                          <font>
                                                             <Font name="System Bold" size="12.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField fx:id="txtField99" editable="false" prefHeight="23.0" prefWidth="247.0" style="-fx-border-radius: 5;" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                                      <TextField fx:id="txtField99" editable="false" prefHeight="23.0" prefWidth="247.0" style="-fx-border-radius: 5;" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                                          <font>
                                                             <Font size="11.0" />
                                                          </font>
                                                       </TextField>
-                                                      <Label maxWidth="1.7976931348623157E308" text="Period" GridPane.rowIndex="2">
+                                                      <Label maxWidth="1.7976931348623157E308" text="Period" GridPane.rowIndex="1">
                                                          <font>
                                                             <Font name="System Bold" size="12.0" />
                                                          </font>

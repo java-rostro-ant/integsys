@@ -159,9 +159,9 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
     private void intTextField() {
         txtSeeks05.setOnKeyPressed(this::txtField_KeyPressed);
         txtField99.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField98.setOnKeyPressed(this::txtField_KeyPressed);
+//        txtField98.setOnKeyPressed(this::txtField_KeyPressed);
 
-        txtField98.focusedProperty().addListener(txtField_Focus);
+//        txtField98.focusedProperty().addListener(txtField_Focus);
         txtField99.focusedProperty().addListener(txtField_Focus);
     }
 
@@ -389,7 +389,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
             if (Incentive_Directory.size() != 0) {
 
                 txtField99.setText(Incentive_Directory.get(Incentive_Directory.size() - 1).getIncIndex02());
-                txtField98.setText(Incentive_Directory.get(Incentive_Directory.size() - 1).getIncIndex01());
+//                txtField98.setText(Incentive_Directory.get(Incentive_Directory.size() - 1).getIncIndex01());
 
             }
 
@@ -554,7 +554,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
         txtField01.clear();
         txtField02.clear();
         txtField99.clear();
-        txtField98.clear();
+//        txtField98.clear();
 
         lblStatus.setVisible(false);
     }
