@@ -159,9 +159,9 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
     private void intTextField() {
         txtSeeks05.setOnKeyPressed(this::txtField_KeyPressed);
         txtField99.setOnKeyPressed(this::txtField_KeyPressed);
-        txtField98.setOnKeyPressed(this::txtField_KeyPressed);
+//        txtField98.setOnKeyPressed(this::txtField_KeyPressed);
 
-        txtField98.focusedProperty().addListener(txtField_Focus);
+//        txtField98.focusedProperty().addListener(txtField_Focus);
         txtField99.focusedProperty().addListener(txtField_Focus);
     }
 
@@ -386,6 +386,12 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
             initGrid();
             getTransactionStatus();
             reorderIncentiveDirectory();
+            if (Incentive_Directory.size() != 0) {
+
+                txtField99.setText(Incentive_Directory.get(Incentive_Directory.size() - 1).getIncIndex02());
+//                txtField98.setText(Incentive_Directory.get(Incentive_Directory.size() - 1).getIncIndex01());
+
+            }
 
         } catch (NullPointerException | SQLException e) {
             ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
@@ -480,8 +486,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
     @FXML
     private void tblincetives_Click(MouseEvent event
     ) {
-
-//        try {
+        //This method will directly find the clicked branch into directory
         pnRow = tblincetives.getSelectionModel().getSelectedIndex();
         if (pnRow >= 0) {
 
@@ -501,9 +506,6 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
             }
         }
 
-//        } catch (SQLException ex) {
-//            ShowMessageFX.Warning(getStage(), ex.getMessage(), "Warning", null);
-//        }
     }
 
     private void txtField_KeyPressed(KeyEvent event) {
@@ -552,7 +554,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
         txtField01.clear();
         txtField02.clear();
         txtField99.clear();
-        txtField98.clear();
+//        txtField98.clear();
 
         lblStatus.setVisible(false);
     }
@@ -586,6 +588,10 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
             Row headerRow = null;
             int rowNum;
             int exportDetail = 0;
+            //fetch the filtered employee_data
+            ObservableList<Release> loExportEmployee = FXCollections.observableArrayList();
+            loExportEmployee = getFilterEmployee();
+
             switch (fsBankType) {
                 // Define a header row
                 case "btnNoBank":
@@ -596,18 +602,16 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                     headerRow.createCell(3).setCellValue("Amount");
 
                     rowNum = 1;
-                    for (Release release : Employee_Data) {
-                        if (release.getEmpIndex09().trim().isEmpty() || release.getEmpIndex09() == null) {
-                            if (Double.valueOf(release.getEmpIndex08().replaceAll(",", "")) > 0) {
-                                Row row = sheet.createRow(rowNum);
-                                row.createCell(0).setCellValue(rowNum);
-                                row.createCell(1).setCellValue(release.getEmpIndex02());
-                                row.createCell(2).setCellValue(release.getEmpIndex03());
-                                row.createCell(3).setCellValue(release.getEmpIndex08());
+                    for (Release po_xRelease : loExportEmployee) {
+                        if (po_xRelease.getEmpIndex09().trim().isEmpty() || po_xRelease.getEmpIndex09() == null) {
+                            Row row = sheet.createRow(rowNum);
+                            row.createCell(0).setCellValue(rowNum);
+                            row.createCell(1).setCellValue(po_xRelease.getEmpIndex02());
+                            row.createCell(2).setCellValue(po_xRelease.getEmpIndex03());
+                            row.createCell(3).setCellValue(po_xRelease.getEmpIndex08());
 
-                                rowNum++;
-                                exportDetail++;
-                            }
+                            rowNum++;
+                            exportDetail++;
                         }
                     }
                     break;
@@ -620,17 +624,15 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                     headerRow.createCell(3).setCellValue("Remarks");
 
                     rowNum = 1;
-                    for (Release release : Employee_Data) {
-                        if (release.getEmpIndex09().equalsIgnoreCase("00XX024")) {
-                            if (Double.valueOf(release.getEmpIndex08().replaceAll(",", "")) > 0) {
-                                Row row = sheet.createRow(rowNum++);
-                                row.createCell(0).setCellValue(release.getEmpIndex10());
-                                row.createCell(1).setCellValue(release.getEmpIndex08());
-                                row.createCell(2).setCellValue(release.getEmpIndex03());
-                                row.createCell(3).setCellValue("");
+                    for (Release po_xRelease : loExportEmployee) {
+                        if (po_xRelease.getEmpIndex09().equalsIgnoreCase("00XX024")) {
+                            Row row = sheet.createRow(rowNum++);
+                            row.createCell(0).setCellValue(po_xRelease.getEmpIndex10());
+                            row.createCell(1).setCellValue(po_xRelease.getEmpIndex08());
+                            row.createCell(2).setCellValue(po_xRelease.getEmpIndex03());
+                            row.createCell(3).setCellValue("");
 
-                                exportDetail++;
-                            }
+                            exportDetail++;
                         }
                     }
                     break;
@@ -645,30 +647,27 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                     headerRow.createCell(4).setCellValue("Amount");
 
                     rowNum = 1;
-                    for (Release release : Employee_Data) {
+                    for (Release po_xRelease : loExportEmployee) {
+                        if (po_xRelease.getEmpIndex09().equalsIgnoreCase("00XX006")) {
+                            String LastName = "";
+                            String FirstName = "";
+                            String MiddleName = "";
+                            ResultSet loRS = oTrans.getEmployeeDetail(po_xRelease.getEmpIndex11());
+                            if (loRS != null) {
+                                LastName = loRS.getString("sLastName");
+                                FirstName = loRS.getString("sFrstName");
+                                MiddleName = loRS.getString("sMiddName");
+                                loRS.close();
 
-                        if (release.getEmpIndex09().equalsIgnoreCase("00XX006")) {
-                            if (Double.valueOf(release.getEmpIndex08().replaceAll(",", "")) > 0) {
-                                String LastName = "";
-                                String FirstName = "";
-                                String MiddleName = "";
-                                ResultSet loRS = oTrans.getEmployeeDetail(release.getEmpIndex11());
-                                if (loRS != null) {
-                                    LastName = loRS.getString("sLastName");
-                                    FirstName = loRS.getString("sFrstName");
-                                    MiddleName = loRS.getString("sMiddName");
-                                    loRS.close();
-
-                                }
-                                Row row = sheet.createRow(rowNum++);
-                                row.createCell(0).setCellValue(LastName);
-                                row.createCell(1).setCellValue(FirstName);
-                                row.createCell(2).setCellValue(MiddleName);
-                                row.createCell(3).setCellValue(release.getEmpIndex10());
-                                row.createCell(4).setCellValue(release.getEmpIndex08());
-
-                                exportDetail++;
                             }
+                            Row row = sheet.createRow(rowNum++);
+                            row.createCell(0).setCellValue(LastName);
+                            row.createCell(1).setCellValue(FirstName);
+                            row.createCell(2).setCellValue(MiddleName);
+                            row.createCell(3).setCellValue(po_xRelease.getEmpIndex10());
+                            row.createCell(4).setCellValue(po_xRelease.getEmpIndex08());
+
+                            exportDetail++;
                         }
                     }
                     break;
@@ -680,17 +679,16 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                     headerRow.createCell(2).setCellValue("Amount");
 
                     rowNum = 1;
-                    for (Release release : Employee_Data) {
-                        if (release.getEmpIndex09().equalsIgnoreCase("00XX022")) {
-                            if (Double.valueOf(release.getEmpIndex08().replaceAll(",", "")) > 0) {
-                                Row row = sheet.createRow(rowNum++);
-                                row.createCell(0).setCellValue(release.getEmpIndex03());
-                                row.createCell(1).setCellValue(release.getEmpIndex10());
-                                row.createCell(2).setCellValue(release.getEmpIndex08());
+                    for (Release po_xRelease : loExportEmployee) {
+                        if (po_xRelease.getEmpIndex09().equalsIgnoreCase("00XX022")) {
+                            Row row = sheet.createRow(rowNum++);
+                            row.createCell(0).setCellValue(po_xRelease.getEmpIndex03());
+                            row.createCell(1).setCellValue(po_xRelease.getEmpIndex10());
+                            row.createCell(2).setCellValue(po_xRelease.getEmpIndex08());
 
-                                exportDetail++;
-                            }
+                            exportDetail++;
                         }
+
                     }
                     break;
 
@@ -706,36 +704,34 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                     headerRow.createCell(6).setCellValue("Amount");
 
                     rowNum = 1;
-                    for (Release release : Employee_Data) {
-                        if (release.getEmpIndex09().equalsIgnoreCase("00XX006")) {
-                            if (Double.valueOf(release.getEmpIndex08().replaceAll(",", "")) > 0) {
-                                String LastName = "";
-                                String FirstName = "";
-                                String MiddleName = "";
-                                String MobileNo = "";
-                                String Email = "";
-                                ResultSet loRS = oTrans.getEmployeeDetail(release.getEmpIndex11());
+                    for (Release po_xRelease : loExportEmployee) {
+                        if (po_xRelease.getEmpIndex09().equalsIgnoreCase("00XX003")) {
+                            String LastName = "";
+                            String FirstName = "";
+                            String MiddleName = "";
+                            String MobileNo = "";
+                            String Email = "";
+                            ResultSet loRS = oTrans.getEmployeeDetail(po_xRelease.getEmpIndex11());
 
-                                if (loRS != null) {
-                                    LastName = loRS.getString("sLastName");
-                                    FirstName = loRS.getString("sFrstName");
-                                    MiddleName = loRS.getString("sMiddName");
-                                    MobileNo = loRS.getString("sEmailAdd");
-                                    Email = loRS.getString("sMobileNo");
-                                    loRS.close();
+                            if (loRS != null) {
+                                LastName = loRS.getString("sLastName");
+                                FirstName = loRS.getString("sFrstName");
+                                MiddleName = loRS.getString("sMiddName");
+                                MobileNo = loRS.getString("sEmailAdd");
+                                Email = loRS.getString("sMobileNo");
+                                loRS.close();
 
-                                }
-                                Row row = sheet.createRow(rowNum++);
-                                row.createCell(0).setCellValue(LastName);
-                                row.createCell(1).setCellValue(FirstName);
-                                row.createCell(2).setCellValue(MiddleName);
-                                row.createCell(3).setCellValue(MobileNo);
-                                row.createCell(4).setCellValue(Email);
-                                row.createCell(5).setCellValue(release.getEmpIndex10());
-                                row.createCell(6).setCellValue(release.getEmpIndex08());
-
-                                exportDetail++;
                             }
+                            Row row = sheet.createRow(rowNum++);
+                            row.createCell(0).setCellValue(LastName);
+                            row.createCell(1).setCellValue(FirstName);
+                            row.createCell(2).setCellValue(MiddleName);
+                            row.createCell(3).setCellValue(MobileNo);
+                            row.createCell(4).setCellValue(Email);
+                            row.createCell(5).setCellValue(po_xRelease.getEmpIndex10());
+                            row.createCell(6).setCellValue(po_xRelease.getEmpIndex08());
+
+                            exportDetail++;
                         }
                     }
                     break;
@@ -764,7 +760,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                 if (!file.getPath().endsWith(".xlsx")) {
                     file = new File(file.getPath() + ".xlsx");
                 }
-                
+
                 if (file == null) {
                     ShowMessageFX.Information(getStage(), "Unable to save File. Failed to write Excel", "Information", null);
                     return;
@@ -786,4 +782,33 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
         }
 
     }
+
+    private ObservableList<Release> getFilterEmployee() {
+        ObservableList<Release> lnFilterEmployee = FXCollections.observableArrayList();
+
+        // A map to store the grouped totals by employee and branch
+        Map<String, Release> loEmployee = new LinkedHashMap<>();
+
+        for (Release poRelease : Employee_Data) {
+            double lnAmount = Double.valueOf(poRelease.getEmpIndex08().replaceAll(",", ""));
+            if (lnAmount > 0) {
+                String key = poRelease.getEmpIndex03(); // Group by EmpIndex03(xEmployNme)
+
+                // If the employee already exists in the map, sum their amount
+                if (loEmployee.containsKey(key)) {
+                    Release existingRelease = loEmployee.get(key);
+                    double lnAmountTotal = Double.valueOf(existingRelease.getEmpIndex08().replaceAll(",", "")) + lnAmount;
+                    existingRelease.setEmpIndex08(String.valueOf(lnAmountTotal));
+                } else {
+                    // Add to map if does'nt Exist
+                    loEmployee.put(key, poRelease);
+                }
+            }
+        }
+
+        lnFilterEmployee.addAll(loEmployee.values());
+
+        return lnFilterEmployee;
+    }
+
 }
