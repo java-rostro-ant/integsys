@@ -62,6 +62,12 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
     private Timeline timeline;
     private Integer timeSeconds = 3;
 
+    private final String FINANCE = "028";
+    private final String AUDITOR = "034";
+    private final String COLLECTION = "022";
+    private final String MIS = "026";
+    private final String MAIN_OFFICE = "M001»M0W1";
+
     private GRider oApp;
     private IncentiveReportNew oTrans;
 
@@ -311,6 +317,30 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
 
     private void initFields() {
         lblReportsTitle.setText(reportCategory + " REPORT");
+        try {
+            if (MAIN_OFFICE.contains(oApp.getBranchCode())) {
+                if (!(AUDITOR + "»" + COLLECTION + "»" + FINANCE + "»" + MIS).contains(oApp.getDepartment())) {
+                    if (oTrans.searchFilter(2, oApp.getBranchCode(), true)) {
+                        txtField02.setText((String) oTrans.getFilter(2, "xxColName"));
+                        txtField02.setDisable(true);
+                        txtField03.setDisable(true);
+                        txtField05.setDisable(true);
+                    }
+
+                }
+            } else {
+                if (oTrans.searchFilter(2, oApp.getBranchCode(), true)) {
+                    txtField02.setText((String) oTrans.getFilter(2, "xxColName"));
+                }
+                txtField02.setDisable(true);
+                txtField03.setDisable(true);
+                txtField05.setDisable(true);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(IncentiveReportsNewController.class.getName()).log(Level.SEVERE, null, ex);
+            ShowMessageFX.Error(FINANCE, FINANCE, FINANCE);
+        }
+
     }
 
     private void cmdButton_Click(ActionEvent event) {
@@ -569,10 +599,12 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                     ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
                 });
                 return false;
+
             }
 
         } catch (JRException | SQLException | ClassCastException | NullPointerException ex) {
-            Logger.getLogger(ReportsController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ReportsController.class
+                    .getName()).log(Level.SEVERE, null, ex);
             running = false;
             vbProgress.setVisible(false);
             timeline.stop();
@@ -661,10 +693,12 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                     ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
                 });
                 return false;
+
             }
 
         } catch (JRException | SQLException | ClassCastException | NullPointerException ex) {
-            Logger.getLogger(ReportsController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ReportsController.class
+                    .getName()).log(Level.SEVERE, null, ex);
             running = false;
             vbProgress.setVisible(false);
             timeline.stop();
@@ -756,10 +790,12 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                     ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
                 });
                 return false;
+
             }
 
         } catch (JRException | SQLException | ClassCastException | NullPointerException ex) {
-            Logger.getLogger(ReportsController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ReportsController.class
+                    .getName()).log(Level.SEVERE, null, ex);
             running = false;
             vbProgress.setVisible(false);
             timeline.stop();
@@ -860,10 +896,12 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                     ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
                 });
                 return false;
+
             }
 
         } catch (JRException | SQLException | ClassCastException | NullPointerException ex) {
-            Logger.getLogger(ReportsController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ReportsController.class
+                    .getName()).log(Level.SEVERE, null, ex);
             running = false;
             vbProgress.setVisible(false);
             timeline.stop();
