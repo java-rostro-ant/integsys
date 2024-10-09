@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,6 +40,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import org.rmj.appdriver.GRider;
+import org.rmj.appdriver.SQLUtil;
 import org.rmj.appdriver.agent.MsgBox;
 import org.rmj.appdriver.agentfx.CommonUtils;
 import org.rmj.appdriver.agentfx.ShowMessageFX;
@@ -68,6 +70,8 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
     private int pnSubItems = 0;
     private boolean pbLoaded = false;
     private String transNox = "";
+    
+    private Date pdPeriod = null;
     
     @FXML
     private Label lblStatus;
@@ -171,7 +175,8 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
                     case 2:
                         txtField02.setText((String) foValue); break;
                     case 4:
-                        txtField04.setText((String) foValue); break;
+                        pdPeriod = SQLUtil.toDate(foValue.toString().trim() + " 01", "yyyyMM dd");
+                        txtField04.setText(CommonUtils.dateFormat(pdPeriod, "yyyy MMMM"));
                     case 5:
                         txtField05.setText((String) foValue); break;
                     case 17:
@@ -439,7 +444,9 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         txtSeeks06.setText((String)oTrans.getMaster(16));
         txtField02.setText(oTrans.getMaster(2).toString());
         txtField03.setText((String)oTrans.getMaster(17));
-        txtField04.setText((String)oTrans.getMaster(4));
+        
+        pdPeriod = SQLUtil.toDate(oTrans.getMaster(4).toString().trim() + " 01", "yyyyMM dd");
+        txtField04.setText(CommonUtils.dateFormat(pdPeriod, "yyyy MMMM"));
         txtField05.setText((String)oTrans.getMaster(5));
         txtField16.setText((String)oTrans.getMaster(16));
          
