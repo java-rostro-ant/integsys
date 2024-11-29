@@ -3,8 +3,10 @@ package gridergui;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -106,6 +108,8 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
 
     ObservableList<String> cStatus = FXCollections.observableArrayList(
             "OPEN", "FOR APPROVAL", "APPROVED", "CANCELLED", "RELEASED", "ALL");
+    ObservableList<String> cStatusApproval = FXCollections.observableArrayList(
+            "OPEN", "APPROVED", "UNKNOWN", "CANCELLED");
 
     @FXML
     void cmbStatus_Clicked(ActionEvent event) {
@@ -118,7 +122,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                 oTrans.setTranStat(lnSelectIndex);
                 return;
 
-            case 2:
+            case 2://approved
                 oTrans.setTranStat(1);
                 oTrans.setAuditApproval(true);
                 return;
@@ -818,7 +822,7 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
             params.put("sReportNm", "Incentive Detailed Report");
 
             IncentiveData.clear();
-            if (oTrans.OpenRecord(fsPeriod, true)) {
+            if (oTrans.OpenRecordDetailed(fsPeriod, true)) {
 
                 System.err.println("System Processing Data!");
                 if (oTrans.procReportDetailedReport()) {
@@ -835,37 +839,58 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                         return false;
                     }
                     System.out.println("TotalData  = " + lnItemCount);
+                    System.err.println("System Adding Data to Jasper!");
 
-                    System.err.println("System Adding Data to Jasper! ");
+                    List<IncentiveDetail> details = new ArrayList<>(lnItemCount);
+                    Date ldDatePeriod = null;
+                    String sMonthxxx = null;
+                    sMonthxxx = oTrans.getRecord(1, "sMonthxxx").toString().trim();
+                    ldDatePeriod = SQLUtil.toDate(sMonthxxx + " 01", "yyyyMM dd");
+
                     for (int x = 1; x <= lnItemCount; x++) {
-
-                        Date ldDatePeriod = SQLUtil.toDate(oTrans.getRecord(x, "sMonthxxx").toString().trim() + " 01", "yyyyMM dd");
-
-                        Object recdStat = oTrans.getRecord(x, "cRecdStat");
-                        String lsEmployStatus = (recdStat != null && recdStat.toString().equals("1")) ? "Active" : "Inactive";
+                        // Retrieve and cache reusable values
+//                        Object recdStat = oTrans.getRecord(x, "cRecdStat");
+//                        String lsEmployStatus = (recdStat != null && "1".equals(recdStat.toString())) ? "Active" : "Inactive";
 
                         Integer tranStatIndex = Integer.parseInt(oTrans.getRecord(x, "cTranStat").toString());
-                        String lsTransactionStatus;
-                        if (tranStatIndex != null && tranStatIndex >= 0 && tranStatIndex < cStatus.size() - 1) {
-                            lsTransactionStatus = cStatus.get(tranStatIndex);
-                        } else {
-                            lsTransactionStatus = "UNKNOWN";
-                        }
-                        IncentiveData.add(new IncentiveDetail(
-                                oTrans.getRecord(x, "sDivsnDsc").toString(),
+                        String lsTransactionStatus = (tranStatIndex != null && tranStatIndex >= 0 && tranStatIndex < cStatusApproval.size())
+                                ? cStatusApproval.get(tranStatIndex)
+                                : "UNKNOWN";
+
+                        Integer cApprovd1Index = Integer.parseInt(oTrans.getRecord(x, "cTranStat").toString());
+                        String lsCollectionStat = (cApprovd1Index != null && cApprovd1Index >= 0 && cApprovd1Index < cStatusApproval.size())
+                                ? cStatusApproval.get(cApprovd1Index)
+                                : "UNKNOWN";
+
+                        Integer cApprovd2Index = Integer.parseInt(oTrans.getRecord(x, "cTranStat").toString());
+                        String lsAuditStat = (cApprovd2Index != null && cApprovd2Index >= 0 && cApprovd2Index < cStatusApproval.size())
+                                ? cStatusApproval.get(cApprovd2Index)
+                                : "UNKNOWN";
+
+                        // Add new IncentiveDetail to the list
+                        details.add(new IncentiveDetail(
                                 oTrans.getRecord(x, "sAreaDesc").toString(),
-                                oTrans.getRecord(x, "sBranchCd").toString(),
                                 oTrans.getRecord(x, "sBranchNm").toString(),
                                 oTrans.getRecord(x, "sTransNox").toString(),
+                                (String) CommonUtils.dateFormat(ldDatePeriod, "yyyy MMMM"),
                                 oTrans.getRecord(x, "sCompnyNm").toString(),
                                 oTrans.getRecord(x, "sPositnNm").toString(),
-                                (String) CommonUtils.dateFormat(ldDatePeriod, "yyyy MMMM"),
                                 oTrans.getRecord(x, "sInctveDs").toString(),
-                                oTrans.getRecord(x, "nTotalAmt").toString(),
+                                oTrans.getRecord(x, "nAmtActlx").toString(),
+                                oTrans.getRecord(x, "nInctvAmt").toString(),
+                                oTrans.getRecord(x, "nAllcPerc").toString(),
+                                oTrans.getRecord(x, "nAllcAmtx").toString(),
+                                oTrans.getRecord(x, "xTAllcAmt").toString(),
                                 lsTransactionStatus,
-                                lsEmployStatus));
-
+                                lsCollectionStat,
+                                lsAuditStat,
+                                oTrans.getRecord(x, "sInctveCD").toString()
+                        ));
                     }
+
+                    // Add all details to IncentiveData in one operation
+                    IncentiveData.addAll(details);
+
                     System.err.println("System Finished Adding Data to Jasper!");
                     String sourceFileName = "D://GGC_Java_Systems/reports/IncentiveDetailed.jasper";
 
