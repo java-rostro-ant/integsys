@@ -14,6 +14,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.rmj.fund.manager.base.IncentiveReleaseNew;
 import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
@@ -36,8 +38,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import net.sf.jasperreports.swing.JRViewer;
 import org.rmj.appdriver.GRider;
 import org.rmj.appdriver.SQLUtil;
 import org.rmj.appdriver.agentfx.CommonUtils;
@@ -100,6 +104,13 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
     private TableColumn incIndex01, incIndex02, incIndex03;
     @FXML
     private Label lblTotal, lblStatus;
+    @FXML
+    private VBox vbProgress;
+
+    private boolean pbRunning = false;
+    final static int piInterval = 100;
+    private Timeline ptTimeline;
+    private Integer piTimeSeconds = 8;
 
     private final ObservableList<Release> Incentive_Directory = FXCollections.observableArrayList();
     private final ObservableList<Release> Employee_Data = FXCollections.observableArrayList();
@@ -308,6 +319,42 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
         }
     };
 
+    private void generateTransaction(String fsPeriod) {
+
+        pbRunning = false;
+        vbProgress.setVisible(true);
+
+        if (!pbRunning) {
+            ptTimeline = new Timeline();
+            ptTimeline.setCycleCount(Timeline.INDEFINITE);
+            ptTimeline.getKeyFrames().add(
+                    new KeyFrame(Duration.seconds(1), (ActionEvent event1) -> {
+                        piTimeSeconds--;
+                        // update timerLabel
+                        if (piTimeSeconds <= 0) {
+                            piTimeSeconds = 0;
+                        }
+                        if (piTimeSeconds == 0) {
+
+                            try {
+                                if (oTrans.NewTransaction(fsPeriod)) {
+                                    loadRecord();
+                                } else {
+                                    pbRunning = false;
+                                    vbProgress.setVisible(false);
+                                    ptTimeline.stop();
+                                    ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
+                                }
+                            } catch (SQLException ex) {
+                                Logger.getLogger(IncentiveReleasingNewController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                    } // KeyFrame event handler
+                    ));
+            ptTimeline.playFromStart();
+        }
+    }
+
     private void loadRecord() {
         try {
             txtField01.setText((String) oTrans.getMaster("sTransNox"));
@@ -412,14 +459,22 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
             lblTotal.setText(CommonUtils.NumberFormat(lnTotalAmount, "###,###,##0.00"));
 
             System.err.println("Finish Adding Transaction Details");
+
             initEmployeeGrid();
             initGrid();
             getTransactionStatus();
             reorderIncentiveDirectory();
 
+            pbRunning = false;
+            vbProgress.setVisible(false);
+            ptTimeline.stop();
+
         } catch (NullPointerException | SQLException e) {
             ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
             Logger.getLogger(IncentiveReleasingNewController.class.getName()).log(Level.SEVERE, null, e);
+            pbRunning = false;
+            vbProgress.setVisible(false);
+            ptTimeline.stop();
         }
     }
 
@@ -510,12 +565,10 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
                     } else {
                         String lsPeriod = CommonUtils.dateFormat(pdPeriod, "YYYYMM");
                         System.out.println("nMonthxx = " + lsPeriod);
-                        if (oTrans.NewTransaction(lsPeriod)) {
-                            loadRecord();
-                            pnEditMode = oTrans.getEditMode();
-                        } else {
-                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
-                        }
+
+                        generateTransaction(lsPeriod);
+                        pnEditMode = oTrans.getEditMode();
+
                     }
                     break;
                 case "btnSave": //save transaction
