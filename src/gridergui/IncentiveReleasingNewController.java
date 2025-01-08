@@ -110,7 +110,7 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
     private boolean pbRunning = false;
     final static int piInterval = 100;
     private Timeline ptTimeline;
-    private Integer piTimeSeconds = 8;
+    private Integer piTimeSeconds = 1;
 
     private final ObservableList<Release> Incentive_Directory = FXCollections.observableArrayList();
     private final ObservableList<Release> Employee_Data = FXCollections.observableArrayList();
@@ -339,13 +339,21 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
                             try {
                                 if (oTrans.NewTransaction(fsPeriod)) {
                                     loadRecord();
+                                    pnEditMode = oTrans.getEditMode();
+                                    initButton(pnEditMode);
+
                                 } else {
                                     pbRunning = false;
                                     vbProgress.setVisible(false);
                                     ptTimeline.stop();
-                                    ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
+                                    Platform.runLater(() -> ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null));
                                 }
                             } catch (SQLException ex) {
+                                pbRunning = false;
+                                vbProgress.setVisible(false);
+                                ptTimeline.stop();
+                                Platform.runLater(() -> ShowMessageFX.Warning(getStage(), ex.getMessage(), "Warning", null));
+
                                 Logger.getLogger(IncentiveReleasingNewController.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         }
@@ -470,7 +478,8 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
             ptTimeline.stop();
 
         } catch (NullPointerException | SQLException e) {
-            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
+            Platform.runLater(() -> ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null));
+
             Logger.getLogger(IncentiveReleasingNewController.class.getName()).log(Level.SEVERE, null, e);
             pbRunning = false;
             vbProgress.setVisible(false);
