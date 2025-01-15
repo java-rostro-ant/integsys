@@ -17,6 +17,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.rmj.fund.manager.base.IncentiveReleaseNew;
 import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
@@ -39,6 +41,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -52,7 +55,6 @@ import org.rmj.appdriver.agentfx.CommonUtils;
 import org.rmj.appdriver.agentfx.ShowMessageFX;
 import org.rmj.appdriver.constants.EditMode;
 import org.rmj.fund.manager.base.LMasDetTrans;
-import org.rmj.fund.manager.parameters.IncentiveBankInfo;
 
 /**
  * FXML Controller class
@@ -63,13 +65,16 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
 
     private GRider oApp;
     private IncentiveReleaseNew oTrans;
-    private IncentiveBankInfo trans;
-
     private LMasDetTrans oListener;
 
     private int pnEditMode;
     private int pnRow = 0;
     private boolean pbLoaded = false;
+
+    private boolean pbRunning = false;
+    final static int piInterval = 100;
+    private Timeline ptTimeline;
+    private Integer piTimeSeconds = 1;
 
     @FXML
     private AnchorPane AnchorMainIncentiveRelease;
@@ -102,6 +107,9 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
     @FXML
     private Label lblTotal, lblStatus;
 
+    @FXML
+    private VBox vbProgress;
+
     private final ObservableList<Release> Incentive_Directory = FXCollections.observableArrayList();
     private final ObservableList<Release> Employee_Data = FXCollections.observableArrayList();
 
@@ -120,7 +128,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
         oListener = new LMasDetTrans() {
             @Override
             public void MasterRetreive(int i, Object o) {
-                loadRecord();
+                LoadTransaction();
                 switch (i) {
                 }
             }
@@ -264,8 +272,58 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
         }
     };
 
+    private void LoadTransaction() {
+
+        pbRunning = false;
+        vbProgress.setVisible(true);
+
+        if (!pbRunning) {
+            ptTimeline = new Timeline();
+            ptTimeline.setCycleCount(Timeline.INDEFINITE);
+            ptTimeline.getKeyFrames().add(
+                    new KeyFrame(Duration.seconds(1), (ActionEvent event1) -> {
+                        piTimeSeconds--;
+                        // update timerLabel
+                        if (piTimeSeconds <= 0) {
+                            piTimeSeconds = 0;
+                        }
+                        if (piTimeSeconds == 0) {
+                            loadRecord();
+
+                        }
+                    } // KeyFrame event handler
+                    ));
+            ptTimeline.playFromStart();
+        }
+    }
+
+    private void LoadExport(String lsBanks) {
+
+        pbRunning = false;
+        vbProgress.setVisible(true);
+
+        if (!pbRunning) {
+            ptTimeline = new Timeline();
+            ptTimeline.setCycleCount(Timeline.INDEFINITE);
+            ptTimeline.getKeyFrames().add(
+                    new KeyFrame(Duration.seconds(1), (ActionEvent event1) -> {
+                        piTimeSeconds--;
+                        // update timerLabel
+                        if (piTimeSeconds <= 0) {
+                            piTimeSeconds = 0;
+                        }
+                        if (piTimeSeconds == 0) {
+                            ExportbyBank(lsBanks);
+
+                        }
+                    } // KeyFrame event handler
+                    ));
+            ptTimeline.playFromStart();
+        }
+    }
+
     private void loadRecord() {
-        
+
         String lsBankName;
         String lsBankAcct;
         try {
@@ -313,14 +371,10 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                     existingRelease.setEmpIndex07(CommonUtils.NumberFormat(newDeduction, "###,###,##0.00"));
                     existingRelease.setEmpIndex08(CommonUtils.NumberFormat(newIncentive - newDeduction, "###,###,##0.00"));
                 } else {
-                    trans = oTrans.getBankInfo((String) oTrans.getDetail(lnRow, "sEmployID"));
-                    if (trans != null) {
-                        lsBankName = trans.getMaster(2).toString();
-                        lsBankAcct = trans.getMaster(3).toString();
-                    } else {
-                        lsBankName = "";
-                        lsBankAcct = "";
-                    }
+
+                    lsBankName = oTrans.getDetail(lnRow, "sBankIDxx").toString();
+                    lsBankAcct = oTrans.getDetail(lnRow, "sBnkActNo").toString();
+
                     lnDetail++;
                     Release newRelease = new Release(
                             String.valueOf(lnDetail),
@@ -367,10 +421,15 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
             getTransactionStatus();
             reorderIncentiveDirectory();
 
+            pbRunning = false;
+            vbProgress.setVisible(false);
+            ptTimeline.stop();
         } catch (NullPointerException | SQLException e) {
-            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
+            Platform.runLater(() -> ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null));
             Logger.getLogger(IncentiveReleasingNewController.class.getName()).log(Level.SEVERE, null, e);
-
+            pbRunning = false;
+            vbProgress.setVisible(false);
+            ptTimeline.stop();
         }
     }
 
@@ -427,7 +486,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
             switch (lsButton) {
                 case "btnBrowse": //browse transaction
                     if (oTrans.SearchTransaction(txtSeeks05.getText(), true)) {
-                        loadRecord();
+                        LoadTransaction();
 
                         txtSeeks05.setText(txtField01.getText());
                         pnEditMode = oTrans.getEditMode();
@@ -440,7 +499,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                 case "btnMTB":
                 case "btnSB":
                 case "btnCB":
-                    ExportbyBank(lsButton);
+                    LoadExport(lsButton);
                     break;
 
                 case "btnClose": //close releasing form
@@ -500,7 +559,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                             /*Search*/
                             pbLoaded = true;
                             if (oTrans.SearchTransaction(lsValue, true)) {
-                                loadRecord();
+                                LoadTransaction();
 
                                 txtSeeks05.setText(txtField01.getText());
                                 pnEditMode = oTrans.getEditMode();
@@ -527,7 +586,6 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
         oTrans.setListener(oListener);
         oTrans.setWithUI(true);
         pnEditMode = EditMode.UNKNOWN;
-        trans = new IncentiveBankInfo(oApp, oApp.getBranchCode(), false);
         Incentive_Directory.clear();
         Employee_Data.clear();
         txtField01.clear();
@@ -740,7 +798,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
             }
 
             if (exportDetail == 0) {
-                ShowMessageFX.Information(getStage(), " No Detail's to Export for Selected Bank ", "Information", null);
+                Platform.runLater(() ->ShowMessageFX.Information(getStage(), " No Detail's to Export for Selected Bank ", "Information", null));
 
                 return;
             }
@@ -764,7 +822,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                 }
 
                 if (file == null) {
-                    ShowMessageFX.Information(getStage(), "Unable to save File. Failed to write Excel", "Information", null);
+                    Platform.runLater(() -> ShowMessageFX.Information(getStage(), "Unable to save File. Failed to write Excel", "Information", null));
                     return;
                 }
                 // Write the output to the selected file
@@ -773,14 +831,21 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                     fileOut.flush();  //flush the output stream
                 } catch (IOException e) {
                     e.printStackTrace();
-                    ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
+                    Platform.runLater(() -> ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null));
+                    pbRunning = false;
+                    vbProgress.setVisible(false);
+                    ptTimeline.stop();
                 }
             }
-        } catch (IOException | SQLException e) {
-            e.printStackTrace();
+            pbRunning = false;
+            vbProgress.setVisible(false);
+            ptTimeline.stop();
+        } catch (NullPointerException | SQLException | IOException e) {
+            Platform.runLater(() -> ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null));
             Logger.getLogger(IncentiveReleasingHistoryController.class.getName()).log(Level.SEVERE, null, e);
-            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
-
+            pbRunning = false;
+            vbProgress.setVisible(false);
+            ptTimeline.stop();
         }
 
     }
