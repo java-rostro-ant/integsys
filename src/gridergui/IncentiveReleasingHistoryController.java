@@ -264,7 +264,10 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
         }
     };
 
-   private void loadRecord() {
+    private void loadRecord() {
+        
+        String lsBankName;
+        String lsBankAcct;
         try {
             txtField01.setText((String) oTrans.getMaster("sTransNox"));
             txtField02.setText(CommonUtils.xsDateLong((Date) oTrans.getMaster("dTransact")));
@@ -283,7 +286,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
             // A map to store the grouped totals by employee and branch
             Map<String, Release> groupedData = new LinkedHashMap<>();
 
-            for (int lnRow = 1; lnRow < oTrans.getItemCount()-1; lnRow++) {
+            for (int lnRow = 1; lnRow < oTrans.getItemCount() - 1; lnRow++) {
                 String lsPeriod = oTrans.getDetail(lnRow, "sMonthxxx").toString();
                 Date ldDate = SQLUtil.toDate(lsPeriod.trim() + " 01", "yyyyMM dd");
 
@@ -310,6 +313,14 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                     existingRelease.setEmpIndex07(CommonUtils.NumberFormat(newDeduction, "###,###,##0.00"));
                     existingRelease.setEmpIndex08(CommonUtils.NumberFormat(newIncentive - newDeduction, "###,###,##0.00"));
                 } else {
+                    trans = oTrans.getBankInfo((String) oTrans.getDetail(lnRow, "sEmployID"));
+                    if (trans != null) {
+                        lsBankName = trans.getMaster(2).toString();
+                        lsBankAcct = trans.getMaster(3).toString();
+                    } else {
+                        lsBankName = "";
+                        lsBankAcct = "";
+                    }
                     lnDetail++;
                     Release newRelease = new Release(
                             String.valueOf(lnDetail),
@@ -319,7 +330,10 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                             employeeStatus,
                             CommonUtils.NumberFormat(xIncentive, "###,###,##0.00"),
                             CommonUtils.NumberFormat(xDeduction, "###,###,##0.00"),
-                            CommonUtils.NumberFormat(lnTotalEmpIncentive, "###,###,##0.00")
+                            CommonUtils.NumberFormat(lnTotalEmpIncentive, "###,###,##0.00"),
+                            lsBankName,
+                            lsBankAcct,
+                            oTrans.getDetail(lnRow, "sEmployID").toString()
                     );
                     groupedData.put(employeeKey, newRelease);
                 }
@@ -353,11 +367,10 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
             getTransactionStatus();
             reorderIncentiveDirectory();
 
-
         } catch (NullPointerException | SQLException e) {
             ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
             Logger.getLogger(IncentiveReleasingNewController.class.getName()).log(Level.SEVERE, null, e);
-          
+
         }
     }
 
@@ -563,7 +576,6 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                     headerRow.createCell(2).setCellValue("Employee Name");
                     headerRow.createCell(3).setCellValue("Amount");
                     headerRow.createCell(4).setCellValue("ID");
-                    
 
                     rowNum = 1;
                     for (Release release : Employee_Data) {
@@ -572,13 +584,11 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                         } else {
                             release.setEmpIndex09(release.getEmpIndex09().trim());
                         }
-                        
-                        
-                        
+
                         if (release.getEmpIndex09().isEmpty()) {
                             if (Double.valueOf(release.getEmpIndex08().replaceAll(",", "")) > 0) {
                                 System.out.println("Employee ID: " + release.getEmpIndex11());
-                                
+
                                 Row row = sheet.createRow(rowNum);
                                 row.createCell(0).setCellValue(rowNum);
                                 row.createCell(1).setCellValue(release.getEmpIndex02());
@@ -600,11 +610,11 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                     headerRow.createCell(2).setCellValue("Employee Name");
                     headerRow.createCell(3).setCellValue("Remarks");
                     headerRow.createCell(4).setCellValue("ID");
-                    
+
                     rowNum = 1;
                     for (Release release : Employee_Data) {
                         if (release.getEmpIndex09().equals("00XX024")) {
-                        //if (release.getEmpIndex09().equalsIgnoreCase("00XX024")) {
+                            //if (release.getEmpIndex09().equalsIgnoreCase("00XX024")) {
                             if (Double.valueOf(release.getEmpIndex08().replaceAll(",", "")) > 0) {
                                 Row row = sheet.createRow(rowNum++);
                                 row.createCell(0).setCellValue(release.getEmpIndex10());
@@ -612,7 +622,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                                 row.createCell(2).setCellValue(release.getEmpIndex03());
                                 row.createCell(3).setCellValue("");
                                 row.createCell(4).setCellValue(release.getEmpIndex11());
-                                
+
                                 exportDetail++;
                             }
                         }
@@ -632,7 +642,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                     rowNum = 1;
                     for (Release release : Employee_Data) {
                         if (release.getEmpIndex09().equals("00XX006")) {
-                        //if (release.getEmpIndex09().equalsIgnoreCase("00XX006")) {
+                            //if (release.getEmpIndex09().equalsIgnoreCase("00XX006")) {
                             if (Double.valueOf(release.getEmpIndex08().replaceAll(",", "")) > 0) {
                                 String LastName = "";
                                 String FirstName = "";
@@ -652,7 +662,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                                 row.createCell(3).setCellValue(release.getEmpIndex10());
                                 row.createCell(4).setCellValue(release.getEmpIndex08());
                                 row.createCell(5).setCellValue(release.getEmpIndex11());
-                                
+
                                 exportDetail++;
                             }
                         }
@@ -692,7 +702,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                     headerRow.createCell(5).setCellValue("Employee Account Number");
                     headerRow.createCell(6).setCellValue("Amount");
                     headerRow.createCell(7).setCellValue("ID");
-                    
+
                     rowNum = 1;
                     for (Release release : Employee_Data) {
                         if (release.getEmpIndex09().equals("00XX003")) {
@@ -752,7 +762,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                 if (!file.getPath().endsWith(".xlsx")) {
                     file = new File(file.getPath() + ".xlsx");
                 }
-                
+
                 if (file == null) {
                     ShowMessageFX.Information(getStage(), "Unable to save File. Failed to write Excel", "Information", null);
                     return;
