@@ -17,6 +17,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.rmj.fund.manager.base.IncentiveReleaseNew;
 import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyBooleanPropertyBase;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -38,6 +41,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -51,7 +55,6 @@ import org.rmj.appdriver.agentfx.CommonUtils;
 import org.rmj.appdriver.agentfx.ShowMessageFX;
 import org.rmj.appdriver.constants.EditMode;
 import org.rmj.fund.manager.base.LMasDetTrans;
-import org.rmj.fund.manager.parameters.IncentiveBankInfo;
 
 /**
  * FXML Controller class
@@ -62,13 +65,16 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
 
     private GRider oApp;
     private IncentiveReleaseNew oTrans;
-    private IncentiveBankInfo trans;
-
     private LMasDetTrans oListener;
 
     private int pnEditMode;
     private int pnRow = 0;
     private boolean pbLoaded = false;
+
+    private boolean pbRunning = false;
+    final static int piInterval = 100;
+    private Timeline ptTimeline;
+    private Integer piTimeSeconds = 1;
 
     @FXML
     private AnchorPane AnchorMainIncentiveRelease;
@@ -101,6 +107,9 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
     @FXML
     private Label lblTotal, lblStatus;
 
+    @FXML
+    private VBox vbProgress;
+
     private final ObservableList<Release> Incentive_Directory = FXCollections.observableArrayList();
     private final ObservableList<Release> Employee_Data = FXCollections.observableArrayList();
 
@@ -119,7 +128,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
         oListener = new LMasDetTrans() {
             @Override
             public void MasterRetreive(int i, Object o) {
-                loadRecord();
+                LoadTransaction();
                 switch (i) {
                 }
             }
@@ -263,7 +272,58 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
         }
     };
 
+    private void LoadTransaction() {
+
+        pbRunning = false;
+        vbProgress.setVisible(true);
+
+        if (!pbRunning) {
+            ptTimeline = new Timeline();
+            ptTimeline.setCycleCount(Timeline.INDEFINITE);
+            ptTimeline.getKeyFrames().add(
+                    new KeyFrame(Duration.seconds(1), (ActionEvent event1) -> {
+                        piTimeSeconds--;
+                        // update timerLabel
+                        if (piTimeSeconds <= 0) {
+                            piTimeSeconds = 0;
+                        }
+                        if (piTimeSeconds == 0) {
+                            loadRecord();
+
+                        }
+                    } // KeyFrame event handler
+                    ));
+            ptTimeline.playFromStart();
+        }
+    }
+
+    private void LoadExport(String lsBanks) {
+
+        pbRunning = false;
+        vbProgress.setVisible(true);
+
+        if (!pbRunning) {
+            ptTimeline = new Timeline();
+            ptTimeline.setCycleCount(Timeline.INDEFINITE);
+            ptTimeline.getKeyFrames().add(
+                    new KeyFrame(Duration.seconds(1), (ActionEvent event1) -> {
+                        piTimeSeconds--;
+                        // update timerLabel
+                        if (piTimeSeconds <= 0) {
+                            piTimeSeconds = 0;
+                        }
+                        if (piTimeSeconds == 0) {
+                            ExportbyBank(lsBanks);
+
+                        }
+                    } // KeyFrame event handler
+                    ));
+            ptTimeline.playFromStart();
+        }
+    }
+
     private void loadRecord() {
+
         String lsBankName;
         String lsBankAcct;
         try {
@@ -283,113 +343,93 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
 
             // A map to store the grouped totals by employee and branch
             Map<String, Release> groupedData = new LinkedHashMap<>();
-            for (int lnRow = 0; lnRow <= oTrans.getItemCount() - 1; lnRow++) {
-                String lsPeriod = oTrans.getDetail(lnRow).getMaster("sMonthxxx").toString();
+
+            for (int lnRow = 1; lnRow < oTrans.getItemCount() - 1; lnRow++) {
+                String lsPeriod = oTrans.getDetail(lnRow, "sMonthxxx").toString();
                 Date ldDate = SQLUtil.toDate(lsPeriod.trim() + " 01", "yyyyMM dd");
 
-                String lsBranch = oTrans.getDetail(lnRow).getMaster("xBranchNm").toString();
+                String lsBranch = oTrans.getDetail(lnRow, "xBranchNm").toString();
+                String employeeName = oTrans.getDetail(lnRow, "xEmployNm").toString();
+                String positionName = oTrans.getDetail(lnRow, "xPositnNm").toString();
+                String employeeStatus = oTrans.getDetail(lnRow, "cRecdStat").toString().equals("1") ? "ACTIVE" : "INACTIVE";
 
-                // Reset branch total for each branch
-                double byBranchTotal = 0;
+                double xIncentive = Double.parseDouble(oTrans.getDetail(lnRow, "xIncentve").toString());
+                double xDeduction = Double.parseDouble(oTrans.getDetail(lnRow, "xDeductnx").toString());
+                double lnTotalEmpIncentive = xIncentive - xDeduction;
 
-                for (int lnCtr = 1; lnCtr <= oTrans.getDetail(lnRow).getItemCount(); lnCtr++) {
-                    String EmployeeStat = oTrans.getDetail(lnRow).getDetail(lnCtr, "cRecdStat").toString().equals("1") ? "ACTIVE" : "INACTIVE";
+                // Employee Data Grouping
+                String employeeKey = lsBranch + "-" + employeeName;
+                if (groupedData.containsKey(employeeKey)) {
+                    Release existingRelease = groupedData.get(employeeKey);
 
-                    double xIncentive = Double.parseDouble(oTrans.getDetail(lnRow).getDetail(lnCtr, "xIncentve").toString());
-                    double xDeduction = Double.parseDouble(oTrans.getDetail(lnRow).getDetail(lnCtr, "xDeductnx").toString());
-                    double lnTotalEmpIncentive = xIncentive - xDeduction;
+                    double existingIncentive = Double.parseDouble(existingRelease.getEmpIndex06().replace(",", ""));
+                    double existingDeduction = Double.parseDouble(existingRelease.getEmpIndex07().replace(",", ""));
+                    double newIncentive = existingIncentive + xIncentive;
+                    double newDeduction = existingDeduction + xDeduction;
 
-                    // Create a unique key using branch and employee name
-                    String key = lsBranch + "-" + oTrans.getDetail(lnRow).getDetail(lnCtr, "xEmployNm").toString();
+                    existingRelease.setEmpIndex06(CommonUtils.NumberFormat(newIncentive, "###,###,##0.00"));
+                    existingRelease.setEmpIndex07(CommonUtils.NumberFormat(newDeduction, "###,###,##0.00"));
+                    existingRelease.setEmpIndex08(CommonUtils.NumberFormat(newIncentive - newDeduction, "###,###,##0.00"));
+                } else {
 
-                    if (groupedData.containsKey(key)) {
-                        // If this branch-employee combination already exists, sum the values
-                        Release existingRelease = groupedData.get(key);
+                    lsBankName = oTrans.getDetail(lnRow, "sBankIDxx").toString();
+                    lsBankAcct = oTrans.getDetail(lnRow, "sBnkActNo").toString();
 
-                        // Parse the existing total, removing commas first
-                        double existingnewIncentive = Double.parseDouble(existingRelease.getEmpIndex06().replace(",", ""));
-                        double existingnewDeduction = Double.parseDouble(existingRelease.getEmpIndex07().replace(",", ""));
-
-                        double newIncentive = existingnewIncentive + xIncentive;
-                        double newDeduction = existingnewDeduction + xDeduction;
-                        double newTotalIncentive = newIncentive - newDeduction;
-
-                        // Update the Release object
-                        existingRelease.setEmpIndex06(CommonUtils.NumberFormat(newIncentive, "###,###,##0.00"));
-                        existingRelease.setEmpIndex07(CommonUtils.NumberFormat(newDeduction, "###,###,##0.00"));
-                        existingRelease.setEmpIndex08(CommonUtils.NumberFormat(newTotalIncentive, "###,###,##0.00"));
-                    } else {
-
-                        trans = oTrans.getBankInfo((String) oTrans.getDetail(lnRow).getDetail(lnCtr, "sEmployID"));
-
-                        if (trans != null) {
-                            lsBankName = trans.getMaster(2).toString();
-                            lsBankAcct = trans.getMaster(3).toString();
-                        } else {
-                            lsBankName = "";
-                            lsBankAcct = "";
-                        }
-                        lnDetail++;
-                        // If not exists, create a new entry
-                        Release newRelease = new Release(
-                                String.valueOf(lnDetail),
-                                lsBranch,
-                                oTrans.getDetail(lnRow).getDetail(lnCtr, "xEmployNm").toString(),
-                                oTrans.getDetail(lnRow).getDetail(lnCtr, "xPositnNm").toString(),
-                                EmployeeStat,
-                                CommonUtils.NumberFormat(xIncentive, "###,###,##0.00"),
-                                CommonUtils.NumberFormat(xDeduction, "###,###,##0.00"),
-                                CommonUtils.NumberFormat(lnTotalEmpIncentive, "###,###,##0.00"),
-                                lsBankName,
-                                lsBankAcct,
-                                oTrans.getDetail(lnRow).getDetail(lnCtr, "sEmployID").toString()
-                        );
-
-                        groupedData.put(key, newRelease);
-                    }
-
-                    lnTotalAmount += lnTotalEmpIncentive;
-                    byBranchTotal += lnTotalEmpIncentive;
+                    lnDetail++;
+                    Release newRelease = new Release(
+                            String.valueOf(lnDetail),
+                            lsBranch,
+                            employeeName,
+                            positionName,
+                            employeeStatus,
+                            CommonUtils.NumberFormat(xIncentive, "###,###,##0.00"),
+                            CommonUtils.NumberFormat(xDeduction, "###,###,##0.00"),
+                            CommonUtils.NumberFormat(lnTotalEmpIncentive, "###,###,##0.00"),
+                            lsBankName,
+                            lsBankAcct,
+                            oTrans.getDetail(lnRow, "sEmployID").toString()
+                    );
+                    groupedData.put(employeeKey, newRelease);
                 }
 
-                // Add or update the branch data in groupedDirectoryData
-                String keyDirectory = lsBranch;
-                if (groupedDirectoryData.containsKey(keyDirectory)) {
-                    // Update existing branch total
-                    Release existingDirectoryRelease = groupedDirectoryData.get(keyDirectory);
+                lnTotalAmount += lnTotalEmpIncentive;
 
-                    // Parse the existing total, removing commas first
-                    double existingTotal = Double.parseDouble(existingDirectoryRelease.getIncIndex03().replace(",", ""));
-
-                    // Calculate the new total by adding the branch total
-                    double newBranchTotal = existingTotal + byBranchTotal;
-                    existingDirectoryRelease.setIncIndex03(CommonUtils.NumberFormat(newBranchTotal, "###,###,##0.00"));
+                // Branch Data Grouping
+                String branchKey = lsBranch;
+                if (groupedDirectoryData.containsKey(branchKey)) {
+                    Release existingBranchRelease = groupedDirectoryData.get(branchKey);
+                    double existingBranchTotal = Double.parseDouble(existingBranchRelease.getIncIndex03().replace(",", ""));
+                    existingBranchRelease.setIncIndex03(CommonUtils.NumberFormat(existingBranchTotal + lnTotalEmpIncentive, "###,###,##0.00"));
                 } else {
-                    // Create a new entry for the branch
-                    Release newDirectoryRelease = new Release(
+                    Release newBranchRelease = new Release(
                             lsBranch,
                             CommonUtils.dateFormat(ldDate, "MMMM YYYY"),
-                            CommonUtils.NumberFormat(byBranchTotal, "###,###,##0.00")
+                            CommonUtils.NumberFormat(lnTotalEmpIncentive, "###,###,##0.00")
                     );
-                    groupedDirectoryData.put(keyDirectory, newDirectoryRelease);
+                    groupedDirectoryData.put(branchKey, newBranchRelease);
                 }
             }
 
-            // Add the grouped branch data to Incentive_Directory
             Incentive_Directory.addAll(groupedDirectoryData.values());
-            // Add the grouped branch and employee data to Employee_Data
             Employee_Data.addAll(groupedData.values());
             lblTotal.setText(CommonUtils.NumberFormat(lnTotalAmount, "###,###,##0.00"));
 
             System.err.println("Finish Adding Transaction Details");
+
             initEmployeeGrid();
             initGrid();
             getTransactionStatus();
             reorderIncentiveDirectory();
 
+            pbRunning = false;
+            vbProgress.setVisible(false);
+            ptTimeline.stop();
         } catch (NullPointerException | SQLException e) {
-            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
+            Platform.runLater(() -> ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null));
             Logger.getLogger(IncentiveReleasingNewController.class.getName()).log(Level.SEVERE, null, e);
+            pbRunning = false;
+            vbProgress.setVisible(false);
+            ptTimeline.stop();
         }
     }
 
@@ -446,7 +486,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
             switch (lsButton) {
                 case "btnBrowse": //browse transaction
                     if (oTrans.SearchTransaction(txtSeeks05.getText(), true)) {
-                        loadRecord();
+                        LoadTransaction();
 
                         txtSeeks05.setText(txtField01.getText());
                         pnEditMode = oTrans.getEditMode();
@@ -459,7 +499,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                 case "btnMTB":
                 case "btnSB":
                 case "btnCB":
-                    ExportbyBank(lsButton);
+                    LoadExport(lsButton);
                     break;
 
                 case "btnClose": //close releasing form
@@ -519,7 +559,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                             /*Search*/
                             pbLoaded = true;
                             if (oTrans.SearchTransaction(lsValue, true)) {
-                                loadRecord();
+                                LoadTransaction();
 
                                 txtSeeks05.setText(txtField01.getText());
                                 pnEditMode = oTrans.getEditMode();
@@ -546,7 +586,6 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
         oTrans.setListener(oListener);
         oTrans.setWithUI(true);
         pnEditMode = EditMode.UNKNOWN;
-        trans = new IncentiveBankInfo(oApp, oApp.getBranchCode(), false);
         Incentive_Directory.clear();
         Employee_Data.clear();
         txtField01.clear();
@@ -595,7 +634,6 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                     headerRow.createCell(2).setCellValue("Employee Name");
                     headerRow.createCell(3).setCellValue("Amount");
                     headerRow.createCell(4).setCellValue("ID");
-                    
 
                     rowNum = 1;
                     for (Release release : Employee_Data) {
@@ -604,13 +642,11 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                         } else {
                             release.setEmpIndex09(release.getEmpIndex09().trim());
                         }
-                        
-                        
-                        
+
                         if (release.getEmpIndex09().isEmpty()) {
                             if (Double.valueOf(release.getEmpIndex08().replaceAll(",", "")) > 0) {
                                 System.out.println("Employee ID: " + release.getEmpIndex11());
-                                
+
                                 Row row = sheet.createRow(rowNum);
                                 row.createCell(0).setCellValue(rowNum);
                                 row.createCell(1).setCellValue(release.getEmpIndex02());
@@ -632,11 +668,11 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                     headerRow.createCell(2).setCellValue("Employee Name");
                     headerRow.createCell(3).setCellValue("Remarks");
                     headerRow.createCell(4).setCellValue("ID");
-                    
+
                     rowNum = 1;
                     for (Release release : Employee_Data) {
                         if (release.getEmpIndex09().equals("00XX024")) {
-                        //if (release.getEmpIndex09().equalsIgnoreCase("00XX024")) {
+                            //if (release.getEmpIndex09().equalsIgnoreCase("00XX024")) {
                             if (Double.valueOf(release.getEmpIndex08().replaceAll(",", "")) > 0) {
                                 Row row = sheet.createRow(rowNum++);
                                 row.createCell(0).setCellValue(release.getEmpIndex10());
@@ -644,7 +680,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                                 row.createCell(2).setCellValue(release.getEmpIndex03());
                                 row.createCell(3).setCellValue("");
                                 row.createCell(4).setCellValue(release.getEmpIndex11());
-                                
+
                                 exportDetail++;
                             }
                         }
@@ -664,7 +700,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                     rowNum = 1;
                     for (Release release : Employee_Data) {
                         if (release.getEmpIndex09().equals("00XX006")) {
-                        //if (release.getEmpIndex09().equalsIgnoreCase("00XX006")) {
+                            //if (release.getEmpIndex09().equalsIgnoreCase("00XX006")) {
                             if (Double.valueOf(release.getEmpIndex08().replaceAll(",", "")) > 0) {
                                 String LastName = "";
                                 String FirstName = "";
@@ -684,7 +720,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                                 row.createCell(3).setCellValue(release.getEmpIndex10());
                                 row.createCell(4).setCellValue(release.getEmpIndex08());
                                 row.createCell(5).setCellValue(release.getEmpIndex11());
-                                
+
                                 exportDetail++;
                             }
                         }
@@ -724,7 +760,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                     headerRow.createCell(5).setCellValue("Employee Account Number");
                     headerRow.createCell(6).setCellValue("Amount");
                     headerRow.createCell(7).setCellValue("ID");
-                    
+
                     rowNum = 1;
                     for (Release release : Employee_Data) {
                         if (release.getEmpIndex09().equals("00XX003")) {
@@ -762,7 +798,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
             }
 
             if (exportDetail == 0) {
-                ShowMessageFX.Information(getStage(), " No Detail's to Export for Selected Bank ", "Information", null);
+                Platform.runLater(() ->ShowMessageFX.Information(getStage(), " No Detail's to Export for Selected Bank ", "Information", null));
 
                 return;
             }
@@ -784,9 +820,9 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                 if (!file.getPath().endsWith(".xlsx")) {
                     file = new File(file.getPath() + ".xlsx");
                 }
-                
+
                 if (file == null) {
-                    ShowMessageFX.Information(getStage(), "Unable to save File. Failed to write Excel", "Information", null);
+                    Platform.runLater(() -> ShowMessageFX.Information(getStage(), "Unable to save File. Failed to write Excel", "Information", null));
                     return;
                 }
                 // Write the output to the selected file
@@ -795,14 +831,21 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                     fileOut.flush();  //flush the output stream
                 } catch (IOException e) {
                     e.printStackTrace();
-                    ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
+                    Platform.runLater(() -> ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null));
+                    pbRunning = false;
+                    vbProgress.setVisible(false);
+                    ptTimeline.stop();
                 }
             }
-        } catch (IOException | SQLException e) {
-            e.printStackTrace();
+            pbRunning = false;
+            vbProgress.setVisible(false);
+            ptTimeline.stop();
+        } catch (NullPointerException | SQLException | IOException e) {
+            Platform.runLater(() -> ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null));
             Logger.getLogger(IncentiveReleasingHistoryController.class.getName()).log(Level.SEVERE, null, e);
-            ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null);
-
+            pbRunning = false;
+            vbProgress.setVisible(false);
+            ptTimeline.stop();
         }
 
     }
