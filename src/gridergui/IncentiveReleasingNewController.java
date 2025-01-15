@@ -130,7 +130,7 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
         oListener = new LMasDetTrans() {
             @Override
             public void MasterRetreive(int i, Object o) {
-                loadRecord();
+                LoadTransaction();
                 switch (i) {
 
                 }
@@ -363,6 +363,31 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
         }
     }
 
+    private void LoadTransaction() {
+
+        pbRunning = false;
+        vbProgress.setVisible(true);
+
+        if (!pbRunning) {
+            ptTimeline = new Timeline();
+            ptTimeline.setCycleCount(Timeline.INDEFINITE);
+            ptTimeline.getKeyFrames().add(
+                    new KeyFrame(Duration.seconds(1), (ActionEvent event1) -> {
+                        piTimeSeconds--;
+                        // update timerLabel
+                        if (piTimeSeconds <= 0) {
+                            piTimeSeconds = 0;
+                        }
+                        if (piTimeSeconds == 0) {
+                            loadRecord();
+
+                        }
+                    } // KeyFrame event handler
+                    ));
+            ptTimeline.playFromStart();
+        }
+    }
+
     private void loadRecord() {
         try {
             txtField01.setText((String) oTrans.getMaster("sTransNox"));
@@ -382,7 +407,7 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
             // A map to store the grouped totals by employee and branch
             Map<String, Release> groupedData = new LinkedHashMap<>();
 
-            for (int lnRow = 1; lnRow < oTrans.getItemCount() -1; lnRow++) {
+            for (int lnRow = 1; lnRow < oTrans.getItemCount() - 1; lnRow++) {
                 String lsPeriod = oTrans.getDetail(lnRow, "sMonthxxx").toString();
                 Date ldDate = SQLUtil.toDate(lsPeriod.trim() + " 01", "yyyyMM dd");
 
@@ -519,7 +544,7 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
                 case "btnBrowse": //browse transaction
                     if (oTrans.SearchTransaction(txtSeeks05.getText(), true)) {
 
-                        loadRecord();
+                        LoadTransaction();
                         txtSeeks05.setText(txtField01.getText());
                         pnEditMode = oTrans.getEditMode();
                     } else {
@@ -631,7 +656,7 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
                             /*Browse*/
                             pbLoaded = true;
                             if (oTrans.SearchTransaction(lsValue, true)) {
-                                loadRecord();
+                                LoadTransaction();
                                 txtSeeks05.setText(txtField01.getText());
                                 pnEditMode = oTrans.getEditMode();
                             } else {
