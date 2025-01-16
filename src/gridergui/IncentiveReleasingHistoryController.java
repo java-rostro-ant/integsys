@@ -424,6 +424,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
             pbRunning = false;
             vbProgress.setVisible(false);
             ptTimeline.stop();
+
         } catch (NullPointerException | SQLException e) {
             Platform.runLater(() -> ShowMessageFX.Warning(getStage(), e.getMessage(), "Warning", null));
             Logger.getLogger(IncentiveReleasingNewController.class.getName()).log(Level.SEVERE, null, e);
@@ -798,8 +799,10 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
             }
 
             if (exportDetail == 0) {
-                Platform.runLater(() ->ShowMessageFX.Information(getStage(), " No Detail's to Export for Selected Bank ", "Information", null));
-
+                Platform.runLater(() -> ShowMessageFX.Information(getStage(), " No Detail's to Export for Selected Bank ", "Information", null));
+                pbRunning = false;
+                vbProgress.setVisible(false);
+                ptTimeline.stop();
                 return;
             }
             for (int i = 0; i <= 8; i++) {
@@ -823,6 +826,9 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
 
                 if (file == null) {
                     Platform.runLater(() -> ShowMessageFX.Information(getStage(), "Unable to save File. Failed to write Excel", "Information", null));
+                    pbRunning = false;
+                    vbProgress.setVisible(false);
+                    ptTimeline.stop();
                     return;
                 }
                 // Write the output to the selected file
