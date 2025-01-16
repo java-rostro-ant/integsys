@@ -344,7 +344,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
             // A map to store the grouped totals by employee and branch
             Map<String, Release> groupedData = new LinkedHashMap<>();
 
-            for (int lnRow = 1; lnRow < oTrans.getItemCount() - 1; lnRow++) {
+            for (int lnRow = 1; lnRow <= oTrans.getItemCount(); lnRow++) {
                 String lsPeriod = oTrans.getDetail(lnRow, "sMonthxxx").toString();
                 Date ldDate = SQLUtil.toDate(lsPeriod.trim() + " 01", "yyyyMM dd");
 
