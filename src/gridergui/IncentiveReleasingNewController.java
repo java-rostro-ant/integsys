@@ -407,7 +407,7 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
             // A map to store the grouped totals by employee and branch
             Map<String, Release> groupedData = new LinkedHashMap<>();
 
-            for (int lnRow = 1; lnRow < oTrans.getItemCount() - 1; lnRow++) {
+            for (int lnRow = 1; lnRow <= oTrans.getItemCount() ; lnRow++) {
                 String lsPeriod = oTrans.getDetail(lnRow, "sMonthxxx").toString();
                 Date ldDate = SQLUtil.toDate(lsPeriod.trim() + " 01", "yyyyMM dd");
 
@@ -429,7 +429,15 @@ public class IncentiveReleasingNewController implements Initializable, ScreenInt
                     double existingDeduction = Double.parseDouble(existingRelease.getEmpIndex07().replace(",", ""));
                     double newIncentive = existingIncentive + xIncentive;
                     double newDeduction = existingDeduction + xDeduction;
-
+                    if (existingRelease.getEmpIndex03().equalsIgnoreCase("Torio, Aldrin Iglesias")) {
+                        System.out.println(existingIncentive);
+                        System.out.println(existingDeduction);
+                        System.out.println(newIncentive);
+                        System.out.println(newDeduction);
+                        
+                                
+                                        
+                    }
                     existingRelease.setEmpIndex06(CommonUtils.NumberFormat(newIncentive, "###,###,##0.00"));
                     existingRelease.setEmpIndex07(CommonUtils.NumberFormat(newDeduction, "###,###,##0.00"));
                     existingRelease.setEmpIndex08(CommonUtils.NumberFormat(newIncentive - newDeduction, "###,###,##0.00"));
