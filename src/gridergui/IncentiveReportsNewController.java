@@ -307,11 +307,10 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
         frGridPane02.setVisible(lbShow);
         frGridPane02.setManaged(lbShow);
         frGridPane03.setManaged(true);
-        frGridPane05.setVisible(false);
+        frGridPane05.setVisible(!lbShow);
 
         if (lbShow) {
             frGridPane05.setVisible(rbEmployeeCategory.isSelected() || rbBranchCategory.isSelected());
-
         }
         if (reportPane.isVisible()) {
             reportPane.setVisible(false);
@@ -384,6 +383,11 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
                     }
                 } else if (rbBranchCategory.isSelected()) {
                     if (!oTrans.ExportData(getStage(), 2)) {
+                        ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
+
+                    }
+                } else if (rbDetailed.isSelected()) {
+                    if (!oTrans.ExportData(getStage(), 3)) {
                         ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
 
                     }
