@@ -89,7 +89,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
     @FXML
     private TextField txtSeeks05;
     @FXML
-    private Button btnNoBank, btnBDO, btnSB, btnMTB, btnCB;
+    private Button btnNoBank, btnBDO, btnSB, btnMTB, btnCB, btnInactive;
     @FXML
     private Button btnBrowse;
     @FXML
@@ -160,6 +160,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
         btnMTB.setOnAction(this::cmdButton_Click);
         btnSB.setOnAction(this::cmdButton_Click);
         btnCB.setOnAction(this::cmdButton_Click);
+        btnInactive.setOnAction(this::cmdButton_Click);
         btnBrowse.setOnAction(this::cmdButton_Click);
         btnClose.setOnAction(this::cmdButton_Click);
 
@@ -500,6 +501,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                 case "btnMTB":
                 case "btnSB":
                 case "btnCB":
+                case "btnInactive":
                     LoadExport(lsButton);
                     break;
 
@@ -627,7 +629,6 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
             int rowNum;
             int exportDetail = 0;
             switch (fsBankType) {
-                // Define a header row
                 case "btnNoBank":
                     headerRow = sheet.createRow(0);
                     headerRow.createCell(0).setCellValue("No");
@@ -643,7 +644,9 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                         } else {
                             release.setEmpIndex09(release.getEmpIndex09().trim());
                         }
-
+                        if (release.getEmpIndex05().equalsIgnoreCase("invactive")) {
+                            continue;
+                        }
                         if (release.getEmpIndex09().isEmpty()) {
                             if (Double.valueOf(release.getEmpIndex08().replaceAll(",", "")) > 0) {
                                 System.out.println("Employee ID: " + release.getEmpIndex11());
@@ -672,6 +675,10 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
 
                     rowNum = 1;
                     for (Release release : Employee_Data) {
+
+                        if (release.getEmpIndex05().equalsIgnoreCase("invactive")) {
+                            continue;
+                        }
                         if (release.getEmpIndex09().equals("00XX024")) {
                             //if (release.getEmpIndex09().equalsIgnoreCase("00XX024")) {
                             if (Double.valueOf(release.getEmpIndex08().replaceAll(",", "")) > 0) {
@@ -701,6 +708,10 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                     rowNum = 1;
                     for (Release release : Employee_Data) {
                         if (release.getEmpIndex09().equals("00XX006")) {
+
+                            if (release.getEmpIndex05().equalsIgnoreCase("invactive")) {
+                                continue;
+                            }
                             //if (release.getEmpIndex09().equalsIgnoreCase("00XX006")) {
                             if (Double.valueOf(release.getEmpIndex08().replaceAll(",", "")) > 0) {
                                 String LastName = "";
@@ -737,6 +748,10 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
 
                     rowNum = 1;
                     for (Release release : Employee_Data) {
+
+                        if (release.getEmpIndex05().equalsIgnoreCase("invactive")) {
+                            continue;
+                        }
                         if (release.getEmpIndex09().equals("00XX022")) {
                             if (Double.valueOf(release.getEmpIndex08().replaceAll(",", "")) > 0) {
                                 Row row = sheet.createRow(rowNum++);
@@ -764,6 +779,10 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
 
                     rowNum = 1;
                     for (Release release : Employee_Data) {
+
+                        if (release.getEmpIndex05().equalsIgnoreCase("invactive")) {
+                            continue;
+                        }
                         if (release.getEmpIndex09().equals("00XX003")) {
                             if (Double.valueOf(release.getEmpIndex08().replaceAll(",", "")) > 0) {
                                 String LastName = "";
@@ -791,6 +810,42 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                                 row.createCell(5).setCellValue(release.getEmpIndex10());
                                 row.createCell(6).setCellValue(release.getEmpIndex08());
                                 row.createCell(7).setCellValue(release.getEmpIndex11());
+                                exportDetail++;
+                            }
+                        }
+                    }
+                    break;
+
+                case "btnInactive":
+
+                    headerRow = sheet.createRow(0);
+                    headerRow.createCell(0).setCellValue("Branch");
+                    headerRow.createCell(1).setCellValue("Bank Name");
+                    headerRow.createCell(2).setCellValue("Employee ID");
+                    headerRow.createCell(3).setCellValue("Employee Name");
+                    headerRow.createCell(4).setCellValue("Account#");
+                    headerRow.createCell(5).setCellValue("Amount");
+
+                    rowNum = 1;
+                    for (Release release : Employee_Data) {
+
+                        if (release.getEmpIndex05().equalsIgnoreCase("invactive")) {
+                            if (Double.valueOf(release.getEmpIndex08().replaceAll(",", "")) > 0) {
+                                String BankName = "";
+                                ResultSet loRS = oTrans.getEmployeeDetail(release.getEmpIndex09());
+
+                                if (loRS != null) {
+                                    BankName = loRS.getString("sBankName");
+                                    loRS.close();
+
+                                }
+                                Row row = sheet.createRow(rowNum++);
+                                row.createCell(0).setCellValue(release.getEmpIndex02());
+                                row.createCell(1).setCellValue(BankName);
+                                row.createCell(2).setCellValue(release.getEmpIndex09());
+                                row.createCell(3).setCellValue(release.getEmpIndex03());
+                                row.createCell(4).setCellValue(release.getEmpIndex10());
+                                row.createCell(5).setCellValue(release.getEmpIndex08());
                                 exportDetail++;
                             }
                         }
