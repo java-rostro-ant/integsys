@@ -644,7 +644,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                         } else {
                             release.setEmpIndex09(release.getEmpIndex09().trim());
                         }
-                        if (release.getEmpIndex05().equalsIgnoreCase("invactive")) {
+                        if (release.getEmpIndex05().equalsIgnoreCase("inactive")) {
                             continue;
                         }
                         if (release.getEmpIndex09().isEmpty()) {
@@ -676,7 +676,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                     rowNum = 1;
                     for (Release release : Employee_Data) {
 
-                        if (release.getEmpIndex05().equalsIgnoreCase("invactive")) {
+                        if (release.getEmpIndex05().equalsIgnoreCase("inactive")) {
                             continue;
                         }
                         if (release.getEmpIndex09().equals("00XX024")) {
@@ -709,7 +709,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                     for (Release release : Employee_Data) {
                         if (release.getEmpIndex09().equals("00XX006")) {
 
-                            if (release.getEmpIndex05().equalsIgnoreCase("invactive")) {
+                            if (release.getEmpIndex05().equalsIgnoreCase("inactive")) {
                                 continue;
                             }
                             //if (release.getEmpIndex09().equalsIgnoreCase("00XX006")) {
@@ -749,7 +749,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                     rowNum = 1;
                     for (Release release : Employee_Data) {
 
-                        if (release.getEmpIndex05().equalsIgnoreCase("invactive")) {
+                        if (release.getEmpIndex05().equalsIgnoreCase("inactive")) {
                             continue;
                         }
                         if (release.getEmpIndex09().equals("00XX022")) {
@@ -780,7 +780,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                     rowNum = 1;
                     for (Release release : Employee_Data) {
 
-                        if (release.getEmpIndex05().equalsIgnoreCase("invactive")) {
+                        if (release.getEmpIndex05().equalsIgnoreCase("inactive")) {
                             continue;
                         }
                         if (release.getEmpIndex09().equals("00XX003")) {
@@ -829,10 +829,10 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                     rowNum = 1;
                     for (Release release : Employee_Data) {
 
-                        if (release.getEmpIndex05().equalsIgnoreCase("invactive")) {
+                        if (release.getEmpIndex05().equalsIgnoreCase("inactive")) {
                             if (Double.valueOf(release.getEmpIndex08().replaceAll(",", "")) > 0) {
                                 String BankName = "";
-                                ResultSet loRS = oTrans.getEmployeeDetail(release.getEmpIndex09());
+                                ResultSet loRS = oTrans.getEmployeeDetail(release.getEmpIndex11());
 
                                 if (loRS != null) {
                                     BankName = loRS.getString("sBankName");
@@ -842,7 +842,7 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                                 Row row = sheet.createRow(rowNum++);
                                 row.createCell(0).setCellValue(release.getEmpIndex02());
                                 row.createCell(1).setCellValue(BankName);
-                                row.createCell(2).setCellValue(release.getEmpIndex09());
+                                row.createCell(2).setCellValue(release.getEmpIndex11());
                                 row.createCell(3).setCellValue(release.getEmpIndex03());
                                 row.createCell(4).setCellValue(release.getEmpIndex10());
                                 row.createCell(5).setCellValue(release.getEmpIndex08());
