@@ -537,7 +537,12 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
             params.put("sCompnyNm", "Guanzon Group of Companies");
             params.put("sBranchNm", oApp.getBranchName());
             params.put("sAddressx", oApp.getAddress());
-            params.put("sReportNm", "Branch & Employee Incentive Summarized Report");
+
+            if (!oTrans.getCategory("sInctveCD").toString().equalsIgnoreCase("999")) {
+                params.put("sReportNm", "Branch & Employee Incentive Summarized Report");
+            } else {
+                params.put("sReportNm", "Branch & Employee Deduction Summarized Report");
+            }
 
             IncentiveData.clear();
             if (oTrans.OpenRecord(fsPeriod, false)) {
@@ -632,7 +637,11 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
             params.put("sCompnyNm", "Guanzon Group of Companies");
             params.put("sBranchNm", oApp.getBranchName());
             params.put("sAddressx", oApp.getAddress());
-            params.put("sReportNm", "Branch & Incentive Category Summarized Report");
+            if (!oTrans.getCategory("sInctveCD").toString().equalsIgnoreCase("999")) {
+                params.put("sReportNm", "Branch & Incentive Category Summarized Report");
+            } else {
+                params.put("sReportNm", "Branch & Deduction Category Summarized Report");
+            }
 
             IncentiveData.clear();
             if (oTrans.OpenRecord(fsPeriod, true)) {
@@ -726,7 +735,11 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
             params.put("sCompnyNm", "Guanzon Group of Companies");
             params.put("sBranchNm", oApp.getBranchName());
             params.put("sAddressx", oApp.getAddress());
-            params.put("sReportNm", "Employee & Incentive Category Summarized Report");
+            if (!oTrans.getCategory("sInctveCD").toString().equalsIgnoreCase("999")) {
+                params.put("sReportNm", "Employee & Incentive Detailed Report");
+            } else {
+                params.put("sReportNm", "Employee & Deduction Category Summarized Report");
+            }
 
             IncentiveData.clear();
             if (oTrans.OpenRecord(fsPeriod, false)) {
@@ -823,7 +836,11 @@ public class IncentiveReportsNewController implements Initializable, ScreenInter
             params.put("sCompnyNm", "Guanzon Group of Companies");
             params.put("sBranchNm", oApp.getBranchName());
             params.put("sAddressx", oApp.getAddress());
-            params.put("sReportNm", "Incentive Detailed Report");
+            if (!oTrans.getCategory("sInctveCD").toString().equalsIgnoreCase("999")) {
+                params.put("sReportNm", "Incentive Detailed Report");
+            } else {
+                params.put("sReportNm", "Deduction Detailed Report");
+            }
 
             IncentiveData.clear();
             if (oTrans.OpenRecordDetailed(fsPeriod, true)) {
