@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,8 +24,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.DateCell;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import static javafx.scene.input.KeyCode.DOWN;
@@ -51,22 +47,22 @@ import org.rmj.appdriver.SQLUtil;
 import org.rmj.appdriver.agentfx.CommonUtils;
 import org.rmj.appdriver.agentfx.ShowMessageFX;
 import org.rmj.grewards.base.LMasDetTrans;
-import org.rmj.grewards.report.EvaluationTop10;
+import org.rmj.grewards.report.EvaluationSummarizedOfficer;
 
 /**
  * FXML Controller class
  *
  * @author User
  */
-public class PacitaEvalTop10ReportController implements Initializable, ScreenInterface {
+public class PacitaEvalSummarizedOfficerReportController implements Initializable, ScreenInterface {
 
-    private final String pxeModuleName = "Pacita's TOP 10 Report";
+    private final String pxeModuleName = "Pacita's Summarized w/Officer Report";
     final static int interval = 100;
     private Timeline timeline;
     private Integer timeSeconds = 3;
     private GRider oApp;
 
-    private EvaluationTop10 oTrans;
+    private EvaluationSummarizedOfficer oTrans;
     private LMasDetTrans oListener;
     private boolean pbLoaded = false;
     private boolean running = false;
@@ -102,7 +98,7 @@ public class PacitaEvalTop10ReportController implements Initializable, ScreenInt
         btnGenerate.setOnAction(this::cmdButton_Click);
         btnCloseReport.setOnAction(this::cmdButton_Click);
 
-        oTrans = new EvaluationTop10(oApp, oApp.getBranchCode(), false);
+        oTrans = new EvaluationSummarizedOfficer(oApp, oApp.getBranchCode(), false);
         oTrans.setWithUI(true);
 
         initFields();
@@ -118,33 +114,6 @@ public class PacitaEvalTop10ReportController implements Initializable, ScreenInt
         txtField04.setOnKeyPressed(this::txtField_KeyPressed);
         txtField05.setOnKeyPressed(this::txtField_KeyPressed);
         txtField06.setOnKeyPressed(this::txtField_KeyPressed);
-
-//        dpPeriodMonth.getItems().addAll(getMonthList());
-//        dpPeriodYear.getItems().addAll(getYearList());
-//        
-//        dpPeriodYear.valueProperty().addListener((observable, oldValue, newValue) -> {
-//            if (newValue != null) {
-//                sPeriodYearxx = (String) dpPeriodYear.getValue();
-//                System.out.println("Selected year: " + sPeriodYearxx);
-//                sPeriodxx = sPeriodYearxx + "-" + sPeriodMonthxx;
-//            }
-//        });
-//        
-//        dpPeriodMonth.valueProperty().addListener((observable, oldValue, newValue) -> {
-//            int nPeriodMonthxx;
-//            if (newValue != null) {
-//                if (dpPeriodMonth.getSelectionModel().getSelectedIndex() != 0){
-//                    
-//                    nPeriodMonthxx =  dpPeriodMonth.getSelectionModel().getSelectedIndex();
-//                    System.out.println("Selected month: " + nPeriodMonthxx);
-//                    sPeriodMonthxx = "0" + String.valueOf(nPeriodMonthxx);
-//                    sPeriodxx = sPeriodYearxx + "-" + sPeriodMonthxx;
-//                }else {
-//                    sPeriodMonthxx = "" ;
-//                    sPeriodxx = sPeriodYearxx + "-" + sPeriodMonthxx;
-//                        }
-//            }
-//        });
         pbLoaded = true;
     }
 
@@ -152,29 +121,9 @@ public class PacitaEvalTop10ReportController implements Initializable, ScreenInt
         return (Stage) txtField01.getScene().getWindow();
     }
 
-//    private List<String> getYearList() {
-//        List<String> years = new ArrayList<>();
-//        years.add(0, ""); 
-//        int currentYear = Year.now().getValue();
-//        for (int year = currentYear; year >= 1945; year--) {
-//            years.add(Integer.toString(year));
-//        }
-//        return years;
-//    }
-//    
-//    private List<String> getMonthList() {
-//        List<String> monthNames = new ArrayList<>();
-//        monthNames.add(0, ""); 
-//        
-//        for (Month month : Month.values()) {
-//        monthNames.add(month.toString());
-//        }
-//        return monthNames;
-//    }
     private void showReport() {
 
         jrViewer = new JRViewer(jasperPrint);
-//        JasperViewer.viewReport(jasperPrint, false);
 
         SwingNode swingNode = new SwingNode();
         jrViewer.setOpaque(true);
@@ -183,7 +132,6 @@ public class PacitaEvalTop10ReportController implements Initializable, ScreenInt
 
         swingNode.setContent(jrViewer);
         swingNode.setVisible(true);
-//        reportPane.getChildren().clear();
         reportPane.setTopAnchor(swingNode, 0.0);
         reportPane.setBottomAnchor(swingNode, 0.0);
         reportPane.setLeftAnchor(swingNode, 0.0);
@@ -197,10 +145,8 @@ public class PacitaEvalTop10ReportController implements Initializable, ScreenInt
     }
 
     private void hideReport() {
-//        jasperPrint = null;
         jrViewer = new JRViewer(null);
         reportPane.getChildren().clear();
-//        JasperViewer.viewReport(jasperPrint, false);
 
         jrViewer.setVisible(false);
         running = false;
@@ -473,13 +419,14 @@ public class PacitaEvalTop10ReportController implements Initializable, ScreenInt
                 System.out.println("TotalData  = " + lnItemCount);
                 master_data.clear();
                 for (int x = 1; x <= oTrans.getItemCount(); x++) {
-
+                    double lnRating = Double.valueOf(CommonUtils.NumberFormat((BigDecimal) oTrans.getRecord(x, "xRating"), "##0.00"));
+                    int lnCount = Integer.parseInt(oTrans.getRecord(x, "xBranchCount").toString());
                     master_data.add(new TableModel(
                             oTrans.getRecord(x, "AreaDesc").toString(),
                             oTrans.getRecord(x, "sBranchNm").toString(),
-                            oTrans.getRecord(x, "xBranchCount").toString(),
-                            CommonUtils.NumberFormat((BigDecimal) oTrans.getRecord(x, "xRating"), "##0.00"),
-                            String.valueOf(x)
+                            oTrans.getRecord(x, "sCompnyNm").toString(),
+                            lnCount,
+                            lnRating
                     ));
 
                 }
@@ -492,7 +439,7 @@ public class PacitaEvalTop10ReportController implements Initializable, ScreenInt
                 });
 
             }
-            String sourceFileName = "D://GGC_Java_Systems/reports/PacitaEvalSummarized.jasper";
+            String sourceFileName = "D://GGC_Java_Systems/reports/PacitaEvalSummarizedOfficer.jasper";
 
             String printFileName = null;
             JRBeanCollectionDataSource beanColDataSource1 = new JRBeanCollectionDataSource(master_data);
