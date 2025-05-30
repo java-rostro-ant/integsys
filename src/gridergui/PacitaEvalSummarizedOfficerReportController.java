@@ -47,7 +47,7 @@ import org.rmj.appdriver.SQLUtil;
 import org.rmj.appdriver.agentfx.CommonUtils;
 import org.rmj.appdriver.agentfx.ShowMessageFX;
 import org.rmj.grewards.base.LMasDetTrans;
-import org.rmj.grewards.report.EvaluationTop10Detailed;
+import org.rmj.grewards.report.EvaluationSummarizedOfficer;
 
 /**
  * FXML Controller class
@@ -62,7 +62,7 @@ public class PacitaEvalSummarizedOfficerReportController implements Initializabl
     private Integer timeSeconds = 3;
     private GRider oApp;
 
-    private EvaluationTop10Detailed oTrans;
+    private EvaluationSummarizedOfficer oTrans;
     private LMasDetTrans oListener;
     private boolean pbLoaded = false;
     private boolean running = false;
@@ -98,7 +98,7 @@ public class PacitaEvalSummarizedOfficerReportController implements Initializabl
         btnGenerate.setOnAction(this::cmdButton_Click);
         btnCloseReport.setOnAction(this::cmdButton_Click);
 
-        oTrans = new EvaluationTop10Detailed(oApp, oApp.getBranchCode(), false);
+        oTrans = new EvaluationSummarizedOfficer(oApp, oApp.getBranchCode(), false);
         oTrans.setWithUI(true);
 
         initFields();
