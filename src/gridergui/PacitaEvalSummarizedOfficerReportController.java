@@ -421,12 +421,14 @@ public class PacitaEvalSummarizedOfficerReportController implements Initializabl
                 for (int x = 1; x <= oTrans.getItemCount(); x++) {
                     double lnRating = Double.valueOf(CommonUtils.NumberFormat((BigDecimal) oTrans.getRecord(x, "xRating"), "##0.00"));
                     int lnCount = Integer.parseInt(oTrans.getRecord(x, "xBranchCount").toString());
+                    double lnTotalRating = Double.valueOf(CommonUtils.NumberFormat((BigDecimal) oTrans.getRecord(x, "xTotalAverage"), "##0.00"));
                     master_data.add(new TableModel(
                             oTrans.getRecord(x, "AreaDesc").toString(),
                             oTrans.getRecord(x, "sBranchNm").toString(),
                             oTrans.getRecord(x, "sCompnyNm").toString(),
                             lnCount,
-                            lnRating
+                            lnRating,
+                            lnTotalRating
                     ));
 
                 }
