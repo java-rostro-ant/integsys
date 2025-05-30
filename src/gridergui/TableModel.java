@@ -32,6 +32,7 @@ public class TableModel {
     
     private SimpleObjectProperty nField01;
     private SimpleObjectProperty nField02;
+    private SimpleObjectProperty nField03;
     private Boolean isImagePriority;
     
     TableModel(String index01, String index02, String index03) {
@@ -75,13 +76,15 @@ public class TableModel {
                String index02,
                String index03,
                Number nField01,
-               Number nField02){
+               Number nField02,
+               Number nField03){
         
         this.index01 = new SimpleStringProperty(index01);
         this.index02 = new SimpleStringProperty(index02);
         this.index03 = new SimpleStringProperty(index03);
         this.nField01 = new SimpleObjectProperty(nField01);
         this.nField02 = new SimpleObjectProperty(nField02);
+        this.nField03 = new SimpleObjectProperty(nField03);
     }
     
         TableModel(String index01,
@@ -215,5 +218,7 @@ public class TableModel {
     
     public Object getnField02(){return nField02.get();}
     public void setnField02(Number nField02){this.nField02.set(nField02);}
+    public Object getnField03(){return nField03.get();}
+    public void setnField03(Number nField03){this.nField03.set(nField03);}
     
 }
