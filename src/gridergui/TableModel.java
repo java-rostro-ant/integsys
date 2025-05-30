@@ -5,6 +5,7 @@
  */
 package gridergui;
 
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -28,6 +29,9 @@ public class TableModel {
     private SimpleStringProperty index13;
     private SimpleStringProperty index14;
     private SimpleStringProperty index15;
+    
+    private SimpleObjectProperty nField01;
+    private SimpleObjectProperty nField02;
     private Boolean isImagePriority;
     
     TableModel(String index01, String index02, String index03) {
@@ -64,6 +68,20 @@ public class TableModel {
         this.index03 = new SimpleStringProperty(index03);
         this.index04 = new SimpleStringProperty(index04);
         this.index05 = new SimpleStringProperty(index05);
+    }
+    
+    
+    TableModel(String index01,
+               String index02,
+               String index03,
+               Number nField01,
+               Number nField02){
+        
+        this.index01 = new SimpleStringProperty(index01);
+        this.index02 = new SimpleStringProperty(index02);
+        this.index03 = new SimpleStringProperty(index03);
+        this.nField01 = new SimpleObjectProperty(nField01);
+        this.nField02 = new SimpleObjectProperty(nField02);
     }
     
         TableModel(String index01,
@@ -190,4 +208,12 @@ public class TableModel {
     public StringProperty index06Property() {
         return index06;
     }
+    
+    
+    public Object getnField01(){return nField01.get();}
+    public void setnField01(Number nField01){this.nField01.set(nField01);}
+    
+    public Object getnField02(){return nField02.get();}
+    public void setnField02(Number nField02){this.nField02.set(nField02);}
+    
 }

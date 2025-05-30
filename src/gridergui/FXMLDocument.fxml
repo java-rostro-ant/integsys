@@ -119,6 +119,7 @@
                                                 <Menu mnemonicParsing="false" text="Pacita">
                                                   <items>
                                                       <MenuItem fx:id="mnuPacitaSumReport" mnemonicParsing="false" onAction="#mnuPacitaSumReportClick" text="Pacita Summary" />
+                                                      <MenuItem fx:id="mnuPacitaSumOfficerReport" mnemonicParsing="false" onAction="#mnuPacitaSumOfficerReportClick" text="Pacita Summary w/ Officer" />
                                                       <MenuItem fx:id="mnuPacitaDetRuleReport" mnemonicParsing="false" onAction="#mnuPacitaDetRuleReportClick" text="Pacita Detailed w/ Rules" />
                                                       <MenuItem fx:id="mnuPacitaDetReport" mnemonicParsing="false" onAction="#mnuPacitaDetReportClick" text="Pacita Detailed" />
                                                       <MenuItem fx:id="mnuPacitaTop10Report" mnemonicParsing="false" onAction="#mnuPacitaTop10ReportClick" text="Pacita TOP 10" />

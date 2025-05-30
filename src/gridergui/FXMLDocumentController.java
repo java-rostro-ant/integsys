@@ -71,7 +71,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private MenuItem mnuCashCountEntry;
     @FXML
-    private MenuItem mnuAuditIncentiveReport,  mnuAuditIncentiveReportNew, mnuRaffleReport;
+    private MenuItem mnuAuditIncentiveReport, mnuAuditIncentiveReportNew, mnuRaffleReport;
     @FXML
     private MenuItem mnuAuditDeptIncentiveReport;
     @FXML
@@ -92,7 +92,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private MenuItem mnuMPArea;
     @FXML
-    private MenuItem mnuIncentiveReleaseHistory; 
+    private MenuItem mnuIncentiveReleaseHistory;
     @FXML
     private MenuItem mnuIncentiveReleasing;
 
@@ -133,7 +133,7 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private MenuItem mnuPacitaEvaluationHis;
     @FXML
-    private MenuItem mnuPacitaSumReport, mnuPacitaDetReport,
+    private MenuItem mnuPacitaSumReport,mnuPacitaSumOfficerReport, mnuPacitaDetReport,
             mnuPacitaTop10Report;
 
     /**
@@ -287,6 +287,8 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
                 return new PacitaEvaluationHisController();
             case "PacitaEvalSummarizedReport.fxml":
                 return new PacitaEvalSummarizedReportController();
+            case "PacitaEvalSummarizedOfficerReport.fxml":
+                return new PacitaEvalSummarizedOfficerReportController();
             case "PacitaEvalDetailedReport.fxml":
                 return new PacitaEvalDetailedReportController();
             case "PacitaEvalDetailedRulesReport.fxml":
@@ -499,6 +501,11 @@ public class FXMLDocumentController implements Initializable, ScreenInterface {
     @FXML
     private void mnuPacitaSumReportClick(ActionEvent event) {
         setScene(loadAnimate("PacitaEvalSummarizedReport.fxml"));
+    }
+
+    @FXML
+    private void mnuPacitaSumOfficerReportClick(ActionEvent event) {
+        setScene(loadAnimate("PacitaEvalSummarizedOfficerReport.fxml"));
     }
 
     @FXML

@@ -85,7 +85,7 @@ public class PacitaEvalSummarizedReportController implements Initializable, Scre
     @FXML
     private ComboBox dpPeriod;
     @FXML
-    private TextField txtField01, txtField02, txtField03, txtField04, txtField05;
+    private TextField txtField01, txtField02, txtField03, txtField04, txtField05, txtField06;
     @FXML
     private VBox vbProgress;
 
@@ -106,11 +106,13 @@ public class PacitaEvalSummarizedReportController implements Initializable, Scre
         txtField03.focusedProperty().addListener(txtField_Focus);
         txtField04.focusedProperty().addListener(txtField_Focus);
         txtField05.focusedProperty().addListener(txtField_Focus);
+        txtField06.focusedProperty().addListener(txtField_Focus);
         txtField01.setOnKeyPressed(this::txtField_KeyPressed);
         txtField02.setOnKeyPressed(this::txtField_KeyPressed);
         txtField03.setOnKeyPressed(this::txtField_KeyPressed);
         txtField04.setOnKeyPressed(this::txtField_KeyPressed);
         txtField05.setOnKeyPressed(this::txtField_KeyPressed);
+        txtField06.setOnKeyPressed(this::txtField_KeyPressed);
 //        List<String> years = getYearList();
 //        dpPeriod.getItems().addAll(getYearList());
 //        dpPeriod.setValue(years.get(0));
@@ -213,6 +215,14 @@ public class PacitaEvalSummarizedReportController implements Initializable, Scre
                                 ShowMessageFX.Warning(getStage(), "Unable to search branch.", "Warning", null);
                             }
                             break;
+                        case 6:
+                            /*search division*/
+                            if (oTrans.searchDivision(lsValue, false)) {
+                                txtField06.setText((String) oTrans.getDivision("sDivsnDsc"));
+                            } else {
+                                ShowMessageFX.Warning(getStage(), "Unable to search division.", "Warning", null);
+                            }
+                            break;
 
                     }
             }
@@ -287,6 +297,12 @@ public class PacitaEvalSummarizedReportController implements Initializable, Scre
                             txtField.setText("");
                         }
                         return;
+                    case 6:
+                        if (lsValue.isEmpty() || oTrans.getDivision()== null) {
+                            oTrans.setDivision();
+                            txtField.setText("");
+                        }
+                        return;
 
                 }
             } else { //Focus
@@ -314,6 +330,11 @@ public class PacitaEvalSummarizedReportController implements Initializable, Scre
                     case 5:
                         if (!lsValue.trim().isEmpty()) {
                             txtField.setText((String) oTrans.getBranch(2));
+                        }
+                        return;
+                    case 6:
+                        if (!lsValue.trim().isEmpty()) {
+                            txtField.setText((String) oTrans.getDivision(2));
                         }
                         return;
 
@@ -346,6 +367,9 @@ public class PacitaEvalSummarizedReportController implements Initializable, Scre
                 }
                 if (txtField05.getText().isEmpty()) {
                     oTrans.setBranch();
+                }
+                if (txtField06.getText().isEmpty()) {
+                    oTrans.setDivision();
                 }
 
 //                    if(dpPeriod.getValue() == null){
@@ -407,17 +431,17 @@ public class PacitaEvalSummarizedReportController implements Initializable, Scre
             if (oTrans.OpenRecord(lsPeriodTo, lsPeriodFrom)) {
                 int lnItemCount = oTrans.getItemCount();
 
-                    if (lnItemCount <= 0) {
-                        running = false;
-                        vbProgress.setVisible(false);
-                        timeline.stop();
+                if (lnItemCount <= 0) {
+                    running = false;
+                    vbProgress.setVisible(false);
+                    timeline.stop();
 
-                        Platform.runLater(() -> {
-                            ShowMessageFX.Warning(getStage(), "No Record Found", "Information", null);
-                        });
-                        return false;
-                    }
-                    System.out.println("TotalData  = " + lnItemCount);
+                    Platform.runLater(() -> {
+                        ShowMessageFX.Warning(getStage(), "No Record Found", "Information", null);
+                    });
+                    return false;
+                }
+                System.out.println("TotalData  = " + lnItemCount);
                 master_data.clear();
                 for (int x = 1; x <= oTrans.getItemCount(); x++) {
 
@@ -430,7 +454,7 @@ public class PacitaEvalSummarizedReportController implements Initializable, Scre
                     ));
 
                 }
-            }else{
+            } else {
                 running = false;
                 vbProgress.setVisible(false);
                 timeline.stop();
@@ -438,7 +462,7 @@ public class PacitaEvalSummarizedReportController implements Initializable, Scre
                     ShowMessageFX.Warning(getStage(), oTrans.getMessage(), "Warning", null);
                 });
                 return false;
-            
+
             }
             String sourceFileName = "D://GGC_Java_Systems/reports/PacitaEvalSummarized.jasper";
 
@@ -455,13 +479,13 @@ public class PacitaEvalSummarizedReportController implements Initializable, Scre
                 }
             } catch (JRException ex) {
                 Logger.getLogger(ReportsController.class.getName()).log(Level.SEVERE, null, ex);
-            running = false;
-            vbProgress.setVisible(false);
-            timeline.stop();
-            Platform.runLater(() -> {
-                ShowMessageFX.Warning(getStage(), oTrans.getMessage() + " " + ex.getMessage(), "Catch Error", null);
-            });
-            return false;
+                running = false;
+                vbProgress.setVisible(false);
+                timeline.stop();
+                Platform.runLater(() -> {
+                    ShowMessageFX.Warning(getStage(), oTrans.getMessage() + " " + ex.getMessage(), "Catch Error", null);
+                });
+                return false;
             }
 
         } catch (SQLException e) {
