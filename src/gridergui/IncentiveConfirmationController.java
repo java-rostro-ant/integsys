@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -297,6 +298,7 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
                     }
                     break;
                 case "btnApproved":
+                    showLateHireWarning();
                     if (oTrans.CloseTransaction()) {
                         ShowMessageFX.Warning(getStage(), "Transaction successfully approved.", "Warning", null);
                         clearFields();
@@ -846,5 +848,73 @@ public class IncentiveConfirmationController implements Initializable, ScreenInt
         }
         oTrans.setWithUI(true);
         pnEditMode = EditMode.UNKNOWN;
+    }
+
+    private String buildWarningMessage() throws SQLException {
+        if (pdPeriod == null) {
+            return "";
+        }
+
+        SimpleDateFormat loFmt = new SimpleDateFormat("MMM dd, yyyy");
+        StringBuilder lsMsg = new StringBuilder();
+
+        // emp_data rows line up with oTrans detail rows (1-based)
+        for (int lnCtr = 1; lnCtr <= oTrans.getItemCount() && lnCtr <= emp_data.size(); lnCtr++) {
+            Date ldHired = toDate(oTrans.getDetail(lnCtr, "xStartEmp")); 
+            if (ldHired == null || !ldHired.after(pdPeriod)) {
+                continue; 
+            }
+
+            IncentiveConfirmationModel loEmp = emp_data.get(lnCtr - 1);
+            double lnIncentive = toDouble(loEmp.getEmpIndex06());
+            double lnDeduction = toDouble(loEmp.getEmpIndex07());
+
+            if (lnIncentive > 0 || lnDeduction > 0) {
+                lsMsg.append("- ")
+                        .append(loEmp.getEmpIndex02())
+                        .append(" (hired ").append(loFmt.format(ldHired)).append(")")
+                        .append("  Incentive: ").append(priceWithDecimal(lnIncentive))
+                        .append("  Deduction: ").append(priceWithDecimal(lnDeduction))
+                        .append("\n");
+            }
+        }
+
+        if (lsMsg.length() == 0) {
+            return "";
+        }
+
+        return "The following employees were hired after the start of "
+                + CommonUtils.dateFormat(pdPeriod, "MMMM yyyy")
+                + " but have an incentive and/or deduction:\n\n" + lsMsg;
+    }
+
+    private void showLateHireWarning() throws SQLException {
+        String lsMessage = buildWarningMessage();
+        if (!lsMessage.isEmpty()) {
+            ShowMessageFX.Warning(getStage(), lsMessage, "Warning", null);
+        }
+    }
+
+// Handles java.util.Date, java.sql.Date/Timestamp, or "yyyy-MM-dd" strings
+    private static Date toDate(Object foValue) {
+        if (foValue == null) {
+            return null;
+        }
+        if (foValue instanceof Date) {
+            return (Date) foValue;
+        }
+        try {
+            return new SimpleDateFormat("yyyy-MM-dd").parse(foValue.toString().trim());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private static double toDouble(String fsValue) {
+        try {
+            return Double.parseDouble(fsValue.replace(",", "").trim());
+        } catch (Exception e) {
+            return 0.00;
+        }
     }
 }

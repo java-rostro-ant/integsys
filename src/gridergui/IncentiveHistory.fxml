@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="AnchorMainIncentiveConfirmation" prefHeight="644.0" prefWidth="1074.0" style="-fx-border-color: orange; -fx-border-radius: 5;" stylesheets="@/css/EmployeeIncentives.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="AnchorMainIncentiveConfirmation" prefHeight="644.0" prefWidth="1074.0" style="-fx-border-color: orange; -fx-border-radius: 5;" stylesheets="@/css/EmployeeIncentives.css" xmlns="http://javafx.com/javafx/8.0.381" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <StackPane layoutX="9.0" layoutY="388.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -191,11 +191,19 @@
                <bottom>
                   <AnchorPane nodeOrientation="LEFT_TO_RIGHT" prefHeight="58.0" style="-fx-background-color: #4C4C4C; -fx-background-radius: 5;" BorderPane.alignment="CENTER">
                      <children>
-                        <HBox fx:id="hbButtons" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
+                        <HBox fx:id="hbButtons" spacing="5.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0">
                            <children>
                               <Button fx:id="btnBrowse" contentDisplay="TOP" ellipsisString="" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Browse">
                                  <graphic>
                                     <FontAwesomeIconView glyphName="SEARCH" size="20" />
+                                 </graphic>
+                                 <effect>
+                                    <Blend />
+                                 </effect>
+                              </Button>
+                              <Button fx:id="btnExport" contentDisplay="TOP" ellipsisString="" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Export">
+                                 <graphic>
+                                    <FontAwesomeIconView glyphName="FILE_TEXT" size="20" />
                                  </graphic>
                                  <effect>
                                     <Blend />

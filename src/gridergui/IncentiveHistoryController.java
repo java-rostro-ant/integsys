@@ -6,8 +6,11 @@
 package gridergui;
 
 import com.sun.javafx.scene.control.skin.TableHeaderRow;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.Date;
@@ -40,10 +43,25 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.DataFormat;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.json.simple.JSONObject;
 import org.rmj.appdriver.GRider;
 import org.rmj.appdriver.SQLUtil;
 import org.rmj.appdriver.agent.MsgBox;
@@ -98,7 +116,7 @@ public class IncentiveHistoryController implements Initializable, ScreenInterfac
     @FXML
     private TextField txtSeeks05;
     @FXML
-    private Button btnBrowse;
+    private Button btnBrowse, btnExport;
 //    @FXML
 //    private Button btnDisapproved;
     @FXML
@@ -211,6 +229,7 @@ public class IncentiveHistoryController implements Initializable, ScreenInterfac
         oTrans.setWithUI(true);
 
         btnBrowse.setOnAction(this::cmdButton_Click);
+        btnExport.setOnAction(this::cmdButton_Click);
         btnClose.setOnAction(this::cmdButton_Click);
 //        btnDisapproved.setOnAction(this::cmdButton_Click);
         tblincentives_column();
@@ -296,6 +315,14 @@ public class IncentiveHistoryController implements Initializable, ScreenInterfac
 //                            ShowMessageFX.Warning(getStage(), oTrans.getMessage(),"Warning", null);
 //                    break;
 
+                case "btnExport":
+                    JSONObject loJSON = exportReportbyExcel();
+                    if ("error".equals(loJSON.get("result"))) {
+                        ShowMessageFX.Warning(getStage(), (String) loJSON.get("message"), "Warning", null);
+                    } else if ("success".equals(loJSON.get("result"))) {
+                        ShowMessageFX.Information(getStage(), (String) loJSON.get("message"), "Incentive Approval History", null);
+                    }
+                    break;
                 case "btnClose":
                     if (ShowMessageFX.OkayCancel(null, "Incentive Approval History", "Are you sure, do you want to close?") == true) {
                         unloadForm();
@@ -787,4 +814,155 @@ public class IncentiveHistoryController implements Initializable, ScreenInterfac
         oTrans.setWithUI(true);
         pnEditMode = EditMode.UNKNOWN;
     }
+
+    public JSONObject exportReportbyExcel() {
+        JSONObject poJSON = new JSONObject();
+
+        if (emp_data.isEmpty()) {
+            poJSON.put("result", "error");
+            poJSON.put("message", "No employee records to export.");
+            return poJSON;
+        }
+
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("Incentive " + oTrans.getMaster("sTransNox"));
+
+            String[] headers = {"No.","Branch Name", "Employee Name", "Level", "Position",
+                "Service Year", "Incentive", "Deduction", "Total"};
+
+            // Header row
+            CellStyle headerStyle = getHeaderCellStyle(workbook);
+            Row headerRow = sheet.createRow(0);
+            headerRow.setHeightInPoints(20);
+            for (int i = 0; i < headers.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(headers[i]);
+                cell.setCellStyle(headerStyle);
+            }
+
+            // Style for amounts
+            CellStyle amountStyle = workbook.createCellStyle();
+            DataFormat format = workbook.createDataFormat();
+            amountStyle.setDataFormat(format.getFormat("#,##0.00"));
+
+            // Data rows from emp_data
+            int rowIndex = 1;
+            double lnTotIncentive = 0, lnTotDeduction = 0, lnTotAmount = 0;
+            for (IncentiveConfirmationModel item : emp_data) {
+                Row row = sheet.createRow(rowIndex++);
+                row.createCell(0).setCellValue(item.getEmpIndex01());
+                row.createCell(1).setCellValue(oTrans.getMaster("xBranchNm").toString());
+                row.createCell(2).setCellValue(item.getEmpIndex02());
+                row.createCell(3).setCellValue(item.getEmpIndex03());
+                row.createCell(4).setCellValue(item.getEmpIndex04());
+                row.createCell(5).setCellValue(item.getEmpIndex05());
+
+                double lnInc = toDouble(item.getEmpIndex06());
+                double lnDed = toDouble(item.getEmpIndex07());
+                double lnTot = toDouble(item.getEmpIndex08());
+                lnTotIncentive += lnInc;
+                lnTotDeduction += lnDed;
+                lnTotAmount += lnTot;
+
+                Cell c6 = row.createCell(6);
+                c6.setCellValue(lnInc);
+                c6.setCellStyle(amountStyle);
+                Cell c7 = row.createCell(7);
+                c7.setCellValue(lnDed);
+                c7.setCellStyle(amountStyle);
+                Cell c8 = row.createCell(8);
+                c8.setCellValue(lnTot);
+                c8.setCellStyle(amountStyle);
+            }
+
+            // Totals row
+            Row totalRow = sheet.createRow(rowIndex);
+            totalRow.createCell(5).setCellValue("TOTAL");
+            Cell t6 = totalRow.createCell(6);
+            t6.setCellValue(lnTotIncentive);
+            t6.setCellStyle(amountStyle);
+            Cell t7 = totalRow.createCell(7);
+            t7.setCellValue(lnTotDeduction);
+            t7.setCellStyle(amountStyle);
+            Cell t8 = totalRow.createCell(8);
+            t8.setCellValue(lnTotAmount);
+            t8.setCellStyle(amountStyle);
+
+            // Auto-size
+            for (int i = 0; i < headers.length; i++) {
+                sheet.autoSizeColumn(i);
+                sheet.setColumnWidth(i, sheet.getColumnWidth(i) + 1000);
+            }
+
+            // Choose save location
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save Report As Excel");
+            fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Excel Files", "*.xlsx"));
+            fileChooser.setInitialFileName(oTrans.getMaster("sTransNox") + ".xlsx");
+
+            File file = fileChooser.showSaveDialog(getStage());  
+            if (file == null) {
+                poJSON.put("result", "cancelled");
+                return poJSON;
+            }
+
+            String fileFullPath = file.getAbsolutePath();
+            if (!fileFullPath.toLowerCase().endsWith(".xlsx")) {
+                fileFullPath += ".xlsx";
+            }
+
+            try (FileOutputStream fileOut = new FileOutputStream(fileFullPath)) {
+                workbook.write(fileOut);
+            }
+
+            poJSON.put("result", "success");
+            poJSON.put("message", "Exported to Excel successfully!");
+
+        } catch (SQLException | IOException e) {
+            poJSON.put("result", "error");
+            poJSON.put("message", e.getMessage());
+            e.printStackTrace();
+        }
+
+        return poJSON;
+    }
+
+// emp_data stores amounts as formatted strings like "1,234.50"
+    private static double toDouble(String fsValue) {
+        try {
+            return Double.parseDouble(fsValue.replace(",", "").trim());
+        } catch (Exception e) {
+            return 0.00;
+        }
+    }
+
+    private static CellStyle getHeaderCellStyle(Workbook workbook) {
+        CellStyle headerStyle = workbook.createCellStyle();
+
+        // Set background color
+        headerStyle.setFillForegroundColor(IndexedColors.OLIVE_GREEN.getIndex());
+        headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+        Font font = workbook.createFont();
+        font.setBold(true);
+        font.setColor(IndexedColors.WHITE.getIndex());
+        font.setFontHeightInPoints((short) 12);
+        headerStyle.setFont(font);
+
+        // Set center alignment
+        headerStyle.setAlignment(HorizontalAlignment.CENTER);
+        headerStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        // Set borders for the header cells
+        headerStyle.setBorderTop(BorderStyle.THIN);
+        headerStyle.setTopBorderColor(IndexedColors.WHITE.getIndex()); // Set top border color to black
+        headerStyle.setBorderBottom(BorderStyle.THIN);
+        headerStyle.setBottomBorderColor(IndexedColors.WHITE.getIndex()); // Set bottom border color to black
+        headerStyle.setBorderLeft(BorderStyle.THIN);
+        headerStyle.setLeftBorderColor(IndexedColors.WHITE.getIndex()); // Set left border color to black
+        headerStyle.setBorderRight(BorderStyle.THIN);
+        headerStyle.setRightBorderColor(IndexedColors.WHITE.getIndex()); // Set right border color to black
+
+        return headerStyle;
+    }
+
 }

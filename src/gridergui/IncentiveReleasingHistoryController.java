@@ -679,7 +679,9 @@ public class IncentiveReleasingHistoryController implements Initializable, Scree
                         if (release.getEmpIndex05().equalsIgnoreCase("inactive")) {
                             continue;
                         }
-                        if (release.getEmpIndex09().equals("00XX024")) {
+                        if (release.getEmpIndex09().equals("00XX024") 
+                                || release.getEmpIndex09().equals("M00190104")
+                                || release.getEmpIndex09().equals("M00125008")) {
                             //if (release.getEmpIndex09().equalsIgnoreCase("00XX024")) {
                             if (Double.valueOf(release.getEmpIndex08().replaceAll(",", "")) > 0) {
                                 Row row = sheet.createRow(rowNum++);
